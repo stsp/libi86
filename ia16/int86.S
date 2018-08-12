@@ -37,10 +37,9 @@ int86:
 	pushw	%si
 	MOV_ARG0B_BX_(%al)		/* inter_no */
 	xor	%ah,	%ah
-	shlw	$1,	%ax
-	movw	$__i86_intr_dispatch, %si
-	addw	%ax,	%si
-	pushw	(%si)
+	xchgw	%ax,	%si
+	shlw	$1,	%si
+	pushw	__i86_intr_dispatch(%si)
 	MOV_ARG2W_BX_(%bx)		/* in_regs */
 	movw	(%bx),	%ax
 	movw	4(%bx),	%cx
