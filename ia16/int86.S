@@ -41,14 +41,14 @@ int86:
 	shlw	$1,	%si
 	pushw	__i86_intr_dispatch(%si)
 	MOV_ARG2W_BX_(%bx)		/* in_regs */
+	movb	14(%bx), %ah
+	sahf
 	movw	(%bx),	%ax
 	movw	4(%bx),	%cx
 	movw	6(%bx),	%dx
 	movw	8(%bx),	%si
 	movw	10(%bx), %di
 	movw	12(%bx), %bp
-	movb	14(%bx), %ah
-	sahf
 	mov	2(%bx),	%bx
 	ret
 .done:
