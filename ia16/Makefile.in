@@ -37,7 +37,7 @@ AR = @AR@
 LD = @LD@
 RANLIB = @RANLIB@
 
-OBJS		= bios-memsize.o int86.o i86-intr-dispatch.o
+OBJS		= bios-memsize.o int86.o libi86-intr-dispatch.o
 CFLAGS		= -mseparate-code-segment
 ASFLAGS		=
 HEADERS		= bios.h i86.h

@@ -16,8 +16,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _BIOS_H_
-#define _BIOS_H_
+#ifndef _LIBI86_BIOS_H_
+#define _LIBI86_BIOS_H_
 
 #ifdef __cplusplus
 extern "C"

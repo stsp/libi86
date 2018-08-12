@@ -21,8 +21,8 @@
 
 	.data
 	.balign	2
-	.global	__i86_intr_dispatch
-__i86_intr_dispatch:
+	.global	__libi86_intr_dispatch
+__libi86_intr_dispatch:
 	inter_no = 0
 	.rept	0x100
 	.data

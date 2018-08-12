@@ -40,9 +40,9 @@ int86:
 	xor	%ah,	%ah
 	xchgw	%ax,	%si
 	shlw	$1,	%si
-	pushw	__i86_intr_dispatch(%si)
+	pushw	__libi86_intr_dispatch(%si)
 	MOV_ARG2W_BX_(%bx)		/* in_regs */
-	movb	14(%bx), %ah
+	movb	16(%bx), %ah		/* load only the SZAPC flags */
 	sahf
 	movw	(%bx),	%ax
 	movw	4(%bx),	%cx
@@ -67,8 +67,10 @@ int86:
 	movw	%si,	8(%bx)
 	movw	%di,	10(%bx)
 	movw	%bp,	12(%bx)
-	sbbw	%ax,	%ax
-	negw	%ax
+	pushfw
+	popw	%ax
+	movw	%ax,	16(%bx)
+	andw	$1,	%ax
 	movw	%ax,	14(%bx)
 	popw	%es
 	popw	%di
