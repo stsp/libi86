@@ -16,24 +16,43 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _BIOS_H_
-#define _BIOS_H_
+	.code16
+	.att_syntax prefix
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-extern inline unsigned short
-_bios_memsize (void)
-{
-  unsigned a;
-  __asm volatile ("int $0x12" : "=a" (a));
-  return a;
-}
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
-
-#endif
+	.data
+	.balign	2
+	.global	__i86_intr_dispatch
+__i86_intr_dispatch:
+	inter_no = 0
+	.rept	0x100
+	.data
+	.hword	0f
+	.text
+0:
+	.if	inter_no == 3
+	int3
+	ret
+	.else
+	int	$inter_no
+	/* MS-DOS `int $0x25' and `int $0x26' leave the original flags on
+	   the stack (see RBIL, www.ctyme.com/intr/rb-4117.htm).  */
+	.if	inter_no == 0x25
+1:
+	jc	2f
+	popfw
+	clc
+	ret
+2:
+	popfw
+	stc
+	ret
+	.else
+	.if	inter_no == 0x26
+	jmp	1b
+	.else
+	ret
+	.endif
+	.endif
+	.endif
+	inter_no = inter_no + 1
+	.endr

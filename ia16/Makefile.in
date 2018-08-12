@@ -37,7 +37,7 @@ AR = @AR@
 LD = @LD@
 RANLIB = @RANLIB@
 
-OBJS		= bios-memsize.o
+OBJS		= bios-memsize.o int86.o i86-intr-dispatch.o
 CFLAGS		= -mseparate-code-segment
 ASFLAGS		=
 HEADERS		= bios.h i86.h
@@ -95,7 +95,7 @@ $(BSP): $(OBJS)
 %.o: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(MULTILIB) -c $<
 
-%.o: %.S
+%.o: %.S call-cvt.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(ASFLAGS) $(MULTILIB) -c $<
 
 Makefile: Makefile.in config.status @host_makefile_frag_path@

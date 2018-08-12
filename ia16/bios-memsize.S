@@ -16,6 +16,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+#include "call-cvt.h"
+
 	.arch	i8086, jumps
 	.code16
 	.att_syntax prefix
@@ -24,4 +26,4 @@
 	.global	_bios_memsize
 _bios_memsize:
 	int	$0x12
-	ret
+	RET_(0)

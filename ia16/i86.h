@@ -19,13 +19,42 @@
 #ifndef _I86_H_
 #define _I86_H_
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+/* This definition is not binary-compatible with that in Open Watcom C/C++,
+   which has 2 bytes of padding after each of .ax, .bx, .cx, .dx, .si, and
+   .di (apparently to accommodate values of %eax, etc).  Open Watcom also does
+   not have a .bp field.  */
 struct WORDREGS
 {
-  unsigned short ax, _1, bx, _2, cx, _3, dx, _4, si, _5, di, _6, cflag;
+  unsigned short ax, bx, cx, dx, si, di, bp, cflag;
 };
 
 struct BYTEREGS
 {
+  unsigned char al, ah, bl, bh, cl, ch, dl, dh;
 };
+
+union REGS
+{
+  struct WORDREGS x;
+  struct WORDREGS w;
+  struct BYTEREGS h;
+};
+
+struct SREGS
+{
+  unsigned short es, cs, ss, ds;
+};
+
+extern int int86 (int inter_no, const union REGS *in_regs,
+		  union REGS *out_regs);
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif
