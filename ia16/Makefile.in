@@ -59,15 +59,25 @@ all: $(INSTALL_LIBS) $(INSTALL_HEADERS)
 	+@$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=$@
 
 .PHONY: install
-install:
+install: $(INSTALL_LIBS) $(INSTALL_HEADERS)
 	$(mkinstalldirs) $(DESTDIR)$(tooldir)/lib$(MULTISUBDIR)
 	set -e; \
-	for x in $(INSTALL_LIBS); do \
-	  $(INSTALL_DATA) $$x $(DESTDIR)$(tooldir)/lib$(MULTISUBDIR)/$$x; \
+	d=$(DESTDIR)$(tooldir)/lib$(MULTISUBDIR); \
+	for f in $(INSTALL_LIBS); do \
+	  if [ -f "$$f" ]; then \
+	    $(INSTALL_DATA) "$$f" "$$d/$$f"; \
+	  else \
+	    $(INSTALL_DATA) $(srcdir)/"$$f" "$$d/$$f"; \
+	  fi; \
 	done
 	set -e; \
-	for x in $(INSTALL_HEADERS); do \
-	  $(INSTALL_DATA) $$x $(DESTDIR)$(tooldir)/include/$$x; \
+	d=$(DESTDIR)$(tooldir)/include; \
+	for f in $(INSTALL_HEADERS); do \
+	  if [ -f "$$f" ]; then \
+	    $(INSTALL_DATA) "$$f" "$$d/$$f"; \
+	  else \
+	    $(INSTALL_DATA) $(srcdir)/"$$f" "$$d/$$f"; \
+	  fi; \
 	done
 	+@$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=$@
 
