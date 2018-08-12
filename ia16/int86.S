@@ -29,6 +29,7 @@ int86:
 	pushw	%bp
 	pushw	%si
 	pushw	%di
+	pushw	%es
 	movw	%ds,	%si		/* good idea to set %ds = %es here */
 	movw	%si,	%es
 	MOV_ARG4W_BX_(%si)		/* out_regs */
@@ -53,9 +54,8 @@ int86:
 	ret
 .done:
 	pushw	%bx
-	movw	%ss,	%bx		/* restore %ds and %es */
+	movw	%ss,	%bx		/* restore %ds */
 	movw	%bx,	%ds
-	movw	%bx,	%es
 	movw	%sp,	%bx
 	movw	2(%bx),	%bx		/* out_regs */
 	movw	%ax,	(%bx)
@@ -70,6 +70,7 @@ int86:
 	sbbw	%ax,	%ax
 	negw	%ax
 	movw	%ax,	14(%bx)
+	popw	%es
 	popw	%di
 	popw	%si
 	popw	%bp
