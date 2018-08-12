@@ -66,7 +66,7 @@ install:
 	  $(INSTALL_DATA) $$x $(DESTDIR)$(tooldir)/lib$(MULTISUBDIR)/$$x; \
 	done
 	set -e; \
-	for x in $(INSTALL_HEADERS); do
+	for x in $(INSTALL_HEADERS); do \
 	  $(INSTALL_DATA) $$x $(DESTDIR)$(tooldir)/include/$$x; \
 	done
 	+@$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=$@
