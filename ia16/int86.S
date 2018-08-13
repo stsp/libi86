@@ -25,7 +25,7 @@
 	.text
 	.global	int86
 int86:
-	ENTER_BX_
+	ENTER_BX_(6)
 	pushw	%bp
 	pushw	%si
 	pushw	%di
