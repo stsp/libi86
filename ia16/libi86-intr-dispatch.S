@@ -34,6 +34,9 @@ __libi86_intr_dispatch:
 	ret
 	.else
 	int	$inter_no
+#ifndef __MSDOS__
+	ret
+#else
 	/* MS-DOS `int $0x25' and `int $0x26' leave the original flags on
 	   the stack (see RBIL, www.ctyme.com/intr/rb-4117.htm).  */
 	.if	inter_no == 0x25
@@ -53,6 +56,7 @@ __libi86_intr_dispatch:
 	ret
 	.endif
 	.endif
+#endif
 	.endif
 	inter_no = inter_no + 1
 	.endr
