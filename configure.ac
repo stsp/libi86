@@ -1,17 +1,17 @@
 dnl Copyright (c) 2018 TK Chia
 dnl
 dnl This file is free software; you can redistribute it and/or modify it
-dnl under the terms of the GNU General Public License as published by
+dnl under the terms of the GNU Lesser General Public License as published by
 dnl the Free Software Foundation; either version 3 of the License, or
 dnl (at your option) any later version.
 dnl
 dnl This program is distributed in the hope that it will be useful, but
 dnl WITHOUT ANY WARRANTY; without even the implied warranty of
 dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-dnl General Public License for more details.
+dnl Lesser General Public License for more details.
 dnl
-dnl You should have received a copy of the GNU General Public License
-dnl along with this program; see the file COPYING3.  If not see
+dnl You should have received a copy of the GNU Lesser General Public License
+dnl along with this program; see the file COPYING3.LIB.  If not see
 dnl <http://www.gnu.org/licenses/>.
 
 dnl This script mostly just hands over to src/configure, which sets things up
