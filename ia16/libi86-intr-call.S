@@ -16,17 +16,36 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * This file will be compiled with intr_no spanning values from 0000 to 0377
+ * (numerically, 0x00 to 0xff).
+ */
+
+#APP
+#define P_(x, y)	P2_ (x, y)
+#define P2_(x, y)	x ## y
+
 	.code16
 	.att_syntax prefix
 
-	.data
-	.balign	2
-	.global	__libi86_intr_dispatch
-__libi86_intr_dispatch:
-	.irpc	da, 0123
-	.irpc	db, 01234567
-	.irpc	dc, 01234567
-	.hword	__libi86_intr_call_0\da\db\dc
-	.endr
-	.endr
-	.endr
+	.text
+	.global	P_ (__libi86_intr_call_, intr_no)
+P_ (__libi86_intr_call_, intr_no):
+#if intr_no == 3
+	int3
+	ret
+#else
+	int	$(intr_no)
+# ifdef __MSDOS__
+#   if intr_no == 0x25 || intr_no == 0x26
+	jc	0f
+	popfw
+	clc
+	ret
+0:
+	popfw
+	stc
+#   endif
+# endif
+	ret
+#endif

@@ -23,8 +23,8 @@
 	.att_syntax prefix
 
 	.text
-	.global	int86
-int86:
+	.global	__libi86_int86_do
+__libi86_int86_do:
 	ENTER_BX_(6)
 	pushw	%bp
 	pushw	%si
@@ -36,11 +36,7 @@ int86:
 	pushw	%si
 	movw	$.done,	%si
 	pushw	%si
-	MOV_ARG0B_BX_(%al)		/* inter_no */
-	xor	%ah,	%ah
-	xchgw	%ax,	%si
-	shlw	$1,	%si
-	pushw	__libi86_intr_dispatch(%si)
+	pushw	ARG0W_BX_		/* intr_call */
 	MOV_ARG2W_BX_(%bx)		/* in_regs */
 	movb	16(%bx), %ah		/* load only the SZAPC flags */
 	sahf

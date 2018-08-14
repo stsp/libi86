@@ -50,8 +50,26 @@ struct SREGS
   unsigned short es, cs, ss, ds;
 };
 
-extern int int86 (int inter_no, const union REGS *in_regs,
-		  union REGS *out_regs);
+extern int __libi86_int86 (int, const union REGS *, union REGS *);
+extern int __libi86_int86_do (const void *, const union REGS *, union REGS *);
+
+#ifndef _LIBI86_COMPILING_
+__attribute__ ((gnu_inline)) extern inline int
+int86 (int intr_no, const union REGS *in_regs, union REGS *out_regs)
+{
+  if (__builtin_constant_p (intr_no))
+    {
+      const void *intr_call;
+      __asm volatile ("movw $__libi86_intr_call_0%c1%c2%c3, %0"
+		      : "=g" (intr_call)
+		      : "n" ((intr_no >> 6) & 3), "n" ((intr_no >> 3) & 7),
+			"n" (intr_no & 7));
+      return __libi86_int86_do (intr_call, in_regs, out_regs);
+    }
+
+  return __libi86_int86 (intr_no, in_regs, out_regs);
+}
+#endif
 
 #ifdef __cplusplus
 } /* extern "C" */

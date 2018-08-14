@@ -55,19 +55,24 @@ AR = @AR@
 LD = @LD@
 RANLIB = @RANLIB@
 
-OBJS		= bios-memsize.o int86.o libi86-intr-dispatch.o
+INSTALL_LIBS	= libi86.a
+INSTALL_HEADERS	= bios.h i86.h
+
+OBJS		= bios-memsize.o int86.o libi86-int86-do.o \
+		  libi86-intr-dispatch.o \
+		  $(foreach da,0 1 2 3, \
+		    $(foreach db,0 1 2 3 4 5 6 7, \
+		      $(foreach dc,0 1 2 3 4 5 6 7, \
+			libi86-intr-call-0$(da)$(db)$(dc).o)))
 CFLAGS		= -mseparate-code-segment
 ASFLAGS		=
-HEADERS		= bios.h i86.h
-BSP		= libi86.a
+HEADERS		= $(INSTALL_HEADERS) call-cvt.h
+BSP		= $(INSTALL_LIBS)
 
 # Host specific makefile fragment comes in here.
 @host_makefile_frag@
 
 CPPFLAGS += $(INCLUDES) -I$(srcdir) -I.
-
-INSTALL_LIBS	= $(BSP)
-INSTALL_HEADERS	= $(HEADERS)
 
 .PHONY: default
 default: all
@@ -121,10 +126,14 @@ $(BSP): $(OBJS)
 	$(AR) rcs $@ $+
 
 %.o: %.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(MULTILIB) -c $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(MULTILIB) -c -o $@ $<
 
-%.o: %.S call-cvt.h
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(ASFLAGS) $(MULTILIB) -c $<
+%.o: %.S $(HEADERS)
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(ASFLAGS) $(MULTILIB) -c -o $@ $<
+
+libi86-intr-call-%.o: libi86-intr-call.S $(HEADERS)
+	$(CC) $(CPPFLAGS) -Dintr_no=$* $(CFLAGS) $(ASFLAGS) $(MULTILIB) -c \
+	  -o $@ $<
 
 Makefile: Makefile.in config.status @host_makefile_frag_path@
 	$(SHELL) config.status

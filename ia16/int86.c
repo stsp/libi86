@@ -16,17 +16,18 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-	.code16
-	.att_syntax prefix
+#define _LIBI86_COMPILING_
+#include <inttypes.h>
+#include "i86.h"
 
-	.data
-	.balign	2
-	.global	__libi86_intr_dispatch
-__libi86_intr_dispatch:
-	.irpc	da, 0123
-	.irpc	db, 01234567
-	.irpc	dc, 01234567
-	.hword	__libi86_intr_call_0\da\db\dc
-	.endr
-	.endr
-	.endr
+extern const void * const __libi86_intr_dispatch[0x100];
+
+int
+__libi86_int86 (int intr_no, const union REGS *in_regs, union REGS *out_regs)
+{
+  return __libi86_int86_do (__libi86_intr_dispatch[(uint8_t) intr_no],
+			    in_regs, out_regs);
+}
+
+__attribute__ ((alias ("__libi86_int86"))) int
+int86 (int intr_no, const union REGS *in_regs, union REGS *out_regs);
