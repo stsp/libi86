@@ -53,20 +53,25 @@ CC = @CC@
 AS = @AS@
 AR = @AR@
 LD = @LD@
+NM = @NM@
+AWK = @AWK@
 RANLIB = @RANLIB@
 
 INSTALL_LIBS	= libi86.a
-INSTALL_HEADERS	= bios.h i86.h
+INSTALL_HEADERS	= bios.h i86.h $(CLEAN_HEADERS)
+CLEAN_HEADERS	= libi86/config.h
 
-OBJS		= bios-memsize.o int86.o intr.o libi86-int86-do.o \
-		  libi86-intr-do.o libi86-intr-dispatch.o \
+OBJS		= bios-equiplist.o bios-memsize.o int86.o intr.o \
+		  libi86-int86-do.o libi86-intr-do.o libi86-intr-dispatch.o \
 		  $(foreach da,0 1 2 3, \
 		    $(foreach db,0 1 2 3 4 5 6 7, \
 		      $(foreach dc,0 1 2 3 4 5 6 7, \
 			libi86-intr-call-0$(da)$(db)$(dc).o)))
 CFLAGS		= -mseparate-code-segment
 ASFLAGS		=
-HEADERS		= $(INSTALL_HEADERS) call-cvt.h
+# Headers we depend on when creating .o files; these do not include
+# libi86/config.h which is only generated after creating the library.
+HEADERS		= $(filter-out libi86/config.h,$(INSTALL_HEADERS)) call-cvt.h
 BSP		= $(INSTALL_LIBS)
 
 # Host specific makefile fragment comes in here.
@@ -83,7 +88,9 @@ all: $(INSTALL_LIBS) $(INSTALL_HEADERS)
 
 .PHONY: install
 install: $(INSTALL_LIBS) $(INSTALL_HEADERS)
-	$(mkinstalldirs) $(DESTDIR)$(tooldir)/lib$(MULTISUBDIR)
+	$(mkinstalldirs) $(DESTDIR)$(tooldir)/lib$(MULTISUBDIR) \
+			 $(DESTDIR)$(tooldir)/include \
+			 $(DESTDIR)$(tooldir)/include/libi86
 	set -e; \
 	d=$(DESTDIR)$(tooldir)/lib$(MULTISUBDIR); \
 	for f in $(INSTALL_LIBS); do \
@@ -114,7 +121,9 @@ clean mostlyclean: clean-here
 
 .PHONY: clean-here
 clean-here:
-	$(RM) -f a.out core *.i *.o *-test *.srec *.dis *.x *.hex $(BSP)
+	$(RM) -f a.out core *.i *.o *-test *.srec *.dis *.x *.hex $(BSP) \
+	  $(CLEAN_HEADERS)
+	-rmdir libi86
 
 .PHONY: distclean maintainer-clean realclean
 distclean maintainer-clean realclean: clean
@@ -125,7 +134,7 @@ $(BSP): $(OBJS)
 	$(RM) $@
 	$(AR) rcs $@ $+
 
-%.o: %.c
+%.o: %.c $(HEADERS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(MULTILIB) -c -o $@ $<
 
 %.o: %.S $(HEADERS)
@@ -134,6 +143,11 @@ $(BSP): $(OBJS)
 libi86-intr-call-%.o: libi86-intr-call.S $(HEADERS)
 	$(CC) $(CPPFLAGS) -Dintr_no=$* $(CFLAGS) $(ASFLAGS) $(MULTILIB) -c \
 	  -o $@ $<
+
+libi86/config.h: make-config.sh $(BSP)
+	mkdir -p $(@D)
+	NM='$(NM)' AWK='$(AWK)' $(SHELL) $< $(BSP) >$@.tmp
+	mv $@.tmp $@
 
 Makefile: Makefile.in config.status @host_makefile_frag_path@
 	$(SHELL) config.status

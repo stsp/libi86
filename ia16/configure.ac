@@ -41,10 +41,13 @@ AC_ARG_PROGRAM
 AC_PROG_INSTALL
 
 AC_PROG_CC
-AC_CHECK_TOOL(AS, as, :)
-AC_CHECK_TOOL(AR, ar, :)
-AC_CHECK_TOOL(LD, ld, :)
+AC_CHECK_TOOL(AS, as, false)
+AC_CHECK_TOOL(AR, ar, false)
+AC_CHECK_TOOL(LD, ld, false)
 AC_PROG_RANLIB
+dnl make-config.sh uses nm and awk.
+AC_CHECK_TOOL(NM, nm, false)
+AC_PROG_AWK
 
 host_makefile_frag_path=
 host_makefile_frag=

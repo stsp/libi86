@@ -16,32 +16,14 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LIBI86_BIOS_H_
-#define _LIBI86_BIOS_H_
+#include "call-cvt.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+	.arch	i8086, jumps
+	.code16
+	.att_syntax prefix
 
-extern inline unsigned short
-_bios_equiplist (void)
-{
-  unsigned a;
-  __asm volatile ("int $0x11" : "=a" (a));
-  return a;
-}
-
-extern inline unsigned short
-_bios_memsize (void)
-{
-  unsigned a;
-  __asm volatile ("int $0x12" : "=a" (a));
-  return a;
-}
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
-
-#endif
+	.text
+	.global	_bios_equiplist
+_bios_equiplist:
+	int	$0x11
+	RET_(0)
