@@ -18,7 +18,7 @@
 
 /*
  * Internal implementation routine used by both the inline and out-of-line
- * versions of int86 (...).  This takes as its first argument not an
+ * versions of intr (...).  This takes as its first argument not an
  * interrupt number, but a pointer to a routine that calls the interrupt.
  */
 
@@ -29,54 +29,51 @@
 	.att_syntax prefix
 
 	.text
-	.global	__libi86_int86_do
-__libi86_int86_do:
-	ENTER_BX_(6)
+	.global	__libi86_intr_do
+__libi86_intr_do:
+	ENTER_BX_(4)
 	pushw	%bp
 	pushw	%si
 	pushw	%di
 	pushw	%es
-	movw	%ds,	%si		/* good idea to set %ds = %es here */
-	movw	%si,	%es
-	MOV_ARG4W_BX_(%si)		/* out_regs */
-	pushw	%si
+	MOV_ARG2W_BX_(%di)		/* regs */
+	pushw	%di
 	movw	$.done,	%si
 	pushw	%si
 	pushw	ARG0W_BX_		/* intr_call */
-	MOV_ARG2W_BX_(%bx)		/* in_regs */
-	movb	16(%bx), %ah		/* load only the SZAPC flags */
+	movb	18(%di), %ah		/* load only the SZAPC flags */
 	sahf
-	movw	(%bx),	%ax
-	movw	4(%bx),	%cx
-	movw	6(%bx),	%dx
-	movw	8(%bx),	%si
-	movw	10(%bx), %di
-	movw	12(%bx), %bp
-	mov	2(%bx),	%bx
+	movw	(%di),	%ax
+	movw	2(%di),	%bx
+	movw	4(%di),	%cx
+	movw	6(%di),	%dx
+	movw	8(%di),	%bp
+	movw	10(%di), %si
+	movw	16(%di), %es
+	ldsw	12(%di), %di
 	ret
 .done:
-	pushw	%bx
-	movw	%ss,	%bx		/* restore %ds */
-	movw	%bx,	%ds
-	movw	%sp,	%bx
-	movw	2(%bx),	%bx		/* out_regs */
-	movw	%ax,	(%bx)
+	pushw	%bp
+	movw	%sp,	%bp
+	movw	2(%bp),	%bp		/* regs */
+	movw	%ax,	(%bp)
 	popw	%ax
-	movw	%ax,	2(%bx)
+	movw	%ax,	8(%bp)
 	popw	%ax
-	movw	%cx,	4(%bx)
-	movw	%dx,	6(%bx)
-	movw	%si,	8(%bx)
-	movw	%di,	10(%bx)
-	movw	%bp,	12(%bx)
+	movw	%bx,	2(%bp)
+	movw	%cx,	4(%bp)
+	movw	%dx,	6(%bp)
+	movw	%si,	10(%bp)
+	movw	%di,	12(%bp)
+	movw	%ds,	14(%bp)
+	movw	%es,	16(%bp)
 	pushfw
 	popw	%ax
-	movw	%ax,	16(%bx)
-	andw	$1,	%ax
-	movw	%ax,	14(%bx)
+	movw	%ax,	18(%bp)
+	movw	%ss,	%ax
+	movw	%ax,	%ds
 	popw	%es
 	popw	%di
 	popw	%si
 	popw	%bp
-	movw	(%bx),	%ax
-	RET_(6)
+	RET_(4)

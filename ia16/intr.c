@@ -17,8 +17,8 @@
  */
 
 /*
- * Out-of-line implementation of int86 (intr_no, ...) for cases where
- * intr_no is not a compile-time constant.
+ * Out-of-line implementation of intr (intr_no, ...) for cases where intr_no
+ * is not a compile-time constant.
  */
 
 #define _LIBI86_COMPILING_
@@ -27,12 +27,11 @@
 
 extern const void * const __libi86_intr_dispatch[0x100];
 
-int
-__libi86_int86 (int intr_no, const union REGS *in_regs, union REGS *out_regs)
+void
+__libi86_intr (int intr_no, union REGPACK *regs)
 {
-  return __libi86_int86_do (__libi86_intr_dispatch[(uint8_t) intr_no],
-			    in_regs, out_regs);
+  __libi86_intr_do (__libi86_intr_dispatch[(uint8_t) intr_no], regs);
 }
 
-__attribute__ ((alias ("__libi86_int86"))) int
-int86 (int intr_no, const union REGS *in_regs, union REGS *out_regs);
+__attribute__ ((alias ("__libi86_intr"))) int
+intr (int intr_no, union REGPACK *regs);

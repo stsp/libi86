@@ -58,8 +58,8 @@ RANLIB = @RANLIB@
 INSTALL_LIBS	= libi86.a
 INSTALL_HEADERS	= bios.h i86.h
 
-OBJS		= bios-memsize.o int86.o libi86-int86-do.o \
-		  libi86-intr-dispatch.o \
+OBJS		= bios-memsize.o int86.o intr.o libi86-int86-do.o \
+		  libi86-intr-do.o libi86-intr-dispatch.o \
 		  $(foreach da,0 1 2 3, \
 		    $(foreach db,0 1 2 3 4 5 6 7, \
 		      $(foreach dc,0 1 2 3 4 5 6 7, \
