@@ -58,10 +58,11 @@ AWK = @AWK@
 RANLIB = @RANLIB@
 
 INSTALL_LIBS	= libi86.a
-INSTALL_HEADERS	= bios.h i86.h $(CLEAN_HEADERS)
+INSTALL_HEADERS	= bios.h i86.h libi86/string.h $(CLEAN_HEADERS)
 CLEAN_HEADERS	= libi86/config.h
 
-OBJS		= bios-equiplist.o bios-memsize.o int86.o intr.o \
+OBJS		= bios-equiplist.o bios-memsize.o fmemcpy.o fmemmove.o \
+		  int86.o intr.o segread.o libi86-fmemmove-backward.o \
 		  libi86-int86-do.o libi86-intr-do.o libi86-intr-dispatch.o \
 		  $(foreach da,0 1 2 3, \
 		    $(foreach db,0 1 2 3 4 5 6 7, \

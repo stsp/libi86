@@ -68,13 +68,16 @@ union REGPACK
   struct REGPACKW x;
 };
 
+extern void segread (struct SREGS *__seg_regs);
+
+/* Used by the inline versions of int86 (...) and intr (...) below.  */
 extern int __libi86_int86 (int, const union REGS *, union REGS *);
 extern int __libi86_int86_do (const void *, const union REGS *, union REGS *);
 extern void __libi86_intr (int, union REGPACK *);
 extern void __libi86_intr_do (const void *, union REGPACK *);
 
 #ifndef _LIBI86_COMPILING_
-__attribute__ ((gnu_inline)) extern inline int
+__attribute__ ((__gnu_inline__)) extern inline int
 int86 (int __intr_no, const union REGS *__in_regs, union REGS *__out_regs)
 {
   if (__builtin_constant_p (__intr_no))
@@ -90,7 +93,7 @@ int86 (int __intr_no, const union REGS *__in_regs, union REGS *__out_regs)
   return __libi86_int86 (__intr_no, __in_regs, __out_regs);
 }
 
-__attribute__ ((gnu_inline)) extern inline void
+__attribute__ ((__gnu_inline__)) extern inline void
 intr (int __intr_no, union REGPACK *__regs)
 {
   if (__builtin_constant_p (__intr_no))
