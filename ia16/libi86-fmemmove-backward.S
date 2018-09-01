@@ -23,10 +23,8 @@
 	.att_syntax prefix
 
 	.text
-	.global	_fmemcpy
-	.global	__libi86_fmemmove_forward
-_fmemcpy:
-__libi86_fmemmove_forward:
+	.global	__libi86_fmemmove_backward
+__libi86_fmemmove_backward:
 	ENTER2_BX_(10)
 	pushw	%ds
 	pushw	%es
