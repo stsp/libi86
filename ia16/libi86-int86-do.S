@@ -44,8 +44,8 @@ __libi86_int86_do:
 	pushw	%si
 	pushw	ARG0W_BX_		/* intr_call */
 	MOV_ARG2W_BX_(%bx)		/* in_regs */
-	movb	16(%bx), %ah		/* load only the SZAPC flags */
-	sahf
+	cmpw	$1,	14(%bx)		/* .. load the carry flag */
+	cmc				/* .:			  */
 	movw	(%bx),	%ax
 	movw	4(%bx),	%cx
 	movw	6(%bx),	%dx
@@ -69,10 +69,7 @@ __libi86_int86_do:
 	movw	%si,	8(%bx)
 	movw	%di,	10(%bx)
 	movw	%bp,	12(%bx)
-	pushfw
-	popw	%ax
-	movw	%ax,	16(%bx)
-	andw	$1,	%ax
+	sbbw	%ax,	%ax
 	movw	%ax,	14(%bx)
 	popw	%es
 	popw	%di

@@ -27,10 +27,10 @@ extern "C"
 /* This definition is not binary-compatible with that in Open Watcom C/C++,
    which has 2 bytes of padding after each of .ax, .bx, .cx, .dx, .si, and
    .di (apparently to accommodate values of %eax, etc).  Open Watcom also does
-   not have .bp or .flags fields.  */
+   not have a .bp field.  */
 struct WORDREGS
 {
-  unsigned short ax, bx, cx, dx, si, di, bp, cflag, flags;
+  unsigned short ax, bx, cx, dx, si, di, bp, cflag;
 };
 
 struct BYTEREGS
