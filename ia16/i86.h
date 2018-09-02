@@ -24,10 +24,8 @@ extern "C"
 {
 #endif
 
-/* This definition is not binary-compatible with that in Open Watcom C/C++,
-   which has 2 bytes of padding after each of .ax, .bx, .cx, .dx, .si, and
-   .di (apparently to accommodate values of %eax, etc).  Open Watcom also does
-   not have a .bp field.  */
+/* This definition is not binary-compatible with that in Open Watcom C/C++
+   --- the latter does not have a .bp field.  */
 struct WORDREGS
 {
   unsigned short ax, bx, cx, dx, si, di, bp, cflag;
@@ -70,13 +68,24 @@ union REGPACK
 
 extern void segread (struct SREGS *__seg_regs);
 
-/* Used by the inline versions of int86 (...) and intr (...) below.  */
+/* Used by the inline versions of int86 (...), intr (...), and _intrf (...)
+   below.  */
 extern int __libi86_int86 (int, const union REGS *, union REGS *);
 extern int __libi86_int86_do (const void *, const union REGS *, union REGS *);
 extern void __libi86_intr (int, union REGPACK *);
 extern void __libi86_intr_do (const void *, union REGPACK *);
 
 #ifndef _LIBI86_COMPILING_
+# ifndef __OPTIMIZE__
+extern int int86 (int, const union REGS *, union REGS *);
+/* _intrf (...) is a new function --- which I am also proposing to add to
+   Open Watcom (https://github.com/open-watcom/open-watcom-v2/issues/472) ---
+   which does the same thing as intr (...), except that it is also guaranteed
+   to load at least the carry flag from the `union REGPACK', before raising
+   the interrupt.  */
+extern void _intrf (int, union REGPACK *);
+extern void intr (int, union REGPACK *);
+# else
 __attribute__ ((__gnu_inline__)) extern inline int
 int86 (int __intr_no, const union REGS *__in_regs, union REGS *__out_regs)
 {
@@ -94,7 +103,7 @@ int86 (int __intr_no, const union REGS *__in_regs, union REGS *__out_regs)
 }
 
 __attribute__ ((__gnu_inline__)) extern inline void
-intr (int __intr_no, union REGPACK *__regs)
+_intrf (int __intr_no, union REGPACK *__regs)
 {
   if (__builtin_constant_p (__intr_no))
     {
@@ -108,6 +117,13 @@ intr (int __intr_no, union REGPACK *__regs)
   else
     __libi86_intr (__intr_no, __regs);
 }
+
+__attribute__ ((__gnu_inline__)) extern inline void
+intr (int __intr_no, union REGPACK *__regs)
+{
+  _intrf (__intr_no, __regs);
+}
+# endif
 #endif
 
 #define FP_SEG(__p)	((unsigned) \

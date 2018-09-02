@@ -35,3 +35,6 @@ __libi86_intr (int intr_no, union REGPACK *regs)
 
 __attribute__ ((alias ("__libi86_intr"))) int
 intr (int intr_no, union REGPACK *regs);
+
+__attribute__ ((alias ("__libi86_intr"))) int
+_intrf (int intr_no, union REGPACK *regs);
