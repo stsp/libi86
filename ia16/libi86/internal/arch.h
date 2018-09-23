@@ -1,4 +1,6 @@
 /*
+ * Macros to handle different IA-16 subarchitectures.
+ *
  * Copyright (c) 2018 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
@@ -16,14 +18,17 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "libi86/internal/call-cvt.h"
+#ifndef _LIBI86_INTERNAL_ARCH_H_
+#define _LIBI86_INTERNAL_ARCH_H_
 
+#ifdef __IA16_FEATURE_PUSH_IMM
+	.arch	i186, jumps
+/* Push a 16-bit constant.  Clobber the register REG if necessary.  */
+# define PUSH_IMM_VIA_(imm, reg)	pushw	$imm
+#else
 	.arch	i8086, jumps
-	.code16
-	.att_syntax prefix
+# define PUSH_IMM_VIA_(imm, reg)	movw	$(imm), reg; \
+					pushw	reg
+#endif
 
-	.text
-	.global	_bios_equiplist
-_bios_equiplist:
-	int	$0x11
-	RET_(0)
+#endif

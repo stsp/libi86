@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "call-cvt.h"
+#include "libi86/internal/call-cvt.h"
 
 	.arch	i8086, jumps
 	.code16

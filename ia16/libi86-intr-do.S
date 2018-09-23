@@ -22,9 +22,10 @@
  * interrupt number, but a pointer to a routine that calls the interrupt.
  */
 
-#include "call-cvt.h"
+#include "libi86/internal/call-cvt.h"
+#include "libi86/internal/arch.h"
+#include "libi86/internal/struc.h"
 
-	.arch	i8086, jumps
 	.code16
 	.att_syntax prefix
 
@@ -38,38 +39,17 @@ __libi86_intr_do:
 	pushw	%es
 	MOV_ARG2W_BX_(%di)		/* regs */
 	pushw	%di
-	movw	$.done,	%si
-	pushw	%si
+	PUSH_IMM_VIA_(.done, %si)
 	pushw	ARG0W_BX_		/* intr_call */
-	movb	18(%di), %ah		/* load only the SZAPC flags */
-	sahf
-	movw	(%di),	%ax
-	movw	2(%di),	%bx
-	movw	4(%di),	%cx
-	movw	6(%di),	%dx
-	movw	8(%di),	%bp
-	movw	10(%di), %si
-	movw	16(%di), %es
-	ldsw	12(%di), %di
+	LOAD_UNION_REGPACK_DI_
 	ret
 .done:
 	pushw	%bp
 	movw	%sp,	%bp
 	movw	2(%bp),	%bp		/* regs */
-	movw	%ax,	(%bp)
+	STORE_UNION_REGPACK_BP_POP_
 	popw	%ax
-	movw	%ax,	8(%bp)
-	popw	%ax
-	movw	%bx,	2(%bp)
-	movw	%cx,	4(%bp)
-	movw	%dx,	6(%bp)
-	movw	%si,	10(%bp)
-	movw	%di,	12(%bp)
-	movw	%ds,	14(%bp)
-	movw	%es,	16(%bp)
-	pushfw
-	popw	%ax
-	movw	%ax,	18(%bp)
+	cld
 	movw	%ss,	%ax
 	movw	%ax,	%ds
 	popw	%es

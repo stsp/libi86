@@ -22,9 +22,10 @@
  * interrupt number, but a pointer to a routine that calls the interrupt.
  */
 
-#include "call-cvt.h"
+#include "libi86/internal/call-cvt.h"
+#include "libi86/internal/arch.h"
+#include "libi86/internal/struc.h"
 
-	.arch	i8086, jumps
 	.code16
 	.att_syntax prefix
 
@@ -40,19 +41,10 @@ __libi86_int86_do:
 	movw	%si,	%es
 	MOV_ARG4W_BX_(%si)		/* out_regs */
 	pushw	%si
-	movw	$.done,	%si
-	pushw	%si
+	PUSH_IMM_VIA_(.done, %si)
 	pushw	ARG0W_BX_		/* intr_call */
 	MOV_ARG2W_BX_(%bx)		/* in_regs */
-	cmpw	$1,	14(%bx)		/* .. load the carry flag */
-	cmc				/* .:			  */
-	movw	(%bx),	%ax
-	movw	4(%bx),	%cx
-	movw	6(%bx),	%dx
-	movw	8(%bx),	%si
-	movw	10(%bx), %di
-	movw	12(%bx), %bp
-	mov	2(%bx),	%bx
+	LOAD_UNION_REGS_BX_
 	ret
 .done:
 	pushw	%bx
@@ -60,20 +52,11 @@ __libi86_int86_do:
 	movw	%bx,	%ds
 	movw	%sp,	%bx
 	movw	2(%bx),	%bx		/* out_regs */
-	movw	%ax,	(%bx)
-	popw	%ax
-	movw	%ax,	2(%bx)
-	popw	%ax
-	movw	%cx,	4(%bx)
-	movw	%dx,	6(%bx)
-	movw	%si,	8(%bx)
-	movw	%di,	10(%bx)
-	movw	%bp,	12(%bx)
-	sbbw	%ax,	%ax
-	movw	%ax,	14(%bx)
+	STORE_UNION_REGS_BX_POP_CLOBBER_
+	popw	%cx
+	cld
 	popw	%es
 	popw	%di
 	popw	%si
 	popw	%bp
-	movw	(%bx),	%ax
 	RET_(6)

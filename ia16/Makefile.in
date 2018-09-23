@@ -72,7 +72,10 @@ CFLAGS		= -mseparate-code-segment
 ASFLAGS		=
 # Headers we depend on when creating .o files; these do not include
 # libi86/config.h which is only generated after creating the library.
-HEADERS		= $(filter-out libi86/config.h,$(INSTALL_HEADERS)) call-cvt.h
+HEADERS		= $(filter-out libi86/config.h,$(INSTALL_HEADERS)) \
+		  libi86/internal/arch.h \
+		  libi86/internal/call-cvt.h \
+		  libi86/internal/struc.h
 BSP		= $(INSTALL_LIBS)
 
 # Host specific makefile fragment comes in here.
