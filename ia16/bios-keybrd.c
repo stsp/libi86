@@ -16,41 +16,27 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LIBI86_BIOS_H_
-#define _LIBI86_BIOS_H_
+#define _LIBI86_COMPILING_
+#include "bios.h"
 
-#ifdef __cplusplus
-extern "C"
+unsigned short
+_bios_keybrd (unsigned service)
 {
-#endif
+  unsigned short ax = __builtin_bswap16 (service);
 
-__attribute__ ((__gnu_inline__)) extern inline unsigned short
-_bios_equiplist (void)
-{
-  unsigned a;
-  __asm volatile ("int $0x11" : "=a" (a));
-  return a;
+  switch (service)
+    {
+    case _KEYBRD_READY:
+    case _NKEYBRD_READY:
+      __asm volatile ("int $0x16; jnz 0f; xorw %0, %0; 0:"
+		      : "=a" (ax)
+		      : "0" (ax)
+		      : "cc", "memory");
+      break;
+
+    default:
+      __asm volatile ("int $0x16" : "=a" (ax) : "0" (ax) : "cc", "memory");
+    }
+
+  return ax;
 }
-
-__attribute__ ((__gnu_inline__)) extern inline unsigned short
-_bios_memsize (void)
-{
-  unsigned a;
-  __asm volatile ("int $0x12" : "=a" (a));
-  return a;
-}
-
-extern unsigned short _bios_keybrd (unsigned __service);
-
-#define _KEYBRD_READ		0x00u
-#define _KEYBRD_READY		0x01u
-#define _KEYBRD_SHIFTSTATUS	0x02u
-#define _NKEYBRD_READ		0x10u
-#define _NKEYBRD_READY		0x11u
-#define _NKEYBRD_SHIFTSTATUS	0x12u
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
-
-#endif
