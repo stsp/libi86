@@ -1,5 +1,5 @@
 /*
- * Macros to handle different IA-16 subarchitectures.
+ * Macros to handle different IA-16 subarchitectures in assembly language code.
  *
  * Copyright (c) 2018 TK Chia
  *
@@ -20,6 +20,10 @@
 
 #ifndef _LIBI86_INTERNAL_ARCH_H_
 #define _LIBI86_INTERNAL_ARCH_H_
+
+#ifndef __ASSEMBLER__
+# error "not using this file in assembly code!"
+#endif
 
 #ifdef __IA16_FEATURE_PUSH_IMM
 	.arch	i186, jumps

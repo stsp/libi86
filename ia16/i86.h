@@ -19,10 +19,9 @@
 #ifndef _LIBI86_I86_H_
 #define _LIBI86_I86_H_
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+#include <libi86/internal/cdefs.h>
+
+_LIBI86_BEGIN_EXTERN_C
 
 /* This definition is not binary-compatible with that in Open Watcom C/C++
    --- the latter does not have a .bp field.  */
@@ -68,26 +67,29 @@ union REGPACK
 
 extern void segread (struct SREGS *__seg_regs);
 
-/* Used by the inline versions of int86 (...), intr (...), and _intrf (...)
-   below.  */
+/* Used by the inline versions of int86 (...), intr (...), etc. below.  */
 extern int __libi86_int86 (int, const union REGS *, union REGS *);
 extern int __libi86_int86_do (const void *, const union REGS *, union REGS *);
+extern int __libi86_int86x (int, const union REGS *, union REGS *);
+extern int __libi86_int86x_do (const void *, const union REGS *, union REGS *);
 extern void __libi86_intr (int, union REGPACK *);
 extern void __libi86_intr_do (const void *, union REGPACK *);
 
 #ifndef _LIBI86_COMPILING_
 # ifndef __OPTIMIZE__
 extern int int86 (int, const union REGS *, union REGS *);
-/* _intrf (...) is a new function --- which I am also proposing to add to
-   Open Watcom (https://github.com/open-watcom/open-watcom-v2/issues/472) ---
-   which does the same thing as intr (...), except that it is also guaranteed
-   to load at least the carry flag from the `union REGPACK', before raising
-   the interrupt.  */
-extern void _intrf (int, union REGPACK *);
+extern int int86x (int, const union REGS *, union REGS *, struct SREGS *);
 extern void intr (int, union REGPACK *);
+/* The _...f (...) functions are new functions, which I am also proposing
+   (https://github.com/open-watcom/open-watcom-v2/issues/472) to add to Open Watcom.
+   These do the same thing as int86 (...), intr (...), etc., except they are
+   also guaranteed to load at least the carry flag from the register
+   structures, before raising the interrupt.  */
+extern int _int86f (int, const union REGS *, union REGS *);
+extern void _intrf (int, union REGPACK *);
 # else
-__attribute__ ((__gnu_inline__)) extern inline int
-int86 (int __intr_no, const union REGS *__in_regs, union REGS *__out_regs)
+_LIBI86_ALT_INLINE int
+_int86f (int __intr_no, const union REGS *__in_regs, union REGS *__out_regs)
 {
   if (__builtin_constant_p (__intr_no))
     {
@@ -102,7 +104,13 @@ int86 (int __intr_no, const union REGS *__in_regs, union REGS *__out_regs)
   return __libi86_int86 (__intr_no, __in_regs, __out_regs);
 }
 
-__attribute__ ((__gnu_inline__)) extern inline void
+_LIBI86_ALT_INLINE int
+int86 (int __intr_no, const union REGS *__in_regs, union REGS *__out_regs)
+{
+  return _int86f (__intr_no, __in_regs, __out_regs);
+}
+
+_LIBI86_ALT_INLINE void
 _intrf (int __intr_no, union REGPACK *__regs)
 {
   if (__builtin_constant_p (__intr_no))
@@ -118,7 +126,7 @@ _intrf (int __intr_no, union REGPACK *__regs)
     __libi86_intr (__intr_no, __regs);
 }
 
-__attribute__ ((__gnu_inline__)) extern inline void
+_LIBI86_ALT_INLINE void
 intr (int __intr_no, union REGPACK *__regs)
 {
   _intrf (__intr_no, __regs);
@@ -130,8 +138,6 @@ intr (int __intr_no, union REGPACK *__regs)
 			  ((unsigned long) (void __far *) (__p) >> 16))
 #define FP_OFF(__p)	__builtin_ia16_FP_OFF (__p)
 
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
+_LIBI86_END_EXTERN_C
 
 #endif

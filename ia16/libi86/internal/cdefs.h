@@ -1,4 +1,6 @@
 /*
+ * Various macros for use by other libi86 header files.
+ *
  * Copyright (c) 2018 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
@@ -16,26 +18,22 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+#ifndef _LIBI86_INTERNAL_CDEFS_H_
+#define _LIBI86_INTERNAL_CDEFS_H_
+
+#ifdef __cplusplus
+# define _LIBI86_BEGIN_EXTERN_C	extern "C" {
+# define _LIBI86_END_EXTERN_C	}
+#else
+# define _LIBI86_BEGIN_EXTERN_C
+# define _LIBI86_END_EXTERN_C
+#endif
+
 /*
- * Out-of-line implementation of int86 (intr_no, ...) for cases where
- * intr_no is not a compile-time constant.
+ * Many of the header files have `extern inline' versions of functions which
+ * can be used instead of the out-of-line versions, and they require this
+ * rather long-winded incantation to work as intended...
  */
+#define _LIBI86_ALT_INLINE	__attribute__ ((__gnu_inline__)) extern inline
 
-#define _LIBI86_COMPILING_
-#include <inttypes.h>
-#include "i86.h"
-
-extern const void * const __libi86_intr_dispatch[0x100];
-
-int
-__libi86_int86 (int intr_no, const union REGS *in_regs, union REGS *out_regs)
-{
-  return __libi86_int86_do (__libi86_intr_dispatch[(uint8_t) intr_no],
-			    in_regs, out_regs);
-}
-
-__attribute__ ((alias ("__libi86_int86"))) int
-int86 (int intr_no, const union REGS *in_regs, union REGS *out_regs);
-
-__attribute__ ((alias ("__libi86_int86"))) int
-_int86f (int intr_no, const union REGS *in_regs, union REGS *out_regs);
+#endif

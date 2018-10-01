@@ -18,8 +18,9 @@
 
 /*
  * Internal implementation routine used by both the inline and out-of-line
- * versions of int86 (...).  This takes as its first argument not an
- * interrupt number, but a pointer to a routine that calls the interrupt.
+ * versions of int86 (...) and _int86f (...).  This takes as its first
+ * argument not an interrupt number, but a pointer to a routine that calls
+ * the interrupt.
  */
 
 #include "libi86/internal/call-cvt.h"

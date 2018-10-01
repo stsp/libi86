@@ -1,5 +1,5 @@
 /*
- * Macros to load and store various structure types.
+ * Macros to load and store various structure types in assembly language code.
  *
  * Copyright (c) 2018 TK Chia
  *
@@ -20,6 +20,10 @@
 
 #ifndef _LIBI86_INTERNAL_STRUC_H_
 #define _LIBI86_INTERNAL_STRUC_H_
+
+#ifndef __ASSEMBLER__
+# error "not using this file in assembly code!"
+#endif
 
 /* Load registers and the carry flag from a `union REGS' at (%bx).  */
 #define LOAD_UNION_REGS_BX_		\

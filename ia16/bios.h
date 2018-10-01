@@ -19,12 +19,11 @@
 #ifndef _LIBI86_BIOS_H_
 #define _LIBI86_BIOS_H_
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+#include <libi86/internal/cdefs.h>
 
-__attribute__ ((__gnu_inline__)) extern inline unsigned short
+_LIBI86_BEGIN_EXTERN_C
+
+_LIBI86_ALT_INLINE unsigned short
 _bios_equiplist (void)
 {
   unsigned a;
@@ -32,7 +31,7 @@ _bios_equiplist (void)
   return a;
 }
 
-__attribute__ ((__gnu_inline__)) extern inline unsigned short
+_LIBI86_ALT_INLINE unsigned short
 _bios_memsize (void)
 {
   unsigned a;
@@ -49,8 +48,6 @@ extern unsigned short _bios_keybrd (unsigned __service);
 #define _NKEYBRD_READY		0x11u
 #define _NKEYBRD_SHIFTSTATUS	0x12u
 
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
+_LIBI86_END_EXTERN_C
 
 #endif
