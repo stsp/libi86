@@ -30,6 +30,16 @@
 #endif
 
 /*
+ * Declare function prototypes that redirect calls to NAME to call ALIAS_TO
+ * instead.  These macros work similarly to __REDIRECT (...) and friends in
+ * glibc <sys/cdefs.h>.
+ */
+#define _LIBI86_REDIRECT(name, proto, alias_to) \
+	name proto __asm (_LIBI86_ASM_NAME (__USER_LABEL_PREFIX__, #alias_to))
+#define _LIBI86_ASM_NAME(prefix, c_name) _LIBI86_ASM_NAME_2(prefix, c_name)
+#define _LIBI86_ASM_NAME_2(prefix, c_name) #prefix c_name
+
+/*
  * Many of the header files have `extern inline' versions of functions which
  * can be used instead of the out-of-line versions, and they require this
  * rather long-winded incantation to work as intended...
