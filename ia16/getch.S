@@ -30,6 +30,7 @@ _getch:
 	xchgw	%cx,	__libi86_ungetch_buf
 	jcxz	.Lget
 	xchgw	%ax,	%cx
+	movb	$0,	%ah
 	RET_(0)
 .Lget:
 	movb	$0x08,	%ah
