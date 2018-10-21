@@ -31,8 +31,13 @@ _LIBI86_BEGIN_EXTERN_C
  *
  * For uniformity, I treat getche () and kbhit () the same way.
  *
- * (Even with this, it is probably still a bad idea to use both <conio.h>
- * and <curses.h> in the same C module.)
+ * On the assembly source front, I also define weak symbols getch, getche,
+ * etc. which can be overridden and which are not used anyway.  This allows
+ * make-config.sh to spot these non-underscored names and proclaim them as
+ * being implemented. :-)
+ *
+ * (Even with all this, it is probably still a bad idea to use both
+ * <conio.h> and <curses.h> in the same C module.)
  */
 extern int _getch (void);
 extern int _getche (void);
