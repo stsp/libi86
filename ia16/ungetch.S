@@ -25,7 +25,9 @@
 	.text
 #ifdef __MSDOS__
 	.global	_ungetch
+	.weak	ungetch
 _ungetch:
+ungetch:
 	ENTER_BX_(2)
 	MOV_ARG0B_BX_(%al)
 	movw	$__libi86_ungetch_buf, %bx

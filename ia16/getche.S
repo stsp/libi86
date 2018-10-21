@@ -25,7 +25,9 @@
 	.text
 #ifdef __MSDOS__
 	.global	_getche
+	.weak	getche
 _getche:
+getche:
 	xorw	%cx,	%cx
 	xchgw	%cx,	__libi86_ungetch_buf
 	jcxz	.Lget

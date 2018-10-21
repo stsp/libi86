@@ -35,8 +35,8 @@ cat <<FIN
 FIN
 
 ${NM-'ia16-elf-nm'} -P "$@" | \
-  ${AWK-'awk'} '!/:$/ && !/^_[_ABCDEFGHIJKLMNOPQRSTUVWXYZ]/ && / [TDB] / {
-		  if ($2 == "T" || $2 == "D" || $2 == "B")
+  ${AWK-'awk'} '!/:$/ && !/^_[_ABCDEFGHIJKLMNOPQRSTUVWXYZ]/ && / [TDBW] / {
+		  if ($2 == "T" || $2 == "D" || $2 == "B" || $2 == "W")
 		    {
 		      print "/* " $1 " is implemented. */"
 		      print "#define _LIBI86_HAVE_" toupper($1) " 1"

@@ -24,10 +24,10 @@
 
 	.text
 #ifdef __MSDOS__
-	.global	kbhit
 	.global	_kbhit
-kbhit:
+	.weak	kbhit
 _kbhit:
+kbhit:
 	movw	__libi86_ungetch_buf, %ax
 	testw	%ax,	%ax
 	jnz	.Lyes
