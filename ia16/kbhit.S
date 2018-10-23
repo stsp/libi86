@@ -32,7 +32,7 @@ kbhit:
 	testw	%ax,	%ax
 	jnz	.Lyes
 	movb	$0x0b,	%ah
-	jmp	__libi86_conio_int21
+	jmp	__libi86_conio_int21_zx
 .Lyes:
 	RET_(0)
 #else

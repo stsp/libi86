@@ -24,19 +24,22 @@
 
 	.text
 #ifdef __MSDOS__
-	.global	_getche
-	.weak	getche
-_getche:
-getche:
-	xorw	%cx,	%cx
-	xchgw	%cx,	__libi86_ungetch_buf
-	jcxz	.Lget
-	xchgw	%ax,	%cx
+	.global	putch
+putch:
+/*
+ * Open Watcom uses %ah == 0x60, but this does not really work if %dl == 0xff
+ * (see Ralf Brown's Interrupt List).  So I use %ah == 0x02 instead.
+ *
+ * A subtle difference is that %ah == 0x02 checks for ^C, while %ah == 0x06
+ * does not.
+ */
+	xchgw	%ax,	%dx
+	pushw	%dx
+	movb	$0x02,	%ah
+	call	__libi86_conio_int21
+	popw	%ax
 	movb	$0,	%ah
 	RET_(0)
-.Lget:
-	movb	$0x01,	%ah
-	jmp	__libi86_conio_int21_zx
 #else
-# warning "unknown target OS; getche () not implemented"
+# warning "unknown target OS; kbhit () not implemented"
 #endif

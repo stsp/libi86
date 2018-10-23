@@ -36,7 +36,7 @@ getch:
 	RET_(0)
 .Lget:
 	movb	$0x08,	%ah
-	jmp	__libi86_conio_int21
+	jmp	__libi86_conio_int21_zx
 #else
 # warning "unknown target OS; getch () not implemented"
 #endif

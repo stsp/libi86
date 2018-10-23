@@ -16,27 +16,20 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "libi86/internal/call-cvt.h"
+/*
+ * __libi86_conio_int21_zx initializes the <conio.h> subsystem is needed,
+ * then invokes int $0x21 with the values of %ax, %bx, %cx, and %dx from the
+ * caller, and returns the value of %al zero-extended to %ax.
+ */
 
-	.arch	i8086, jumps
+	.arch	i186, jumps
 	.code16
 	.att_syntax prefix
 
 	.text
-#ifdef __MSDOS__
-	.global	_getche
-	.weak	getche
-_getche:
-getche:
-	xorw	%cx,	%cx
-	xchgw	%cx,	__libi86_ungetch_buf
-	jcxz	.Lget
-	xchgw	%ax,	%cx
+
+	.global	__libi86_conio_int21_zx
+__libi86_conio_int21_zx:
+	call	__libi86_conio_int21
 	movb	$0,	%ah
-	RET_(0)
-.Lget:
-	movb	$0x01,	%ah
-	jmp	__libi86_conio_int21_zx
-#else
-# warning "unknown target OS; getche () not implemented"
-#endif
+	ret

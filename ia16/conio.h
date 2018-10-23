@@ -43,6 +43,7 @@ extern int _getch (void);
 extern int _getche (void);
 extern int _kbhit (void);
 extern int _ungetch (int);
+extern int putch (int);
 
 extern int _LIBI86_REDIRECT (getch, (void), _getch);
 extern int _LIBI86_REDIRECT (getche, (void), _getche);

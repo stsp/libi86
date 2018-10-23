@@ -76,9 +76,11 @@ OBJS		= bios-equiplist.o \
 		  int86.o \
 		  intr.o \
 		  kbhit.o \
+		  putch.o \
 		  segread.o \
 		  ungetch.o \
 		  libi86-conio-int21.o \
+		  libi86-conio-int21-zx.o \
 		  libi86-fmemmove-backward.o \
 		  libi86-int86-do.o \
 		  libi86-intr-do.o \

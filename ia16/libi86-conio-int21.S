@@ -17,9 +17,9 @@
  */
 
 /*
- * __libi86_conio_int21 invokes int $0x21 with the values of %ax, %cx, and
- * %dx from the caller, and returns the value of %al zero-extended to %ax,
- * as well as whatever flags are returned by int $0x21.
+ * __libi86_conio_int21 invokes int $0x21 with the values of %ax, %bx, %cx,
+ * and %dx from the caller, and returns whatever register values and flags are
+ * returned by int $0x21.
  *
  * __libi86_conio_int21 also does some initialization for <conio.h> if
  * needed.
@@ -73,6 +73,7 @@
 	pushaw
 #else
 	pushw	%ax
+	pushw	%bx
 	pushw	%cx
 	pushw	%dx
 	pushw	%si
@@ -93,12 +94,12 @@
 	popw	%si
 	popw	%dx
 	popw	%cx
+	popw	%bx
 	popw	%ax
 #endif
 	.balign	2
 .Lnoinit:
 	int	$0x21
-	mov	$0,	%ah
 	ret
 
 	.balign	2
