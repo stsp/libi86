@@ -46,4 +46,29 @@
  */
 #define _LIBI86_ALT_INLINE	__attribute__ ((__gnu_inline__)) extern inline
 
+/*
+ * Redirect out-of-line calls to a 1-argument function NAME to call
+ * ALIAS_TO, _and_ also define an inline version of NAME which calls
+ * ALIAS_TO.  RET_TYPE is the (non-void) return type of the function, and
+ * TYPE1 is the argument type.
+ */
+#define _LIBI86_REDIRECT_AND_INLINE_1(ret_type, name, type1, alias_to) \
+	extern ret_type _LIBI86_REDIRECT (name, (type1), alias_to); \
+	_LIBI86_ALT_INLINE ret_type name (type1 __arg1) \
+	{ \
+	  return alias_to (__arg1); \
+	}
+/*
+ * Redirect out-of-line calls to a 2-argument function NAME to call
+ * ALIAS_TO, _and_ also define an inline version of NAME which calls
+ * ALIAS_TO.  RET_TYPE is the (non-void) return type of the function, and
+ * TYPE1 and TYPE2 are the argument types.
+ */
+#define _LIBI86_REDIRECT_AND_INLINE_2(ret_type, name, type1, type2, alias_to) \
+	extern ret_type _LIBI86_REDIRECT (name, (type1, type2), alias_to); \
+	_LIBI86_ALT_INLINE ret_type name (type1 __arg1, type2 __arg2) \
+	{ \
+	  return alias_to (__arg1, __arg2); \
+	}
+
 #endif

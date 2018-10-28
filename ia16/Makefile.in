@@ -63,8 +63,10 @@ INSTALL_HEADERS	= bios.h \
 		  i86.h \
 		  libi86/string.h \
 		  libi86/internal/cdefs.h \
+		  libi86/internal/port-io.h \
 		  $(CLEAN_HEADERS)
-CLEAN_HEADERS	= libi86/config.h
+CLEAN_HEADERS	= libi86/config.h \
+		  libi86/internal/acconfig.h
 
 OBJS		= bios-equiplist.o \
 		  bios-keybrd.o \
@@ -73,9 +75,13 @@ OBJS		= bios-equiplist.o \
 		  fmemmove.o \
 		  getch.o \
 		  getche.o \
+		  inp.o \
+		  inpw.o \
 		  int86.o \
 		  intr.o \
 		  kbhit.o \
+		  outp.o \
+		  outpw.o \
 		  putch.o \
 		  segread.o \
 		  ungetch.o \

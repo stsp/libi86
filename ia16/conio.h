@@ -20,6 +20,7 @@
 #define _LIBI86_CONIO_H_
 
 #include <libi86/internal/cdefs.h>
+#include <libi86/internal/port-io.h>
 
 _LIBI86_BEGIN_EXTERN_C
 
@@ -49,6 +50,18 @@ extern int _LIBI86_REDIRECT (getch, (void), _getch);
 extern int _LIBI86_REDIRECT (getche, (void), _getche);
 extern int _LIBI86_REDIRECT (kbhit, (void), _kbhit);
 extern int _LIBI86_REDIRECT (ungetch, (int), _ungetch);
+_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, inp, unsigned, __libi86_inp)
+_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, _inp, unsigned, __libi86_inp)
+_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, inpw, unsigned, __libi86_inpw)
+_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, _inpw, unsigned, __libi86_inpw)
+_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outp, unsigned, unsigned,
+			       __libi86_outp)
+_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, _outp, unsigned, unsigned,
+			       __libi86_outp)
+_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outpw, unsigned, unsigned,
+			       __libi86_outpw)
+_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, _outpw, unsigned, unsigned,
+			       __libi86_outpw)
 
 _LIBI86_END_EXTERN_C
 

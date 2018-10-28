@@ -49,6 +49,15 @@ dnl make-config.sh uses nm and awk.
 AC_CHECK_TOOL(NM, nm, false)
 AC_PROG_AWK
 
+dnl See <libi86/port-io.h>.
+AC_MSG_CHECKING([if $CC understands the "N" asm constraint])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
+				   [[unsigned x;
+				     __asm ("" : "=r" (x) : "N" (1));]])],
+		  [AC_DEFINE([_LIBI86_HAVE_ASM_N_CONSTRAINT],[1])
+		   AC_MSG_RESULT(yes)],
+		  [AC_MSG_RESULT(no)])
+
 host_makefile_frag_path=
 host_makefile_frag=
 AC_SUBST(host_makefile_frag_path)
@@ -65,4 +74,5 @@ libi86_topdir="${libi86_topdir}"
 CC="${CC}"
 LDFLAGS="${LDFLAGS}"
 )
+AC_CONFIG_HEADERS([libi86/internal/acconfig.h])
 AC_OUTPUT

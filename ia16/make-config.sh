@@ -32,6 +32,8 @@ cat <<FIN
 #ifndef _LIBI86_LIBI86_CONFIG_H_
 #define _LIBI86_LIBI86_CONFIG_H_
 
+#include <libi86/internal/acconfig.h>
+
 FIN
 
 ${NM-'ia16-elf-nm'} -P "$@" | \
