@@ -19,18 +19,15 @@
 #ifndef _LIBI86_LIBI86_STRING_H_
 #define _LIBI86_LIBI86_STRING_H_
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+#include <libi86/internal/cdefs.h>
+
+_LIBI86_BEGIN_EXTERN_C
 
 void __far *_fmemcpy (void __far *__dest, const void __far *src,
 		      __SIZE_TYPE__ __n);
 void __far *_fmemmove (void __far *__dest, const void __far *src,
 		       __SIZE_TYPE__ __n);
 
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
+_LIBI86_END_EXTERN_C
 
 #endif
