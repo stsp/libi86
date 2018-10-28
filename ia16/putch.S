@@ -33,13 +33,18 @@ putch:
  * A subtle difference is that %ah == 0x02 checks for ^C, while %ah == 0x06
  * does not.
  */
+# ifndef __IA16_CALLCVT_REGPARMCALL
+	ENTER_BX_(2)
+	MOV_ARG0B_BX_(%dl)
+# else
 	xchgw	%ax,	%dx
+# endif
 	pushw	%dx
 	movb	$0x02,	%ah
 	call	__libi86_conio_int21
 	popw	%ax
 	movb	$0,	%ah
-	RET_(0)
+	RET_(2)
 #else
-# warning "unknown target OS; kbhit () not implemented"
+# warning "unknown target OS; putch (.) not implemented"
 #endif

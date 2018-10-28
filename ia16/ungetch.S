@@ -42,5 +42,5 @@ ungetch:
 	movw	$-1,	%ax
 	RET_(2)
 #else
-# warning "unknown target OS; kbhit () not implemented"
+# warning "unknown target OS; ungetch (.) not implemented"
 #endif
