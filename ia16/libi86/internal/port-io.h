@@ -25,10 +25,10 @@
 _LIBI86_BEGIN_EXTERN_C
 
 /*
- * I did not add an "N" constraint for immediate port numbers until late
- * October 2018, so some versions of gcc-ia16 may not understand it.  For
- * those, I use a combination of integer constraints that together cover the
- * range 0 ... 0xff of possible immediate port numbers.  -- tkchia
+ * I did not add an "N" constraint for immediate port numbers to gcc-ia16
+ * until late October 2018, so some versions of gcc-ia16 may not understand
+ * it.  For those, I use a combination of integer constraints that together
+ * cover the range 0 ... 0xff of possible immediate port numbers.  -- tkchia
  */
 #if _LIBI86_HAVE_ASM_N_CONSTRAINT - 0
 # define _LIBI86_IO_PORT_CONSTRAINT "Nd"

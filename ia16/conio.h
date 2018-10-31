@@ -26,16 +26,16 @@ _LIBI86_BEGIN_EXTERN_C
 
 /*
  * To avoid conflict with the getch () and ungetch (.) routines in curses
- * library implementations, I only actually define _getch () and _ungetch
- * (.) in the object files, and here declare getch () and ungetch (.) to be
- * aliases for the underscored names.
+ * library implementations, I define _getch () and _ungetch (.) in the
+ * object files, and here declare getch () and ungetch (.) to be aliases for
+ * the underscored names.
  *
  * For uniformity, I treat getche () and kbhit () the same way.
  *
  * On the assembly source front, I also define weak symbols getch, getche,
- * etc. which can be overridden and which are not used anyway.  This allows
- * make-config.sh to spot these non-underscored names and proclaim them as
- * being implemented. :-)
+ * etc.  --- however, these are not actually used (by <conio.h>), and they
+ * can be overridden.  Defining these non-underscored symbols allows
+ * make-config.sh to spot them and proclaim them as being implemented.  :-)
  *
  * (Even with all this, it is probably still a bad idea to use both
  * <conio.h> and <curses.h> in the same C module.)
