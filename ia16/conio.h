@@ -20,7 +20,7 @@
 #define _LIBI86_CONIO_H_
 
 #include <libi86/internal/cdefs.h>
-#include <libi86/internal/port-io.h>
+#include <libi86/internal/portio.h>
 
 _LIBI86_BEGIN_EXTERN_C
 
@@ -46,6 +46,7 @@ extern int _kbhit (void);
 extern int _ungetch (int);
 extern int putch (int);
 
+#ifndef _LIBI86_COMPILING_
 extern int _LIBI86_REDIRECT (getch, (void), _getch);
 extern int _LIBI86_REDIRECT (getche, (void), _getche);
 extern int _LIBI86_REDIRECT (kbhit, (void), _kbhit);
@@ -62,6 +63,7 @@ _LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outpw, unsigned, unsigned,
 			       __libi86_outpw)
 _LIBI86_REDIRECT_AND_INLINE_2 (unsigned, _outpw, unsigned, unsigned,
 			       __libi86_outpw)
+#endif
 
 _LIBI86_END_EXTERN_C
 

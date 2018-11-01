@@ -16,27 +16,20 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "libi86/internal/call-cvt.h"
+#ifndef _LIBI86_LIBI86_INTERNAL_CONIO_H_
+#define _LIBI86_LIBI86_INTERNAL_CONIO_H_
 
-	.arch	i8086, jumps
-	.code16
-	.att_syntax prefix
+#include <libi86/internal/cdefs.h>
 
-	.text
+_LIBI86_BEGIN_EXTERN_C
+
+/* Various internal functions and variables used by <conio.h> routines.  */
+
 #ifdef __MSDOS__
-	.global	_getche
-	.weak	getche
-_getche:
-getche:
-	xorw	%cx,	%cx
-	xchgw	%cx,	__libi86_ungetch_buf
-	jcxz	.Lget
-	xchgw	%ax,	%cx
-	movb	$0,	%ah
-	RET_(0)
-.Lget:
-	movb	$0x01,	%ah
-	jmp	__libi86_conio_int21_zx
-#else
-# warning "unknown target OS; getche () not implemented"
+extern int __libi86_con_in_fd, __libi86_con_out_fd;
+#endif
+extern unsigned __libi86_ungetch_buf;
+
+_LIBI86_END_EXTERN_C
+
 #endif

@@ -16,25 +16,22 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "libi86/internal/call-cvt.h"
+#define _LIBI86_COMPILING_
+#include <conio.h>
+#include <stdio.h>
 
-	.arch	i8086, jumps
-	.code16
-	.att_syntax prefix
-
-	.text
 #ifdef __MSDOS__
-	.global	_kbhit
-	.weak	kbhit
-_kbhit:
-kbhit:
-	movw	__libi86_ungetch_buf, %ax
-	testw	%ax,	%ax
-	jnz	.Lyes
-	movb	$0x0b,	%ah
-	jmp	__libi86_conio_int21_zx
-.Lyes:
-	RET_(0)
+int
+_getche (void)
+{
+  int ch = _getch ();
+  if (ch != EOF)
+    return putch (ch);
+  return ch;
+}
+
+__attribute__ ((weak, alias("_getche"))) int
+getche (void);
 #else
-# warning "unknown target OS; kbhit () not implemented"
+# warning "unknown target OS"
 #endif

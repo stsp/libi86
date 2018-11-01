@@ -1,7 +1,4 @@
 /*
- * Buffer for use by kbhit (), getch (), etc. in case ungetch (.) is used to
- * "push back" a keystroke.
- *
  * Copyright (c) 2018 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
@@ -19,8 +16,26 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-	.arch	i186, jumps
-	.code16
-	.att_syntax prefix
+#define _LIBI86_COMPILING_
+#include <errno.h>
+#include <stdio.h>
+#include <unistd.h>
+#include "libi86/internal/conio.h"
 
-	.comm	__libi86_ungetch_buf, 2
+#ifdef __MSDOS__
+int
+putch (int ch)
+{
+  unsigned char ch2 = (unsigned char) ch;
+  ssize_t n = write (__libi86_con_out_fd, &ch2, 1);
+  if (n == 1)
+    return (int) ch2;
+
+  if (n >= 0)
+    errno = EIO;
+
+  return EOF;
+}
+#else
+# warning "unknown target OS"
+#endif

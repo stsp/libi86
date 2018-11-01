@@ -17,19 +17,8 @@
  */
 
 /*
- * __libi86_conio_int21_zx initializes the <conio.h> subsystem is needed,
- * then invokes int $0x21 with the values of %ax, %bx, %cx, and %dx from the
- * caller, and returns the value of %al zero-extended to %ax.
+ * Buffer for use by kbhit (), getch (), etc. in case ungetch (.) is used to
+ * "push back" a keystroke.
  */
 
-	.arch	i186, jumps
-	.code16
-	.att_syntax prefix
-
-	.text
-
-	.global	__libi86_conio_int21_zx
-__libi86_conio_int21_zx:
-	call	__libi86_conio_int21
-	movb	$0,	%ah
-	ret
+int __libi86_ungetch_buf;

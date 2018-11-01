@@ -16,35 +16,44 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "libi86/internal/call-cvt.h"
+#define _LIBI86_COMPILING_
+#include <errno.h>
+#include <stdio.h>
+#include <unistd.h>
+#include "libi86/internal/conio.h"
 
-	.arch	i8086, jumps
-	.code16
-	.att_syntax prefix
-
-	.text
 #ifdef __MSDOS__
-	.global	putch
-putch:
-/*
- * Open Watcom uses %ah == 0x60, but this does not really work if %dl == 0xff
- * (see Ralf Brown's Interrupt List).  So I use %ah == 0x02 instead.
- *
- * A subtle difference is that %ah == 0x02 checks for ^C, while %ah == 0x06
- * does not.
- */
-# ifndef __IA16_CALLCVT_REGPARMCALL
-	ENTER_BX_(2)
-	MOV_ARG0B_BX_(%dl)
-# else
-	xchgw	%ax,	%dx
-# endif
-	pushw	%dx
-	movb	$0x02,	%ah
-	call	__libi86_conio_int21
-	popw	%ax
-	movb	$0,	%ah
-	RET_(2)
+int
+_getch (void)
+{
+  unsigned char ch, scratch;
+  ssize_t n;
+
+  if (__libi86_ungetch_buf)
+    {
+      ch = (unsigned char) __libi86_ungetch_buf;
+      __libi86_ungetch_buf = 0;
+      return ch;
+    }
+
+  if (__libi86_con_in_fd == 0)
+    {
+      __asm volatile ("int $0x21" : "=Ral" (ch), "=Rah" (scratch)
+				  : "1" ((unsigned char) 0x07)
+				  : "cc");
+      return ch;
+    }
+
+  n = read (__libi86_con_in_fd, &ch, 1);
+  if (n == 1)
+    return ch;
+  if (n >= 0)
+    errno = EIO;
+  return EOF;
+}
+
+__attribute__ ((weak, alias("_getch"))) int
+getch (void);
 #else
-# warning "unknown target OS; putch (.) not implemented"
+# warning "unknown target OS"
 #endif
