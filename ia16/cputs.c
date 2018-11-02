@@ -39,5 +39,5 @@ cputs (const char *buf)
   return EOF;
 }
 #else
-# warning "unknown target OS"
+# warning "unknown host OS"
 #endif

@@ -35,10 +35,24 @@
  * glibc <sys/cdefs.h>.
  */
 #define _LIBI86_REDIRECT(name, proto, alias_to) \
-	name proto __asm (_LIBI86_ASM_NAME (__USER_LABEL_PREFIX__, #alias_to))
-#define _LIBI86_ASM_NAME(prefix, c_name) _LIBI86_ASM_NAME_2(prefix, c_name)
-#define _LIBI86_ASM_NAME_2(prefix, c_name) #prefix c_name
+	name proto __asm (_LIBI86_ASM_NAME (alias_to))
+#define _LIBI86_ASM_NAME(c_name) \
+	_LIBI86_ASM_NAME_2(__USER_LABEL_PREFIX__, #c_name)
+#define _LIBI86_ASM_NAME_2(prefix, c_name) _LIBI86_ASM_NAME_3(prefix, c_name)
+#define _LIBI86_ASM_NAME_3(prefix, c_name) #prefix c_name
 
+/*
+ * Add a attributes to make a function declaration an alias for the function
+ * ALIAS_TO.
+ */
+#define _LIBI86_ALIAS(alias_to) \
+	__attribute__ ((__alias__ (_LIBI86_ASM_NAME (alias_to))))
+/*
+ * Add attributes to make a function declaration a weak alias for the
+ * function ALIAS_TO.
+ */
+#define _LIBI86_WEAK_ALIAS(alias_to) \
+	__attribute__ ((__weak__, __alias__ (_LIBI86_ASM_NAME (alias_to))))
 /*
  * Many of the header files have `extern inline' versions of functions which
  * can be used instead of the out-of-line versions, and they require this

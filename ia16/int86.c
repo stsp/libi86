@@ -34,8 +34,8 @@ __libi86_int86 (int intr_no, const union REGS *in_regs, union REGS *out_regs)
 			    in_regs, out_regs);
 }
 
-__attribute__ ((alias ("__libi86_int86"))) int
+_LIBI86_ALIAS (__libi86_int86) int
 int86 (int intr_no, const union REGS *in_regs, union REGS *out_regs);
 
-__attribute__ ((alias ("__libi86_int86"))) int
+_LIBI86_ALIAS (__libi86_int86) int
 _int86f (int intr_no, const union REGS *in_regs, union REGS *out_regs);

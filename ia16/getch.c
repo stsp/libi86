@@ -52,8 +52,8 @@ _getch (void)
   return EOF;
 }
 
-__attribute__ ((weak, alias("_getch"))) int
+_LIBI86_WEAK_ALIAS (_getch) int
 getch (void);
 #else
-# warning "unknown target OS"
+# warning "unknown host OS"
 #endif

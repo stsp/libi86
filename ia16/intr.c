@@ -33,8 +33,8 @@ __libi86_intr (int intr_no, union REGPACK *regs)
   __libi86_intr_do (__libi86_intr_dispatch[(uint8_t) intr_no], regs);
 }
 
-__attribute__ ((alias ("__libi86_intr"))) int
+_LIBI86_ALIAS (__libi86_intr) int
 intr (int intr_no, union REGPACK *regs);
 
-__attribute__ ((alias ("__libi86_intr"))) int
+_LIBI86_ALIAS (__libi86_intr) int
 _intrf (int intr_no, union REGPACK *regs);

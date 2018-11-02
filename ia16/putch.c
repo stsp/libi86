@@ -37,5 +37,5 @@ putch (int ch)
   return EOF;
 }
 #else
-# warning "unknown target OS"
+# warning "unknown host OS"
 #endif

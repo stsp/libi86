@@ -31,6 +31,7 @@
 
 #ifdef __MSDOS__
 int __libi86_con_in_fd = 0, __libi86_con_out_fd = 1;
+static unsigned __libi86_con_in_info_word = 0;
 
 typedef unsigned char byte;
 
@@ -66,7 +67,7 @@ do_open (const char *pathname, int flags)
   return fd;
 }
 
-__attribute__ ((__constructor__ (100))) static void
+__attribute__ ((constructor (100))) static void
 __libi86_conio_init (void)
 {
   unsigned dw;
@@ -74,33 +75,42 @@ __libi86_conio_init (void)
 
   /* If fd 0 is not the console input, open an input fd on `CON'.  Set the
      input fd to use raw binary mode, so that e.g. getch () can use int
-     $0x21, %ah == $0x3f to read from it.  */
+     $0x21, %ah == $0x3f to read from it.
+
+     Also store the original device information word so that we can restore
+     the fd to cooked mode.  (TODO: figure out if this is really needed.)  */
   if (do_get_dev_info_word (0, &dw) != 0
-      || ((byte) dw & (byte) 0x81) != (byte) 0x81)
+      || (dw & 0x0081u) != 0x0081u)
     {
       fd = do_open ("CON", 0);
       if (fd != -1)
 	{
 	  __libi86_con_in_fd = fd;
-	  if (do_get_dev_info_word (fd, &dw) == 0
-	      && ((byte) dw & (byte) 0x80u) != 0)
-	    do_set_dev_info_word (fd, dw | 0x20u);
+	  if (fd != 0
+	      && do_get_dev_info_word (fd, &dw) == 0
+	      && (dw & 0x0080u) != 0)
+	    {
+	      __libi86_con_in_info_word = dw;
+	      do_set_dev_info_word (fd, dw | 0x0020u);
+	    }
 	}
     }
 
-  /* If fd 1 is not the console output, open an output fd on `CON', and set
-     it to use raw binary mode.  */
+  /* If fd 1 is not the console output, open an output fd on `CON'.  */
   if (do_get_dev_info_word (1, &dw) != 0
-      || ((byte) dw & (byte) 0x82) != (byte) 0x82)
+      || (dw & 0x0082u) != 0x0082u)
     {
       fd = do_open ("CON", 1);
       if (fd != -1)
-	{
-	  __libi86_con_out_fd = fd;
-	  if (do_get_dev_info_word (fd, &dw) == 0
-	      && ((byte) dw & (byte) 0x80) != 0)
-	    do_set_dev_info_word (fd, dw | 0x20u);
-	}
+	__libi86_con_out_fd = fd;
     }
+}
+
+__attribute__ ((destructor (100))) static void
+__libi86_conio_fini (void)
+{
+  if (__libi86_con_in_fd != 0
+      && (__libi86_con_in_info_word & 0x0080u) != 0)
+    do_set_dev_info_word (__libi86_con_in_fd, __libi86_con_in_info_word);
 }
 #endif

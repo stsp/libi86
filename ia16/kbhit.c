@@ -46,8 +46,8 @@ _kbhit (void)
   return (int) status;
 }
 
-__attribute__ ((weak, alias("_kbhit"))) int
+_LIBI86_WEAK_ALIAS (_kbhit) int
 kbhit (void);
 #else
-# warning "unknown target OS"
+# warning "unknown host OS"
 #endif

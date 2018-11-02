@@ -17,8 +17,8 @@
  */
 
 #define _LIBI86_COMPILING_
-#include <conio.h>
 #include <stdio.h>
+#include "conio.h"
 
 #ifdef __MSDOS__
 int
@@ -30,8 +30,8 @@ _getche (void)
   return ch;
 }
 
-__attribute__ ((weak, alias("_getche"))) int
+_LIBI86_WEAK_ALIAS (_getche) int
 getche (void);
 #else
-# warning "unknown target OS"
+# warning "unknown host OS"
 #endif
