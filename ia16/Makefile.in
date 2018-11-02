@@ -72,6 +72,8 @@ OBJS		= bios-equiplist.o \
 		  bios-memsize.o \
 		  cprintf.o \
 		  cputs.o \
+		  disable.o \
+		  enable.o \
 		  fmemcpy.o \
 		  fmemmove.o \
 		  getch.o \
