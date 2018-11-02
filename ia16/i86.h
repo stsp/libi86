@@ -70,24 +70,41 @@ extern void segread (struct SREGS *__seg_regs);
 /* Used by the inline versions of int86 (...), intr (...), etc. below.  */
 extern int __libi86_int86 (int, const union REGS *, union REGS *);
 extern int __libi86_int86_do (const void *, const union REGS *, union REGS *);
-extern int __libi86_int86x (int, const union REGS *, union REGS *);
-extern int __libi86_int86x_do (const void *, const union REGS *, union REGS *);
+extern int __libi86_int86x (int, const union REGS *, union REGS *,
+			    struct SREGS *);
+extern int __libi86_int86x_do (const void *, const union REGS *, union REGS *,
+			       struct SREGS *);
 extern void __libi86_intr (int, union REGPACK *);
 extern void __libi86_intr_do (const void *, union REGPACK *);
 
 #ifndef _LIBI86_COMPILING_
 # ifndef __OPTIMIZE__
+extern void _disable (void);
+extern void _enable (void);
 extern int int86 (int, const union REGS *, union REGS *);
 extern int int86x (int, const union REGS *, union REGS *, struct SREGS *);
 extern void intr (int, union REGPACK *);
 /* The _...f (...) functions are new functions, which I am also proposing
-   (https://github.com/open-watcom/open-watcom-v2/issues/472) to add to Open Watcom.
-   These do the same thing as int86 (...), intr (...), etc., except they are
-   also guaranteed to load at least the carry flag from the register
+   (https://github.com/open-watcom/open-watcom-v2/issues/472) to add to Open
+   Watcom. These do the same thing as int86 (...), intr (...), etc., except
+   they are also guaranteed to load at least the carry flag from the register
    structures, before raising the interrupt.  */
 extern int _int86f (int, const union REGS *, union REGS *);
+extern int _int86xf (int, const union REGS *, union REGS *, struct SREGS *);
 extern void _intrf (int, union REGPACK *);
 # else
+_LIBI86_ALT_INLINE void
+_disable (void)
+{
+  __asm volatile ("cli");
+}
+
+_LIBI86_ALT_INLINE void
+_enable (void)
+{
+  __asm volatile ("sti");
+}
+
 _LIBI86_ALT_INLINE int
 _int86f (int __intr_no, const union REGS *__in_regs, union REGS *__out_regs)
 {
@@ -108,6 +125,31 @@ _LIBI86_ALT_INLINE int
 int86 (int __intr_no, const union REGS *__in_regs, union REGS *__out_regs)
 {
   return _int86f (__intr_no, __in_regs, __out_regs);
+}
+
+_LIBI86_ALT_INLINE int
+_int86xf (int __intr_no, const union REGS *__in_regs, union REGS *__out_regs,
+	  struct SREGS *__seg_regs)
+{
+  if (__builtin_constant_p (__intr_no))
+    {
+      const void *__intr_call;
+      __asm volatile ("movw $__libi86_intr_call_0%c1%c2%c3, %0"
+		      : "=g" (__intr_call)
+		      : "n" ((__intr_no >> 6) & 3), "n" ((__intr_no >> 3) & 7),
+			"n" (__intr_no & 7));
+      return __libi86_int86x_do (__intr_call, __in_regs, __out_regs,
+				 __seg_regs);
+    }
+
+  return __libi86_int86x (__intr_no, __in_regs, __out_regs, __seg_regs);
+}
+
+_LIBI86_ALT_INLINE int
+int86x (int __intr_no, const union REGS *__in_regs, union REGS *__out_regs,
+	struct SREGS *__seg_regs)
+{
+  return _int86xf (__intr_no, __in_regs, __out_regs, __seg_regs);
 }
 
 _LIBI86_ALT_INLINE void

@@ -31,33 +31,43 @@
 	.att_syntax prefix
 
 	.text
-	.global	__libi86_int86_do
-__libi86_int86_do:
-	ENTER_BX_(6)
+	.global	__libi86_int86x_do
+__libi86_int86x_do:
+	ENTER_BX_(8)
 	pushw	%bp
 	pushw	%si
 	pushw	%di
 	pushw	%es
-	movw	%ds,	%si		/* good idea to set %es = %ds here */
-	movw	%si,	%es
-	MOV_ARG4W_BX_(%si)		/* out_regs */
+	MOV_ARG6W_BX_(%si)		/* seg_regs */
 	pushw	%si
-	PUSH_IMM_VIA_(.done, %si)
+	movw	(%si),	%es
+	MOV_ARG4W_BX_(%di)		/* out_regs */
+	pushw	%di
+	PUSH_IMM_VIA_(.done, %di)
 	pushw	ARG0W_BX_		/* intr_call */
+	pushw	6(%si)
 	MOV_ARG2W_BX_(%bx)		/* in_regs */
 	LOAD_UNION_REGS_BX_
+	popw	%ds
 	ret
 .done:
 	pushw	%bx
-	movw	%ss,	%bx		/* restore %ds */
-	movw	%bx,	%ds
+	movw	%sp,	%bx
+	movw	%ss:4(%bx), %bx		/* seg_regs */
+	movw	%ds,	%ss:6(%bx)	/* store %ds from interrupt call */
+	pushw	%ss			/* restore %ds */
+	popw	%ds
+	movw	%es,	(%bx)		/* store %es, %cs, %ss */
+	movw	%cs,	2(%bx)
+	movw	%ss,	4(%bx)
 	movw	%sp,	%bx
 	movw	2(%bx),	%bx		/* out_regs */
 	STORE_UNION_REGS_BX_POP_CLOBBER_
+	popw	%cx
 	popw	%cx
 	cld
 	popw	%es
 	popw	%di
 	popw	%si
 	popw	%bp
-	RET_(6)
+	RET_(8)
