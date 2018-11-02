@@ -54,7 +54,7 @@ AC_MSG_CHECKING([if $CC understands the "N" asm constraint])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 				   [[unsigned x;
 				     __asm ("" : "=r" (x) : "N" (1));]])],
-		  [AC_DEFINE([_LIBI86_HAVE_ASM_N_CONSTRAINT],[1])
+		  [AC_DEFINE([_LIBI86_INTERNAL_HAVE_ASM_N_CONSTRAINT],[1])
 		   AC_MSG_RESULT(yes)],
 		  [AC_MSG_RESULT(no)])
 
