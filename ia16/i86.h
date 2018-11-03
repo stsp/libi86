@@ -65,8 +65,9 @@ union REGPACK
   struct REGPACKW x;
 };
 
-extern void segread (struct SREGS *__seg_regs);
+extern void delay (unsigned);
 extern void nosound (void);
+extern void segread (struct SREGS *__seg_regs);
 
 /* Used by the inline versions of int86 (...), intr (...), etc. below.  */
 extern int __libi86_int86 (int, const union REGS *, union REGS *);
