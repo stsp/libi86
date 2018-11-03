@@ -84,10 +84,12 @@ OBJS		= bios-equiplist.o \
 		  int86x.o \
 		  intr.o \
 		  kbhit.o \
+		  nosound.o \
 		  outp.o \
 		  outpw.o \
 		  putch.o \
 		  segread.o \
+		  sound.o \
 		  ungetch.o \
 		  vcprintf.o \
 		  libi86-conio-init.o \
@@ -96,6 +98,7 @@ OBJS		= bios-equiplist.o \
 		  libi86-int86x-do.o \
 		  libi86-intr-do.o \
 		  libi86-intr-dispatch.o \
+		  libi86-sound-by-divisor.o \
 		  libi86-ungetch-buf.o \
 		  $(foreach da,0 1 2 3, \
 		    $(foreach db,0 1 2 3 4 5 6 7, \

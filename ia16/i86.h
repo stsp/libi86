@@ -66,6 +66,7 @@ union REGPACK
 };
 
 extern void segread (struct SREGS *__seg_regs);
+extern void nosound (void);
 
 /* Used by the inline versions of int86 (...), intr (...), etc. below.  */
 extern int __libi86_int86 (int, const union REGS *, union REGS *);
@@ -76,6 +77,9 @@ extern int __libi86_int86x_do (const void *, const union REGS *, union REGS *,
 			       struct SREGS *);
 extern void __libi86_intr (int, union REGPACK *);
 extern void __libi86_intr_do (const void *, union REGPACK *);
+/* Used by the inline version of sound (.) below.  */
+extern void __libi86_sound (unsigned);
+extern void __libi86_sound_by_divisor (unsigned);
 
 #ifndef _LIBI86_COMPILING_
 # ifndef __OPTIMIZE__
@@ -92,6 +96,7 @@ extern void intr (int, union REGPACK *);
 extern int _int86f (int, const union REGS *, union REGS *);
 extern int _int86xf (int, const union REGS *, union REGS *, struct SREGS *);
 extern void _intrf (int, union REGPACK *);
+extern void sound (unsigned);
 # else
 _LIBI86_ALT_INLINE void
 _disable (void)
@@ -172,6 +177,22 @@ _LIBI86_ALT_INLINE void
 intr (int __intr_no, union REGPACK *__regs)
 {
   _intrf (__intr_no, __regs);
+}
+
+_LIBI86_ALT_INLINE void
+sound (int __freq)
+{
+  /* If the frequency is a compile-time constant, we can precompute the
+     timer counter divisor value to send to the 8253/8254 PIT.  */
+  if (__builtin_constant_p (__freq))
+    {
+      unsigned __divisor = 0;
+      if (__freq > 18)
+	__divisor = (1193181ul + __freq / 2) / __freq;
+      __libi86_sound_by_divisor (__divisor);
+    }
+  else
+    __libi86_sound (__freq);
 }
 # endif
 #endif
