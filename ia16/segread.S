@@ -26,7 +26,7 @@
 	.global	segread
 segread:
 	ENTER_BX_(2)
-	MOV_ARG0W_BX_(%bx)
+	MOV_ARG0W_BX_CLOBBER_(%bx)
 	movw	%es,	(%bx)
 	movw	%cs,	2(%bx)
 	movw	%ss,	4(%bx)

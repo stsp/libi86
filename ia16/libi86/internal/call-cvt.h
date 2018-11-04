@@ -38,6 +38,14 @@
  *   third, fourth, or fifth argument shortword into REG, respectively, if
  *   necessary.  Each of these macros should be used only after ENTER_BX_.
  *
+ * - MOV_ARG0W_BX_CLOBBER_ (REG), MOV_ARG2W_BX_CLOBBER_ (REG), or
+ *   MOV_ARG4W_BX_CLOBBER_ (REG) moves the first, second, or third argument
+ *   shortword into REG.  If the `regparmcall' convention is in effect, and
+ *   REG or the original argument location happens to be %ax, the macro may
+ *   choose to use the 1-byte `xchgw %ax, ...' instruction (shorter than
+ *   the 2-byte `movw ..., %ax' or `movw %ax, ...'), and clobber the original
+ *   argument.  This is useful when we are optimizing for size (-Os).
+ *
  * - MOV_ARG8W2_BX_(REG) does the same as MOV_ARG8W_BX_ (REG), except that
  *   for the `regparmcall' convention, it assumes that the function uses
  *   only two registers (%ax and %dx) to hold parameters.
@@ -97,6 +105,32 @@
 # define MOV_ARG6W_BX_(reg)	movw 2(%bx), reg
 # define MOV_ARG8W_BX_(reg)	movw 4(%bx), reg
 # define MOV_ARG8W2_BX_(reg)	movw 6(%bx), reg
+# ifdef __OPTIMIZE_SIZE__
+#   define MOV_ARG0W_BX_CLOBBER_(reg) \
+				.ifnc %ax, reg; \
+				xchgw %ax, reg; \
+				.endif
+#   define MOV_ARG2W_BX_CLOBBER_(reg) \
+				.ifnc %dx, reg; \
+				.ifc %ax, reg; \
+				xchgw %ax, %dx; \
+				.else; \
+				movw %dx, reg; \
+				.endif; \
+				.endif
+#   define MOV_ARG4W_BX_CLOBBER_(reg) \
+				.ifnc %cx, reg; \
+				.ifc %cx, reg; \
+				xchgw %ax, %cx; \
+				.else; \
+				movw %cx, reg; \
+				.endif; \
+				.endif
+# else
+#   define MOV_ARG0W_BX_CLOBBER_(reg) MOV_ARG0W_BX_(reg)
+#   define MOV_ARG2W_BX_CLOBBER_(reg) MOV_ARG2W_BX_(reg)
+#   define MOV_ARG4W_BX_CLOBBER_(reg) MOV_ARG4W_BX_(reg)
+# endif
 # define MOV_ARG0B_BX_(reg)	.ifnc %al, reg; \
 				movb %al, reg; \
 				.endif
@@ -142,6 +176,9 @@
 # define MOV_ARG6W_BX_(reg)	movw 8(%bx), reg
 # define MOV_ARG8W_BX_(reg)	movw 10(%bx), reg
 # define MOV_ARG8W2_BX_(reg)	movw 10(%bx), reg
+# define MOV_ARG0W_BX_CLOBBER_(reg) MOV_ARG0W_BX_(reg)
+# define MOV_ARG2W_BX_CLOBBER_(reg) MOV_ARG2W_BX_(reg)
+# define MOV_ARG4W_BX_CLOBBER_(reg) MOV_ARG4W_BX_(reg)
 # define MOV_ARG0B_BX_(reg)	movb 2(%bx), reg
 # define MOV_ARG2B_BX_(reg)	movb 4(%bx), reg
 # define MOV_ARG4B_BX_(reg)	movb 6(%bx), reg

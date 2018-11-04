@@ -28,7 +28,7 @@
 __libi86_sound:
 sound:
 	ENTER_BX_(2)
-	MOV_ARG0W_BX_(%cx)
+	MOV_ARG0W_BX_CLOBBER_(%cx)
 	movw	$0x34dd, %ax		/* 1193181 == 0x1234dd */
 	cwtd
 	cmpw	$19,	%cx

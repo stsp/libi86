@@ -40,6 +40,7 @@ _LIBI86_BEGIN_EXTERN_C
  * (Even with all this, it is probably still a bad idea to use both
  * <conio.h> and <curses.h> in the same C module.)
  */
+extern char *cgets (char *);
 extern int cprintf (const char *, ...)
 	   __attribute__ ((__format__ (__printf__, 1, 2)));
 extern int cputs (const char *);

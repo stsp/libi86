@@ -26,7 +26,7 @@
 	.global	__libi86_sound_by_divisor
 __libi86_sound_by_divisor:
 	ENTER_BX_(2)
-	MOV_ARG0W_BX_(%dx)
+	MOV_ARG0W_BX_CLOBBER_(%dx)
 	pushfw
 	cli
 	inb	$0x61,	%al
