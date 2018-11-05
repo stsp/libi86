@@ -70,6 +70,7 @@ CLEAN_HEADERS	= libi86/config.h \
 OBJS		= bios-equiplist.o \
 		  bios-keybrd.o \
 		  bios-memsize.o \
+		  cgets.o \
 		  cprintf.o \
 		  cputs.o \
 		  delay.o \
