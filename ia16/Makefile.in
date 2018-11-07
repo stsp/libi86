@@ -73,6 +73,7 @@ OBJS		= bios-equiplist.o \
 		  cgets.o \
 		  cprintf.o \
 		  cputs.o \
+		  cscanf.o \
 		  delay.o \
 		  disable.o \
 		  enable.o \

@@ -44,6 +44,11 @@ extern char *cgets (char *);
 extern int cprintf (const char *, ...)
 	   __attribute__ ((__format__ (__printf__, 1, 2)));
 extern int cputs (const char *);
+extern int cscanf (const char *, ...)
+	   __attribute__ ((__format__ (__scanf__, 1, 2),
+			   __warning__ ("libi86 cscanf is hard to control, "
+					"and works differently from Open "
+					"Watcom cscanf")));
 extern int _getch (void);
 extern int _getche (void);
 extern int _kbhit (void);

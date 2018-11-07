@@ -17,6 +17,7 @@
  */
 
 #define _LIBI86_COMPILING_
+#include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
 #include "conio.h"
