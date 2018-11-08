@@ -85,4 +85,7 @@
 	  return alias_to (__arg1, __arg2); \
 	}
 
+/* And... */
+typedef __builtin_va_list _LIBI86_VA_LIST;
+
 #endif

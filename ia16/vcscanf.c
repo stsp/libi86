@@ -24,12 +24,14 @@
 #include "conio.h"
 
 int
-cscanf (const char *fmt, ...)
+vcscanf (const char *fmt, va_list ap)
 {
-  va_list ap;
-  int n;
-  va_start (ap, fmt);
-  n = vcscanf (fmt, ap);
-  va_end (ap);
-  return n;
+  char buf[UCHAR_MAX + 2], *p;
+
+  buf[0] = (char) UCHAR_MAX;
+  p = cgets (buf);
+  if (! p)
+    return EOF;
+
+  return vsscanf (p, fmt, ap);
 }
