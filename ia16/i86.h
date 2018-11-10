@@ -201,6 +201,12 @@ sound (int __freq)
 #define FP_SEG(__p)	((unsigned) \
 			  ((unsigned long) (void __far *) (__p) >> 16))
 #define FP_OFF(__p)	__builtin_ia16_FP_OFF (__p)
+#define MK_FP(__s, __o)	((void __far *) \
+			 ((unsigned long) (unsigned) (__s) << 16 | \
+			  (unsigned) (__o)))
+#define _FP_SEG(__p)	FP_SEG (__p)
+#define _FP_OFF(__p)	FP_OFF (__p)
+#define _MK_FP(__s, __o) MK_FP (__s, __o)
 
 _LIBI86_END_EXTERN_C
 
