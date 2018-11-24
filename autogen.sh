@@ -1,3 +1,4 @@
+#!/bin/sh
 # Copyright (c) 2018 TK Chia
 #
 # This file is free software; you can redistribute it and/or modify it
@@ -14,24 +15,8 @@
 # along with this program; see the file COPYING3.LIB.  If not see
 # <http://www.gnu.org/licenses/>.
 
-abs_srcdir = @abs_srcdir@
-
-default: all
-.PHONY: default
-
-distclean maintainer-clean:
-	$(MAKE) -C ia16 $@
-	$(RM) Makefile config.cache config.log config.status
-.PHONY: distclean maintainer-clean
-
-check check-local: $(abs_srcdir)/tests/testsuite
-	exec $< -C tests $(TESTSUITEFLAGS)
-.PHONY: check check-local
-
-$(abs_srcdir)/tests/testsuite: $(abs_srcdir)/tests/testsuite.at \
-			   $(wildcard $(abs_srcdir)/tests/*.at)
-	cd $(abs_srcdir)/tests && exec autom4te --language=autotest -o $@ $<
-
-%:
-	$(MAKE) -C ia16 $@
-.PHONY: %
+echo "PATH=$PATH"
+find -name autom4te.cache -type d -print0 | xargs -0 rm -rf
+find -name configure.ac -type f -print -execdir autoconf \;
+find -name testsuite.at -type f -print \
+  -execdir autom4te --language=autotest -o testsuite testsuite.at \;

@@ -1,0 +1,46 @@
+dnl Copyright (c) 2018 TK Chia
+dnl
+dnl This file is free software; you can redistribute it and/or modify it
+dnl under the terms of the GNU Lesser General Public License as published by
+dnl the Free Software Foundation; either version 3 of the License, or
+dnl (at your option) any later version.
+dnl
+dnl This program is distributed in the hope that it will be useful, but
+dnl WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+dnl Lesser General Public License for more details.
+dnl
+dnl You should have received a copy of the GNU Lesser General Public License
+dnl along with this program; see the file COPYING3.LIB.  If not see
+dnl <http://www.gnu.org/licenses/>.
+
+m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_A],[dnl
+at_libi86_multilib="`$CC $1 -print-multi-directory`"
+AT_CHECK([[$CC -o a.exe ]]dnl
+[[-isystem "$abs_top_builddir/"ia16 -isystem "$abs_top_srcdir"/ia16 ]]dnl
+[[-Wall -Werror=strict-prototypes -Werror=missing-prototypes ]][$1] [$2] dnl
+[["$abs_top_builddir"/"$at_libi86_multilib"/ia16/libi86.a]],dnl
+,[[ignore]],[[ignore]])
+AT_CHECK([[$DOSEMU -dumb -quiet -K a.exe >a.log && dos2unix <a.log]],,dnl
+[[expout]],[[ignore]])])
+
+m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_B],[dnl
+_AT_LIBI86_DO_CHECK_EXPOUT_A($@)
+_AT_LIBI86_DO_CHECK_EXPOUT_A([[-march=any_186 ]]$@)])
+
+m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_C],[dnl
+_AT_LIBI86_DO_CHECK_EXPOUT_B([[-O2 ]]$@)
+_AT_LIBI86_DO_CHECK_EXPOUT_B([[-Os ]]$@)
+_AT_LIBI86_DO_CHECK_EXPOUT_B([[-O2 -fno-omit-frame-pointer ]]$@)])
+
+m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_D],[dnl
+_AT_LIBI86_DO_CHECK_EXPOUT_C($@)
+_AT_LIBI86_DO_CHECK_EXPOUT_C([[-mrtd ]]$@)
+_AT_LIBI86_DO_CHECK_EXPOUT_C([[-mregparmcall ]]$@)])
+
+m4_define([AT_LIBI86_CHECK],[dnl
+AT_DATA([[a.c]],[$1
+])
+AT_DATA([[expout]],[$2])
+_AT_LIBI86_DO_CHECK_EXPOUT_D(,a.c)
+_AT_LIBI86_DO_CHECK_EXPOUT_D([[-mcmodel=small]],a.c)])
