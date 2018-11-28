@@ -61,6 +61,40 @@ int main (void)
 }]],[])
 AT_CLEANUP
 
+AT_SETUP([[segread]])
+AT_LIBI86_CHECK(dnl
+[[#include <stdlib.h>
+#include <string.h>
+#include <i86.h>
+static unsigned get_cs (void)
+{
+  unsigned v;
+  __asm volatile ("movw %%cs, %0" : "=r" (v));
+  return v;
+}
+static unsigned get_ss (void)
+{
+  unsigned v;
+  __asm volatile ("movw %%ss, %0" : "=r" (v));
+  return v;
+}
+int main (void)
+{
+  struct SREGS sregs;
+  memset (&sregs, 0xf6, sizeof sregs);
+  segread (&sregs);
+  if (sregs.cs != get_cs ())
+    abort ();
+  if (sregs.cs != FP_SEG (main))
+    abort ();
+  if (sregs.ss != get_ss ())
+    abort ();
+  if (sregs.ss != FP_SEG (&sregs))
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP
+
 AT_SETUP([[int86]])
 AT_LIBI86_CHECK(dnl
 [[#include <i86.h>
@@ -77,6 +111,35 @@ int main (void)
 #endif
   return 0;
 }]],[[Hello from int86!
+]])
+AT_CLEANUP
+
+AT_SETUP([[int86x]])
+AT_LIBI86_CHECK(dnl
+[[#include <stdlib.h>
+#include <i86.h>
+int main (void)
+{
+  union REGS regs;
+  struct SREGS sregs;
+#ifdef __MSDOS__
+  static char msg[] = "Hello from int86x!\r\n$(ignore this part)\r\n";
+  memset (&sregs, 0xf6, sizeof sregs);
+  sregs.ds = FP_SEG (msg);
+  regs.h.ah = 0x09;
+  regs.w.dx = FP_OFF (msg);
+  int86x (0x21, &regs, &regs, &sregs);
+  if (sregs.cs != FP_SEG (main))
+    abort ();
+  if (sregs.ds != FP_SEG (msg))
+    abort ();
+  if (sregs.ss != FP_SEG (&regs))
+    abort ();
+#else
+# error
+#endif
+  return 0;
+}]],[[Hello from int86x!
 ]])
 AT_CLEANUP
 
