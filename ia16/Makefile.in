@@ -58,6 +58,7 @@ RANLIB = @RANLIB@
 INSTALL_LIBS	= libi86.a
 INSTALL_HEADERS	= bios.h \
 		  conio.h \
+		  dos.h \
 		  i86.h \
 		  libi86/string.h \
 		  libi86/internal/cdefs.h \
