@@ -21,7 +21,8 @@ AT_CHECK([[$CC -o a.exe ]]dnl
 [[-Wall -Werror=strict-prototypes -Werror=missing-prototypes ]][$1] [$2] dnl
 [["$abs_top_builddir"/"$at_libi86_multilib"/ia16/libi86.a]],dnl
 ,[[ignore]],[[ignore]])
-AT_CHECK([[$DOSEMU -dumb -quiet -K a.exe >a.log && dos2unix <a.log]],,dnl
+AT_CHECK([[$DOSEMU -dumb -quiet -K a.exe >a.log && \
+	   dos2unix <a.log | sed -n '2,$ p']],,dnl
 [[expout]],[[ignore]])])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_B],[dnl

@@ -16,16 +16,34 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LIBI86_DOS_H_
-#define _LIBI86_DOS_H_
+#include "libi86/internal/call-cvt.h"
 
-#include <libi86/internal/cdefs.h>
+	.arch	i8086, jumps
+	.code16
+	.att_syntax prefix
 
-_LIBI86_BEGIN_EXTERN_C
-
-extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
-extern int bdosptr (int _dos_func, void *__dx, unsigned __al);
-
-_LIBI86_END_EXTERN_C
-
+	.text
+#ifdef __MSDOS__
+	.global	bdos
+	.global	bdosptr
+bdos:
+bdosptr:
+	ENTER_BX_(6)
+	pushw	%si
+	pushw	%di
+	pushw	%es
+	pushw	%bp
+	MOV_ARG0B_BX_(%ah)
+	MOV_ARG2W_BX_(%dx)
+	MOV_ARG4B_BX_(%al)
+	int	$0x21
+	popw	%bp
+	popw	%es
+	popw	%di
+	popw	%si
+	pushw	%ss
+	popw	%ds
+	RET_(6)
+#else
+# warning "unknown target OS; bdos (...) and bdosptr (...) not implemented"
 #endif

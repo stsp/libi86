@@ -68,7 +68,8 @@ INSTALL_HEADERS	= bios.h \
 CLEAN_HEADERS	= libi86/config.h \
 		  libi86/internal/acconfig.h
 
-OBJS		= bios-equiplist.o \
+OBJS		= bdos.o \
+		  bios-equiplist.o \
 		  bios-keybrd.o \
 		  bios-memsize.o \
 		  cgets.o \

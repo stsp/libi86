@@ -18,3 +18,4 @@ AT_INIT(libi86)
 AT_COLOR_TESTS
 m4_include([metacheck.at])
 m4_include([i86.h.at])
+m4_include([dos.h.at])
