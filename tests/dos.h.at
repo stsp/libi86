@@ -22,14 +22,14 @@ AT_LIBI86_CHECK(dnl
 int main (void)
 {
 #ifdef __MSDOS__
-  bdosptr (9, "Hello ");
+  bdosptr (9, "Hello $(ignore this)", 0);
   bdos (2, '$', 0);
   bdos (2, 'f', 0);
   bdos (2, 'r', 0);
   bdos (2, 'o', 0);
   bdos (2, 'm', 0);
   bdos (2, '$', 0);
-  bdosptr (9, " bdos and bdosptr!\r\n$(ignore)", 0);
+  bdosptr (9, " bdos and bdosptr!\r\n$(and ignore this too)", 0);
 #else
 # error
 #endif

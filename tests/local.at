@@ -14,6 +14,12 @@ dnl You should have received a copy of the GNU Lesser General Public License
 dnl along with this program; see the file COPYING3.LIB.  If not see
 dnl <http://www.gnu.org/licenses/>.
 
+m4_define([AT_LIBI86_RUN],[[(
+  $DOSEMU -dumb -quiet -K ]$1[ >a.log && \
+  dos2unix <a.log | sed -n -e '1 { /^About to Execute : /! p }' -e '2,$ p' && \
+  rm a.log
+)]])
+
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_A],[dnl
 at_libi86_multilib="`$CC $1 -print-multi-directory`"
 AT_CHECK([[$CC -o a.exe ]]dnl
@@ -21,9 +27,7 @@ AT_CHECK([[$CC -o a.exe ]]dnl
 [[-Wall -Werror=strict-prototypes -Werror=missing-prototypes ]][$1] [$2] dnl
 [["$abs_top_builddir"/"$at_libi86_multilib"/ia16/libi86.a]],dnl
 ,[[ignore]],[[ignore]])
-AT_CHECK([[$DOSEMU -dumb -quiet -K a.exe >a.log && \
-	   dos2unix <a.log | sed -n '2,$ p']],,dnl
-[[expout]],[[ignore]])])
+AT_CHECK([AT_LIBI86_RUN(a.exe)],,[[expout]],[[ignore]])])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_B],[dnl
 _AT_LIBI86_DO_CHECK_EXPOUT_A($@)
