@@ -24,8 +24,13 @@ dnl the test suite runs, using the GNU Autotools' experimental Autotest
 dnl feature.	-- tkchia 20181118
 
 AC_PREREQ(2.69)
-AC_INIT([libi86],m4_esyscmd_s([TZ=UTC0 git log -n1 --oneline \
-  --date=short-local --format='%ad' | sed 's/-//g']),,[libi86])
+AC_INIT([libi86],m4_esyscmd_s([
+  if git diff --quiet HEAD; then
+    TZ=UTC0 git log -n1 --oneline --date=short-local --format='%ad' | \
+	    sed 's/-//g'
+  else
+    TZ=UTC0 date +%Y%m%d
+  fi]),,[libi86])
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_PROG_CC
