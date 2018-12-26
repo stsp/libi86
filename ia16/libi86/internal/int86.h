@@ -16,17 +16,41 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LIBI86_DOS_H_
-#define _LIBI86_DOS_H_
+/*
+ * Declarations of data types used by both <i86.h> and <dos.h> for invoking
+ * software interrupts.
+ */
+
+#ifndef _LIBI86_INTERNAL_INT86_H_
+#define _LIBI86_INTERNAL_INT86_H_
 
 #include <libi86/internal/cdefs.h>
-#include <libi86/internal/int86.h>
 
 _LIBI86_BEGIN_EXTERN_C
 
-extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
-extern int bdosptr (int _dos_func, void *__dx, unsigned __al);
-extern int intdos (const union REGS *, union REGS *);
+/* This definition is not binary-compatible with that in Open Watcom C/C++
+   --- the latter does not have a .bp field.  */
+struct WORDREGS
+{
+  unsigned short ax, bx, cx, dx, si, di, bp, cflag;
+};
+
+struct BYTEREGS
+{
+  unsigned char al, ah, bl, bh, cl, ch, dl, dh;
+};
+
+union REGS
+{
+  struct WORDREGS x;
+  struct WORDREGS w;
+  struct BYTEREGS h;
+};
+
+struct SREGS
+{
+  unsigned short es, cs, ss, ds;
+};
 
 _LIBI86_END_EXTERN_C
 

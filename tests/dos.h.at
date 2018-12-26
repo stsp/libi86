@@ -37,3 +37,32 @@ int main (void)
 }]],[[Hello $from$ bdos and bdosptr!
 ]])
 AT_CLEANUP
+
+AT_SETUP([[intdos]])
+dnl This also checks that we can use <dos.h> without also including <i86.h>.
+dnl To do this, we need to separately define FP_OFF (.) here rather than rely
+dnl on <i86.h>'s definition...
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+#include <stdlib.h>
+#define FP_OFF(p) __builtin_ia16_FP_OFF (p)
+int main (void)
+{
+  union REGS regs;
+  int rv;
+#ifdef __MSDOS__
+  static char msg[] = "Hello from intdos!\r\n(ignore this part)";
+  regs.h.ah = 0x40;
+  regs.w.bx = 1;
+  regs.w.cx = 20;
+  regs.w.dx = FP_OFF (msg);
+  rv = intdos (&regs, &regs);
+  if (rv != 20)
+    abort ();
+  return 0;
+#else
+# error
+#endif
+}]],[[Hello from intdos!
+]])
+AT_CLEANUP

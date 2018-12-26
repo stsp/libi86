@@ -20,34 +20,11 @@
 #define _LIBI86_I86_H_
 
 #include <libi86/internal/cdefs.h>
+#include <libi86/internal/int86.h>
 
 _LIBI86_BEGIN_EXTERN_C
 
-/* This definition is not binary-compatible with that in Open Watcom C/C++
-   --- the latter does not have a .bp field.  */
-struct WORDREGS
-{
-  unsigned short ax, bx, cx, dx, si, di, bp, cflag;
-};
-
-struct BYTEREGS
-{
-  unsigned char al, ah, bl, bh, cl, ch, dl, dh;
-};
-
-union REGS
-{
-  struct WORDREGS x;
-  struct WORDREGS w;
-  struct BYTEREGS h;
-};
-
-struct SREGS
-{
-  unsigned short es, cs, ss, ds;
-};
-
-/* Again, not compatible with Open Watcom.  */
+/* Not binary compatible with Open Watcom.  */
 struct REGPACKW
 {
   unsigned short ax, bx, cx, dx, bp, si, di, ds, es, flags;

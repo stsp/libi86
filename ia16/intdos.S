@@ -16,18 +16,37 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LIBI86_DOS_H_
-#define _LIBI86_DOS_H_
+#include "libi86/internal/call-cvt.h"
+#include "libi86/internal/arch.h"
+#include "libi86/internal/struc.h"
 
-#include <libi86/internal/cdefs.h>
-#include <libi86/internal/int86.h>
+	.code16
+	.att_syntax prefix
 
-_LIBI86_BEGIN_EXTERN_C
-
-extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
-extern int bdosptr (int _dos_func, void *__dx, unsigned __al);
-extern int intdos (const union REGS *, union REGS *);
-
-_LIBI86_END_EXTERN_C
-
-#endif
+	.text
+	.global	intdos
+intdos:
+	ENTER_BX_(4)
+	pushw	%bp
+	pushw	%si
+	pushw	%di
+	pushw	%es
+	movw	%ds,	%si		/* good idea to set %es = %ds here */
+	movw	%si,	%es
+	pushw	ARG2W_BX_		/* out_regs */
+	MOV_ARG0W_BX_(%bx)		/* in_regs */
+	LOAD_UNION_REGS_BX_
+	int	$0x21
+	pushw	%bx
+	movw	%ss,	%bx		/* restore %ds */
+	movw	%bx,	%ds
+	movw	%sp,	%bx
+	movw	2(%bx),	%bx		/* out_regs */
+	STORE_UNION_REGS_BX_POP_CLOBBER_
+	popw	%cx
+	cld
+	popw	%es
+	popw	%di
+	popw	%si
+	popw	%bp
+	RET_(4)

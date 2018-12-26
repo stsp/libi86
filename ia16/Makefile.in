@@ -63,6 +63,7 @@ INSTALL_HEADERS	= bios.h \
 		  libi86/string.h \
 		  libi86/internal/cdefs.h \
 		  libi86/internal/conio.h \
+		  libi86/internal/int86.h \
 		  libi86/internal/portio.h \
 		  $(CLEAN_HEADERS)
 CLEAN_HEADERS	= libi86/config.h \
@@ -87,6 +88,7 @@ OBJS		= bdos.o \
 		  inpw.o \
 		  int86.o \
 		  int86x.o \
+		  intdos.o \
 		  intr.o \
 		  kbhit.o \
 		  nosound.o \
