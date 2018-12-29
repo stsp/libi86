@@ -40,8 +40,7 @@ __libi86_int86_do:
 	pushw	%es
 	movw	%ds,	%si		/* good idea to set %es = %ds here */
 	movw	%si,	%es
-	MOV_ARG4W_BX_(%si)		/* out_regs */
-	pushw	%si
+	pushw	ARG4W_BX_		/* out_regs */
 	PUSH_IMM_VIA_(.done, %si)
 	pushw	ARG0W_BX_		/* intr_call */
 	MOV_ARG2W_BX_(%bx)		/* in_regs */

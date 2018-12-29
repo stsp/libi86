@@ -41,8 +41,7 @@ __libi86_int86x_do:
 	MOV_ARG6W_BX_(%si)		/* seg_regs */
 	pushw	%si
 	movw	(%si),	%es
-	MOV_ARG4W_BX_(%di)		/* out_regs */
-	pushw	%di
+	pushw	ARG4W_BX_		/* out_regs */
 	PUSH_IMM_VIA_(.done, %di)
 	pushw	ARG0W_BX_		/* intr_call */
 	pushw	6(%si)
