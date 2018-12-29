@@ -16,19 +16,17 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LIBI86_DOS_H_
-#define _LIBI86_DOS_H_
+#ifndef _LIBI86_I86_INTERNAL_FARPTR_H_
+#define _LIBI86_I86_INTERNAL_FARPTR_H_
 
-#include <libi86/internal/cdefs.h>
-#include <libi86/internal/int86.h>
-
-_LIBI86_BEGIN_EXTERN_C
-
-extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
-extern int bdosptr (int _dos_func, void *__dx, unsigned __al);
-extern int intdos (const union REGS *, union REGS *);
-extern int intdosx (const union REGS *, union REGS *, struct SREGS *);
-
-_LIBI86_END_EXTERN_C
+#define FP_SEG(__p)	((unsigned) \
+			  ((unsigned long) (void __far *) (__p) >> 16))
+#define FP_OFF(__p)	__builtin_ia16_FP_OFF (__p)
+#define MK_FP(__s, __o)	((void __far *) \
+			 ((unsigned long) (unsigned) (__s) << 16 | \
+			  (unsigned) (__o)))
+#define _FP_SEG(__p)	FP_SEG (__p)
+#define _FP_OFF(__p)	FP_OFF (__p)
+#define _MK_FP(__s, __o) MK_FP (__s, __o)
 
 #endif

@@ -43,9 +43,18 @@ _AT_LIBI86_DO_CHECK_EXPOUT_C($@)
 _AT_LIBI86_DO_CHECK_EXPOUT_C([[-mrtd ]]$@)
 _AT_LIBI86_DO_CHECK_EXPOUT_C([[-mregparmcall ]]$@)])
 
-m4_define([AT_LIBI86_CHECK],[dnl
+m4_define([AT_LIBI86_CHECK_FOR_TINY_AND_SMALL_MODEL],[dnl
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
 _AT_LIBI86_DO_CHECK_EXPOUT_D(,a.c)
+_AT_LIBI86_DO_CHECK_EXPOUT_D([[-mcmodel=small]],a.c)])
+
+m4_define([AT_LIBI86_CHECK],[dnl
+AT_LIBI86_CHECK_FOR_TINY_AND_SMALL_MODEL($@)])
+
+m4_define([AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE],[dnl
+AT_DATA([[a.c]],[$1
+])
+AT_DATA([[expout]],[$2])
 _AT_LIBI86_DO_CHECK_EXPOUT_D([[-mcmodel=small]],a.c)])

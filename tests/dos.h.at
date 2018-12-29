@@ -19,7 +19,8 @@ AT_BANNER([[<dos.h> tests]])
 AT_SETUP([[bdos, bdosptr]])
 AT_LIBI86_CHECK(dnl
 [[#include <dos.h>
-int main (void)
+int
+main (void)
 {
 #ifdef __MSDOS__
   bdosptr (9, "Hello $(ignore this)", 0);
@@ -40,13 +41,14 @@ AT_CLEANUP
 
 AT_SETUP([[intdos]])
 dnl This also checks that we can use <dos.h> without also including <i86.h>.
-dnl To do this, we need to separately define FP_OFF (.) here rather than rely
-dnl on <i86.h>'s definition...
-AT_LIBI86_CHECK(dnl
+dnl To do this, we include just the definitions of FP_OFF (.) and FP_SEG (.)
+dnl from our internal header, rather than use <i86.h>.
+AT_LIBI86_CHECK_FOR_TINY_AND_SMALL_MODEL(dnl
 [[#include <dos.h>
-#include <stdlib.h>
-#define FP_OFF(p) __builtin_ia16_FP_OFF (p)
-int main (void)
+#include <libi86/internal/farptr.h>
+void abort (void);
+int
+main (void)
 {
   union REGS regs;
   int rv;
@@ -64,5 +66,108 @@ int main (void)
 # error
 #endif
 }]],[[Hello from intdos!
+]])
+AT_CLEANUP
+
+AT_SETUP([[intdosx]])
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE(dnl
+[[#include <dos.h>
+#include <string.h>
+#include <time.h>
+#include <libi86/internal/farptr.h>
+#ifndef __MSDOS__
+# error
+#endif
+void abort (void);
+__far const char msg1[] = "hello world",
+		 msg2[] = "s\r\nso I put a ",
+		 msg3[] = " in your ";
+static unsigned get_cs (void)
+{
+  unsigned v;
+  __asm volatile ("movw %%cs, %0" : "=r" (v));
+  return v;
+}
+static unsigned get_ss (void)
+{
+  unsigned v;
+  __asm volatile ("movw %%ss, %0" : "=r" (v));
+  return v;
+}
+static void
+hw (void)
+{
+  union REGS r;
+  struct SREGS sr;
+  unsigned cookie = time (NULL);
+  r.h.ah = 0x40;
+  r.w.bx = 1;
+  r.w.cx = sizeof (msg1) - 1;
+  r.w.dx = FP_OFF (msg1);
+  sr.ds = FP_SEG (msg1);
+  sr.es = cookie;
+  if (intdosx (&r, &r, &sr) != sizeof (msg1) - 1
+      || r.w.ax != sizeof (msg1) - 1
+      || sr.cs != get_cs() || sr.ss != get_ss()
+      || sr.ds != FP_SEG (msg1) || sr.es != cookie)
+    abort ();
+}
+int
+main (void)
+{
+  static __far const char msg4[] = "yo dawg I herd you like ",
+			  msg5[] = "\r\nso you can $",
+			  msg6[] = " while you ";
+  const char __far *p;
+  union REGS inr, outr;
+  struct SREGS sr;
+  for (p = msg4; *p; ++p)
+    bdos (2, *p, 0);
+  hw ();
+  inr.h.ah = 0x40;
+  inr.w.bx = 1;
+  inr.w.cx = sizeof (msg2) - 1;
+  inr.w.dx = FP_OFF (msg2);
+  sr.ds = FP_SEG (msg2);
+  if (intdosx (&inr, &outr, &sr) != sizeof (msg2) - 1
+      || outr.w.ax != sizeof (msg2) - 1)
+    abort ();
+  hw ();
+  inr.w.cx = sizeof (msg3) - 1;
+  inr.w.dx = FP_OFF (msg3);
+  sr.ds = FP_SEG (msg3);
+  if (intdosx (&inr, &outr, &sr) != sizeof (msg3) - 1
+      || outr.w.ax != sizeof (msg3) - 1)
+    abort ();
+  hw ();
+  inr.h.ah = 9;
+  inr.w.dx = FP_OFF (msg5);
+  sr.ds = FP_SEG (msg5);
+  intdosx (&inr, &outr, &sr);
+  hw ();
+  inr.w.ax = 0x351a;
+  intdosx (&inr, &outr, &sr);
+  if (MK_FP (sr.es, outr.w.bx)
+      != * (void __far * __far *) (unsigned long) (4 * 0x1a))
+    abort ();
+  for (p = msg6; *p; ++p)
+    {
+      inr.h.ah = 2;
+      inr.h.dl = *p;
+      memset (&sr, 0xf6, sizeof (sr));
+      intdosx (&inr, &outr, &sr);
+    }
+  hw ();
+  inr.h.ah = 0x40;
+  inr.w.bx = 1;
+  inr.w.cx = 2;
+  inr.w.dx = FP_OFF (msg5);
+  sr.ds = FP_SEG (msg5);
+  if (intdosx (&inr, &outr, &sr) != 2 || outr.w.ax != 2)
+    abort ();
+  return 0;
+}]],[[yo dawg I herd you like hello worlds
+so I put a hello world in your hello world
+so you can hello world while you hello world
 ]])
 AT_CLEANUP
