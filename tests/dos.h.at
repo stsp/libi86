@@ -40,12 +40,8 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[intdos]])
-dnl This also checks that we can use <dos.h> without also including <i86.h>.
-dnl To do this, we include just the definitions of FP_OFF (.) and FP_SEG (.)
-dnl from our internal header, rather than use <i86.h>.
 AT_LIBI86_CHECK_FOR_TINY_AND_SMALL_MODEL(dnl
 [[#include <dos.h>
-#include <libi86/internal/farptr.h>
 void abort (void);
 int
 main (void)
@@ -74,7 +70,6 @@ AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE(dnl
 [[#include <dos.h>
 #include <string.h>
 #include <time.h>
-#include <libi86/internal/farptr.h>
 #ifndef __MSDOS__
 # error
 #endif
