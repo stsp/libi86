@@ -16,7 +16,13 @@ dnl <http://www.gnu.org/licenses/>.
 
 dnl Derived from libgloss/cr16/configure.in in Newlib.
 AC_PREREQ(2.69)
-AC_INIT
+AC_INIT([libi86],m4_esyscmd_s([
+  if git diff --quiet HEAD; then
+    TZ=UTC0 git log -n1 --oneline --date=short-local --format='%ad' | \
+	    sed 's/-//g'
+  else
+    TZ=UTC0 date +%Y%m%d
+  fi]),,[libi86])
 AC_CONFIG_SRCDIR(bios-memsize.S)
 
 if test "${enable_shared}" = "yes" ; then
@@ -74,5 +80,6 @@ libi86_topdir="${libi86_topdir}"
 CC="${CC}"
 LDFLAGS="${LDFLAGS}"
 )
+AC_DEFINE_UNQUOTED([_LIBI86_VERSION],[${PACKAGE_VERSION}LL])
 AC_CONFIG_HEADERS([libi86/internal/acconfig.h])
 AC_OUTPUT

@@ -198,7 +198,8 @@ libi86-intr-call-%.o: libi86-intr-call.S $(HEADERS)
 
 libi86/config.h: make-config.sh $(BSP)
 	mkdir -p $(@D)
-	NM='$(NM)' AWK='$(AWK)' $(SHELL) $< $(BSP) >$@.tmp
+	NM='$(NM)' AWK='$(AWK)' PACKAGE_VERSION='$(PACKAGE_VERSION)' \
+	  $(SHELL) $< $(BSP) >$@.tmp
 	mv $@.tmp $@
 
 Makefile: Makefile.in config.status @host_makefile_frag_path@
