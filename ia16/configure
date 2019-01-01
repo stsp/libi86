@@ -3311,7 +3311,7 @@ host_makefile_frag=
 ac_config_files="$ac_config_files Makefile"
 
 cat >>confdefs.h <<_ACEOF
-#define _LIBI86_VERSION ${PACKAGE_VERSION}LL
+#define _LIBI86_VERSION ${PACKAGE_VERSION}L
 _ACEOF
 
 ac_config_headers="$ac_config_headers libi86/internal/acconfig.h"

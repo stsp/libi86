@@ -62,7 +62,6 @@ INSTALL_HEADERS	= bios.h \
 		  i86.h \
 		  libi86/string.h \
 		  libi86/internal/cdefs.h \
-		  libi86/internal/conio.h \
 		  libi86/internal/portio.h \
 		  $(CLEAN_HEADERS)
 CLEAN_HEADERS	= libi86/config.h \
@@ -122,6 +121,7 @@ ASFLAGS		=
 HEADERS		= $(filter-out libi86/config.h,$(INSTALL_HEADERS)) \
 		  libi86/internal/arch.h \
 		  libi86/internal/call-cvt.h \
+		  libi86/internal/conio.h \
 		  libi86/internal/struc.h
 BSP		= $(INSTALL_LIBS)
 
