@@ -40,6 +40,11 @@ _bios_memsize (void)
 }
 
 extern unsigned short _bios_keybrd (unsigned __service);
+/* Note:  The Open Watcom C Library Reference gives the prototype
+	int _bios_timeofday (int service, long *__timeval);
+   with different argument and return types.  I follow the actual Open Watcom
+   <bios.h> prototype here.  */
+extern unsigned short _bios_timeofday (unsigned __service, long *__timeval);
 
 #define _KEYBRD_READ		0x00u
 #define _KEYBRD_READY		0x01u
@@ -47,6 +52,9 @@ extern unsigned short _bios_keybrd (unsigned __service);
 #define _NKEYBRD_READ		0x10u
 #define _NKEYBRD_READY		0x11u
 #define _NKEYBRD_SHIFTSTATUS	0x12u
+
+#define _TIME_GETCLOCK		0x00u
+#define _TIME_SETCLOCK		0x01u
 
 _LIBI86_END_EXTERN_C
 

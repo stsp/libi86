@@ -71,6 +71,7 @@ OBJS		= bdos.o \
 		  bios-equiplist.o \
 		  bios-keybrd.o \
 		  bios-memsize.o \
+		  bios-timeofday.o \
 		  cgets.o \
 		  cprintf.o \
 		  cputs.o \
