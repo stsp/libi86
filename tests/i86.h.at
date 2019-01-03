@@ -112,6 +112,19 @@ int main (void)
   return 0;
 }]],[[Hello from int86!
 ]])
+AT_LIBI86_CHECK(dnl
+[[#include <bios.h>
+#include <i86.h>
+int main (void)
+{
+  union REGS regs;
+  unsigned rv = (unsigned) int86 (0x12, &regs, &regs);
+  if (rv != regs.w.ax)
+    abort ();
+  if (rv != _bios_memsize ())
+    abort ();
+  return 0;
+}]],[])
 AT_CLEANUP
 
 AT_SETUP([[int86x]])

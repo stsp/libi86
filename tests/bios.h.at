@@ -14,13 +14,33 @@ dnl You should have received a copy of the GNU Lesser General Public License
 dnl along with this program; see the file COPYING3.LIB.  If not see
 dnl <http://www.gnu.org/licenses/>.
 
-AT_INIT(libi86)
-AT_COLOR_TESTS
+AT_BANNER([[<bios.h> tests]])
 
-dnl Test that the test harness works.  Naturally, this should come first.
-m4_include([metacheck.at])
-
-dnl Then do the actual tests...
-m4_include([bios.h.at])
-m4_include([dos.h.at])
-m4_include([i86.h.at])
+AT_SETUP([[_bios_memsize]])
+AT_LIBI86_CHECK(dnl
+[[#include <stdlib.h>
+#include <bios.h>
+static unsigned get_cs (void)
+{
+  unsigned v;
+  __asm volatile ("movw %%cs, %0" : "=r" (v));
+  return v;
+}
+static unsigned get_ss (void)
+{
+  unsigned v;
+  __asm volatile ("movw %%ss, %0" : "=r" (v));
+  return v;
+}
+int main (void)
+{
+  unsigned short kb = _bios_memsize ();
+  if (kb != * (unsigned short __far *) 0x00400013ul)
+    abort ();
+  if (get_cs () >= 0x40u * kb)
+    abort ();
+  if (get_ss () >= 0x40u * kb)
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP
