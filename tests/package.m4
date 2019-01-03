@@ -16,7 +16,12 @@ dnl <http://www.gnu.org/licenses/>.
 
 m4_define([AT_PACKAGE_NAME],[libi86])
 m4_define([AT_PACKAGE_TARNAME],[libi86])
-m4_define([AT_PACKAGE_VERSION],m4_esyscmd_s([git log -n1 --oneline \
-  --date=short-local --format='%ad' | sed 's/-//g']))
+m4_define([AT_PACKAGE_VERSION],m4_esyscmd_s([
+  if git diff --quiet HEAD; then
+    TZ=UTC0 git log -n1 --oneline --date=short-local --format='%ad' | \
+            sed 's/-//g'
+  else
+    TZ=UTC0 date +%Y%m%d
+  fi]))
 m4_define([AT_PACKAGE_STRING],AT_PACKAGE_NAME AT_PACKAGE_VERSION)
 m4_define([AT_PACKAGE_BUGREPORT],[https://github.com/tkchia/libi86/issues])
