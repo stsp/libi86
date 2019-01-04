@@ -98,11 +98,13 @@ AT_CLEANUP
 AT_SETUP([[int86]])
 AT_LIBI86_CHECK(dnl
 [[#include <i86.h>
+#include <string.h>
 int main (void)
 {
   union REGS regs;
 #ifdef __MSDOS__
   static char msg[] = "Hello from int86!\r\n$(ignore this part)\r\n";
+  memset (&regs, 0xf6, sizeof (regs));
   regs.h.ah = 0x09;
   regs.w.dx = FP_OFF (msg);
   int86 (0x21, &regs, &regs);
@@ -115,9 +117,12 @@ int main (void)
 AT_LIBI86_CHECK(dnl
 [[#include <bios.h>
 #include <i86.h>
+#include <stdlib.h>
+#include <string.h>
 int main (void)
 {
   union REGS regs;
+  memset (&regs, 0xf6, sizeof (regs));
   unsigned rv = (unsigned) int86 (0x12, &regs, &regs);
   if (rv != regs.w.ax)
     abort ();
@@ -131,12 +136,14 @@ AT_SETUP([[int86x]])
 AT_LIBI86_CHECK(dnl
 [[#include <stdlib.h>
 #include <i86.h>
+#include <string.h>
 int main (void)
 {
   union REGS regs;
   struct SREGS sregs;
 #ifdef __MSDOS__
   static char msg[] = "Hello from int86x!\r\n$(ignore this part)\r\n";
+  memset (&regs, 0xf6, sizeof (regs));
   memset (&sregs, 0xf6, sizeof sregs);
   sregs.ds = FP_SEG (msg);
   regs.h.ah = 0x09;
@@ -146,6 +153,8 @@ int main (void)
     abort ();
   if (sregs.ds != FP_SEG (msg))
     abort ();
+  if (sregs.es != 0xf6f6u)
+    abort ();
   if (sregs.ss != FP_SEG (&regs))
     abort ();
 #else
@@ -154,24 +163,85 @@ int main (void)
   return 0;
 }]],[[Hello from int86x!
 ]])
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE(dnl
+[[#include <stdlib.h>
+#include <string.h>
+#include <i86.h>
+int main (void)
+{
+  union REGS regs;
+  struct SREGS sregs;
+#ifdef __MSDOS__
+  static char __far msg[] = "Hello again!\r\n$(ignore this part)\r\n";
+  memset (&regs, 0xf6, sizeof (regs));
+  memset (&sregs, 0xf6, sizeof sregs);
+  sregs.ds = FP_SEG (msg);
+  regs.h.ah = 0x09;
+  regs.w.dx = FP_OFF (msg);
+  int86x (0x21, &regs, &regs, &sregs);
+  if (sregs.cs != FP_SEG (main))
+    abort ();
+  if (sregs.ds != FP_SEG (msg))
+    abort ();
+  if (sregs.es != 0xf6f6u)
+    abort ();
+  if (sregs.ss != FP_SEG (&regs))
+    abort ();
+#else
+# error
+#endif
+  return 0;
+}]],[[Hello again!
+]])
 AT_CLEANUP
 
 AT_SETUP([[intr]])
 AT_LIBI86_CHECK(dnl
 [[#include <i86.h>
+#include <stdlib.h>
+#include <string.h>
 int main (void)
 {
   union REGPACK regs;
 #ifdef __MSDOS__
   static char msg[] = "Hello from intr!\r\n$(ignore this part)\r\n";
+  memset (&regs, 0xf6, sizeof (regs));
   regs.h.ah = 0x09;
   regs.w.dx = FP_OFF (msg);
   regs.w.ds = FP_SEG (msg);
   intr (0x21, &regs);
+  if (regs.w.ds != FP_SEG (msg))
+    abort ();
+  if (regs.w.es != 0xf6f6u)
+    abort ();
 #else
 # error
 #endif
   return 0;
 }]],[[Hello from intr!
+]])
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE(dnl
+[[#include <i86.h>
+#include <stdlib.h>
+#include <string.h>
+int main (void)
+{
+  union REGPACK regs;
+#ifdef __MSDOS__
+  static char __far msg[] = "Hello from intr...\r\n$(ignore this part)\r\n";
+  memset (&regs, 0xf6, sizeof (regs));
+  regs.h.ah = 0x09;
+  regs.w.dx = FP_OFF (msg);
+  regs.w.ds = FP_SEG (msg);
+  intr (0x21, &regs);
+  if (regs.w.ds != FP_SEG (msg))
+    abort ();
+  if (regs.w.es != 0xf6f6u)
+    abort ();
+#else
+# error
+#endif
+  return 0;
+}]],[[Hello from intr...
 ]])
 AT_CLEANUP
