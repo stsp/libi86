@@ -14,20 +14,25 @@ dnl You should have received a copy of the GNU Lesser General Public License
 dnl along with this program; see the file COPYING3.LIB.  If not see
 dnl <http://www.gnu.org/licenses/>.
 
+dnl $1 = program to run
+dnl $2 = Unix path which $1 resides in (defaults to current directory)
+dnl $3 = options to pass to dosemu (default -dumb -quiet)
 m4_define([AT_LIBI86_RUN],[[(
-  $DOSEMU -dumb -quiet -K ]$1[ >a.log && \
+  $DOSEMU ]m4_default($3,-dumb -quiet)[ -K ]m4_default($2,.)dnl
+    [ -E ]m4_default($1,a.exe)[ \
+    >a.log && \
   dos2unix <a.log | sed -n -e '1 { /^About to Execute : /! p }' -e '2,$ p' && \
   rm a.log
 )]])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_A],[dnl
 at_libi86_multilib="`$CC $1 -print-multi-directory`"
-AT_CHECK([[$CC -o a.exe ]]dnl
+AT_CHECK([[$CC -o ]m4_default($3,a.exe) ]dnl
 [[-isystem "$abs_top_builddir/"ia16 -isystem "$abs_top_srcdir"/ia16 ]]dnl
 [[-Wall -Werror=strict-prototypes -Werror=missing-prototypes ]][$1] [$2] dnl
 [["$abs_top_builddir"/"$at_libi86_multilib"/ia16/libi86.a]],dnl
 ,[[ignore]],[[ignore]])
-AT_CHECK([AT_LIBI86_RUN(a.exe)],,[[expout]],[[ignore]])])
+AT_CHECK([AT_LIBI86_RUN($4,,$5)],,[[expout]],[[ignore]])])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_B],[dnl
 _AT_LIBI86_DO_CHECK_EXPOUT_A($@)
@@ -38,6 +43,10 @@ _AT_LIBI86_DO_CHECK_EXPOUT_B([[-O2 ]]$@)
 _AT_LIBI86_DO_CHECK_EXPOUT_B([[-Os ]]$@)
 _AT_LIBI86_DO_CHECK_EXPOUT_B([[-O2 -fno-omit-frame-pointer ]]$@)])
 
+dnl $1 = file name of program to compile
+dnl $2 = file to write compiled binary to (default a.exe)
+dnl $3 = program to run on dosemu (default a.exe)
+dnl $4 = options to pass to dosemu (default -dumb -quiet)
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_D],[dnl
 _AT_LIBI86_DO_CHECK_EXPOUT_C($@)
 _AT_LIBI86_DO_CHECK_EXPOUT_C([[-mrtd ]]$@)
