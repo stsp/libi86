@@ -14,26 +14,31 @@ dnl You should have received a copy of the GNU Lesser General Public License
 dnl along with this program; see the file COPYING3.LIB.  If not see
 dnl <http://www.gnu.org/licenses/>.
 
+dnl $1 = file name of program to compile
+dnl $2 = file to write compiled binary to (default a.exe)
+dnl $3 = GCC options
+m4_define([AT_LIBI86_COMPILE],[dnl
+at_libi86_multilib="`$CC $3 -print-multi-directory`"
+AT_CHECK([[$CC -o ]m4_default($2,a.exe) ]dnl
+[[-isystem "$abs_top_builddir/"ia16 -isystem "$abs_top_srcdir"/ia16 ]]dnl
+[[-Wall -Werror=strict-prototypes -Werror=missing-prototypes ]][$3] [$1] dnl
+[["$abs_top_builddir"/"$at_libi86_multilib"/ia16/libi86.a]],dnl
+,[[ignore]],[[ignore]])])
+
 dnl $1 = program to run on dosemu (default a.exe)
 dnl $2 = Unix path which $1 resides in (defaults to current directory)
-dnl $3 = options to pass to dosemu (default -dumb -quiet)
+dnl $3 = options to pass to dosemu (default -dumb -quiet >a.log)
 dnl $4 = Unix program to run to postprocess dosemu output (default
-dnl	 postproc-dosemu.sh in this file's source directory)
+dnl	 postproc-stdout.sh in this file's source directory)
 m4_define([AT_LIBI86_RUN],[[(
-  $DOSEMU ]m4_default($3,-dumb -quiet)[ -K ]m4_default($2,.)dnl
-    [ -E ]m4_default($1,a.exe)[ \
-    >a.log && \
-  ]m4_default($4,"$abs_srcdir"/postproc-dosemu.sh)[ <a.log && \
+  $DOSEMU ]m4_default($3,-dumb -quiet >a.log)[ -K ]m4_default($2,.)dnl
+    [ -E ]m4_default($1,a.exe)[ && \
+  ]m4_default($4,"$abs_srcdir"/postproc-stdout.sh)[ <a.log && \
   rm a.log
 )]])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_A],[dnl
-at_libi86_multilib="`$CC $1 -print-multi-directory`"
-AT_CHECK([[$CC -o ]m4_default($3,a.exe) ]dnl
-[[-isystem "$abs_top_builddir/"ia16 -isystem "$abs_top_srcdir"/ia16 ]]dnl
-[[-Wall -Werror=strict-prototypes -Werror=missing-prototypes ]][$1] [$2] dnl
-[["$abs_top_builddir"/"$at_libi86_multilib"/ia16/libi86.a]],dnl
-,[[ignore]],[[ignore]])
+AT_LIBI86_COMPILE($2,$3,$1)
 AT_CHECK([AT_LIBI86_RUN($4,,$5,$6)],,[[expout]],[[ignore]])])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_B],[dnl
@@ -48,9 +53,9 @@ _AT_LIBI86_DO_CHECK_EXPOUT_B([[-O2 -fno-omit-frame-pointer ]]$@)])
 dnl $1 = file name of program to compile
 dnl $2 = file to write compiled binary to (default a.exe)
 dnl $3 = program to run on dosemu (default a.exe)
-dnl $4 = options to pass to dosemu (default -dumb -quiet)
+dnl $4 = options to pass to dosemu (default -dumb -quiet >a.log)
 dnl $5 = Unix program to run to postprocess dosemu output (default
-dnl	 postproc-dosemu.sh in this file's source directory)
+dnl	 postproc-stdout.sh in this file's source directory)
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_D],[dnl
 _AT_LIBI86_DO_CHECK_EXPOUT_C($@)
 _AT_LIBI86_DO_CHECK_EXPOUT_C([[-mrtd ]]$@)
@@ -60,9 +65,15 @@ m4_define([AT_LIBI86_CHECK_FOR_TINY_AND_SMALL_MODEL],[dnl
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
-_AT_LIBI86_DO_CHECK_EXPOUT_D(,a.c)
-_AT_LIBI86_DO_CHECK_EXPOUT_D([[-mcmodel=small]],a.c)])
+_AT_LIBI86_DO_CHECK_EXPOUT_D(,a.c,,m4_shift(m4_shift($@)))
+_AT_LIBI86_DO_CHECK_EXPOUT_D([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))])
 
+dnl $1 = text of program to test
+dnl $2 = expected program output
+dnl $3 = program to run on dosemu (default a.exe)
+dnl $4 = options to pass to dosemu (default -dumb -quiet >a.log)
+dnl $5 = Unix program to run to postprocess dosemu output (default
+dnl	 postproc-stdout.sh in this file's source directory)
 m4_define([AT_LIBI86_CHECK],[dnl
 AT_LIBI86_CHECK_FOR_TINY_AND_SMALL_MODEL($@)])
 
@@ -70,4 +81,26 @@ m4_define([AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE],[dnl
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
-_AT_LIBI86_DO_CHECK_EXPOUT_D([[-mcmodel=small]],a.c)])
+_AT_LIBI86_DO_CHECK_EXPOUT_D([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))])
+
+m4_define([AT_LIBI86_CONSOLE_CAPTURE_PROG],["$abs_srcdir"/capture.S])
+
+dnl $1 = text of program to test
+dnl $2 = expected program output on console
+dnl $3 = additional options to pass to dosemu (especially -input ...)
+m4_define([AT_LIBI86_CHECK_CONSOLE],[dnl
+dnl FIXME: capture.exe is rebuilt at each call to AT_LIBI86_CHECK_CONSOLE(...).
+AT_LIBI86_COMPILE(AT_LIBI86_CONSOLE_CAPTURE_PROG,capture.exe,-Os -mregparmcall)
+AT_DATA([[x.bat]],dnl
+[[@echo off
+cls
+a.exe
+if errorlevel 0 goto ok
+echo !!!BAD!!! >a.log
+exit
+:ok
+capture.exe >a.log
+if errorlevel 1 echo !!!BAD!!! >>a.log
+]])
+AT_LIBI86_CHECK([$1],[$2],[[x.bat]],[$3 [-t >/dev/null]],dnl
+[["$abs_srcdir"/postproc-console.sh]])])
