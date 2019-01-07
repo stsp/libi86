@@ -34,8 +34,18 @@ _bios_keybrd (unsigned service)
 		      : "cc", "memory");
       break;
 
-    default:
+    case _KEYBRD_READ:
+    case _KEYBRD_SHIFTSTATUS:
+    case _NKEYBRD_READ:
+    case _NKEYBRD_SHIFTSTATUS:
       __asm volatile ("int $0x16" : "=a" (ax) : "0" (ax) : "cc", "memory");
+      break;
+
+    default:
+      __asm volatile ("pushw %%bp; int $0x16; popw %%bp"
+		      : "=a" (ax)
+		      : "0" (ax)
+		      : "bx", "cx", "dx", "si", "di", "cc", "memory");
     }
 
   return ax;
