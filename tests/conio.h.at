@@ -45,11 +45,13 @@ int main (int argc, char **argv)
   cprintf ("kbhit () = %s\n", kbhit () ? "true" : "false");
   c = getche ();
   cprintf ("getche () = %#x\n", c);
+  cprintf ("kbhit () = %s\n", kbhit () ? "true" : "false");
   return 0;
 }]],[[getch () = 0
 getch () = 0x3f
 !getche () = 0x21
 kbhit () = true
 @getche () = 0x40
+kbhit () = false
 ]],[[-input '\p20;\F5;!']])
 AT_CLEANUP

@@ -128,6 +128,12 @@ int main (void)
     abort ();
   if (rv != _bios_memsize ())
     abort ();
+  memset (&regs, 0xf6, sizeof (regs));
+  rv = (unsigned) int86 (0x11, &regs, &regs);
+  if (rv != regs.w.ax)
+    abort ();
+  if (rv != _bios_equiplist ())
+    abort ();
   return 0;
 }]],[])
 AT_CLEANUP
@@ -193,6 +199,39 @@ int main (void)
   return 0;
 }]],[[Hello again!
 ]])
+AT_LIBI86_CHECK(dnl
+[[#include <bios.h>
+#include <i86.h>
+#include <stdlib.h>
+#include <string.h>
+int main (void)
+{
+  union REGS regs;
+  struct SREGS sregs;
+  memset (&regs, 0xf6, sizeof (regs));
+  memset (&sregs, 0xf6, sizeof (sregs));
+  unsigned rv = (unsigned) int86x (0x12, &regs, &regs, &sregs);
+  if (rv != regs.w.ax)
+    abort ();
+  if (rv != _bios_memsize ())
+    abort ();
+  if (sregs.ds != 0xf6f6u)
+    abort ();
+  if (sregs.es != 0xf6f6u)
+    abort ();
+  memset (&regs, 0xf6, sizeof (regs));
+  memset (&sregs, 0xf6, sizeof (sregs));
+  rv = (unsigned) int86x (0x11, &regs, &regs, &sregs);
+  if (rv != regs.w.ax)
+    abort ();
+  if (rv != _bios_equiplist ())
+    abort ();
+  if (sregs.ds != 0xf6f6u)
+    abort ();
+  if (sregs.es != 0xf6f6u)
+    abort ();
+  return 0;
+}]],[])
 AT_CLEANUP
 
 AT_SETUP([[intr]])
@@ -244,4 +283,30 @@ int main (void)
   return 0;
 }]],[[Hello from intr...
 ]])
+AT_LIBI86_CHECK(dnl
+[[#include <bios.h>
+#include <i86.h>
+#include <stdlib.h>
+#include <string.h>
+int main (void)
+{
+  union REGPACK regs;
+  memset (&regs, 0xf6, sizeof (regs));
+  intr (0x12, &regs);
+  if (regs.w.ax != _bios_memsize ())
+    abort ();
+  if (regs.w.ds != 0xf6f6u)
+    abort ();
+  if (regs.w.es != 0xf6f6u)
+    abort ();
+  memset (&regs, 0xf6, sizeof (regs));
+  intr (0x11, &regs);
+  if (regs.w.ax != _bios_equiplist ())
+    abort ();
+  if (regs.w.ds != 0xf6f6u)
+    abort ();
+  if (regs.w.es != 0xf6f6u)
+    abort ();
+  return 0;
+}]],[])
 AT_CLEANUP

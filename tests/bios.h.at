@@ -44,3 +44,43 @@ int main (void)
   return 0;
 }]],[])
 AT_CLEANUP
+
+AT_SETUP([[_bios_equiplist]])
+AT_LIBI86_CHECK(dnl
+[[#include <stdlib.h>
+#include <bios.h>
+int main (void)
+{
+  unsigned short hw = _bios_equiplist ();
+  if (hw != * (unsigned short __far *) 0x00400010ul)
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP
+
+AT_SETUP([[_bios_keybrd]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#include <stdlib.h>
+#include <bios.h>
+int main (void)
+{
+  if (_bios_keybrd (_KEYBRD_READ) != 0x3f00u)
+    abort ();
+  if (_bios_keybrd (_NKEYBRD_READ) != 0x4100u)
+    abort ();
+  while (! _bios_keybrd (_KEYBRD_READY));
+  if (_bios_keybrd (_KEYBRD_READ) % 0x100u != (unsigned short) 'a')
+    abort ();
+  while (! _bios_keybrd (_NKEYBRD_READY));
+  if (_bios_keybrd (_NKEYBRD_READ) % 0x100u != (unsigned short) 'A')
+    abort ();
+  if (_bios_keybrd (_NKEYBRD_READ) % 0x100u != (unsigned short) '!')
+    abort ();
+  if (_bios_keybrd (_KEYBRD_READ) != 0x2300u)
+    abort ();
+  if (_bios_keybrd (_KEYBRD_READY)
+      || _bios_keybrd (_NKEYBRD_READY))
+    abort ();
+  return 0;
+}]],[],[[-input '\p20;\F5;\F7;\p30;a\p30;A!\Ah']])
+AT_CLEANUP
