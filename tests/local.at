@@ -95,7 +95,7 @@ AT_DATA([[x.bat]],dnl
 [[@echo off
 cls
 a.exe
-if errorlevel 0 goto ok
+if not errorlevel 1 goto ok
 echo !!!BAD!!! >a.log
 exit
 :ok
