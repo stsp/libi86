@@ -102,5 +102,5 @@ exit
 capture.exe >a.log
 if errorlevel 1 echo !!!BAD!!! >>a.log
 ]])
-AT_LIBI86_CHECK([$1],[$2],[[x.bat]],[$3 [-t >/dev/null]],dnl
+AT_LIBI86_CHECK([$1],[$2],[['call x.bat']],[$3 [-t >/dev/null]],dnl
 [["$abs_srcdir"/postproc-console.sh]])])
