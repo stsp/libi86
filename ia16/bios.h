@@ -23,6 +23,17 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
+#ifndef __cplusplus
+struct diskinfo_t
+{
+  unsigned drive, head, track, sector, nsectors;
+  void __far *buffer;
+};
+#else
+/* The GNU C++ parser does not support the __far keyword yet.  Ugh.  */
+struct diskinfo_t;
+#endif
+
 _LIBI86_ALT_INLINE unsigned short
 _bios_equiplist (void)
 {
@@ -39,12 +50,21 @@ _bios_memsize (void)
   return a;
 }
 
+extern unsigned short _bios_disk (unsigned __service,
+				  struct diskinfo_t *__diskinfo);
 extern unsigned short _bios_keybrd (unsigned __service);
 /* Note:  The Open Watcom C Library Reference gives the prototype
 	int _bios_timeofday (int service, long *__timeval);
    with different argument and return types.  I follow the actual Open Watcom
    <bios.h> prototype here.  */
 extern unsigned short _bios_timeofday (unsigned __service, long *__timeval);
+
+#define _DISK_RESET		0
+#define _DISK_STATUS		1
+#define _DISK_READ		2
+#define _DISK_WRITE		3
+#define _DISK_VERIFY		4
+#define _DISK_FORMAT		5
 
 #define _KEYBRD_READ		0x00u
 #define _KEYBRD_READY		0x01u
