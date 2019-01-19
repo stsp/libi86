@@ -198,7 +198,7 @@ sound (int __freq)
 # endif
 #endif
 
-#define FP_SEG(__p)	((unsigned) \
+#define FP_SEG(__p)	__builtin_ia16_selector ((unsigned) \
 			  ((unsigned long) (void __far *) (__p) >> 16))
 #define FP_OFF(__p)	__builtin_ia16_FP_OFF (__p)
 #define MK_FP(__s, __o)	((void __far *) \
