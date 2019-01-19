@@ -30,7 +30,7 @@ __libi86_inp:
 inp:
 _inp:
 	ENTER_BX_(2)
-	MOV_ARG0W_BX_(%dx)
+	MOV_ARG0W_BX_CLOBBER_(%dx)
 	inb	%dx,	%al
 	movb	$0,	%ah
 	RET_(2)

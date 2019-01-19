@@ -120,7 +120,7 @@
 				.endif
 #   define MOV_ARG4W_BX_CLOBBER_(reg) \
 				.ifnc %cx, reg; \
-				.ifc %cx, reg; \
+				.ifc %ax, reg; \
 				xchgw %ax, %cx; \
 				.else; \
 				movw %cx, reg; \

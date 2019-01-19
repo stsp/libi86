@@ -30,6 +30,6 @@ __libi86_inpw:
 inpw:
 _inpw:
 	ENTER_BX_(2)
-	MOV_ARG0W_BX_(%dx)
+	MOV_ARG0W_BX_CLOBBER_(%dx)
 	inw	%dx,	%ax
 	RET_(2)
