@@ -19,7 +19,8 @@ AT_BANNER([[<conio.h> tests]])
 AT_SETUP([[cprintf, cputs]])
 AT_LIBI86_CHECK_CONSOLE(dnl
 [[#include <conio.h>
-int main (int argc, char **argv)
+int
+main (int argc, char **argv)
 {
   cputs ("hello ");
   cprintf ("%s%c...\n\n...with argc == %#x\n", "world", (int) '!', argc);
@@ -33,7 +34,8 @@ AT_CLEANUP
 AT_SETUP([[getch, getche, kbhit, ungetch]])
 AT_LIBI86_CHECK_CONSOLE(dnl
 [[#include <conio.h>
-int main (int argc, char **argv)
+int
+main (int argc, char **argv)
 {
   int c = getch ();
   cprintf ("getch () = %#x\n", c);
@@ -54,4 +56,76 @@ kbhit () = true
 @getche () = 0x40
 kbhit () = false
 ]],[[-input '\p20;\F5;!']])
+AT_CLEANUP
+
+AT_SETUP([[inp, outp]])
+AT_LIBI86_CHECK(dnl
+[[#include <conio.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+static unsigned ticks (void)
+{
+  return *(unsigned volatile __far *) 0x0040006cul;
+}
+
+static void do_abort (unsigned char s_ocw1)
+{
+  outp (0x21, s_ocw1);
+  abort ();
+}
+
+int
+main (void)
+{
+  unsigned from, c1, c2;
+  unsigned char s_ocw1 = inp (0x21);
+
+  /* Check that the PIC 1 interrupt mask given by the output control word 1
+     (OCW1) does not have either IRQ 0 or IRQ 1 disabled.  */
+  if ((s_ocw1 & 0x03) != 0x00)
+    abort ();
+
+  srand (ticks ());
+  c1 = 5000;
+  while (c1-- != 0)
+    {
+      outp (0x21, 0xff);
+      /* Check that the handler for the timer interrupt (IRQ 0) cannot
+	 update the tick count, when IRQs 0--7 are disabled.  */
+      from = ticks ();
+      c2 = rand() / (RAND_MAX / 100) + 1;
+      while (c2-- != 0)
+	{
+	  if (ticks () != from)
+	    do_abort (s_ocw1);
+        }
+      if (inp (0x21) != 0xff)
+	do_abort (s_ocw1);
+
+      outp (0x21, s_ocw1 | 0x01);
+      /* Check that the IRQ 0 handler cannot update the tick count when IRQ
+	 0 is disabled.  */
+      c2 = rand() / (RAND_MAX / 100) + 1;
+      while (c2-- != 0)
+	{
+	  if (ticks () != from)
+	    do_abort (s_ocw1);
+        }
+      if (inp (0x21) != (s_ocw1 | 0x01))
+	do_abort (s_ocw1);
+
+      /* Allow IRQs 0--7 for a while.  Every now and then, also wait for the
+	 timer tick count to get updated.  */
+      outp (0x21, s_ocw1);
+      if (c1 % 200 == 0)
+	while (ticks () == from)
+	  __asm volatile ("hlt");
+      if (inp (0x21) != s_ocw1)
+	do_abort (s_ocw1);
+    }
+
+  return 0;
+}
+]],[])
 AT_CLEANUP
