@@ -27,12 +27,12 @@ AT_CHECK([[$CC -o ]m4_default($2,a.exe) ]dnl
 
 dnl $1 = program to run on dosemu (default a.exe)
 dnl $2 = Unix path which $1 resides in (defaults to current directory)
-dnl $3 = options to pass to dosemu (default -dumb -quiet >a.log)
+dnl $3 = options to pass to dosemu (default -dumb >a.log)
 dnl $4 = Unix program to run to postprocess dosemu output (default
 dnl	 postproc-stdout.sh in this file's source directory)
 m4_define([AT_LIBI86_RUN],[[(
-  $DOSEMU ]m4_default($3,-dumb -quiet >a.log)[ -K ]m4_default($2,.)dnl
-    [ -E ]m4_default($1,a.exe)[ && \
+  $DOSEMU ]m4_default($3,-dumb >a.log)[ \
+    ]m4_default($2,.)/m4_default($1,a.exe)[ && \
   ]m4_default($4,"$abs_srcdir"/postproc-stdout.sh)[ <a.log && \
   rm a.log
 )]])
@@ -53,7 +53,7 @@ _AT_LIBI86_DO_CHECK_EXPOUT_B([[-O2 -fno-omit-frame-pointer ]]$@)])
 dnl $1 = file name of program to compile
 dnl $2 = file to write compiled binary to (default a.exe)
 dnl $3 = program to run on dosemu (default a.exe)
-dnl $4 = options to pass to dosemu (default -dumb -quiet >a.log)
+dnl $4 = options to pass to dosemu (default -dumb >a.log)
 dnl $5 = Unix program to run to postprocess dosemu output (default
 dnl	 postproc-stdout.sh in this file's source directory)
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_D],[dnl
@@ -71,7 +71,7 @@ _AT_LIBI86_DO_CHECK_EXPOUT_D([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))])
 dnl $1 = text of program to test
 dnl $2 = expected program output
 dnl $3 = program to run on dosemu (default a.exe)
-dnl $4 = options to pass to dosemu (default -dumb -quiet >a.log)
+dnl $4 = options to pass to dosemu (default -dumb >a.log)
 dnl $5 = Unix program to run to postprocess dosemu output (default
 dnl	 postproc-stdout.sh in this file's source directory)
 m4_define([AT_LIBI86_CHECK],[dnl
@@ -97,10 +97,11 @@ cls
 a.exe
 if not errorlevel 1 goto ok
 echo !!!BAD!!! >a.log
-exit
+goto done
 :ok
 capture.exe >a.log
 if errorlevel 1 echo !!!BAD!!! >>a.log
+:done
 ]])
-AT_LIBI86_CHECK([$1],[$2],[['call x.bat']],[$3 [-t >/dev/null]],dnl
+AT_LIBI86_CHECK([$1],[$2],[[x.bat]],[$3 [-t </dev/null >/dev/null]],dnl
 [["$abs_srcdir"/postproc-console.sh]])])

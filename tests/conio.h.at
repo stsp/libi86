@@ -61,7 +61,6 @@ AT_CLEANUP
 AT_SETUP([[inp, outp]])
 AT_LIBI86_CHECK(dnl
 [[#include <conio.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 static unsigned ticks (void)
