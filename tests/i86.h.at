@@ -310,3 +310,69 @@ int main (void)
   return 0;
 }]],[])
 AT_CLEANUP
+
+AT_SETUP([[_disable, _enable]])
+AT_LIBI86_CHECK(dnl
+[[#include <i86.h>
+#include <stdlib.h>
+
+static unsigned ticks (void)
+{
+  return *(unsigned volatile __far *) 0x0040006cul;
+}
+
+static unsigned flags (void)
+{
+  unsigned f;
+  __asm volatile ("pushfw; popw %0" : "=g" (f) : : "memory");
+  return f;
+}
+
+static void do_abort (void)
+{
+  _enable ();
+  abort ();
+}
+
+int
+main (void)
+{
+  unsigned from, c1, c2;
+
+  if (! (flags () & 0x0200u))
+    abort ();
+
+  srand (ticks ());
+  c1 = 5000;
+  while (c1-- != 0)
+    {
+      _disable ();
+
+      /* Check that the handler for the timer interrupt (IRQ 0) cannot
+	 update the tick count, when all IRQs are disabled.  */
+      from = ticks ();
+      if (flags () & 0x0200u)
+	do_abort ();
+      c2 = rand() / (RAND_MAX / 100) + 1;
+      while (c2-- != 0)
+	{
+	  if (ticks () != from)
+	    do_abort ();
+        }
+      if (flags () & 0x0200u)
+	do_abort ();
+
+      /* Allow interrupts for a while.  Every now and then, also wait for
+	 the timer tick count to get updated.  */
+      _enable ();
+      if (c1 % 200 == 0)
+	while (ticks () == from)
+	  __asm volatile ("hlt");
+      if (! (flags () & 0x0200u))
+	do_abort ();
+    }
+
+  return 0;
+}
+]],[])
+AT_CLEANUP
