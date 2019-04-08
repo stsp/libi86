@@ -45,10 +45,9 @@ extern int cprintf (const char *, ...)
 	   __attribute__ ((__format__ (__printf__, 1, 2)));
 extern int cputs (const char *);
 extern int cscanf (const char *, ...)
-	   __attribute__ ((__format__ (__scanf__, 1, 2),
-			   __deprecated__ ("libi86 cscanf is hard to control, "
-					   "and works differently from Open "
-					   "Watcom cscanf")));
+	   __attribute__ ((__format__ (__scanf__, 1, 2)))
+	   _LIBI86_DEPRECATED (	"libi86 cscanf is hard to control, and works "
+				"differently from Open Watcom cscanf");
 extern int _getch (void);
 extern int _getche (void);
 extern int _kbhit (void);
@@ -56,9 +55,8 @@ extern int _ungetch (int);
 extern int putch (int);
 extern int vcprintf (const char *, _LIBI86_VA_LIST);
 extern int vcscanf (const char *, _LIBI86_VA_LIST)
-	   __attribute__ ((__deprecated__ ("libi86 vcscanf is hard to "
-					   "control, and works differently "
-					   "from Open Watcom vcscanf")));
+	   _LIBI86_DEPRECATED (	"libi86 vcscanf is hard to control, and works "
+				"differently from Open Watcom vcscanf");
 
 #ifndef _LIBI86_COMPILING_
 extern int _LIBI86_REDIRECT (getch, (void), _getch);

@@ -42,7 +42,7 @@
 #define _LIBI86_ASM_NAME_3(prefix, c_name) #prefix c_name
 
 /*
- * Add a attributes to make a function declaration an alias for the function
+ * Add an attribute to make a function declaration an alias for the function
  * ALIAS_TO.
  */
 #define _LIBI86_ALIAS(alias_to) \
@@ -53,6 +53,15 @@
  */
 #define _LIBI86_WEAK_ALIAS(alias_to) \
 	__attribute__ ((__weak__, __alias__ (_LIBI86_ASM_NAME (alias_to))))
+/*
+ * If compiling user code, add an attribute to warn that a function is
+ * deprecated.
+ */
+#ifdef _LIBI86_COMPILING_
+# define _LIBI86_DEPRECATED(msg)
+#else
+# define _LIBI86_DEPRECATED(msg) __attribute__ ((__deprecated__ (msg)))
+#endif
 /*
  * Many of the header files have `extern inline' versions of functions which
  * can be used instead of the out-of-line versions, and they require this
