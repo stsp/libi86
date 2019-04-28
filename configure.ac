@@ -31,6 +31,7 @@ AC_INIT([libi86],m4_esyscmd_s([
   else
     TZ=UTC0 date +%Y%m%d
   fi]),,[libi86])
+AC_DISABLE_OPTION_CHECKING
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_PROG_CC

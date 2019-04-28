@@ -15,6 +15,7 @@ dnl along with this program; see the file COPYING3.LIB.  If not see
 dnl <http://www.gnu.org/licenses/>.
 
 dnl Derived from libgloss/cr16/configure.in in Newlib.
+set -x
 AC_PREREQ(2.69)
 AC_INIT([libi86],m4_esyscmd_s([
   if git diff --quiet HEAD; then
@@ -72,6 +73,7 @@ AC_SUBST(host_makefile_frag)
 AC_CONFIG_FILES([Makefile],
 [. ${libi86_topdir}/config-ml.in],
 srcdir="${srcdir}"
+host="${host}"
 target="${target}"
 with_multisubdir="${with_multisubdir}"
 ac_configure_args="--enable-multilib ${ac_configure_args}"
