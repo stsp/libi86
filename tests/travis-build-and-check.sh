@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2018 TK Chia
+# Copyright (c) 2018--2019 TK Chia
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,7 +25,8 @@ cd build-$$
 # Travis CI sets $CC to `gcc'.  This interferes with the `configure' script's
 # detection of the C compiler, which should really be `ia16-elf-gcc'.  (!)
 unset CC
-../configure --host=ia16-elf --prefix="$inst_prefix" ${1+"$@"}
+../configure --host=ia16-elf --prefix="$inst_prefix" --disable-elks-libc \
+  ${1+"$@"}
 make
 make check || \
   (cat tests/testsuite.log && exit 1)
