@@ -32,6 +32,7 @@ dnl $4 = Unix program to run to postprocess dosemu output (default
 dnl	 postproc-stdout.sh in this file's source directory)
 m4_define([AT_LIBI86_RUN],[[(
   rm -f a.log && \
+  ulimit -t 60 && \
   $DOSEMU ]m4_default($3,-dumb >a.log)[ \
     ]m4_default($2,.)/m4_default($1,a.exe)[ </dev/null && \
   test -f a.log && \
@@ -44,13 +45,17 @@ AT_LIBI86_COMPILE($2,$3,$1)
 AT_CHECK([AT_LIBI86_RUN($4,,$5,$6)],,[[expout]],[[ignore]])])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_B],[dnl
-_AT_LIBI86_DO_CHECK_EXPOUT_A($@)
-_AT_LIBI86_DO_CHECK_EXPOUT_A([[-march=any_186 ]]$@)])
+_AT_LIBI86_DO_CHECK_EXPOUT_A([[-O2 ]]$@)
+_AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os ]]$@)])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_C],[dnl
-_AT_LIBI86_DO_CHECK_EXPOUT_B([[-O2 ]]$@)
-_AT_LIBI86_DO_CHECK_EXPOUT_B([[-Os ]]$@)
-_AT_LIBI86_DO_CHECK_EXPOUT_B([[-O2 -fno-omit-frame-pointer ]]$@)])
+_AT_LIBI86_DO_CHECK_EXPOUT_B($@)
+_AT_LIBI86_DO_CHECK_EXPOUT_B([[-march=any_186 ]]$@)])
+
+m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_D],[dnl
+_AT_LIBI86_DO_CHECK_EXPOUT_B($@)
+_AT_LIBI86_DO_CHECK_EXPOUT_B([[-mrtd ]]$@)
+_AT_LIBI86_DO_CHECK_EXPOUT_C([[-mregparmcall ]]$@)])
 
 dnl $1 = file name of program to compile
 dnl $2 = file to write compiled binary to (default a.exe)
@@ -58,17 +63,24 @@ dnl $3 = program to run on dosemu (default a.exe)
 dnl $4 = options to pass to dosemu (default -dumb >a.log)
 dnl $5 = Unix program to run to postprocess dosemu output (default
 dnl	 postproc-stdout.sh in this file's source directory)
-m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_D],[dnl
-_AT_LIBI86_DO_CHECK_EXPOUT_C($@)
-_AT_LIBI86_DO_CHECK_EXPOUT_C([[-mrtd ]]$@)
-_AT_LIBI86_DO_CHECK_EXPOUT_C([[-mregparmcall ]]$@)])
+m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_E],[dnl
+_AT_LIBI86_DO_CHECK_EXPOUT_D($@)
+_AT_LIBI86_DO_CHECK_EXPOUT_D([[-mdpmiable ]]$@)
+_AT_LIBI86_DO_CHECK_EXPOUT_D([[-mprotected-mode ]]$@)])
 
-m4_define([AT_LIBI86_CHECK_FOR_TINY_AND_SMALL_MODEL],[dnl
+m4_define([AT_LIBI86_CHECK_FOR_TINY_AND_SMALL_MODEL_NONDPMIABLE],[dnl
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
 _AT_LIBI86_DO_CHECK_EXPOUT_D(,a.c,,m4_shift(m4_shift($@)))
 _AT_LIBI86_DO_CHECK_EXPOUT_D([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))])
+
+m4_define([AT_LIBI86_CHECK_FOR_TINY_AND_SMALL_MODEL],[dnl
+AT_DATA([[a.c]],[$1
+])
+AT_DATA([[expout]],[$2])
+_AT_LIBI86_DO_CHECK_EXPOUT_E(,a.c,,m4_shift(m4_shift($@)))
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))])
 
 dnl $1 = text of program to test
 dnl $2 = expected program output
@@ -79,10 +91,23 @@ dnl	 postproc-stdout.sh in this file's source directory)
 m4_define([AT_LIBI86_CHECK],[dnl
 AT_LIBI86_CHECK_FOR_TINY_AND_SMALL_MODEL($@)])
 
+m4_define([AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE],[dnl
+AT_DATA([[a.c]],[$1
+])
+AT_DATA([[expout]],[$2])
+_AT_LIBI86_DO_CHECK_EXPOUT_D([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))])
+
 m4_define([AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE],[dnl
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))])
+
+m4_define([AT_LIBI86_CHECK_FOR_NONDPMIABLE],[dnl
+AT_DATA([[a.c]],[$1
+])
+AT_DATA([[expout]],[$2])
+_AT_LIBI86_DO_CHECK_EXPOUT_D(,a.c,,m4_shift(m4_shift($@)))
 _AT_LIBI86_DO_CHECK_EXPOUT_D([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))])
 
 m4_define([AT_LIBI86_CONSOLE_CAPTURE_PROG],["$abs_srcdir"/capture.S])
@@ -105,4 +130,20 @@ if errorlevel 1 del a.log
 :done
 ]])
 AT_LIBI86_CHECK([$1],[$2],[[x.bat]],[$3 [-t >/dev/null]],dnl
+[["$abs_srcdir"/postproc-console.sh]])])
+
+m4_define([AT_LIBI86_CHECK_CONSOLE_FOR_NONDPMIABLE],[dnl
+AT_LIBI86_COMPILE(AT_LIBI86_CONSOLE_CAPTURE_PROG,capture.exe,-Os -mregparmcall)
+AT_DATA([[x.bat]],dnl
+[[@echo off
+cls
+a.exe
+if not errorlevel 1 goto ok
+goto done
+:ok
+capture.exe >a.log
+if errorlevel 1 del a.log
+:done
+]])
+AT_LIBI86_CHECK_FOR_NONDPMIABLE([$1],[$2],[[x.bat]],[$3 [-t >/dev/null]],dnl
 [["$abs_srcdir"/postproc-console.sh]])])

@@ -139,7 +139,7 @@ int main (void)
 AT_CLEANUP
 
 AT_SETUP([[int86x]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
 [[#include <stdlib.h>
 #include <i86.h>
 #include <string.h>
@@ -169,7 +169,7 @@ int main (void)
   return 0;
 }]],[[Hello from int86x!
 ]])
-AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE(dnl
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE(dnl
 [[#include <stdlib.h>
 #include <string.h>
 #include <i86.h>
@@ -199,7 +199,7 @@ int main (void)
   return 0;
 }]],[[Hello again!
 ]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
 [[#include <bios.h>
 #include <i86.h>
 #include <stdlib.h>
@@ -235,7 +235,7 @@ int main (void)
 AT_CLEANUP
 
 AT_SETUP([[intr]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
 [[#include <i86.h>
 #include <stdlib.h>
 #include <string.h>
@@ -259,7 +259,7 @@ int main (void)
   return 0;
 }]],[[Hello from intr!
 ]])
-AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE(dnl
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE(dnl
 [[#include <i86.h>
 #include <stdlib.h>
 #include <string.h>
@@ -283,7 +283,7 @@ int main (void)
   return 0;
 }]],[[Hello from intr...
 ]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
 [[#include <bios.h>
 #include <i86.h>
 #include <stdlib.h>
@@ -321,12 +321,14 @@ static unsigned ticks (void)
   return *(unsigned volatile __far *) 0x0040006cul;
 }
 
+#ifndef __IA16_FEATURE_PROTECTED_MODE
 static unsigned flags (void)
 {
   unsigned f;
   __asm volatile ("pushfw; popw %0" : "=g" (f) : : "memory");
   return f;
 }
+#endif
 
 static void do_abort (void)
 {
@@ -339,8 +341,10 @@ main (void)
 {
   unsigned from, c1, c2;
 
+#ifndef __IA16_FEATURE_PROTECTED_MODE
   if (! (flags () & 0x0200u))
     abort ();
+#endif
 
   srand (ticks ());
   c1 = 5000;
@@ -351,25 +355,38 @@ main (void)
       /* Check that the handler for the timer interrupt (IRQ 0) cannot
 	 update the tick count, when all IRQs are disabled.  */
       from = ticks ();
+#ifndef __IA16_FEATURE_PROTECTED_MODE
       if (flags () & 0x0200u)
 	do_abort ();
+#endif
       c2 = rand() / (RAND_MAX / 100) + 1;
       while (c2-- != 0)
 	{
 	  if (ticks () != from)
 	    do_abort ();
         }
+#ifndef __IA16_FEATURE_PROTECTED_MODE
       if (flags () & 0x0200u)
 	do_abort ();
+#endif
 
       /* Allow interrupts for a while.  Every now and then, also wait for
 	 the timer tick count to get updated.  */
       _enable ();
       if (c1 % 200 == 0)
 	while (ticks () == from)
-	  __asm volatile ("hlt");
+	  {
+#ifndef __IA16_FEATURE_PROTECTED_MODE
+	    __asm volatile ("hlt");
+#else
+	    unsigned ax;
+	    __asm volatile ("int $0x2f" : "=a" (ax) : "0" (0x1680u) : "cc");
+#endif
+	  }
+#ifndef __IA16_FEATURE_PROTECTED_MODE
       if (! (flags () & 0x0200u))
 	do_abort ();
+#endif
     }
 
   return 0;

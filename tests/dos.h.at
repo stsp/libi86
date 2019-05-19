@@ -40,7 +40,26 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[intdos]])
-AT_LIBI86_CHECK_FOR_TINY_AND_SMALL_MODEL(dnl
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+void abort (void);
+int
+main (void)
+{
+  union REGS regs;
+  int rv;
+#ifdef __MSDOS__
+  regs.h.ah = 0x02;
+  regs.h.dl = 'y';
+  intdos (&regs, &regs);
+  write (1, "o\r\n", 3);
+  return 0;
+#else
+# error
+#endif
+}]],[[yo
+]])
+AT_LIBI86_CHECK_FOR_TINY_AND_SMALL_MODEL_NONDPMIABLE(dnl
 [[#include <dos.h>
 void abort (void);
 int
@@ -66,7 +85,46 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[intdosx]])
-AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE(dnl
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+#include <unistd.h>
+void abort (void);
+static unsigned
+get_cs (void)
+{
+  unsigned v;
+  __asm volatile ("movw %%cs, %0" : "=r" (v));
+  return v;
+}
+static unsigned
+get_ss (void)
+{
+  unsigned v;
+  __asm volatile ("movw %%ss, %0" : "=r" (v));
+  return v;
+}
+int
+main (void)
+{
+  union REGS r;
+  struct SREGS sr;
+#ifdef __MSDOS__
+  sr.ds = 1;
+  sr.es = 2;
+  r.h.ah = 0x02;
+  r.h.dl = 'y';
+  intdosx (&r, &r, &sr);
+  if ((sr.ds & ~3u) != 0 || (sr.es & ~3u) != 0
+      || sr.cs != get_cs () || sr.ss != get_ss ())
+    abort ();
+  write (1, "o\r\n", 3);
+  return 0;
+#else
+# error
+#endif
+}]],[[yo
+]])
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE(dnl
 [[#include <dos.h>
 #include <string.h>
 #include <time.h>
@@ -77,13 +135,15 @@ void abort (void);
 __far const char msg1[] = "hello world",
 		 msg2[] = "s\r\nso I put a ",
 		 msg3[] = " in your ";
-static unsigned get_cs (void)
+static unsigned
+get_cs (void)
 {
   unsigned v;
   __asm volatile ("movw %%cs, %0" : "=r" (v));
   return v;
 }
-static unsigned get_ss (void)
+static unsigned
+get_ss (void)
 {
   unsigned v;
   __asm volatile ("movw %%ss, %0" : "=r" (v));

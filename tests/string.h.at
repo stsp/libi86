@@ -17,7 +17,7 @@ dnl <http://www.gnu.org/licenses/>.
 AT_BANNER([[<libi86/string.h> tests]])
 
 AT_SETUP([[_fmemcpy]])
-AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE(dnl
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE(dnl
 [[#include <dos.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -47,7 +47,7 @@ main (void)
 #endif
 }]],[[world hello!!!
 ]])
-AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE(dnl
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE(dnl
 [[#include <unistd.h>
 #include <libi86/string.h>
 __far const char foo[] = "hello!!!", bar[] = "world ";
@@ -65,7 +65,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_fmemmove]])
-AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE(dnl
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE(dnl
 [[#include <unistd.h>
 #include <libi86/string.h>
 const char __far foo[] = "!hello!!!\n\n";

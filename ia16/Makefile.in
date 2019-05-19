@@ -60,6 +60,7 @@ INSTALL_LIBS	= libi86.a
 INSTALL_HEADERS	= bios.h \
 		  conio.h \
 		  dos.h \
+		  dpmi.h \
 		  i86.h \
 		  libi86/string.h \
 		  libi86/internal/cdefs.h \
@@ -114,8 +115,8 @@ OBJS		= bdos.o \
 		      $(foreach dc,0 1 2 3 4 5 6 7, \
 			libi86-intr-call-0$(da)$(db)$(dc).o)))
 CFLAGS		= -mseparate-code-segment
-ifeq "" "$(filter -O%,$(CC) $(CFLAGS))"
-CFLAGS		+= -O2
+ifeq "" "$(filter -O%,$(CC) $(CFLAGS) $(MULTILIB))"
+  CFLAGS	+= -O2
 endif
 ASFLAGS		=
 # Headers we depend on when creating .o files; these do not include

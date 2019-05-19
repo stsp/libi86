@@ -59,8 +59,13 @@ int main (void)
 AT_CLEANUP
 
 AT_SETUP([[_bios_keybrd]])
-AT_LIBI86_CHECK_CONSOLE(dnl
+dnl FIXME: dosemu 1.4.0.8 with `-input ...' and a DPMI program crashes with
+dnl "ERROR: do_call_back() executed within the signal context!", and it
+dnl seems non-trivial to work around this problem.  For now, turn off the
+dnl _bios_keybrd (.) tests that involve DPMI.  -- tkchia 20190519
+AT_LIBI86_CHECK_CONSOLE_FOR_NONDPMIABLE(dnl
 [[#include <stdlib.h>
+#include <unistd.h>
 #include <bios.h>
 int main (void)
 {

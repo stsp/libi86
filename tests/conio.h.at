@@ -59,7 +59,7 @@ kbhit () = false
 AT_CLEANUP
 
 AT_SETUP([[inp, outp]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
 [[#include <conio.h>
 #include <stdlib.h>
 

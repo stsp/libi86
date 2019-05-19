@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2019 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -16,21 +16,16 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LIBI86_DOS_H_
-#define _LIBI86_DOS_H_
+#ifndef _LIBI86_DPMI_H_
+#define _LIBI86_DPMI_H_
 
 #include <libi86/internal/cdefs.h>
 
-/* <dos.h> should contain everything that <i86.h> has (at least for the IA-16
-   platform...).  */
-#include <i86.h>
-
 _LIBI86_BEGIN_EXTERN_C
 
-extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
-extern int bdosptr (int __dos_func, void *__dx, unsigned __al);
-extern int intdos (const union REGS *, union REGS *);
-extern int intdosx (const union REGS *, union REGS *, struct SREGS *);
+/* This follows Watcom's internally-used interface.  It should be defined by
+   either the C runtime (e.g. Newlib), or the program using libi86.  */
+extern int __DPMI_hosted (void) __attribute__ ((weak));
 
 _LIBI86_END_EXTERN_C
 
