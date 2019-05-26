@@ -52,11 +52,11 @@ The current aim is to be compatible enough with the [Open Watcom](https://github
   * `int86 (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);`
   * `int86x (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
   * `intr (`_inter-no_`,` \*_regs_`);`
-  * `_int86 (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);` // extension --- loads flags
+  * `_int86f (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);` // extension --- loads flags
   * `_int86xf (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);` // extension --- loads flags
   * `_intrf (`_inter-no_`,` \*_regs_`);` // extension --- loads flags
-  * `FP_OFF (`_ptr_`);` // macro; also `_FP_OFF`
-  * `FP_SEG (`_ptr_`);` // macro; also `_FP_SEG`
+  * `FP_OFF (`\*_ptr_`);` // macro; also `_FP_OFF`
+  * `FP_SEG (`\*_ptr_`);` // macro; also `_FP_SEG`
   * `MK_FP (`_seg_`,` _off_`);` // macro; also `_MK_FP`
 
 ### `<libi86/string.h>`
