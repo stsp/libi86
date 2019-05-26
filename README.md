@@ -15,7 +15,7 @@ The current aim is to be compatible enough with the [Open Watcom](https://github
 
 ### `<conio.h>`
 
-  * `cgets (`\*_buf_`);`
+  * \*`cgets (`\*_buf_`);`
   * `cprintf (`\*_fmt_`, ...);`
   * `cputs (`\*_buf_`);`
   * `cscanf (`\*_fmt_`, ...);`
