@@ -6,6 +6,10 @@ An attempt to reimplement non-standard C library facilities (e.g. `<conio.h>`) c
 
 The current aim is to be compatible enough with the [Open Watcom](https://github.com/open-watcom/open-watcom-v2/) runtime to be useful for building existing MS-DOS code.
 
+## Synopsis
+
+> `ia16-elf-gcc` [..._gcc-options_...] `-li86` [...]
+
 ## Implemented functions
 
 ### `<bios.h>`
