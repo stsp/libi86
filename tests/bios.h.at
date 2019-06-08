@@ -89,3 +89,92 @@ int main (void)
   return 0;
 }]],[],[[-input '\p20;\F5;\F7;\p30;a\p30;A!\Ah']])
 AT_CLEANUP
+
+AT_SETUP([[_bios_disk]])
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+[[#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <bios.h>
+#define BYTES_PER_SECT 0x200
+#define EXTRA 0x40
+int
+main (void)
+{
+  static const unsigned char drives[] = { 0x00, 0x80, 0x01, 0x81 };
+  static unsigned char buf1[BYTES_PER_SECT + EXTRA],
+		       buf2[BYTES_PER_SECT + EXTRA];
+  unsigned i, j, k;
+  unsigned char status;
+  struct diskinfo_t di;
+
+  for (i = 0; i < sizeof drives; ++i)
+    {
+      unsigned char drive = drives[i];
+
+      memset (&di, 0xf6, sizeof di);
+      di.drive = drive;
+      status = _bios_disk (_DISK_RESET, &di) >> 8;
+      if (di.drive != drive)
+	abort ();
+
+#if 0
+      /* As of writing (20190608), neither DOSBox nor DOSEmu implements int
+	 $0x13 function $0x01 correctly. :-(  QEMU with SeaBIOS does get it
+	 right, though.  */
+      if (_bios_disk (_DISK_STATUS, &di) >> 8 != status)
+	abort ();
+#endif
+
+      memset (buf1, 0x41, sizeof buf1);
+      memset (buf2, 0xcc, sizeof buf2);
+      di.head = di.track = 0;
+      di.sector = di.nsectors = 1;
+      di.buffer = buf1;
+      j = 5;
+      do
+	{
+	  status = _bios_disk (_DISK_READ, &di) >> 8;
+	  if (di.drive != drive || di.head != 0 || di.track != 0
+	      || di.sector != 1 || di.nsectors != 1
+	      || di.buffer != (void __far *) buf1)
+	    abort ();
+
+	  for (k = 0; k < EXTRA; ++k)
+	    if (buf1[BYTES_PER_SECT + k] != 0x41)
+	      abort ();
+
+	  if (status != 0)
+	    _bios_disk (_DISK_RESET, &di);
+	}
+      while (--j != 0 && status != 0);
+      if (status != 0)
+	continue;
+
+      di.buffer = buf2;
+      j = 5;
+      do
+	{
+	  status = _bios_disk (_DISK_READ, &di) >> 8;
+	  if (di.drive != drive || di.head != 0 || di.track != 0
+	      || di.sector != 1 || di.nsectors != 1
+	      || di.buffer != (void __far *) buf2)
+	    abort ();
+
+	  for (k = 0; k < EXTRA; ++k)
+	    if (buf2[BYTES_PER_SECT + k] != 0xcc)
+	      abort ();
+
+	  if (status != 0)
+	    _bios_disk (_DISK_RESET, &di);
+	}
+      while (--j != 0 && status != 0);
+
+      if (status != 0
+	  || memcmp(buf1, buf2, BYTES_PER_SECT) != 0)
+	abort ();
+    }
+
+  return 0;
+}]],[])
+AT_CLEANUP

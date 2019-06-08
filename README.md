@@ -14,6 +14,7 @@ The current aim is to be compatible enough with the [Open Watcom](https://github
 
 ### `<bios.h>`
 
+  * `_bios_disk (`_service_`,` \*_diskinfo_`);`
   * `_bios_equiplist ();`
   * `_bios_memsize ();`
   * `_bios_keybrd (`_service_`);`

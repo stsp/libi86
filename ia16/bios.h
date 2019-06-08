@@ -23,7 +23,7 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
-#ifndef __cplusplus
+#ifdef __FAR
 struct diskinfo_t
 {
   unsigned drive, head, track, sector, nsectors;
