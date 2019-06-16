@@ -24,14 +24,16 @@
 #include <unistd.h>
 #include "conio.h"
 #include "libi86/internal/conio.h"
+#include "libi86/internal/acconfig.h"
 
 #ifdef __MSDOS__
-static FILE *__libi86_con_out_fp = NULL;
-
 int
 vcprintf (const char *fmt, va_list ap)
 {
-  int n;
+# ifdef _LIBI86_INTERNAL_HAVE_VDPRINTF
+  return vdprintf (__libi86_con_out_fd, fmt, ap);
+# else
+  static FILE *__libi86_con_out_fp = NULL;
 
   if (! __libi86_con_out_fp)
     {
@@ -43,6 +45,7 @@ vcprintf (const char *fmt, va_list ap)
     }
 
   return vfprintf (__libi86_con_out_fp, fmt, ap);
+# endif
 }
 #else
 # warning "unknown host OS"
