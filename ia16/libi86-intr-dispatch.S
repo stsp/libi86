@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2019 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by

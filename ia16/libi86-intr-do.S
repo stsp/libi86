@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2019 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -30,7 +30,7 @@
 	.code16
 	.att_syntax prefix
 
-	.text
+	.text				/* N.B. */
 	.global	__libi86_intr_do
 __libi86_intr_do:
 	ENTER_BX_(4)

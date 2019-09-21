@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018 TK Chia
+dnl Copyright (c) 2018--2019 TK Chia
 dnl
 dnl This file is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU Lesser General Public License as published by
@@ -59,7 +59,7 @@ main (void)
 #endif
 }]],[[yo
 ]])
-AT_LIBI86_CHECK_FOR_TINY_AND_SMALL_MODEL_NONDPMIABLE(dnl
+AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL_NONDPMIABLE(dnl
 [[#include <dos.h>
 void abort (void);
 int
@@ -115,7 +115,10 @@ main (void)
   r.h.dl = 'y';
   intdosx (&r, &r, &sr);
   if ((sr.ds & ~3u) != 0 || (sr.es & ~3u) != 0
-      || sr.cs != get_cs () || sr.ss != get_ss ())
+# ifndef __IA16_CMODEL_IS_FAR_TEXT
+      || sr.cs != get_cs ()
+# endif
+      || sr.ss != get_ss ())
     abort ();
   write (1, "o\r\n", 3);
   return 0;
@@ -163,8 +166,10 @@ hw (void)
   sr.es = cookie;
   if (intdosx (&r, &r, &sr) != sizeof (msg1) - 1
       || r.w.ax != sizeof (msg1) - 1
-      || sr.cs != get_cs() || sr.ss != get_ss()
-      || sr.ds != FP_SEG (msg1) || sr.es != cookie)
+# ifndef __IA16_CMODEL_IS_FAR_TEXT
+      || sr.cs != get_cs ()
+# endif
+      || sr.ss != get_ss () || sr.ds != FP_SEG (msg1) || sr.es != cookie)
     abort ();
 }
 int

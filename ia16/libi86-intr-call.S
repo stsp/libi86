@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2019 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -19,6 +19,11 @@
 /*
  * This file will be compiled with intr_no spanning values from 0000 to 0377
  * (numerically, 0x00 to 0xff).
+ *
+ * All the routines here are near routines in the default text segment
+ * (.text).  The external routines that reference these (__libi86_int86_do
+ * (...) etc.) should also go into .text, even if they are far, so that they
+ * can directly invoke the routines here.
  */
 
 #APP

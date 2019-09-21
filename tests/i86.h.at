@@ -83,10 +83,12 @@ int main (void)
   struct SREGS sregs;
   memset (&sregs, 0xf6, sizeof sregs);
   segread (&sregs);
+#ifndef __IA16_CMODEL_IS_FAR_TEXT
   if (sregs.cs != get_cs ())
     abort ();
   if (sregs.cs != FP_SEG (main))
     abort ();
+#endif
   if (sregs.ss != get_ss ())
     abort ();
   if (sregs.ss != FP_SEG (&sregs))
@@ -155,8 +157,10 @@ int main (void)
   regs.h.ah = 0x09;
   regs.w.dx = FP_OFF (msg);
   int86x (0x21, &regs, &regs, &sregs);
+# ifndef __IA16_CMODEL_IS_FAR_TEXT
   if (sregs.cs != FP_SEG (main))
     abort ();
+# endif
   if (sregs.ds != FP_SEG (msg))
     abort ();
   if (sregs.es != 0xf6f6u)
@@ -185,8 +189,10 @@ int main (void)
   regs.h.ah = 0x09;
   regs.w.dx = FP_OFF (msg);
   int86x (0x21, &regs, &regs, &sregs);
+# ifndef __IA16_CMODEL_IS_FAR_TEXT
   if (sregs.cs != FP_SEG (main))
     abort ();
+# endif
   if (sregs.ds != FP_SEG (msg))
     abort ();
   if (sregs.es != 0xf6f6u)

@@ -1,7 +1,7 @@
 /*
  * Macros to handle different function calling conventions.
  *
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2019 TK Chia
  *
  * The authors hereby grant permission to use, copy, modify, distribute,
  * and license this software and its documentation for any purpose, provided
@@ -16,8 +16,21 @@
 
 /*
  * These macros partially abstract away the differences between the
- * `stdcall', `cdecl', and `regparmcall' calling conventions implemented in
- * ia16-elf-gcc.
+ * `stdcall', `cdecl', and `regparmcall' calling conventions, and the `tiny'/
+ * `small' and `medium' memory models, as implemented in ia16-elf-gcc.
+ *
+ * - SEG_RELOC_ (PLACE, SYM) installs an IA-16 segment relocation for the
+ *   symbol SYM at PLACE.
+ *
+ * - TEXT_ (TAG) or DATA_ (TAG) switches to a text or data section.  Whether
+ *   the section is near or far will depend on the memory model.  The section
+ *   name may include a tag TAG to indicate the module it belongs to.
+ *
+ * - JMP_ (FUNC) or CALL_ (FUNC) does a jump or a call to the function FUNC.
+ *   Whether the jump or call is near or far will depend on the memory model.
+ *
+ * - TEXT_PTR_ (FUNC) emits a near or far pointer --- depending on the memory
+ *   model --- to the function FUNC.
  *
  * - ENTER_BX_ (N) loads %sp into %bx to access stack arguments, if necessary.
  *   N is the number of bytes of arguments passed to the function.
@@ -78,6 +91,32 @@
  * clobber %bx itself for the `cdecl' and `stdcall' conventions.
  */
 
+#ifdef __IA16_ABI_SEGELF
+# define AUX__(func)		AUX___(func##!)
+# define SEG_RELOC_(place, sym) .reloc (place), R_386_SEG16, AUX__(sym)
+#else
+# define SEG_RELOC_(place, sym) .reloc (place), R_386_OZSEG16, sym
+#endif
+#ifndef __IA16_CMODEL_IS_FAR_TEXT
+# define FAR_ADJ__		0
+# define RET__			ret
+# define JMP_(func)		jmp func
+# define CALL_(func)		call func
+# define TEXT_(tag)		.text
+# define TEXT_PTR_(func)	.hword func
+#else
+# define FAR_ADJ__		2
+# define RET__			lret
+# define AUX___(aux)		#aux
+# define JMP_(func)		SEG_RELOC_ (.+3, func); \
+				ljmp $0, $func
+# define CALL_(func)		SEG_RELOC_ (.+3, func); \
+				lcall $0, $func
+# define TEXT_(tag)		.section AUX___(.fartext.f.##tag##$), "ax"
+# define TEXT_PTR_(func)	SEG_RELOC_ (.+2, func); \
+				.hword func, 0
+#endif
+#define DATA_(tag)		.data
 #if defined __IA16_CALLCVT_REGPARMCALL
 # if __IA16_REGPARMCALL_ABI - 0 != 20180814L
 #   warning "regparmcall convention is not 20180814L, output code may be bogus"
@@ -91,8 +130,8 @@
 # define ARG0W_BX_		%ax
 # define ARG2W_BX_		%dx
 # define ARG4W_BX_		%cx
-# define ARG6W_BX_		2(%bx)
-# define ARG8W_BX_		4(%bx)
+# define ARG6W_BX_		FAR_ADJ__+2(%bx)
+# define ARG8W_BX_		FAR_ADJ__+4(%bx)
 # define MOV_ARG0W_BX_(reg)	.ifnc %ax, reg; \
 				movw %ax, reg; \
 				.endif
@@ -102,9 +141,9 @@
 # define MOV_ARG4W_BX_(reg)	.ifnc %cx, reg; \
 				movw %cx, reg; \
 				.endif
-# define MOV_ARG6W_BX_(reg)	movw 2(%bx), reg
-# define MOV_ARG8W_BX_(reg)	movw 4(%bx), reg
-# define MOV_ARG8W2_BX_(reg)	movw 6(%bx), reg
+# define MOV_ARG6W_BX_(reg)	movw FAR_ADJ__+2(%bx), reg
+# define MOV_ARG8W_BX_(reg)	movw FAR_ADJ__+4(%bx), reg
+# define MOV_ARG8W2_BX_(reg)	movw FAR_ADJ__+6(%bx), reg
 # ifdef __OPTIMIZE_SIZE__
 #   define MOV_ARG0W_BX_CLOBBER_(reg) \
 				.ifnc %ax, reg; \
@@ -140,8 +179,8 @@
 # define MOV_ARG4B_BX_(reg)	.ifnc %cl, reg; \
 				movb %cl, reg; \
 				.endif
-# define MOV_ARG6B_BX_(reg)	movb 2(%bx), reg
-# define MOV_ARG8B_BX_(reg)	movb 4(%bx), reg
+# define MOV_ARG6B_BX_(reg)	movb FAR_ADJ__+2(%bx), reg
+# define MOV_ARG8B_BX_(reg)	movb FAR_ADJ__+4(%bx), reg
 # define LDS_ARG0W_BX_(reg)	movw %dx, %ds; \
 				.ifnc %ax, reg; \
 				movw %ax, reg; \
@@ -150,52 +189,52 @@
 				.ifnc %ax, reg; \
 				movw %ax, reg; \
 				.endif
-# define LDS_ARG4W2_BX_(reg)	ldsw 2(%bx), reg
-# define LES_ARG4W2_BX_(reg)	lesw 2(%bx), reg
+# define LDS_ARG4W2_BX_(reg)	ldsw FAR_ADJ__+2(%bx), reg
+# define LES_ARG4W2_BX_(reg)	lesw FAR_ADJ__+2(%bx), reg
 # define RET_(n)		.if (n)>6; \
-				ret $((n)-6); \
+				RET__ $((n)-6); \
 				.else; \
-				ret; \
+				RET__; \
 				.endif
 # define RET2_(n)		.if (n)>4; \
-				ret $((n)-4); \
+				RET__ $((n)-4); \
 				.else; \
-				ret; \
+				RET__; \
 				.endif
 #else
 # define ENTER_BX_(n)		movw %sp, %bx
 # define ENTER2_BX_(n)		movw %sp, %bx
-# define ARG0W_BX_		2(%bx)
-# define ARG2W_BX_		4(%bx)
-# define ARG4W_BX_		6(%bx)
-# define ARG6W_BX_		8(%bx)
-# define ARG8W_BX_		10(%bx)
-# define MOV_ARG0W_BX_(reg)	movw 2(%bx), reg
-# define MOV_ARG2W_BX_(reg)	movw 4(%bx), reg
-# define MOV_ARG4W_BX_(reg)	movw 6(%bx), reg
-# define MOV_ARG6W_BX_(reg)	movw 8(%bx), reg
-# define MOV_ARG8W_BX_(reg)	movw 10(%bx), reg
-# define MOV_ARG8W2_BX_(reg)	movw 10(%bx), reg
+# define ARG0W_BX_		FAR_ADJ__+2(%bx)
+# define ARG2W_BX_		FAR_ADJ__+4(%bx)
+# define ARG4W_BX_		FAR_ADJ__+6(%bx)
+# define ARG6W_BX_		FAR_ADJ__+8(%bx)
+# define ARG8W_BX_		FAR_ADJ__+10(%bx)
+# define MOV_ARG0W_BX_(reg)	movw FAR_ADJ__+2(%bx), reg
+# define MOV_ARG2W_BX_(reg)	movw FAR_ADJ__+4(%bx), reg
+# define MOV_ARG4W_BX_(reg)	movw FAR_ADJ__+6(%bx), reg
+# define MOV_ARG6W_BX_(reg)	movw FAR_ADJ__+8(%bx), reg
+# define MOV_ARG8W_BX_(reg)	movw FAR_ADJ__+10(%bx), reg
+# define MOV_ARG8W2_BX_(reg)	movw FAR_ADJ__+10(%bx), reg
 # define MOV_ARG0W_BX_CLOBBER_(reg) MOV_ARG0W_BX_(reg)
 # define MOV_ARG2W_BX_CLOBBER_(reg) MOV_ARG2W_BX_(reg)
 # define MOV_ARG4W_BX_CLOBBER_(reg) MOV_ARG4W_BX_(reg)
-# define MOV_ARG0B_BX_(reg)	movb 2(%bx), reg
-# define MOV_ARG2B_BX_(reg)	movb 4(%bx), reg
-# define MOV_ARG4B_BX_(reg)	movb 6(%bx), reg
-# define MOV_ARG6B_BX_(reg)	movb 8(%bx), reg
-# define MOV_ARG8B_BX_(reg)	movb 10(%bx), reg
-# define LDS_ARG0W_BX_(reg)	ldsw 2(%bx), reg
-# define LES_ARG0W_BX_(reg)	lesw 2(%bx), reg
-# define LDS_ARG4W2_BX_(reg)	ldsw 6(%bx), reg
-# define LES_ARG4W2_BX_(reg)	lesw 6(%bx), reg
+# define MOV_ARG0B_BX_(reg)	movb FAR_ADJ__+2(%bx), reg
+# define MOV_ARG2B_BX_(reg)	movb FAR_ADJ__+4(%bx), reg
+# define MOV_ARG4B_BX_(reg)	movb FAR_ADJ__+6(%bx), reg
+# define MOV_ARG6B_BX_(reg)	movb FAR_ADJ__+8(%bx), reg
+# define MOV_ARG8B_BX_(reg)	movb FAR_ADJ__+10(%bx), reg
+# define LDS_ARG0W_BX_(reg)	ldsw FAR_ADJ__+2(%bx), reg
+# define LES_ARG0W_BX_(reg)	lesw FAR_ADJ__+2(%bx), reg
+# define LDS_ARG4W2_BX_(reg)	ldsw FAR_ADJ__+6(%bx), reg
+# define LES_ARG4W2_BX_(reg)	lesw FAR_ADJ__+6(%bx), reg
 # ifdef __IA16_CALLCVT_STDCALL
-#   define RET_(n)		ret $(n)
-#   define RET2_(n)		ret $(n)
+#   define RET_(n)		RET__ $(n)
+#   define RET2_(n)		RET__ $(n)
 # else
 #   ifndef __IA16_CALLCVT_CDECL
 #     warning "not sure which calling convention is in use; assuming cdecl"
 #   endif
-#   define RET_(n)		ret
-#   define RET2_(n)		ret
+#   define RET_(n)		RET__
+#   define RET2_(n)		RET__
 # endif
 #endif

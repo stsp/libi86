@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2019 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -22,8 +22,7 @@
 	.code16
 	.att_syntax prefix
 
-	.text
-	.global	_bios_memsize
+	TEXT_ (bios_memsize.S.LIBI86)
 _bios_memsize:
 	int	$0x12
 	RET_(0)

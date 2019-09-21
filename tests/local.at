@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018 TK Chia
+dnl Copyright (c) 2018--2019 TK Chia
 dnl
 dnl This file is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU Lesser General Public License as published by
@@ -57,30 +57,43 @@ _AT_LIBI86_DO_CHECK_EXPOUT_B($@)
 _AT_LIBI86_DO_CHECK_EXPOUT_B([[-mrtd ]]$@)
 _AT_LIBI86_DO_CHECK_EXPOUT_C([[-mregparmcall ]]$@)])
 
-dnl $1 = file name of program to compile
-dnl $2 = file to write compiled binary to (default a.exe)
-dnl $3 = program to run on dosemu (default a.exe)
-dnl $4 = options to pass to dosemu (default -dumb >a.log)
-dnl $5 = Unix program to run to postprocess dosemu output (default
-dnl	 postproc-stdout.sh in this file's source directory)
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_E],[dnl
-_AT_LIBI86_DO_CHECK_EXPOUT_D($@)
-_AT_LIBI86_DO_CHECK_EXPOUT_D([[-mdpmiable ]]$@)
-_AT_LIBI86_DO_CHECK_EXPOUT_D([[-mprotected-mode ]]$@)])
+[case x"$at_libi86_cc_have_medium_model",']$1[' in
+xno,*-mcmodel=medium*)
+;;
+*)
+]_AT_LIBI86_DO_CHECK_EXPOUT_D($@)[
+;;
+esac]])
 
-m4_define([AT_LIBI86_CHECK_FOR_TINY_AND_SMALL_MODEL_NONDPMIABLE],[dnl
-AT_DATA([[a.c]],[$1
-])
-AT_DATA([[expout]],[$2])
-_AT_LIBI86_DO_CHECK_EXPOUT_D(,a.c,,m4_shift(m4_shift($@)))
-_AT_LIBI86_DO_CHECK_EXPOUT_D([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))])
+dnl $1 = GCC options
+dnl $2 = file name of program to compile
+dnl $3 = file to write compiled binary to (default a.exe)
+dnl $4 = program to run on dosemu (default a.exe)
+dnl $5 = options to pass to dosemu (default -dumb >a.log)
+dnl $6 = Unix program to run to postprocess dosemu output (default
+dnl	 postproc-stdout.sh in this file's source directory)
+m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_F],[dnl
+_AT_LIBI86_DO_CHECK_EXPOUT_E($@)
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mdpmiable ]]$@)
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mprotected-mode ]]$@)])
 
-m4_define([AT_LIBI86_CHECK_FOR_TINY_AND_SMALL_MODEL],[dnl
+m4_define([AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL_NONDPMIABLE],[dnl
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
 _AT_LIBI86_DO_CHECK_EXPOUT_E(,a.c,,m4_shift(m4_shift($@)))
-_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))])
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))])
+
+m4_define([AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL],[dnl
+AT_DATA([[a.c]],[$1
+])
+AT_DATA([[expout]],[$2])
+_AT_LIBI86_DO_CHECK_EXPOUT_F(,a.c,,m4_shift(m4_shift($@)))
+_AT_LIBI86_DO_CHECK_EXPOUT_F([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
+dnl do not try -mdpmiable for medium model for now
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))])
 
 dnl $1 = text of program to test
 dnl $2 = expected program output
@@ -89,26 +102,29 @@ dnl $4 = options to pass to dosemu (default -dumb >a.log)
 dnl $5 = Unix program to run to postprocess dosemu output (default
 dnl	 postproc-stdout.sh in this file's source directory)
 m4_define([AT_LIBI86_CHECK],[dnl
-AT_LIBI86_CHECK_FOR_TINY_AND_SMALL_MODEL($@)])
+AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL($@)])
 
 m4_define([AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE],[dnl
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
-_AT_LIBI86_DO_CHECK_EXPOUT_D([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))])
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))])
 
 m4_define([AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE],[dnl
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
-_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))])
+_AT_LIBI86_DO_CHECK_EXPOUT_F([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
+_AT_LIBI86_DO_CHECK_EXPOUT_F([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))])
 
 m4_define([AT_LIBI86_CHECK_FOR_NONDPMIABLE],[dnl
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
-_AT_LIBI86_DO_CHECK_EXPOUT_D(,a.c,,m4_shift(m4_shift($@)))
-_AT_LIBI86_DO_CHECK_EXPOUT_D([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))])
+_AT_LIBI86_DO_CHECK_EXPOUT_E(,a.c,,m4_shift(m4_shift($@)))
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))])
 
 m4_define([AT_LIBI86_CONSOLE_CAPTURE_PROG],["$abs_srcdir"/capture.S])
 

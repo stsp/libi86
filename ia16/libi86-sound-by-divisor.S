@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2019 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -22,7 +22,7 @@
 	.code16
 	.att_syntax prefix
 
-	.text
+	TEXT_ (libi86_sound_by_divisor.S.LIBI86)
 	.global	__libi86_sound_by_divisor
 __libi86_sound_by_divisor:
 	ENTER_BX_(2)
