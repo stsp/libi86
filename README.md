@@ -68,3 +68,9 @@ The current aim is to be compatible enough with the [Open Watcom](https://github
 
   * \*`_fmemcpy (`\*_dest_`,` \*_src_`,` _n_`);`
   * \*`_fmemmove (`\*_dest_`,` \*_src_`,` _n_`);`
+
+## Implemented variables
+
+### `<libi86/stdlib.h>`
+
+  * `_psp`

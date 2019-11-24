@@ -62,6 +62,7 @@ INSTALL_HEADERS	= bios.h \
 		  dos.h \
 		  dpmi.h \
 		  i86.h \
+		  libi86/stdlib.h \
 		  libi86/string.h \
 		  libi86/internal/cdefs.h \
 		  libi86/internal/portio.h \
@@ -97,6 +98,7 @@ OBJS		= bdos.o \
 		  nosound.o \
 		  outp.o \
 		  outpw.o \
+		  psp.o \
 		  putch.o \
 		  segread.o \
 		  sound.o \
