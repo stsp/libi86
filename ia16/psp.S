@@ -34,4 +34,9 @@
 	.balign	2
 	TEXT_PTR_ (.Lctor_psp)
 
-	.comm	_psp, 2, 2
+	.bss
+
+/* Make _psp weak, in case the underlying libc already defines it.  */
+	.weak	_psp
+_psp:
+	.skip	2
