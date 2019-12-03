@@ -111,6 +111,7 @@ OBJS		= bdos.o \
 		  libi86-int86x-do.o \
 		  libi86-intr-do.o \
 		  libi86-intr-dispatch.o \
+		  libi86-ret-set-errno.o \
 		  libi86-sound-by-divisor.o \
 		  libi86-ungetch-buf.o \
 		  $(foreach da,0 1 2 3, \
