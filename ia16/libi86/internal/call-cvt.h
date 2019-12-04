@@ -86,6 +86,13 @@
  *   convention, it assumes that the function uses only two registers (%ax and
  *   %dx) to hold parameters.
  *
+ * - RET_SET_ERRNO_(N) emits instructions to return from a function with N
+ *   bytes of arguments and also set errno to the value in %ax.  The same
+ *   %ax value will be passed back to the caller.
+ *
+ * - RET2_SET_ERRNO_(N) does the same, except that for `regparmcall', it
+ *   assumes that the function uses only %ax and %dx to hold parameters.
+ *
  * When using the MOV_*, LDS_*, or LES_* macros, be careful not to clobber a
  * `regparmcall' argument register before it is read, and be careful not to
  * clobber %bx itself for the `cdecl' and `stdcall' conventions.
@@ -201,6 +208,18 @@
 				.else; \
 				RET__; \
 				.endif
+# define RET_SET_ERRNO_(n)	.if (n)>6; \
+				CALL_ (__libi86_ret_set_errno); \
+				RET__ $((n)-6); \
+				.else \
+				JMP_ (__libi86_ret_set_errno); \
+				.endif
+# define RET2_SET_ERRNO_(n)	.if (n)>4; \
+				CALL_ (__libi86_ret_set_errno); \
+				RET__ $((n)-4); \
+				.else \
+				JMP_ (__libi86_ret_set_errno); \
+				.endif
 #else
 # define ENTER_BX_(n)		movw %sp, %bx
 # define ENTER2_BX_(n)		movw %sp, %bx
@@ -228,13 +247,24 @@
 # define LDS_ARG4W2_BX_(reg)	ldsw FAR_ADJ__+6(%bx), reg
 # define LES_ARG4W2_BX_(reg)	lesw FAR_ADJ__+6(%bx), reg
 # ifdef __IA16_CALLCVT_STDCALL
-#   define RET_(n)		RET__ $(n)
-#   define RET2_(n)		RET__ $(n)
+#   define RET_(n)		.if (n); \
+				RET__ $(n); \
+				.else; \
+				RET__; \
+				.endif
+#   define RET_SET_ERRNO_(n)	.if (n); \
+				CALL_ (__libi86_ret_set_errno); \
+				RET__ $(n); \
+				.else; \
+				JMP_ (__libi86_ret_set_errno); \
+				.endif
 # else
 #   ifndef __IA16_CALLCVT_CDECL
 #     warning "not sure which calling convention is in use; assuming cdecl"
 #   endif
 #   define RET_(n)		RET__
-#   define RET2_(n)		RET__
+#   define RET_SET_ERRNO_(n)	JMP_ (__libi86_ret_set_errno)
 # endif
+# define RET2_(n)		RET_ (n)
+# define RET2_SET_ERRNO_(n)	RET_SET_ERRNO_ (n)
 #endif
