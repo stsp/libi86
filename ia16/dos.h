@@ -25,12 +25,21 @@
    platform...).  */
 #include <i86.h>
 
+#define _A_NORMAL	0x00u
+#define _A_RDONLY	0x01u
+#define _A_HIDDEN	0x02u
+#define _A_SYSTEM	0x04u
+#define _A_VOLID	0x08u
+#define _A_SUBDIR	0x10u
+#define _A_ARCH		0x20u
+
 _LIBI86_BEGIN_EXTERN_C
 
 extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
 extern int bdosptr (int __dos_func, void *__dx, unsigned __al);
 extern int intdos (const union REGS *, union REGS *);
 extern int intdosx (const union REGS *, union REGS *, struct SREGS *);
+extern unsigned _dos_getfileattr (const char *__path, unsigned *__attributes);
 
 _LIBI86_END_EXTERN_C
 

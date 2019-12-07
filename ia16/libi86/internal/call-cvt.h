@@ -211,13 +211,13 @@
 # define RET_SET_ERRNO_(n)	.if (n)>6; \
 				CALL_ (__libi86_ret_set_errno); \
 				RET__ $((n)-6); \
-				.else \
+				.else; \
 				JMP_ (__libi86_ret_set_errno); \
 				.endif
 # define RET2_SET_ERRNO_(n)	.if (n)>4; \
 				CALL_ (__libi86_ret_set_errno); \
 				RET__ $((n)-4); \
-				.else \
+				.else; \
 				JMP_ (__libi86_ret_set_errno); \
 				.endif
 #else

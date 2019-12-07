@@ -231,3 +231,58 @@ so I put a hello world in your hello world
 so you can hello world while you hello world
 ]])
 AT_CLEANUP
+
+AT_SETUP([[_dos_getfileattr]])
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+#include <errno.h>
+#include <stdio.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+  unsigned attr1 = 0xe5e5u, attr2 = 0xf6f6u, attr3 = 0xccccu;
+#ifdef __MSDOS__
+  errno = 0;
+
+  if (_dos_getfileattr (argv[0], &attr1) != 0)
+    abort ();
+  puts ("1 OK");
+  if (errno)
+    abort ();
+  puts ("2 OK");
+  if ((attr1 & (_A_VOLID | _A_SUBDIR)) != 0)
+    abort ();
+  puts ("3 OK");
+
+  if (_dos_getfileattr (".", &attr2) != 0)
+    abort ();
+  puts ("4 OK");
+  if (errno)
+    abort ();
+  puts ("5 OK");
+  if ((attr2 & (_A_VOLID | _A_SUBDIR)) != _A_SUBDIR)
+    abort ();
+  puts ("6 OK");
+
+  if (_dos_getfileattr ("nul", &attr3) != ENOENT)
+    abort ();
+  puts ("7 OK");
+  if (errno != ENOENT)
+    abort ();
+  puts ("8 OK");
+
+  return 0;
+#else
+# error
+#endif
+}]],[[1 OK
+2 OK
+3 OK
+4 OK
+5 OK
+6 OK
+7 OK
+8 OK
+]])
+AT_CLEANUP

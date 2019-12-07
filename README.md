@@ -44,6 +44,7 @@ The current aim is to be compatible enough with the [Open Watcom](https://github
   * `bdosptr (`_dos-func_`,` \*_dx_`,` _al_`);`
   * `intdos (`\*_in-regs_`,` \*_out-regs_`);`
   * `intdosx (`\*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
+  * `_dos_getfileattr (`\*_path_`,` \*_attributes_`);`
   * `<dos.h>` also includes `<i86.h>`
 
 ### `<i86.h>`
