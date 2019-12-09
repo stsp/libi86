@@ -83,6 +83,7 @@ OBJS		= bdos.o \
 		  delay.o \
 		  disable.o \
 		  dos-getfileattr.o \
+		  dos-setfileattr.o \
 		  enable.o \
 		  fmemcpy.o \
 		  fmemmove.o \

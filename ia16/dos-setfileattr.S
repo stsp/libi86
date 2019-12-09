@@ -21,21 +21,15 @@
 	.code16
 	.att_syntax prefix
 
-	TEXT_ (dos_getfileattr.S.LIBI86)
-	.global	_dos_getfileattr
-_dos_getfileattr:
+	TEXT_ (dos_setfileattr.S.LIBI86)
+	.global	_dos_setfileattr
+_dos_setfileattr:
 	ENTER_BX_ (4)
-#ifndef __IA16_CALLCVT_REGPARMCALL
-	MOV_ARG0W_BX_ (%dx)
-	MOV_ARG2W_BX_ (%bx)
-#else
-	xchgw	%ax,	%dx
-	xchgw	%ax,	%bx
-#endif
-	movw	$0x4300, %ax
+	MOV_ARG2W_BX_ (%cx)
+	MOV_ARG0W_BX_CLOBBER_ (%dx)
+	movw	$0x4301, %ax
 	int	$0x21
 	jc	0f
-	movw	%cx,	(%bx)
 	xorw	%ax,	%ax
 	RET_ (4)
 0:

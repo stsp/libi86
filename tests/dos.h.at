@@ -241,7 +241,7 @@ void abort (void);
 int
 main (int argc, char **argv)
 {
-  unsigned attr1 = 0xe5e5u, attr2 = 0xf6f6u, attr3 = 0xccccu;
+  unsigned attr1 = 0xccccu, attr2 = 0xe5e5u, attr3 = 0xf6f6u;
 #ifdef __MSDOS__
   errno = 0;
 
@@ -284,5 +284,56 @@ main (int argc, char **argv)
 6 OK
 7 OK
 8 OK
+]])
+AT_CLEANUP
+
+AT_SETUP([[_dos_setfileattr]])
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+#include <errno.h>
+#include <stdio.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+  unsigned new_attr = 0;
+#ifdef __MSDOS__
+  errno = 0;
+
+  if (_dos_setfileattr (argv[0], _A_RDONLY) != 0)
+    abort ();
+  puts ("1 OK");
+  if (errno)
+    abort ();
+  puts ("2 OK");
+
+  if (_dos_getfileattr (argv[0], &new_attr) != 0)
+    abort ();
+  puts ("3 OK");
+  if ((new_attr & _A_RDONLY) == 0)
+    abort ();
+  puts ("4 OK");
+  if ((new_attr & (_A_SUBDIR | _A_VOLID)) != 0)
+    abort ();
+  puts ("5 OK");
+
+  if (_dos_setfileattr ("nul", _A_RDONLY) != ENOENT)
+    abort ();
+  puts ("6 OK");
+  if (errno != ENOENT)
+    abort ();
+  puts ("7 OK");
+
+  return 0;
+#else
+# error
+#endif
+}]],[[1 OK
+2 OK
+3 OK
+4 OK
+5 OK
+6 OK
+7 OK
 ]])
 AT_CLEANUP
