@@ -8,7 +8,33 @@ The current aim is to be compatible enough with the [Open Watcom](https://github
 
 ## Synopsis
 
-> `ia16-elf-gcc` [..._gcc-options_...] `-li86` [...]
+#### Use
+
+`ia16-elf-gcc` [..._gcc-options_...] `-li86` [...]
+
+#### Installing from pre-compiled Ubuntu Linux packages, for cross development
+
+Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA](https://launchpad.net/~tkchia/+archive/ubuntu/build-ia16/).
+
+#### Building and installing from sources, on Linux
+
+ 1. &nbsp;`git clone https://gitlab.com/tkchia/libi86.git`
+
+ 2. &nbsp;Install `gcc-ia16-elf`.
+
+ 3. &nbsp;`(cd libi86 && ./autogen.sh)`
+
+ 4. &nbsp;`mkdir build-libi86`
+
+ 5. &nbsp;`cd build-libi86`
+
+ 6. &nbsp;`../libi86/configure --host=ia16-elf --prefix=`_install-path_ `--exec-prefix=`_install-path_`/ia16-elf --disable-elks-libc`
+
+ 7. &nbsp;`make`
+
+ 8. &nbsp;`make check`
+
+ 9. &nbsp;`make install`
 
 ## Implemented functions
 
