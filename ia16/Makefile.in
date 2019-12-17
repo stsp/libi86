@@ -98,6 +98,7 @@ OBJS		= bdos.o \
 		  intr.o \
 		  kbhit.o \
 		  nosound.o \
+		  osmajor-osminor.o \
 		  outp.o \
 		  outpw.o \
 		  psp.o \

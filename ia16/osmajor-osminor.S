@@ -16,16 +16,34 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LIBI86_LIBI86_STDLIB_H_
-#define _LIBI86_LIBI86_STDLIB_H_
+#include "libi86/internal/call-cvt.h"
 
-#include <libi86/internal/cdefs.h>
+	.arch	i8086, jumps
+	.code16
+	.att_syntax prefix
 
-_LIBI86_BEGIN_EXTERN_C
+	TEXT_ (osmajor_osminor.S.LIBI86)
+.Lctor_osmajor_osminor:
+	movb	$0x30,	%ah
+	int	$0x21
+	movw	%ax,	0f
+	RET_(0)
 
-extern unsigned _psp;
-extern unsigned char _osmajor, _osminor;
+	.section .ctors.65535
 
-_LIBI86_END_EXTERN_C
+	.balign	2
+	TEXT_PTR_ (.Lctor_osmajor_osminor)
 
-#endif
+	.bss
+
+/* (1) Make these variables weak, in case the underlying libc has its own
+       definitions (and initializations) of _osmajor and _osminor.
+   (2) The variables must be arranged like this, so that a single store of
+       %ax can correctly fill both _osmajor and _osminor.  */
+0:
+	.weak	_osmajor
+_osmajor:
+	.skip	1
+	.weak	_osminor
+_osminor:
+	.skip	1

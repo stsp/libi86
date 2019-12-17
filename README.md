@@ -101,4 +101,4 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 
 ### `<libi86/stdlib.h>`
 
-  * `_psp`
+  * `_osmajor` `_osminor` `_psp`
