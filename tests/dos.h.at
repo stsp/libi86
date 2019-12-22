@@ -251,6 +251,23 @@ int main (int argc, char **argv)
 }]],[[]])
 AT_CLEANUP
 
+AT_SETUP([[_dos_getdrive, _getdrive]])
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+#include <errno.h>
+void abort (void);
+int main (int argc, char **argv)
+{
+  unsigned drive = 0xf6f6u;
+  _dos_getdrive (&drive);
+  if (drive < 1 || drive > 0xff)
+    abort ();
+  if (drive != _getdrive ())
+    abort ();
+  return 0;
+}]],[[]])
+AT_CLEANUP
+
 AT_SETUP([[_dos_getfileattr]])
 AT_LIBI86_CHECK(dnl
 [[#include <dos.h>

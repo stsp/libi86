@@ -83,6 +83,7 @@ OBJS		= bdos.o \
 		  delay.o \
 		  disable.o \
 		  dos-close.o \
+		  dos-getdrive.o \
 		  dos-getfileattr.o \
 		  dos-setfileattr.o \
 		  enable.o \
@@ -90,6 +91,7 @@ OBJS		= bdos.o \
 		  fmemmove.o \
 		  getch.o \
 		  getche.o \
+		  getdrive.o \
 		  inp.o \
 		  inpw.o \
 		  int86.o \
