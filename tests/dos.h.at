@@ -232,6 +232,25 @@ so you can hello world while you hello world
 ]])
 AT_CLEANUP
 
+AT_SETUP([[_dos_close]])
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+#include <errno.h>
+void abort (void);
+int main (int argc, char **argv)
+{
+  /* Try to close the stdin file descriptor.  This should succeed.  */
+  if (_dos_close (0) != 0)
+    abort ();
+
+  /* Try to close the same file descriptor again.  This should fail.  */
+  if (_dos_close (0) != EBADF)
+    abort ();
+
+  return 0;
+}]],[[]])
+AT_CLEANUP
+
 AT_SETUP([[_dos_getfileattr]])
 AT_LIBI86_CHECK(dnl
 [[#include <dos.h>

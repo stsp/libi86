@@ -21,17 +21,16 @@
 	.code16
 	.att_syntax prefix
 
-	TEXT_ (dos_setfileattr.S.LIBI86)
-	.global	_dos_setfileattr
-_dos_setfileattr:
-	ENTER_BX_ (4)
-	MOV_ARG2W_BX_ (%cx)
-	MOV_ARG0W_BX_CLOBBER_ (%dx)
-	movw	$0x4301, %ax
+	TEXT_ (dos_close.S.LIBI86)
+	.global	_dos_close
+_dos_close:
+	ENTER_BX_ (2)
+	MOV_ARG0W_BX_CLOBBER_ (%bx)
+	movb	$0x3e,	%ah
 	int	$0x21
 	jc	1f
 	xorw	%ax,	%ax
 0:
-	RET_ (4)
+	RET_ (2)
 1:
-	RET_SET_ERRNO_ (4, 0b)
+	RET_SET_ERRNO_ (2, 0b)

@@ -39,6 +39,7 @@ extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
 extern int bdosptr (int __dos_func, void *__dx, unsigned __al);
 extern int intdos (const union REGS *, union REGS *);
 extern int intdosx (const union REGS *, union REGS *, struct SREGS *);
+extern unsigned _dos_close (int __handle);
 extern unsigned _dos_getfileattr (const char *__path, unsigned *__attributes);
 extern unsigned _dos_setfileattr (const char *__path, unsigned __attributes);
 

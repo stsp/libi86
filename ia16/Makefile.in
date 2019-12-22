@@ -82,6 +82,7 @@ OBJS		= bdos.o \
 		  cscanf.o \
 		  delay.o \
 		  disable.o \
+		  dos-close.o \
 		  dos-getfileattr.o \
 		  dos-setfileattr.o \
 		  enable.o \

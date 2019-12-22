@@ -70,6 +70,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
   * `bdosptr (`_dos-func_`,` \*_dx_`,` _al_`);`
   * `intdos (`\*_in-regs_`,` \*_out-regs_`);`
   * `intdosx (`\*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
+  * `_dos_close (`_handle_`);`
   * `_dos_getfileattr (`\*_path_`,` \*_attributes_`);`
   * `_dos_setfileattr (`\*_path_`,` _attributes_`);`
   * `<dos.h>` also includes `<i86.h>`
