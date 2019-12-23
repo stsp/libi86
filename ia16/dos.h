@@ -40,8 +40,14 @@ extern int bdosptr (int __dos_func, void *__dx, unsigned __al);
 extern int intdos (const union REGS *, union REGS *);
 extern int intdosx (const union REGS *, union REGS *, struct SREGS *);
 extern unsigned _dos_close (int __handle);
+extern void _dos_getdrive (unsigned *__drive);
 extern unsigned _dos_getfileattr (const char *__path, unsigned *__attributes);
 extern unsigned _dos_setfileattr (const char *__path, unsigned __attributes);
+/* Note:  The Open Watcom C Library Reference has
+	int _getdrive (void);
+   but the actual <dos.h> and <direct.h> files in Open Watcom both give an
+   unsigned return type.  */
+extern unsigned _getdrive (void);
 
 _LIBI86_END_EXTERN_C
 
