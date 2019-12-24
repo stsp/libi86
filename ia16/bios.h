@@ -66,6 +66,11 @@ extern unsigned short _bios_timeofday (unsigned __service, long *__timeval);
 #define _DISK_VERIFY		4
 #define _DISK_FORMAT		5
 
+#define _COM_INIT		0
+#define _COM_SEND		1
+#define _COM_RECEIVE		2
+#define _COM_STATUS		3
+
 #define _KEYBRD_READ		0x00u
 #define _KEYBRD_READY		0x01u
 #define _KEYBRD_SHIFTSTATUS	0x02u
