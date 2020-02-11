@@ -65,6 +65,8 @@ extern unsigned short _bios_timeofday (unsigned __service, long *__timeval);
 #define _DISK_WRITE		3
 #define _DISK_VERIFY		4
 #define _DISK_FORMAT		5
+/* Not in Open Watcom.  */
+#define _DISK_DRIVEPARAMS	8
 
 #define _COM_INIT		0
 #define _COM_SEND		1

@@ -41,6 +41,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 ### `<bios.h>`
 
   * `_bios_disk (`_service_`,` \*_diskinfo_`);`
+    - as an extension, also accepts _service_ = `_DISK_DRIVEPARAMS`, which returns drive parameters in \*_diskinfo_
   * `_bios_equiplist ();`
   * `_bios_memsize ();`
   * `_bios_keybrd (`_service_`);`
@@ -59,10 +60,14 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
   * `putch (`_ch_`);`
   * `vcprintf (`\*_fmt_`,` _ap_`);`
   * `vcscanf (`\*_fmt_`,` _ap_`);`
-  * `inp (`_port_`);` // also `_inp`
-  * `inpw (`_port_`);` // also `_inpw`
-  * `outp (`_port_`,` _value_`);` // also `_outp`
-  * `outpw (`_port_`,` _value_`);` // also `_outpw`
+  * `inp (`_port_`);`
+    - also `_inp`
+  * `inpw (`_port_`);`
+    - also `_inpw`
+  * `outp (`_port_`,` _value_`);`
+    - also `_outp`
+  * `outpw (`_port_`,` _value_`);`
+    - also `_outpw`
 
 ### `<dos.h>`
 
@@ -88,12 +93,18 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
   * `int86 (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);`
   * `int86x (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
   * `intr (`_inter-no_`,` \*_regs_`);`
-  * `_int86f (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);` // extension --- loads flags
-  * `_int86xf (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);` // extension --- loads flags
-  * `_intrf (`_inter-no_`,` \*_regs_`);` // extension --- loads flags
-  * `FP_OFF (`\*_ptr_`);` // macro; also `_FP_OFF`
-  * `FP_SEG (`\*_ptr_`);` // macro; also `_FP_SEG`
-  * `MK_FP (`_seg_`,` _off_`);` // macro; also `_MK_FP`
+  * `_int86f (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);`
+    - extension --- loads flags
+  * `_int86xf (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
+    - extension --- loads flags
+  * `_intrf (`_inter-no_`,` \*_regs_`);`
+    - extension --- loads flags
+  * `FP_OFF (`\*_ptr_`);`
+    - macro; also `_FP_OFF`
+  * `FP_SEG (`\*_ptr_`);`
+    - macro; also `_FP_SEG`
+  * `MK_FP (`_seg_`,` _off_`);`
+    - macro; also `_MK_FP`
 
 ### `<libi86/string.h>`
 

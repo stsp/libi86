@@ -24,7 +24,8 @@
 unsigned short
 _bios_disk (unsigned service, struct diskinfo_t *diskinfo)
 {
-  unsigned short ax;
+  unsigned short ax, di;
+  __typeof__ (__builtin_ia16_selector (0u)) es;
   uint8_t ch, cl, dh, dl;
 
   switch (service)
@@ -40,7 +41,8 @@ _bios_disk (unsigned service, struct diskinfo_t *diskinfo)
     case _DISK_VERIFY:
       ax = service << 8 | (uint8_t) diskinfo->nsectors;
       ch = (uint8_t) diskinfo->track;
-      cl = (uint8_t) diskinfo->sector | (uint8_t) (diskinfo->track >> 8 << 6);
+      cl = (uint8_t) diskinfo->sector
+	   | ((uint8_t) (diskinfo->track >> 2) & 0xc0);
       dh = (uint8_t) diskinfo->head;
       dl = (uint8_t) diskinfo->drive;
       __asm volatile ("int $0x13"
@@ -49,10 +51,29 @@ _bios_disk (unsigned service, struct diskinfo_t *diskinfo)
 		      : "cc", "memory");
       break;
 
+    case _DISK_DRIVEPARAMS:
+      ax = _DISK_DRIVEPARAMS << 8;
+      dl = (uint8_t) diskinfo->drive;
+      /* Ralf Brown's Interrupt List says to set %es = %di = 0 "to guard
+	 against BIOS bugs".  */
+      __asm volatile ("int $0x13"
+		      : "=a" (ax), "=c" (ch), "=Rcl" (cl),
+			"=Rdh" (dh), "=Rdl" (dl), "=e" (es), "=D" (di)
+		      : "0" (ax), "4" (dl), "5" (__builtin_ia16_selector (0u)),
+			"6" (0u)
+		      : "bx", "cc", "memory");
+      diskinfo->head = dh;
+      diskinfo->track = (unsigned) ch | (unsigned) (cl & 0xc0) << 2;
+      diskinfo->sector = cl & 0x3f;
+      /* Actually the number of drives...  */
+      diskinfo->drive = dl;
+      break;
+
     default:
       ax = service << 8 | (uint8_t) diskinfo->nsectors;
       ch = (uint8_t) diskinfo->track;
-      cl = (uint8_t) diskinfo->sector | (uint8_t) (diskinfo->track >> 8 << 6);
+      cl = (uint8_t) diskinfo->sector
+	   | ((uint8_t) (diskinfo->track >> 2) & 0xc0);
       dh = (uint8_t) diskinfo->head;
       dl = (uint8_t) diskinfo->drive;
       __asm volatile ("int $0x13"
