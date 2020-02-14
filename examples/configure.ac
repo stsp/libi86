@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018 TK Chia
+dnl Copyright (c) 2020 TK Chia
 dnl
 dnl This file is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU Lesser General Public License as published by
@@ -14,15 +14,7 @@ dnl You should have received a copy of the GNU Lesser General Public License
 dnl along with this program; see the file COPYING3.LIB.  If not see
 dnl <http://www.gnu.org/licenses/>.
 
-dnl For the actual build, this script mostly just hands over to ia16/configure,
-dnl which sets things up for an automated multilib build.  It seems that
-dnl setting up a project top-level directory for a multilib build is not
-dnl supported.
-dnl
-dnl For tests, however, this script _does_ do the actual work of setting up
-dnl the test suite runs, using the GNU Autotools' experimental Autotest
-dnl feature.	-- tkchia 20181118
-
+set -x
 AC_PREREQ(2.69)
 AC_INIT([libi86],m4_esyscmd_s([
   if git diff --quiet HEAD; then
@@ -31,12 +23,35 @@ AC_INIT([libi86],m4_esyscmd_s([
   else
     TZ=UTC0 date +%Y%m%d
   fi]),,[libi86])
-AC_DISABLE_OPTION_CHECKING
+AC_CONFIG_SRCDIR(drivei86.c)
+
+if test "${enable_shared}" = "yes" ; then
+  echo "Shared libraries not supported for cross compiling, ignored"
+fi
+
+if test "$srcdir" = "." ; then
+  if test "${with_target_subdir}" != "." ; then
+    libi86_topdir="${srcdir}/../.."
+  else
+    libi86_topdir="${srcdir}/.."
+  fi
+else
+  libi86_topdir="${srcdir}/.."
+fi
+AC_CONFIG_AUX_DIR($libi86_topdir)
+
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
+AC_ARG_PROGRAM
+
 AC_PROG_CC
-AC_PATH_PROG(DOSEMU, dosemu, /bin/false)
-AC_CONFIG_SUBDIRS([ia16 examples])
-AC_CONFIG_TESTDIR([tests])
-AC_CONFIG_FILES([Makefile tests/atlocal])
+AC_CHECK_TOOL(AS, as, false)
+AC_CHECK_TOOL(LD, ld, false)
+
+host_makefile_frag_path=
+host_makefile_frag=
+AC_SUBST(host_makefile_frag_path)
+AC_SUBST(host_makefile_frag)
+
+AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

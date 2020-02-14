@@ -21,6 +21,7 @@ default: all
 
 distclean maintainer-clean:
 	$(MAKE) -C ia16 $@
+	$(MAKE) -C examples $@
 	$(RM) Makefile config.cache config.log config.status
 .PHONY: distclean maintainer-clean
 
@@ -34,4 +35,5 @@ $(abs_srcdir)/tests/testsuite: $(abs_srcdir)/tests/testsuite.at \
 
 %:
 	$(MAKE) -C ia16 $@
+	$(MAKE) -C examples $@
 .PHONY: %
