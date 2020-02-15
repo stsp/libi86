@@ -16,6 +16,11 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * Simple diagnostic program which probes for floppy drives and hard drives
+ * at the BIOS level, and tries to read the boot records on their disks.
+ */
+
 #include <stdio.h>
 #include <bios.h>
 
