@@ -86,14 +86,12 @@
  *   convention, it assumes that the function uses only two registers (%ax and
  *   %dx) to hold parameters.
  *
- * - RET_SET_ERRNO_ (N, L) emits instructions to return from a function with
- *   N bytes of arguments and also set errno to the value in %ax.  The same
- *   %ax value will be passed back to the caller.
+ * - RET_SET_ERRNO_ (N) emits instructions to return from a function with N
+ *   bytes of arguments and also set errno to the value in %ax, if the carry
+ *   flag is set.  The same %ax value, or 0 if CF is clear, will be passed
+ *   back to the caller.
  *
- *   If L is non-empty, it should be a label for a RET_ (N) instruction
- *   which RET_SET_ERRNO_ (N, L) can (optionally) use to do a return.
- *
- * - RET2_SET_ERRNO_(N, L) does the same, except that for `regparmcall', it
+ * - RET2_SET_ERRNO_(N) does the same, except that for `regparmcall', it
  *   assumes that the function uses only %ax and %dx to hold parameters.
  *
  * When using the MOV_*, LDS_*, or LES_* macros, be careful not to clobber a
@@ -211,23 +209,15 @@
 				.else; \
 				RET__; \
 				.endif
-# define RET_SET_ERRNO_(n, l)	.if (n)>6; \
+# define RET_SET_ERRNO_(n)	.if (n)>6; \
 				CALL_ (__libi86_ret_set_errno); \
-				.ifc "", #l; \
 				RET__ $((n)-6); \
-				.else; \
-				jmp l; \
-				.endif; \
 				.else; \
 				JMP_ (__libi86_ret_set_errno); \
 				.endif
-# define RET2_SET_ERRNO_(n, l)	.if (n)>4; \
+# define RET2_SET_ERRNO_(n)	.if (n)>4; \
 				CALL_ (__libi86_ret_set_errno); \
-				.ifc "", #l; \
 				RET__ $((n)-4); \
-				.else; \
-				jmp l; \
-				.endif; \
 				.else; \
 				JMP_ (__libi86_ret_set_errno); \
 				.endif
@@ -263,13 +253,9 @@
 				.else; \
 				RET__; \
 				.endif
-#   define RET_SET_ERRNO_(n, l)	.if (n); \
+#   define RET_SET_ERRNO_(n)	.if (n); \
 				CALL_ (__libi86_ret_set_errno); \
-				.ifc "", #l; \
 				RET__ $(n); \
-				.else; \
-				jmp l; \
-				.endif; \
 				.else; \
 				JMP_ (__libi86_ret_set_errno); \
 				.endif
@@ -278,8 +264,8 @@
 #     warning "not sure which calling convention is in use; assuming cdecl"
 #   endif
 #   define RET_(n)		RET__
-#   define RET_SET_ERRNO_(n, l)	JMP_ (__libi86_ret_set_errno)
+#   define RET_SET_ERRNO_(n)	JMP_ (__libi86_ret_set_errno)
 # endif
 # define RET2_(n)		RET_ (n)
-# define RET2_SET_ERRNO_(n, l)	RET_SET_ERRNO_ (n, l)
+# define RET2_SET_ERRNO_(n)	RET_SET_ERRNO_ (n)
 #endif

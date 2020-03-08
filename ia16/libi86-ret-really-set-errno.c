@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 TK Chia
+ * Copyright (c) 2019--2020 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -18,10 +18,14 @@
 
 /*
  * This implements an internal routine to set errno to an error code output
- * by MS-DOS, and then return the same value to the caller.  It makes no
- * assumptions about the actual form that errno takes (e.g. it might be a
- * macro which calls a function), but it assumes that MS-DOS error codes can
- * be directly treated as errno values.
+ * by MS-DOS, and then return the same value to the caller.
+ *
+ * It makes no assumptions about the actual form that errno takes (e.g.  it
+ * might be a macro which calls a function), but it assumes that MS-DOS
+ * error codes can be directly treated as errno values.
+ *
+ * This routine is used by __libi86_ret_set_errno, which takes the state of
+ * the carry flag into account.
  */
 
 #define _LIBI86_COMPILING_
@@ -40,7 +44,7 @@
 # endif
 
 __attribute__ ((regparmcall)) unsigned
-__libi86_ret_set_errno (unsigned err)
+__libi86_ret_really_set_errno (unsigned err)
 {
   errno = (int) err;
   return err;

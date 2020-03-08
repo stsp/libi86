@@ -373,3 +373,81 @@ main (int argc, char **argv)
 7 OK
 ]])
 AT_CLEANUP
+
+AT_SETUP([[_dos_allocmem, _dos_freemem]])
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+[[#include <dos.h>
+#include <errno.h>
+#include <stdio.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+  unsigned max_paras = 0, seg = 0, i;
+  unsigned long __far *ptr = 0;
+#ifdef __MSDOS__
+  errno = 0;
+  if (_dos_allocmem (0xffffu, &max_paras) != ENOMEM)
+    abort ();
+  puts ("1 OK");
+  if (errno != ENOMEM)
+    abort ();
+  puts ("2 OK");
+  if (! max_paras)
+    abort ();
+  puts ("3 OK");
+
+  errno = 0;
+  if (_dos_allocmem (max_paras, &seg) != 0)
+    abort ();
+  puts ("4 OK");
+  if (errno)
+    abort ();
+  puts ("5 OK");
+  if (! seg)
+    abort ();
+  puts ("6 OK");
+
+  ptr = MK_FP (seg, 0);
+  i = max_paras;
+  if (i > 0x1000)
+    i = 0x1000;
+  while (i-- != 0)
+    {
+      *ptr++ = 0xf6f6f6f6ul;  *ptr++ = 0xf6f6f6f6ul;
+      *ptr++ = 0xf6f6f6f6ul;  *ptr++ = 0xf6f6f6f6ul;
+    }
+
+  if (max_paras > 0x1000)
+    {
+      ptr = MK_FP (seg + max_paras - 0x1000, 0);
+      i = 0x1000;
+      while (i-- != 0)
+	{
+	  *ptr++ = 0xf6f6f6f6ul;  *ptr++ = 0xf6f6f6f6ul;
+	  *ptr++ = 0xf6f6f6f6ul;  *ptr++ = 0xf6f6f6f6ul;
+	}
+    }
+
+  errno = 0;
+  if (_dos_freemem (seg) != 0)
+    abort ();
+  puts ("7 OK");
+  if (errno)
+    abort ();
+  puts ("8 OK");
+
+  return 0;
+#else
+# error
+#endif
+}]],[[1 OK
+2 OK
+3 OK
+4 OK
+5 OK
+6 OK
+7 OK
+8 OK
+]])
+AT_CLEANUP

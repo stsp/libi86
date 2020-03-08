@@ -82,7 +82,9 @@ OBJS		= bdos.o \
 		  cscanf.o \
 		  delay.o \
 		  disable.o \
+		  dos-allocmem.o \
 		  dos-close.o \
+		  dos-freemem.o \
 		  dos-getdrive.o \
 		  dos-getfileattr.o \
 		  dos-setfileattr.o \
@@ -117,6 +119,7 @@ OBJS		= bdos.o \
 		  libi86-int86x-do.o \
 		  libi86-intr-do.o \
 		  libi86-intr-dispatch.o \
+		  libi86-ret-really-set-errno.o \
 		  libi86-ret-set-errno.o \
 		  libi86-sound-by-divisor.o \
 		  libi86-ungetch-buf.o \

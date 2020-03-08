@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 TK Chia
+ * Copyright (c) 2020 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -21,12 +21,18 @@
 	.code16
 	.att_syntax prefix
 
-	TEXT_ (dos_setfileattr.S.LIBI86)
-	.global	_dos_setfileattr
-_dos_setfileattr:
+	TEXT_ (dos_allocmem.S.LIBI86)
+	.global	_dos_allocmem
+_dos_allocmem:
 	ENTER_BX_ (4)
-	MOV_ARG2W_BX_ (%cx)
-	MOV_ARG0W_BX_CLOBBER_ (%dx)
-	movw	$0x4301, %ax
+	pushw	%si
+	MOV_ARG2W_BX_ (%si)
+	MOV_ARG0W_BX_CLOBBER_ (%bx)
+	movb	$0x48,	%ah
 	int	$0x21
+	jc	0f
+	xchgw	%ax,	%bx
+0:
+	movw	%bx,	(%si)
+	popw	%si
 	RET_SET_ERRNO_ (4)

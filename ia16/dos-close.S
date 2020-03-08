@@ -28,9 +28,4 @@ _dos_close:
 	MOV_ARG0W_BX_CLOBBER_ (%bx)
 	movb	$0x3e,	%ah
 	int	$0x21
-	jc	1f
-	xorw	%ax,	%ax
-0:
-	RET_ (2)
-1:
-	RET_SET_ERRNO_ (2, 0b)
+	RET_SET_ERRNO_ (2)

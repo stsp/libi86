@@ -1,7 +1,8 @@
 /*
- * Various macros for use by other libi86 header files.
+ * Various macros and type definitions, for use by libi86 modules and other
+ * libi86 header files.
  *
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2020 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -96,5 +97,8 @@
 
 /* And... */
 typedef __builtin_va_list _LIBI86_VA_LIST;
+#ifdef _LIBI86_COMPILING_
+typedef __typeof__ (__builtin_ia16_selector (0u)) _LIBI86_SEG_SELECTOR;
+#endif
 
 #endif

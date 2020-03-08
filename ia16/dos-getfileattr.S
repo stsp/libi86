@@ -34,10 +34,7 @@ _dos_getfileattr:
 #endif
 	movw	$0x4300, %ax
 	int	$0x21
-	jc	1f
+	jc	0f
 	movw	%cx,	(%bx)
-	xorw	%ax,	%ax
 0:
-	RET_ (4)
-1:
-	RET_SET_ERRNO_ (4, 0b)
+	RET_SET_ERRNO_ (4)

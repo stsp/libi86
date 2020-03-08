@@ -18,6 +18,7 @@
 
 #define _LIBI86_COMPILING_
 #include <inttypes.h>
+#include <libi86/internal/cdefs.h>
 #include "i86.h"
 #include "bios.h"
 
@@ -25,7 +26,7 @@ unsigned short
 _bios_disk (unsigned service, struct diskinfo_t *diskinfo)
 {
   unsigned short ax, di;
-  __typeof__ (__builtin_ia16_selector (0u)) es;
+  _LIBI86_SEG_SELECTOR es;
   uint8_t ch, cl, dh, dl;
 
   switch (service)

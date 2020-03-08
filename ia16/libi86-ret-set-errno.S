@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 TK Chia
+ * Copyright (c) 2018--2020 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -18,15 +18,15 @@
 
 #include "libi86/internal/call-cvt.h"
 
+	.arch	i8086, jumps
 	.code16
 	.att_syntax prefix
 
-	TEXT_ (dos_setfileattr.S.LIBI86)
-	.global	_dos_setfileattr
-_dos_setfileattr:
-	ENTER_BX_ (4)
-	MOV_ARG2W_BX_ (%cx)
-	MOV_ARG0W_BX_CLOBBER_ (%dx)
-	movw	$0x4301, %ax
-	int	$0x21
-	RET_SET_ERRNO_ (4)
+	TEXT_ (libi86_ret_set_errno.S.LIBI86)
+	.global	__libi86_ret_set_errno
+__libi86_ret_set_errno:
+	jc	0f
+	xorw	%ax,	%ax
+	RET_ (0)
+0:
+	JMP_ (__libi86_ret_really_set_errno)
