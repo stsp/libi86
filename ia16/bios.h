@@ -80,6 +80,10 @@ extern unsigned short _bios_timeofday (unsigned __service, long *__timeval);
 #define _NKEYBRD_READY		0x11u
 #define _NKEYBRD_SHIFTSTATUS	0x12u
 
+#define _PRINTER_WRITE		0
+#define _PRINTER_INIT		1
+#define _PRINTER_STATUS		2
+
 #define _TIME_GETCLOCK		0x00u
 #define _TIME_SETCLOCK		0x01u
 
