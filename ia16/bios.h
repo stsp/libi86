@@ -34,6 +34,20 @@ struct diskinfo_t
 struct diskinfo_t;
 #endif
 
+/* Not in Open Watcom.  */
+union _joyinfo_t
+{
+  struct
+    {
+      unsigned __ax, __bx, __cx, __dx;
+    } __raw;
+  unsigned char trig;
+  struct
+    {
+      unsigned x_a, y_a, x_b, y_b;
+    } pos;
+};
+
 _LIBI86_ALT_INLINE unsigned short
 _bios_equiplist (void)
 {
@@ -58,6 +72,9 @@ extern unsigned short _bios_keybrd (unsigned __service);
    with different argument and return types.  I follow the actual Open Watcom
    <bios.h> prototype here.  */
 extern unsigned short _bios_timeofday (unsigned __service, long *__timeval);
+/* Not in Open Watcom.  */
+extern unsigned short _bios_joystick (unsigned __service,
+				      union _joyinfo_t *__joyinfo);
 
 #define _DISK_RESET		0
 #define _DISK_STATUS		1
@@ -86,6 +103,10 @@ extern unsigned short _bios_timeofday (unsigned __service, long *__timeval);
 
 #define _TIME_GETCLOCK		0x00u
 #define _TIME_SETCLOCK		0x01u
+
+/* Not in Open Watcom.  */
+#define _JOY_READTRIG		0
+#define _JOY_READPOS		1
 
 _LIBI86_END_EXTERN_C
 

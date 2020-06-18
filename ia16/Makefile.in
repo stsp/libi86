@@ -73,6 +73,7 @@ CLEAN_HEADERS	= libi86/config.h \
 OBJS		= bdos.o \
 		  bios-disk.o \
 		  bios-equiplist.o \
+		  bios-joystick.o \
 		  bios-keybrd.o \
 		  bios-memsize.o \
 		  bios-timeofday.o \

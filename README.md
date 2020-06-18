@@ -46,6 +46,8 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
   * `_bios_memsize ();`
   * `_bios_keybrd (`_service_`);`
   * `_bios_timeofday (`_service_`,` \*_timeval_`);`
+  * `_bios_joystick (`_service_`,` \*_joyinfo_`);`
+    - not in Open Watcom; reads joystick status via `int 0x15` function `0x84`
 
 ### `<conio.h>`
 
