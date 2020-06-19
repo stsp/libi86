@@ -28,8 +28,35 @@
 int
 cputs (const char *buf)
 {
-  size_t len = strlen (buf);
-  ssize_t n = write (__libi86_con_out_fd, buf, len);
+  char *p_nl;
+  size_t len;
+  ssize_t n;
+
+  while ((p_nl = strchr (buf, '\n')) != NULL)
+    {
+      len = p_nl - buf;
+      n = write (__libi86_con_out_fd, buf, len);
+      if (n != len)
+	{
+	  if (n >= 0)
+	    errno = EIO;
+	  return EOF;
+	}
+
+      n = write (__libi86_con_out_fd, "\r\n", 2);
+      if (n != 2)
+	{
+	  if (n >= 0)
+	    errno = EIO;
+	  return EOF;
+	}
+
+      buf = p_nl + 1;
+    }
+
+  len = strlen (buf);
+  n = write (__libi86_con_out_fd, buf, len);
+
   if (n == len)
     return 0;
 
