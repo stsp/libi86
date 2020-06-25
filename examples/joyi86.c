@@ -23,6 +23,7 @@
 
 #include <bios.h>
 #include <conio.h>
+#include <i86.h>
 #include <stdio.h>
 
 int
@@ -55,8 +56,12 @@ main (void)
 	cprintf (" %-5u %-5u %-5u %-5u ", info.pos.x_a, info.pos.y_a,
 					  info.pos.x_b, info.pos.y_b);
 
-      outp (0x201, 0);
       x_a = x_b = y_a = y_b = 0;
+      _disable ();
+
+      /* "some adapters won't work unless the one-shot sent to 201h has all
+	 bits set" (Jim Leonard https://github.com/tkchia/GW-BASIC/issues/4) */
+      outp (0x201, 0xff);
 
       while (((byte = inp (0x201)) & 0x0f) != 0)
 	{
@@ -97,6 +102,8 @@ main (void)
 		}
 	    }
 	}
+
+      _enable ();
 
       cprintf ("%c%c %c%c  %-5u %-5u %-5u %-5u\r",
 	       byte & 0x10 ? '-' : '*', byte & 0x20 ? '-' : '*',
