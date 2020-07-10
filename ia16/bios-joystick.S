@@ -28,11 +28,16 @@ _bios_joystick:
 	pushw	%di
 #ifndef __IA16_CALLCVT_REGPARMCALL
 	movw	%sp,	%di
-	movw	%ss:4(%di), %dx
+# ifdef __IA16_CMODEL_IS_FAR_TEXT
+	movw	6(%di), %dx
+	movw	8(%di),	%di
+# else
+	movw	4(%di), %dx
+	movw	6(%di),	%di
+# endif
 	movb	$0x84,	%ah
 	int	$0x15
 	jc	.error
-	movw	%ss:6(%di), %di
 #else
 	movw	%dx,	%di
 	xchgw	%ax,	%dx
