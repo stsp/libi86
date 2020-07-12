@@ -36,6 +36,12 @@ AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_PROG_CC
 AC_PATH_PROG(DOSEMU, dosemu, /bin/false)
+AC_CACHE_CHECK([whether dosemu 1.x is in use],[li86_cv_dosemu_is_1],[
+  li86_cv_dosemu_is_1=no
+  $DOSEMU --version >/dev/null 2>/dev/null \
+   && $DOSEMU -dumb -quiet exit >/dev/null 2>/dev/null \
+   && li86_cv_dosemu_is_1=yes])
+AC_SUBST([li86_cv_dosemu_is_1])
 AC_CONFIG_SUBDIRS([ia16 examples])
 AC_CONFIG_TESTDIR([tests])
 AC_CONFIG_FILES([Makefile tests/atlocal])
