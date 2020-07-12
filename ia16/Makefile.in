@@ -61,6 +61,7 @@ INSTALL_HEADERS	= bios.h \
 		  conio.h \
 		  dos.h \
 		  dpmi.h \
+		  graph.h \
 		  i86.h \
 		  libi86/stdlib.h \
 		  libi86/string.h \
@@ -110,6 +111,7 @@ OBJS		= bdos.o \
 		  psp.o \
 		  putch.o \
 		  segread.o \
+		  setvideomode.o \
 		  sound.o \
 		  ungetch.o \
 		  vcprintf.o \
@@ -122,6 +124,7 @@ OBJS		= bdos.o \
 		  libi86-intr-dispatch.o \
 		  libi86-ret-really-set-errno.o \
 		  libi86-ret-set-errno.o \
+		  libi86-setvideomode-mdpa-cga.o \
 		  libi86-sound-by-divisor.o \
 		  libi86-ungetch-buf.o \
 		  $(foreach da,0 1 2 3, \

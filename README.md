@@ -86,6 +86,13 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
   * `_getdrive ();`
   * `<dos.h>` also includes `<i86.h>`
 
+### `<graph.h>`
+
+  * `_setvideomode (`_mode_`)`
+    - only implemented
+      - for constant _mode_'s
+       - for MDPA and CGA modes
+
 ### `<i86.h>`
 
   * `delay (`_ms_`);`

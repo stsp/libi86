@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2020 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -17,28 +17,20 @@
  */
 
 /*
- * Out-of-line implementation of int86x (INTR_NO, ...) for cases where
- * INTR_NO is not a compile-time constant.
+ * Out-of-line implementation of _setvideomode (MODE) for cases where MODE
+ * is not a compile-time constant.
  */
 
 #define _LIBI86_COMPILING_
 #include <inttypes.h>
-#include "i86.h"
+#include "graph.h"
 
-extern const void * const __libi86_intr_dispatch[0x100];
-
-int
-__libi86_int86x (int intr_no, const union REGS *in_regs, union REGS *out_regs,
-		 struct SREGS *seg_regs)
+__far __attribute__ ((far_section)) short
+__libi86_setvideomode (short mode)
 {
-  return __libi86_int86x_do (__libi86_intr_dispatch[(uint8_t) intr_no],
-			     in_regs, out_regs, seg_regs);
+  return __libi86_setvideomode_inline_dispatch (mode);
 }
 
-_LIBI86_ALIAS (__libi86_int86x) int
-int86x (int intr_no, const union REGS *in_regs, union REGS *out_regs,
-	struct SREGS *seg_regs);
-
-_LIBI86_ALIAS (__libi86_int86x) int
-_int86xf (int intr_no, const union REGS *in_regs, union REGS *out_regs,
-	  struct SREGS *seg_regs);
+_LIBI86_ALIAS (__libi86_setvideomode)
+__far __attribute__ ((far_section)) short
+_setvideomode (short mode);

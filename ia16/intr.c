@@ -17,7 +17,7 @@
  */
 
 /*
- * Out-of-line implementation of intr (intr_no, ...) for cases where intr_no
+ * Out-of-line implementation of intr (INTR_NO, ...) for cases where INTR_NO
  * is not a compile-time constant.
  */
 

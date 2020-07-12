@@ -105,7 +105,7 @@
 #else
 # define SEG_RELOC_(place, sym) .reloc (place), R_386_OZSEG16, sym
 #endif
-#ifndef __IA16_CMODEL_IS_FAR_TEXT
+#if ! defined __IA16_CMODEL_IS_FAR_TEXT && ! defined FORCE_FAR__
 # define FAR_ADJ__		0
 # define RET__			ret
 # define JMP_(func)		jmp func

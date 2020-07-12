@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2019 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -17,25 +17,32 @@
  */
 
 /*
- * Out-of-line implementation of int86 (INTR_NO, ...) for cases where
- * INTR_NO is not a compile-time constant.
+ * Internal implementation of _setvideomode (.) for the "classical" MDPA &
+ * CGA video modes, namely _TEXT{BW, C}{40, 80}, _MRES{4, NO}COLOR, _HRESBW,
+ * & _TEXTMONO.
  */
 
-#define _LIBI86_COMPILING_
-#include <inttypes.h>
-#include "i86.h"
+#include "libi86/internal/call-cvt-far.h"
 
-extern const void * const __libi86_intr_dispatch[0x100];
+	.arch	i8086, jumps
+	.code16
+	.att_syntax prefix
 
-int
-__libi86_int86 (int intr_no, const union REGS *in_regs, union REGS *out_regs)
-{
-  return __libi86_int86_do (__libi86_intr_dispatch[(uint8_t) intr_no],
-			    in_regs, out_regs);
-}
+	TEXT_ (setvideomode_mdpa_cga.S.LIBI86)
 
-_LIBI86_ALIAS (__libi86_int86) int
-int86 (int intr_no, const union REGS *in_regs, union REGS *out_regs);
-
-_LIBI86_ALIAS (__libi86_int86) int
-_int86f (int intr_no, const union REGS *in_regs, union REGS *out_regs);
+	.global	__libi86_setvideomode_mdpa_cga
+__libi86_setvideomode_mdpa_cga:
+	ENTER_BX_ (2)
+	MOV_ARG0W_BX_ (%ax)
+	pushw	%ax
+	int	$0x10
+	movb	$0x0f,	%ah
+	int	$0x10
+	popw	%dx
+	cmp	%dl,	%al
+	movb	$0,	%al
+	jnz	.error
+	movb	$25,	%al
+.error:
+	cbtw
+	RET_ (2)
