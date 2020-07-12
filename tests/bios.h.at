@@ -178,3 +178,28 @@ main (void)
   return 0;
 }]],[])
 AT_CLEANUP
+
+AT_SETUP([[_bios_joystick]])
+AT_LIBI86_CHECK(dnl
+[[#include <stdlib.h>
+#include <bios.h>
+int main (void)
+{
+  unsigned short r1, r2;
+  union _joyinfo_t info1, info2;
+  unsigned i;
+  for (i = 0; i < 0x100; ++i)
+    {
+      r1 = _bios_joystick (0, &info1);
+      r2 = _bios_joystick (1, &info2);
+      if ((r1 == 0) ^ (r2 == 0))
+	abort ();
+      if (r1 == 0 && r2 == 0)
+	if (info2.pos.x_a == 0 && info2.pos.y_a == 0
+	    && info2.pos.x_b == 0 && info2.pos.y_b == 0
+	    && (info1.trig & 0xf0) != 0xf0)
+	  abort ();
+    }
+  return 0;
+}]],[])
+AT_CLEANUP

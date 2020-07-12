@@ -30,14 +30,15 @@
 int
 vcprintf (const char *fmt, va_list ap)
 {
-# ifdef _LIBI86_INTERNAL_HAVE_VDPRINTF
-  return vdprintf (__libi86_con_out_fd, fmt, ap);
-# else
+  /*
+   * Do _not_ use vdprintf (...) --- it does not convert LF to CRLF as needed.
+   *	-- tkchia 20200712
+   */
   static FILE *__libi86_con_out_fp = NULL;
 
   if (! __libi86_con_out_fp)
     {
-      __libi86_con_out_fp = fdopen (__libi86_con_out_fd, "a");
+      __libi86_con_out_fp = fdopen (__libi86_con_out_fd, "at");
       if (! __libi86_con_out_fp)
 	return -1;
 
@@ -45,7 +46,6 @@ vcprintf (const char *fmt, va_list ap)
     }
 
   return vfprintf (__libi86_con_out_fp, fmt, ap);
-# endif
 }
 #else
 # warning "unknown host OS"

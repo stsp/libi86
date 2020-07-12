@@ -56,8 +56,6 @@ dnl make-config.sh uses nm and awk.
 AC_CHECK_TOOL(NM, nm, false)
 AC_PROG_AWK
 
-AC_CHECK_FUNC(vdprintf,[AC_DEFINE([_LIBI86_INTERNAL_HAVE_VDPRINTF],[1])])
-
 dnl See <libi86/port-io.h>.
 AC_MSG_CHECKING([if $CC understands the "N" asm constraint])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
