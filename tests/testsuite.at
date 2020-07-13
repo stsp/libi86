@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018 TK Chia
+dnl Copyright (c) 2018--2020 TK Chia
 dnl
 dnl This file is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU Lesser General Public License as published by
@@ -24,6 +24,7 @@ dnl Then do the actual tests...
 m4_include([bios.h.at])
 m4_include([conio.h.at])
 m4_include([dos.h.at])
+m4_include([graph.h.at])
 m4_include([i86.h.at])
 m4_include([stdlib.h.at])
 m4_include([string.h.at])

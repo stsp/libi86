@@ -124,7 +124,9 @@ OBJS		= bdos.o \
 		  libi86-intr-dispatch.o \
 		  libi86-ret-really-set-errno.o \
 		  libi86-ret-set-errno.o \
-		  libi86-setvideomode-mdpa-cga.o \
+		  libi86-setvideomode-default.o \
+		  libi86-setvideomode-nonsvga.o \
+		  libi86-setvideomode-svga.o \
 		  libi86-sound-by-divisor.o \
 		  libi86-ungetch-buf.o \
 		  $(foreach da,0 1 2 3, \

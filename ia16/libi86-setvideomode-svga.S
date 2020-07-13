@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018--2019 TK Chia
+ * Copyright (c) 2020 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -17,32 +17,48 @@
  */
 
 /*
- * Internal implementation of _setvideomode (.) for the "classical" MDPA &
- * CGA video modes, namely _TEXT{BW, C}{40, 80}, _MRES{4, NO}COLOR, _HRESBW,
- * & _TEXTMONO.
+ * Internal implementation of _setvideomode (.) for the "classical" MDPA,
+ * CGA, & EGA video modes.
  */
 
 #include "libi86/internal/call-cvt-far.h"
+#include "libi86/internal/arch.h"
 
 	.arch	i8086, jumps
 	.code16
 	.att_syntax prefix
 
-	TEXT_ (setvideomode_mdpa_cga.S.LIBI86)
+	TEXT_ (setvideomode_nonsvga.S.LIBI86)
 
-	.global	__libi86_setvideomode_mdpa_cga
-__libi86_setvideomode_mdpa_cga:
+	.global	__libi86_setvideomode_svga
+__libi86_setvideomode_svga:
 	ENTER_BX_ (2)
-	MOV_ARG0W_BX_ (%ax)
-	pushw	%ax
-	int	$0x10
-	movb	$0x0f,	%ah
-	int	$0x10
-	popw	%dx
-	cmp	%dl,	%al
-	movb	$0,	%al
+	pushw	%es
+	pushw	%di
+	subw	$0x100,	%sp
+	movw	%ss,	%di
+	movw	%di,	%es
+	movw	%sp,	%di
+	MOV_ARG0W_BX_ (%cx)
+	pushw	%cx
+	movw	$0x4f01, %ax		/* Get information for the requested */
+	int	$0x10			/* video mode */
+	popw	%bx
+	cmpw	$0x004f, %ax		/* Bail out on failure */
 	jnz	.error
-	movb	$25,	%al
-.error:
-	cbtw
+	movw	$0x4f02, %ax		/* Set the video mode */
+	int	$0x10
+	cmpw	$0x004f, %ax		/* Check again for any error */
+	jnz	.error
+	xorw	%ax,	%ax		/* Find & return the text row count */
+	movw	%ax,	%es
+	movb	%es:0x0484, %al
+	incw	%ax
+.done:
+	addw	$0x100,	%sp
+	popw	%di
+	popw	%es
 	RET_ (2)
+.error:
+	xorw	%ax,	%ax
+	jmp	.done

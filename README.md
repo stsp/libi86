@@ -89,9 +89,8 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 ### `<graph.h>`
 
   * `_setvideomode (`_mode_`)`
-    - only implemented
-      - for constant _mode_'s
-       - for MDPA and CGA modes
+    - does not work with DPMI
+    - in the case of SuperVGA screen modes, only works with VESA interface
 
 ### `<i86.h>`
 

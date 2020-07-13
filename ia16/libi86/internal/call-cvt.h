@@ -105,6 +105,10 @@
 #else
 # define SEG_RELOC_(place, sym) .reloc (place), R_386_OZSEG16, sym
 #endif
+#define JMP_FAR_(func)		SEG_RELOC_ (.+3, func); \
+				ljmp $0, $func
+#define CALL_FAR_(func)		SEG_RELOC_ (.+3, func); \
+				lcall $0, $func
 #if ! defined __IA16_CMODEL_IS_FAR_TEXT && ! defined FORCE_FAR__
 # define FAR_ADJ__		0
 # define RET__			ret
@@ -116,10 +120,8 @@
 # define FAR_ADJ__		2
 # define RET__			lret
 # define AUX___(aux)		#aux
-# define JMP_(func)		SEG_RELOC_ (.+3, func); \
-				ljmp $0, $func
-# define CALL_(func)		SEG_RELOC_ (.+3, func); \
-				lcall $0, $func
+# define JMP_(func)		JMP_FAR_ (func)
+# define CALL_(func)		CALL_FAR_ (func)
 # define TEXT_(tag)		.section AUX___(.fartext.f.##tag##$), "ax"
 # define TEXT_PTR_(func)	SEG_RELOC_ (.+2, func); \
 				.hword func, 0

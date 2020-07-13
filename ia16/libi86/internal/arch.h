@@ -1,7 +1,7 @@
 /*
  * Macros to handle different IA-16 subarchitectures in assembly language code.
  *
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2020 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -28,7 +28,7 @@
 #ifdef __IA16_FEATURE_PUSH_IMM
 	.arch	i186, jumps
 /* Push a 16-bit constant.  Clobber the register REG if necessary.  */
-# define PUSH_IMM_VIA_(imm, reg)	pushw	$imm
+# define PUSH_IMM_VIA_(imm, reg)	pushw	$(imm)
 #else
 	.arch	i8086, jumps
 # define PUSH_IMM_VIA_(imm, reg)	movw	$(imm), reg; \
