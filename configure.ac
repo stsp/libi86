@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018 TK Chia
+dnl Copyright (c) 2018--2020 TK Chia
 dnl
 dnl This file is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU Lesser General Public License as published by
@@ -31,6 +31,9 @@ AC_INIT([libi86],m4_esyscmd_s([
   else
     TZ=UTC0 date +%Y%m%d
   fi]),,[libi86])
+
+_LIBI86_DEFAULT_OPTIONS
+
 AC_DISABLE_OPTION_CHECKING
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
@@ -42,6 +45,7 @@ AC_CACHE_CHECK([whether dosemu 1.x is in use],[li86_cv_dosemu_is_1],[
    && $DOSEMU -dumb -quiet exit >/dev/null 2>/dev/null \
    && li86_cv_dosemu_is_1=yes])
 AC_SUBST([li86_cv_dosemu_is_1])
+
 AC_CONFIG_SUBDIRS([ia16 examples])
 AC_CONFIG_TESTDIR([tests])
 AC_CONFIG_FILES([Makefile tests/atlocal])

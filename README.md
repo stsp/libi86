@@ -28,7 +28,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 
  5. &nbsp;`cd build-libi86`
 
- 6. &nbsp;`../libi86/configure --host=ia16-elf --prefix=`_install-path_ `--exec-prefix=`_install-path_`/ia16-elf --disable-elks-libc`
+ 6. &nbsp;`../libi86/configure --prefix=`_install-path_
 
  7. &nbsp;`make`
 
