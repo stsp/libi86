@@ -17,7 +17,7 @@ dnl <http://www.gnu.org/licenses/>.
 m4_define([AT_PACKAGE_NAME],[libi86])
 m4_define([AT_PACKAGE_TARNAME],[libi86])
 m4_define([AT_PACKAGE_VERSION],m4_esyscmd_s([
-  if git diff --quiet HEAD; then
+  if git diff --quiet HEAD 2>/dev/null; then
     TZ=UTC0 git log -n1 --oneline --date=short-local --format='%ad' | \
             sed 's/-//g'
   else

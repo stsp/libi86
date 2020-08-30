@@ -30,7 +30,14 @@ dnl $2 = Unix path which $1 resides in (defaults to current directory)
 dnl $3 = options to pass to dosemu (default -dumb >a.log)
 dnl $4 = Unix program to run to postprocess dosemu output (default
 dnl	 postproc-stdout.sh in this file's source directory)
-m4_define([AT_LIBI86_RUN],[[(
+dnl Note: GitLab sets $TERM to `dumb'.  This causes video memory (0xb800:0)
+dnl	  reads within dosemu to return all zeroes, which is not good for
+dnl	  tests that need to capture "screen contents".  Set $TERM to
+dnl	  something more reasonable in this case.
+m4_define([AT_LIBI86_RUN],[[( \
+  if test x = x"$TERM" -o xdumb = x"$TERM"; then \
+    TERM=vt220 && LINES=25 && COLUMNS=80 && export TERM LINES COLUMNS; \
+  fi && \
   rm -f a.log && \
   ulimit -t 60 && \
   if test yes = "$li86_cv_dosemu_is_1"; then \
