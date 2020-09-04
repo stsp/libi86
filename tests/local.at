@@ -58,7 +58,8 @@ AT_CHECK([AT_LIBI86_RUN($4,,$5,$6)],,[[expout]],[[ignore]])])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_B],[dnl
 _AT_LIBI86_DO_CHECK_EXPOUT_A([[-O2 ]]$@)
-_AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os ]]$@)])
+_AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os ]]$@)
+_AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os -masm=intel ]]$@)])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_C],[dnl
 _AT_LIBI86_DO_CHECK_EXPOUT_B($@)

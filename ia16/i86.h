@@ -117,7 +117,8 @@ _int86f (int __intr_no, const union REGS *__in_regs, union REGS *__out_regs)
   if (__builtin_constant_p (__intr_no))
     {
       const void *__intr_call;
-      __asm volatile ("movw $__libi86_intr_call_0%c1%c2%c3, %0"
+      __asm volatile ("{movw $__libi86_intr_call_0%c1%c2%c3, %0"
+		      "|mov %0, offset __libi86_intr_call_0%c1%c2%c3}"
 		      : "=g" (__intr_call)
 		      : "n" ((__intr_no >> 6) & 3), "n" ((__intr_no >> 3) & 7),
 			"n" (__intr_no & 7));
@@ -140,7 +141,8 @@ _int86xf (int __intr_no, const union REGS *__in_regs, union REGS *__out_regs,
   if (__builtin_constant_p (__intr_no))
     {
       const void *__intr_call;
-      __asm volatile ("movw $__libi86_intr_call_0%c1%c2%c3, %0"
+      __asm volatile ("{movw $__libi86_intr_call_0%c1%c2%c3, %0"
+		      "|mov %0, offset __libi86_intr_call_0%c1%c2%c3}"
 		      : "=g" (__intr_call)
 		      : "n" ((__intr_no >> 6) & 3), "n" ((__intr_no >> 3) & 7),
 			"n" (__intr_no & 7));
@@ -164,7 +166,8 @@ _intrf (int __intr_no, union REGPACK *__regs)
   if (__builtin_constant_p (__intr_no))
     {
       const void *__intr_call;
-      __asm volatile ("movw $__libi86_intr_call_0%c1%c2%c3, %0"
+      __asm volatile ("{movw $__libi86_intr_call_0%c1%c2%c3, %0"
+		      "|mov %0, offset __libi86_intr_call_0%c1%c2%c3}"
 		      : "=g" (__intr_call)
 		      : "n" ((__intr_no >> 6) & 3), "n" ((__intr_no >> 3) & 7),
 			"n" (__intr_no & 7));

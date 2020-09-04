@@ -93,14 +93,14 @@ static unsigned
 get_cs (void)
 {
   unsigned v;
-  __asm volatile ("movw %%cs, %0" : "=r" (v));
+  __asm volatile ("{movw %%cs, %0|mov %0, cs}" : "=r" (v));
   return v;
 }
 static unsigned
 get_ss (void)
 {
   unsigned v;
-  __asm volatile ("movw %%ss, %0" : "=r" (v));
+  __asm volatile ("{movw %%ss, %0|mov %0, ss}" : "=r" (v));
   return v;
 }
 int
@@ -142,14 +142,14 @@ static unsigned
 get_cs (void)
 {
   unsigned v;
-  __asm volatile ("movw %%cs, %0" : "=r" (v));
+  __asm volatile ("{movw %%cs, %0|mov %0, cs}" : "=r" (v));
   return v;
 }
 static unsigned
 get_ss (void)
 {
   unsigned v;
-  __asm volatile ("movw %%ss, %0" : "=r" (v));
+  __asm volatile ("{movw %%ss, %0|mov %0, ss}" : "=r" (v));
   return v;
 }
 static void

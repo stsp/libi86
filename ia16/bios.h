@@ -52,7 +52,7 @@ _LIBI86_ALT_INLINE unsigned short
 _bios_equiplist (void)
 {
   unsigned a;
-  __asm volatile ("int $0x11" : "=a" (a));
+  __asm volatile ("int {$}0x11" : "=a" (a));
   return a;
 }
 
@@ -60,7 +60,7 @@ _LIBI86_ALT_INLINE unsigned short
 _bios_memsize (void)
 {
   unsigned a;
-  __asm volatile ("int $0x12" : "=a" (a));
+  __asm volatile ("int {$}0x12" : "=a" (a));
   return a;
 }
 

@@ -28,13 +28,13 @@ volatile int y = 2;
 static unsigned get_cs (void)
 {
   unsigned v;
-  __asm volatile ("movw %%cs, %0" : "=r" (v));
+  __asm volatile ("{movw %%cs, %0|mov %0, cs}" : "=r" (v));
   return v;
 }
 static unsigned get_ss (void)
 {
   unsigned v;
-  __asm volatile ("movw %%ss, %0" : "=r" (v));
+  __asm volatile ("{movw %%ss, %0|mov %0, ss}" : "=r" (v));
   return v;
 }
 int main (void)
@@ -69,13 +69,13 @@ AT_LIBI86_CHECK(dnl
 static unsigned get_cs (void)
 {
   unsigned v;
-  __asm volatile ("movw %%cs, %0" : "=r" (v));
+  __asm volatile ("{movw %%cs, %0|mov %0, cs}" : "=r" (v));
   return v;
 }
 static unsigned get_ss (void)
 {
   unsigned v;
-  __asm volatile ("movw %%ss, %0" : "=r" (v));
+  __asm volatile ("{movw %%ss, %0|mov %0, ss}" : "=r" (v));
   return v;
 }
 int main (void)
@@ -331,7 +331,7 @@ static unsigned ticks (void)
 static unsigned flags (void)
 {
   unsigned f;
-  __asm volatile ("pushfw; popw %0" : "=g" (f) : : "memory");
+  __asm volatile ("pushf{w}; pop{w} %0" : "=g" (f) : : "memory");
   return f;
 }
 #endif
@@ -390,7 +390,7 @@ main (void)
 	    __asm volatile ("hlt");
 #else
 	    unsigned ax;
-	    __asm volatile ("int $0x2f" : "=a" (ax) : "0" (0x1680u) : "cc");
+	    __asm volatile ("int {$}0x2f" : "=a" (ax) : "0" (0x1680u) : "cc");
 #endif
 	  }
 #ifndef __IA16_FEATURE_PROTECTED_MODE
