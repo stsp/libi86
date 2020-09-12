@@ -36,6 +36,12 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 
  9. &nbsp;`make install`
 
+## License
+
+`libi86` is distributed under the [GNU Lesser General Public License version 3](COPYING3.LIB) or above.
+
+In addition, the test setup and test cases (under [`tests/`](tests/)) are distributed under the [GNU LGPL version 2](COPYING2.LIB) or above.
+
 ## Implemented functions
 
 ### `<bios.h>`
