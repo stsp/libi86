@@ -19,12 +19,4 @@
 # way of dosemu), and write the postprocessed output to stdout.  This is for
 # comparing against an expected test output.
 
-if test yes = "$li86_cv_dosemu_is_1"; then \
-  dos2unix
-else
-  # As of writing, dosemu2 either blithely ignores the -quiet flag or only
-  # partially honours it.  -- tkchia 20200916
-  dos2unix | awk 'BEGIN	{ p = 0 }
-			{ if (p) print }
-		  /^About to Execute : / { p = 1 }'
-fi
+exec dos2unix
