@@ -20,6 +20,10 @@ AT_SETUP([[dos2unix]])
 AT_CHECK([[dos2unix --version]],,[[ignore]],[[ignore]])
 AT_CLEANUP
 
+AT_SETUP([[unix2dos]])
+AT_CHECK([[unix2dos --version]],,[[ignore]],[[ignore]])
+AT_CLEANUP
+
 AT_SETUP([[dosemu]])
 
 AT_CHECK([[$DOSEMU --version]],,[[ignore]],[[ignore]])

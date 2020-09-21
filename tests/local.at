@@ -59,16 +59,22 @@ AT_CHECK([AT_LIBI86_RUN($4,,$5,$6)],,[[expout]],[[ignore]])])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_B],[dnl
 _AT_LIBI86_DO_CHECK_EXPOUT_A([[-O2 ]]$@)
+if "$at_arg_x_test_underlying"; then :; else
 _AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os ]]$@)
-_AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os -masm=intel ]]$@)])
+_AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os -masm=intel ]]$@)
+fi])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_C],[dnl
 _AT_LIBI86_DO_CHECK_EXPOUT_B($@)
-_AT_LIBI86_DO_CHECK_EXPOUT_B([[-march=any_186 ]]$@)])
+if "$at_arg_x_test_underlying"; then :; else
+_AT_LIBI86_DO_CHECK_EXPOUT_B([[-march=any_186 ]]$@)
+fi])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_D],[dnl
+if "$at_arg_x_test_underlying"; then :; else
 _AT_LIBI86_DO_CHECK_EXPOUT_B($@)
 _AT_LIBI86_DO_CHECK_EXPOUT_B([[-mrtd ]]$@)
+fi
 _AT_LIBI86_DO_CHECK_EXPOUT_C([[-mregparmcall ]]$@)])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_E],[dnl
@@ -90,7 +96,9 @@ dnl	 postproc-stdout.sh in this file's source directory)
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_F],[dnl
 _AT_LIBI86_DO_CHECK_EXPOUT_E($@)
 _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mdpmiable ]]$@)
-_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mprotected-mode ]]$@)])
+if "$at_arg_x_test_underlying"; then :; else
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mprotected-mode ]]$@)
+fi])
 
 m4_define([AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL_NONDPMIABLE],[dnl
 AT_DATA([[a.c]],[$1
@@ -104,7 +112,9 @@ m4_define([AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL],[dnl
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
+if "$at_arg_x_test_underlying"; then :; else
 _AT_LIBI86_DO_CHECK_EXPOUT_F(,a.c,,m4_shift(m4_shift($@)))
+fi
 _AT_LIBI86_DO_CHECK_EXPOUT_F([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
 dnl do not try -mdpmiable for medium model for now
 _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))])
@@ -159,6 +169,7 @@ capture.exe >a.log
 if errorlevel 1 del a.log
 :done
 ]])
+unix2dos x.bat
 AT_LIBI86_CHECK([$1],[$2],[[x.bat]],[$3 [-t >/dev/null]],dnl
 [["$abs_srcdir"/postproc-console.sh]])])
 
@@ -175,5 +186,6 @@ capture.exe >a.log
 if errorlevel 1 del a.log
 :done
 ]])
+unix2dos x.bat
 AT_LIBI86_CHECK_FOR_NONDPMIABLE([$1],[$2],[[x.bat]],[$3 [-t >/dev/null]],dnl
 [["$abs_srcdir"/postproc-console.sh]])])

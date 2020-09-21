@@ -38,6 +38,14 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 
  9. &nbsp;`make install`
 
+You can specify options to the test suite to specify which tests are run, e.g.
+
+  * &nbsp;`make check TESTSUITEFLAGS='--x-test-underlying'
+
+To see a complete list of test suite options, run
+
+  * &nbsp;`make helpcheck`
+
 ## License
 
 `libi86` is distributed under the [GNU Lesser General Public License version 3](COPYING3.LIB) or above.
