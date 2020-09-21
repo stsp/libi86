@@ -38,13 +38,21 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 
  9. &nbsp;`make install`
 
-You can specify options to the test suite to specify how the tests are run, via the `$(TESTSUITEFLAGS)` makefile variable, e.g.
+#### Customizing the test suite run
+
+Instead of just saying `make check`, you can specify options to the test suite to specify how the tests are run, via the `$(TESTSUITEFLAGS)` makefile variable, e.g.
 
   * &nbsp;`make check TESTSUITEFLAGS='--x-test-underlying --x-with-dosemu=/`_path-to_`/dosemu'`
+  * &nbsp;`make check TESTSUITEFLAGS='16'` &nbsp;# run _only_ test #16
+  * &nbsp;`make check TESTSUITEFLAGS='10 --x-test-underlying'`
 
 To see a complete list of test suite options you can put into `$(TESTSUITEFLAGS)`, run
 
   * &nbsp;`make helpcheck`
+
+To list all the test cases and their test numbers:
+
+  * &nbsp;`make listcheck`
 
 ## License
 
