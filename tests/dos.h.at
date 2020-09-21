@@ -353,10 +353,21 @@ main (int argc, char **argv)
     abort ();
   puts ("5 OK");
 
-  if (_dos_setfileattr ("nul", _A_RDONLY) != ENOENT)
-    abort ();
+  switch (_dos_setfileattr ("nul", _A_RDONLY))
+    {
+      /*
+       * MS-DOS says "Access denied" if a program tries to change the
+       * attributes of the "nul" device file, while FreeDOS says "File not
+       * found".
+       */
+    case ENOENT:
+    case EACCES:
+      break;
+    default:
+      abort ();
+    }
   puts ("6 OK");
-  if (errno != ENOENT)
+  if (errno != ENOENT && errno != EACCES)
     abort ();
   puts ("7 OK");
 
