@@ -15,7 +15,11 @@
 # <http://www.gnu.org/licenses/>.
 
 : ${DOSEMU='@DOSEMU@'}
-: ${li86_cv_dosemu_is_1='@li86_cv_dosemu_is_1@'}
+
+DOSEMU_IS_1=no
+"$DOSEMU" $DOSEMU_OPTS --version >/dev/null 2>/dev/null \
+   && "$DOSEMU" $DOSEMU_OPTS -dumb -quiet exit >/dev/null 2>/dev/null \
+   && DOSEMU_IS_1=yes
 : ${CC='@CC@'}
 if $CC -mcmodel=medium -x c -E /dev/null -o /dev/null 2>/dev/null; then
   at_libi86_cc_have_medium_model=yes

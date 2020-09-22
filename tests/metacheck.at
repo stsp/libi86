@@ -26,7 +26,7 @@ AT_CLEANUP
 
 AT_SETUP([[dosemu]])
 
-AT_CHECK([[$DOSEMU --version]],,[[ignore]],[[ignore]])
+AT_CHECK([["$DOSEMU" $DOSEMU_OPTS --version]],,[[ignore]],[[ignore]])
 AT_CHECK([AT_LIBI86_RUN(hello.com,"$abs_srcdir")]dnl
 ,,[[Hello world!
 ]],[[ignore]])
