@@ -55,7 +55,7 @@ getch () = 0x3f
 kbhit () = true
 @getche () = 0x40
 kbhit () = false
-]],[[-input '\p20;\F5;!']])
+]],[[-input '\p200;\F5;!']])
 AT_CLEANUP
 
 AT_SETUP([[inp, outp]])
