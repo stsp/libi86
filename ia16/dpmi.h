@@ -78,13 +78,13 @@ descriptor;
 _LIBI86_ALT_INLINE int
 _DPMIGetDescriptor (uint16_t __sel, descriptor __far *__desc)
 {
-  int res, xx;
+  int __res, __xx;
   __asm volatile ("int {$}0x31; sbb{w} %0, %0"
-		  : "=a" (res), "=b" (xx)
+		  : "=a" (__res), "=b" (__xx)
 		  : "0" (0x000bu), "1" (__sel),
 		    "e" (FP_SEG (__desc)), "D" (FP_OFF (__desc))
 		  : "cx", "dx", "memory");
-  return res;
+  return __res;
 }
 
 _LIBI86_END_EXTERN_C
