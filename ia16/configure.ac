@@ -64,6 +64,8 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 		  [AC_DEFINE([_LIBI86_INTERNAL_HAVE_ASM_N_CONSTRAINT],[1])
 		   AC_MSG_RESULT(yes)],
 		  [AC_MSG_RESULT(no)])
+AC_CHECK_FUNC([__DPMI_hosted],
+	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE___DPMI_HOSTED],[1])])
 
 host_makefile_frag_path=
 host_makefile_frag=

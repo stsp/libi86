@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018--2020 TK Chia
+dnl Copyright (c) 2018 TK Chia
 dnl
 dnl This file is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU Lesser General Public License as published by
@@ -14,21 +14,22 @@ dnl You should have received a copy of the GNU Lesser General Public License
 dnl along with this program; see the file COPYING2.LIB.  If not see
 dnl <http://www.gnu.org/licenses/>.
 
-AT_INIT(libi86)
-AT_COLOR_TESTS
+AT_BANNER([[<dpmi.h> tests]])
 
-dnl Process options.
-m4_include([option.at])
-
-dnl Test that the test harness works.  Naturally, this should come first.
-m4_include([metacheck.at])
-
-dnl Then do the actual tests...
-m4_include([bios.h.at])
-m4_include([conio.h.at])
-m4_include([dos.h.at])
-m4_include([dpmi.h.at])
-m4_include([graph.h.at])
-m4_include([i86.h.at])
-m4_include([stdlib.h.at])
-m4_include([string.h.at])
+AT_SETUP([[__DPMI_hosted]])
+AT_LIBI86_CHECK(dnl
+[[#include <stdlib.h>
+#include <dpmi.h>
+int
+main (void)
+{
+  /*
+   * Make sure our __DPMI_hosted () implementation reaches the same
+   * conclusion as the libc-supplied __DPMI_hosted () implementation if
+   * there is one.
+   */
+  if (__libi86_DPMI_hosted () != __DPMI_hosted ())
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP

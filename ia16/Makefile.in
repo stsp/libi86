@@ -90,6 +90,8 @@ OBJS		= bdos.o \
 		  dos-getdrive.o \
 		  dos-getfileattr.o \
 		  dos-setfileattr.o \
+		  dpmi-hosted.o \
+		  dpmigetdescriptor.o \
 		  enable.o \
 		  fmemcpy.o \
 		  fmemmove.o \

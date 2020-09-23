@@ -16,10 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-/*
- * Internal implementation of _setvideomode (.) for the "classical" MDPA,
- * CGA, & EGA video modes.
- */
+/* Internal implementation of _setvideomode (.) for SuperVGA video modes. */
 
 #include "libi86/internal/call-cvt-far.h"
 #include "libi86/internal/arch.h"
@@ -28,7 +25,7 @@
 	.code16
 	.att_syntax prefix
 
-	TEXT_ (setvideomode_nonsvga.S.LIBI86)
+	TEXT_ (libi86_setvideomode_svga.S.LIBI86)
 
 	.global	__libi86_setvideomode_svga
 __libi86_setvideomode_svga:

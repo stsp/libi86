@@ -38,7 +38,7 @@ AS = @AS@
 LD = @LD@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 
-PROGRAMS	= drivei86.exe joyi86.exe
+PROGRAMS	= dpmii86.exe drivei86.exe joyi86.exe
 CFLAGS		= -mcmodel=small -mregparmcall -Os -mnewlib-autofloat-stdio
 ifeq "" "$(filter -O%,$(CC) $(CFLAGS))"
   CFLAGS	+= -O2
@@ -80,6 +80,8 @@ distclean maintainer-clean realclean: clean
 
 %.exe: %.c $(HEADERS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ $< $(LDLIBS)
+
+dpmii86.exe : CFLAGS += -mdpmiable
 
 Makefile: Makefile.in config.status @host_makefile_frag_path@
 	$(SHELL) config.status

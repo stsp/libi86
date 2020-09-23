@@ -28,7 +28,7 @@
 	.code16
 	.att_syntax prefix
 
-	TEXT_ (setvideomode_nonsvga.S.LIBI86)
+	TEXT_ (libi86_setvideomode_nonsvga.S.LIBI86)
 
 	.global	__libi86_setvideomode_nonsvga
 __libi86_setvideomode_nonsvga:

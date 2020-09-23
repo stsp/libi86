@@ -66,7 +66,7 @@ do_open (const char *pathname, int flags)
 {
   int fd;
 #ifdef __IA16_FEATURE_PROTECTED_MODE
-  if (__DPMI_hosted && __DPMI_hosted () == 1)
+  if (__DPMI_hosted () == 1)
     return open (pathname, flags ? O_WRONLY : O_RDONLY);
 #endif
   __asm volatile ("int $0x21; jnc 0f; sbbw %0, %0; 0:"

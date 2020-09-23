@@ -65,18 +65,19 @@ In addition, the test setup and test cases (under [`tests/`](tests/)) are distri
 Legend:
 
   * <sup>[BC]</sup> from Borland Turbo C++ — enable with `_BORLANDC_SOURCE`
+  * <sup>[I]</sup> from internal interfaces in Open Watcom's library code
   * <sup>[X]</sup> `libi86`-specific extension; not in Open Watcom or Borland C++
 
 ### `<bios.h>`
 
   * `_bios_disk (`_service_`,` \*_diskinfo_`);`
-    - as an extension, also accepts _service_ = `_DISK_DRIVEPARAMS`, which returns drive parameters in \*_diskinfo_
+    - As an extension, also accepts _service_ = `_DISK_DRIVEPARAMS`, which returns drive parameters in \*_diskinfo_.
   * `_bios_equiplist ();`
   * `_bios_memsize ();`
   * `_bios_keybrd (`_service_`);`
   * `_bios_timeofday (`_service_`,` \*_timeval_`);`
   * `_bios_joystick (`_service_`,` \*_joyinfo_`);`<sup>[X]</sup>
-    - reads joystick status via `int 0x15` function `0x84`
+    - Reads joystick status via `int 0x15` function `0x84`.
 
 ### `<conio.h>`
 
@@ -92,15 +93,17 @@ Legend:
   * `vcprintf (`\*_fmt_`,` _ap_`);`
   * `vcscanf (`\*_fmt_`,` _ap_`);`
   * `inp (`_port_`);`
-    - also `inportb`,<sup>[BC]</sup> or `_inp`
+    - Also `inportb`<sup>[BC]</sup> or `_inp`.
   * `inpw (`_port_`);`
-    - also `inportw`,<sup>[BC]</sup> or `_inpw`
+    - Also `inportw`<sup>[BC]</sup> or `_inpw`.
   * `outp (`_port_`,` _value_`);`
-    - also `outportb`,<sup>[BC]</sup> or `_outp`
+    - Also `outportb`<sup>[BC]</sup> or `_outp`.
   * `outpw (`_port_`,` _value_`);`
-    - also `outportw`,<sup>[BC]</sup> or `_outpw`
+    - Also `outportw`<sup>[BC]</sup> or `_outpw`.
 
 ### `<dos.h>`
+
+`<dos.h>` also includes `<i86.h>`.
 
   * `bdos (`_dos-func_`,` _dx_`,` _al_`);`
   * `bdosptr (`_dos-func_`,` \*_dx_`,` _al_`);`
@@ -113,13 +116,21 @@ Legend:
   * `_dos_getfileattr (`\*_path_`,` \*_attributes_`);`
   * `_dos_setfileattr (`\*_path_`,` _attributes_`);`
   * `_getdrive ();`
-  * `<dos.h>` also includes `<i86.h>`
+
+### `<dpmi.h>`
+
+Unless otherwise stated, functions return 0 on success and non-zero on error.
+
+  * `__DPMI_hosted ();`<sup>[I]</sup>
+    - Returns 1 if running in protected mode under DPMI, -1 otherwise.
+    - If the underlying C library has an implementation of this function, `libi86` will defer to it.
+  * `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);`<sup>[I]</sup>
 
 ### `<graph.h>`
 
-  * `_setvideomode (`_mode_`)`
-    - does not work with DPMI
-    - in the case of SuperVGA screen modes, only works with VESA interface
+  * `_setvideomode (`_mode_`);`
+    - Does not yet work with DPMI.
+    - In the case of SuperVGA screen modes, only works with VESA interface
 
 ### `<i86.h>`
 
@@ -133,17 +144,17 @@ Legend:
   * `int86x (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
   * `intr (`_inter-no_`,` \*_regs_`);`
   * `_int86f (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);`<sup>[X]</sup>
-    - loads `SZAPC` flags before issuing interrupt
+    - Loads `SZAPC` flags before issuing interrupt.
   * `_int86xf (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`<sup>[X]</sup>
-    - loads `SZAPC` flags before issuing interrupt
+    - Loads `SZAPC` flags before issuing interrupt.
   * `_intrf (`_inter-no_`,` \*_regs_`);`<sup>[X]</sup>
-    - loads `SZAPC` flags before issuing interrupt
+    - Loads `SZAPC` flags before issuing interrupt.
   * `FP_OFF (`\*_ptr_`);`
-    - macro; also `_FP_OFF`
+    - Macro; also `_FP_OFF`.
   * `FP_SEG (`\*_ptr_`);`
-    - macro; also `_FP_SEG`
+    - Macro; also `_FP_SEG`.
   * `MK_FP (`_seg_`,` _off_`);`
-    - macro; also `_MK_FP`
+    - Macro; also `_MK_FP`.
 
 ### `<libi86/string.h>`
 
