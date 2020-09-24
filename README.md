@@ -56,9 +56,7 @@ To list all the test cases and their test numbers:
 
 ## License
 
-`libi86` is distributed under the [GNU Lesser General Public License version 3](COPYING3.LIB) or above.
-
-In addition, the test setup and test cases (under [`tests/`](tests/)) are distributed under the [GNU LGPL version 2](COPYING2.LIB) or above.
+`libi86` is now distributed under the [GNU Lesser General Public License version 2](COPYING2.LIB) or above.
 
 ## Implemented functions
 
