@@ -137,7 +137,7 @@ OBJS		= bdos.o \
 			libi86-intr-call-0$(da)$(db)$(dc).o)))
 CFLAGS		= -mseparate-code-segment
 ifeq "" "$(filter -O%,$(CC) $(CFLAGS) $(MULTILIB))"
-  CFLAGS	+= -O2
+  CFLAGS	+= -Os
 endif
 ASFLAGS		=
 # Headers we depend on when creating .o files; these do not include
