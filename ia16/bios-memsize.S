@@ -23,6 +23,7 @@
 	.att_syntax prefix
 
 	TEXT_ (bios_memsize.S.LIBI86)
+	.global	_bios_memsize
 _bios_memsize:
 	int	$0x12
 	RET_(0)
