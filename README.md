@@ -63,7 +63,7 @@ To list all the test cases and their test numbers:
 Legend:
 
   * <sup>[BC]</sup> from Borland Turbo C++ — enable with `_BORLANDC_SOURCE`
-  * <sup>[I]</sup> from internal interfaces in Open Watcom's library code
+  * <sup>[IW]</sup> from internal interfaces in Open Watcom's library code
   * <sup>[X]</sup> `libi86`-specific extension; not in Open Watcom or Borland C++
 
 ### `<bios.h>`
@@ -119,16 +119,16 @@ Legend:
 
 Unless otherwise stated, functions return 0 on success and non-zero on error.
 
-  * `__DPMI_hosted ();`<sup>[I]</sup>
+  * `__DPMI_hosted ();`<sup>[IW]</sup>
     - Returns 1 if running in protected mode under DPMI, -1 otherwise.
     - If the underlying C library has an implementation of this function, `libi86` will defer to it.
-  * `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);`<sup>[I]</sup>
+  * `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);`<sup>[IW]</sup>
 
 ### `<graph.h>`
 
   * `_setvideomode (`_mode_`);`
     - Does not yet work with DPMI.
-    - In the case of SuperVGA screen modes, only works with VESA interface
+    - In the case of SuperVGA screen modes, only works with VESA interface.
 
 ### `<i86.h>`
 
