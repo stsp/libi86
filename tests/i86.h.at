@@ -358,22 +358,19 @@ main (void)
     {
       _disable ();
 
-      /* FIXME: this test seems to be broken on dosemu2.  */
-#if 0
       /* Check that the handler for the timer interrupt (IRQ 0) cannot
 	 update the tick count, when all IRQs are disabled.  */
       from = ticks ();
-# ifndef __IA16_FEATURE_PROTECTED_MODE
+#ifndef __IA16_FEATURE_PROTECTED_MODE
       if (flags () & 0x0200u)
 	do_abort ();
-# endif
+#endif
       c2 = rand() / (RAND_MAX / 100) + 1;
       while (c2-- != 0)
 	{
 	  if (ticks () != from)
 	    do_abort ();
         }
-#endif
 
 #ifndef __IA16_FEATURE_PROTECTED_MODE
       if (flags () & 0x0200u)
