@@ -21,7 +21,7 @@
  * CGA, EGA, & VGA video modes.
  */
 
-#include "libi86/internal/call-cvt-far.h"
+#include "libi86/internal/call-cvt.h"
 #include "libi86/internal/arch.h"
 
 	.arch	i8086, jumps

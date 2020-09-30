@@ -25,7 +25,7 @@
 #include <inttypes.h>
 #include "graph.h"
 
-__far __attribute__ ((far_section)) short
+short
 __libi86_setvideomode (short mode)
 {
   return __libi86_setvideomode_inline_dispatch (mode);

@@ -19,9 +19,6 @@
 #ifndef _LIBI86_GRAPH_H_
 #define _LIBI86_GRAPH_H_
 
-#ifdef __IA16_CMODEL_TINY__
-# error "libi86 <graph.h> does not support the tiny memory model"
-#endif
 #ifdef __IA16_FEATURE_DPMIABLE
 # error "libi86 <graph.h> does not work with DPMI yet"
 #endif
@@ -83,14 +80,14 @@
 _LIBI86_BEGIN_EXTERN_C
 
 /* Used by the inline version of _setvideomode (.) below.  */
-extern __far short __libi86_setvideomode (short);
-extern __far short __libi86_setvideomode_default (void);
-extern __far short __libi86_setvideomode_mdpa_cga (short);
-extern __far short __libi86_setvideomode_nonsvga (short);
-extern __far short __libi86_setvideomode_svga (short);
+extern short __libi86_setvideomode (short);
+extern short __libi86_setvideomode_default (void);
+extern short __libi86_setvideomode_mdpa_cga (short);
+extern short __libi86_setvideomode_nonsvga (short);
+extern short __libi86_setvideomode_svga (short);
 
 # ifndef __OPTIMIZE__
-extern __far short _setvideomode (short);
+extern short _setvideomode (short);
 # else  /* __OPTIMIZE__ */
 __attribute__ ((always_inline)) static short
 __libi86_setvideomode_inline_dispatch (short mode)
@@ -112,7 +109,7 @@ __libi86_setvideomode_inline_dispatch (short mode)
 }
 
 #   ifndef _LIBI86_COMPILING_
-_LIBI86_ALT_INLINE __far short
+_LIBI86_ALT_INLINE short
 _setvideomode (short mode)
 {
   if (__builtin_constant_p (mode))

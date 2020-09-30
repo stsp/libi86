@@ -40,7 +40,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 
 #### Customizing the test suite run
 
-Instead of just saying `make check`, you can specify options to the test suite to specify how the tests are run, via the `$(TESTSUITEFLAGS)` makefile variable, e.g.
+Instead of just saying `make check`, you can specify options to the test suite to control how the tests are run, via the `$(TESTSUITEFLAGS)` makefile variable.  E.g.:
 
   * &nbsp;`make check TESTSUITEFLAGS='--x-test-underlying --x-with-dosemu=/`_path-to_`/dosemu'`
   * &nbsp;`make check TESTSUITEFLAGS='16'` &nbsp;# run _only_ test #16
@@ -125,6 +125,8 @@ Unless otherwise stated, functions return 0 on success and non-zero on error.
   * `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);`<sup>[IW]</sup>
 
 ### `<graph.h>`
+
+Unlike in Open Watcom, where all functions and data pointers in `<graph.h>` are far, in `libi86` they follow the chosen memory model.  Thus, in a small-memory-model program, `_setvideomode` is a near function.
 
   * `_setvideomode (`_mode_`);`
     - Does not yet work with DPMI.

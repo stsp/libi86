@@ -58,14 +58,14 @@ __libi86_setvideomode_default:
 	movb	.Ldef_mode, %al
 	cbtw
 #ifdef __IA16_CALLCVT_REGPARMCALL
-	JMP_FAR_ (__libi86_setvideomode_nonsvga)
+	JMP_ (__libi86_setvideomode_nonsvga)
 #else
 	pushw	%ax
-	CALL_FAR_ (__libi86_setvideomode_nonsvga)
+	CALL_ (__libi86_setvideomode_nonsvga)
 # ifndef __IA16_CALLCVT_STDCALL
 	popw	%dx
 # endif
-	lret
+	RET_ (0)
 #endif
 
 	.section .ctors.65535
