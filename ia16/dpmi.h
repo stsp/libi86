@@ -76,7 +76,11 @@ typedef struct __attribute__ ((packed))
 descriptor;
 
 _LIBI86_ALT_INLINE int
+#ifdef __FAR
 _DPMIGetDescriptor (uint16_t __sel, descriptor __far *__desc)
+#else
+_DPMIGetDescriptor (uint16_t __sel, __libi86_fpv __desc)
+#endif
 {
   int __res, __xx;
   __asm volatile ("int {$}0x31; sbb{w} %0, %0"

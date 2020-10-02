@@ -23,10 +23,10 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
-void __far *_fmemcpy (void __far *__dest, const void __far *src,
-		      __SIZE_TYPE__ __n);
-void __far *_fmemmove (void __far *__dest, const void __far *src,
+__libi86_fpv _fmemcpy (__libi86_fpv __dest, __libi86_fpcv __src,
 		       __SIZE_TYPE__ __n);
+__libi86_fpv _fmemmove (__libi86_fpv __dest, __libi86_fpcv __src,
+			__SIZE_TYPE__ __n);
 
 _LIBI86_END_EXTERN_C
 

@@ -23,16 +23,11 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
-#ifdef __FAR
 struct diskinfo_t
 {
   unsigned drive, head, track, sector, nsectors;
-  void __far *buffer;
+  __libi86_fpv buffer;
 };
-#else
-/* The GNU C++ parser does not support the __far keyword yet.  Ugh.  */
-struct diskinfo_t;
-#endif
 
 /* Not in Open Watcom.  */
 union _joyinfo_t

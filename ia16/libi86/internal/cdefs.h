@@ -30,6 +30,23 @@
 # define _LIBI86_END_EXTERN_C
 #endif
 
+#ifdef __FAR
+typedef void __far *__libi86_fpv;
+typedef const void __far *__libi86_fpcv;
+/*
+ * As of October 2020, GCC does not yet support named address spaces --- in
+ * particular our __far keyword --- for the C++ & Objective-C languages.
+ */
+#elif defined __cplusplus
+# include <libi86/internal/far-cxx.h>
+#else
+typedef struct
+  {
+    unsigned long __p_;
+  }
+__libi86_fpv, __libi86_fpcv;
+#endif
+
 /*
  * Declare function prototypes that redirect calls to NAME to call ALIAS_TO
  * instead.  These macros work similarly to __REDIRECT (...) and friends in
