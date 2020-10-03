@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018--2019 TK Chia
+dnl Copyright (c) 2018--2020 TK Chia
 dnl
 dnl This file is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU Lesser General Public License as published by
@@ -22,6 +22,17 @@ at_libi86_multilib="`$CC $3 -print-multi-directory`"
 AT_CHECK([[$CC -o ]m4_default($2,a.exe) ]dnl
 [[-isystem "$abs_top_builddir/"ia16 -isystem "$abs_top_srcdir"/ia16 ]]dnl
 [[-Wall -Werror=strict-prototypes -Werror=missing-prototypes ]][$3] [$1] dnl
+[["$abs_top_builddir"/"$at_libi86_multilib"/ia16/libi86.a]],dnl
+,[[ignore]],[[ignore]])])
+
+dnl $1 = file name of program to compile
+dnl $2 = file to write compiled binary to (default a.exe)
+dnl $3 = G++ options
+m4_define([AT_LIBI86_COMPILE_CXX],[dnl
+at_libi86_multilib="`$CXX $3 -print-multi-directory`"
+AT_CHECK([[$CXX -o ]m4_default($2,a.exe) ]dnl
+[[-isystem "$abs_top_builddir/"ia16 -isystem "$abs_top_srcdir"/ia16 ]]dnl
+[[-Wall ]][$3] [$1] dnl
 [["$abs_top_builddir"/"$at_libi86_multilib"/ia16/libi86.a]],dnl
 ,[[ignore]],[[ignore]])])
 
@@ -56,11 +67,22 @@ m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_A],[dnl
 AT_LIBI86_COMPILE($2,$3,$1)
 AT_CHECK([AT_LIBI86_RUN($4,,$5,$6)],,[[expout]],[[ignore]])])
 
+m4_define([_AT_LIBI86_DO_CHECK_CXX_EXPOUT_A],[dnl
+AT_LIBI86_COMPILE_CXX($2,$3,$1)
+AT_CHECK([AT_LIBI86_RUN($4,,$5,$6)],,[[expout]],[[ignore]])])
+
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_B],[dnl
 _AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os ]]$@)
 if "$at_arg_x_test_underlying"; then :; else
 _AT_LIBI86_DO_CHECK_EXPOUT_A([[-O0 ]]$@)
 _AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os -masm=intel ]]$@)
+fi])
+
+m4_define([_AT_LIBI86_DO_CHECK_CXX_EXPOUT_B],[dnl
+_AT_LIBI86_DO_CHECK_CXX_EXPOUT_A([[-Os ]]$@)
+if "$at_arg_x_test_underlying"; then :; else
+_AT_LIBI86_DO_CHECK_CXX_EXPOUT_A([[-O0 ]]$@)
+_AT_LIBI86_DO_CHECK_CXX_EXPOUT_A([[-Os -masm=intel ]]$@)
 fi])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_C],[dnl
@@ -118,6 +140,20 @@ _AT_LIBI86_DO_CHECK_EXPOUT_F([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
 dnl do not try -mdpmiable for medium model for now
 _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))])
 
+m4_define([AT_LIBI86_CHECK_CXX_FOR_NEAR_DATA_MODEL],[dnl
+dnl (1) if ia16-elf-g++ does not exist or does not work, just skip test(s)
+dnl (2) ia16-elf-g++ simply does not support medium model yet
+if test false != "$CXX"; then
+AT_DATA([[a.cc]],[$1
+])
+AT_DATA([[expout]],[$2])
+if "$at_arg_x_test_underlying"; then :; else
+_AT_LIBI86_DO_CHECK_CXX_EXPOUT_B(,a.cc,,m4_shift(m4_shift($@)))
+fi
+_AT_LIBI86_DO_CHECK_CXX_EXPOUT_B([[-mcmodel=small]],a.cc,,dnl
+m4_shift(m4_shift($@)))
+fi])
+
 dnl $1 = text of program to test
 dnl $2 = expected program output
 dnl $3 = program to run on dosemu (default a.exe)
@@ -126,6 +162,15 @@ dnl $5 = Unix program to run to postprocess dosemu output (default
 dnl	 postproc-stdout.sh in this file's source directory)
 m4_define([AT_LIBI86_CHECK],[dnl
 AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL($@)])
+
+dnl $1 = text of program to test
+dnl $2 = expected program output
+dnl $3 = program to run on dosemu (default a.exe)
+dnl $4 = options to pass to dosemu (default -dumb [-tde] >a.log)
+dnl $5 = Unix program to run to postprocess dosemu output (default
+dnl	 postproc-stdout.sh in this file's source directory)
+m4_define([AT_LIBI86_CHECK_CXX],[dnl
+AT_LIBI86_CHECK_CXX_FOR_NEAR_DATA_MODEL($@)])
 
 m4_define([AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE],[dnl
 AT_DATA([[a.c]],[$1

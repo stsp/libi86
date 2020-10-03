@@ -17,6 +17,22 @@ dnl <http://www.gnu.org/licenses/>.
 AT_BANNER([[<bios.h> tests]])
 
 AT_SETUP([[_bios_memsize]])
+AT_LIBI86_CHECK_CXX(dnl
+[[#include <stdlib.h>
+#include <bios.h>
+#ifndef __cplusplus
+# error
+#endif
+int main (void)
+{
+  unsigned short kb = _bios_memsize (), kb2;
+  __asm ("{movw %1:0x13, %0|mov %0, %1:0x13}"
+	 : "=r" (kb2)
+	 : "Q" (__builtin_ia16_selector (0x40)));
+  if (kb != kb2)
+    abort ();
+  return 0;
+}]],[])
 AT_LIBI86_CHECK(dnl
 [[#include <stdlib.h>
 #include <bios.h>

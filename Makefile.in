@@ -16,6 +16,8 @@
 
 abs_srcdir = @abs_srcdir@
 
+CXX = @CXX@
+
 default: all
 .PHONY: default
 
@@ -49,7 +51,8 @@ tests/testsuite: $(abs_srcdir)/tests/testsuite
 	fi
 
 $(abs_srcdir)/tests/testsuite: $(abs_srcdir)/tests/testsuite.at \
-			   $(wildcard $(abs_srcdir)/tests/*.at)
+			   $(wildcard $(abs_srcdir)/tests/*.at \
+				      $(abs_srcdir)/tests/*.in)
 	cd $(abs_srcdir)/tests && exec autom4te --language=autotest -o $@ $<
 
 %:

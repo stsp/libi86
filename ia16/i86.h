@@ -203,17 +203,18 @@ sound (int __freq)
 
 #ifdef __FAR
 # define FP_SEG(__p)	__builtin_ia16_selector ((unsigned) \
-			  ((unsigned long) (void __far *) (__p) >> 16))
+			  ((unsigned long) (volatile void __far *) (__p) \
+			    >> 16))
 # define FP_OFF(__p)	__builtin_ia16_FP_OFF (__p)
 # define MK_FP(__s, __o) \
-			((void __far *) \
+			((volatile void __far *) \
 			 ((unsigned long) (unsigned) (__s) << 16 | \
 			  (unsigned) (__o)))
 #elif defined __cplusplus
-# define FP_SEG(__p)	((__libi86_fpv(__p)).__FP_SEG ())
-# define FP_OFF(__p)	((__libi86_fpv(__p)).__FP_OFF ())
+# define FP_SEG(__p)	((__libi86_fpvv (__p)).__FP_SEG ())
+# define FP_OFF(__p)	((__libi86_fpvv (__p)).__FP_OFF ())
 # define MK_FP(__s, __o) \
-			(__libi86_fpv ((__s), (__o)))
+			(__libi86_fpvv ((__s), (__o)))
 #endif
 #define _FP_SEG(__p)	FP_SEG (__p)
 #define _FP_OFF(__p)	FP_OFF (__p)

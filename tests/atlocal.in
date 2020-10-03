@@ -26,3 +26,6 @@ if $CC -mcmodel=medium -x c -E /dev/null -o /dev/null 2>/dev/null; then
 else
   at_libi86_cc_have_medium_model=no
 fi
+: ${CXX='@CXX@'}
+$CXX -mmsdos -mregparmcall --version -v >/dev/null 2>/dev/null \
+  || CXX=false

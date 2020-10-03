@@ -22,36 +22,59 @@
 #ifndef _LIBI86_INTERNAL_FAR_CXX_H_
 #define _LIBI86_INTERNAL_FAR_CXX_H_
 
+
+extern "C++"  /* avoid G++'s "template with C linkage" error... */
+{
+
 namespace __libi86
 {
 
 typedef decltype (nullptr) __nullptr_t;
 
 template <typename __T>
-struct __is_void;
+inline constexpr bool
+__is_void (void);
+
+template <>
+inline constexpr bool
+__is_void<void> ()
+{
+  return true;
+}
+
+template <>
+inline constexpr bool
+__is_void<const void> ()
+{
+  return true;
+}
+
+template <>
+inline constexpr bool
+__is_void<volatile void> ()
+{
+  return true;
+}
+
+template <>
+inline constexpr bool
+__is_void<const volatile void> ()
+{
+  return true;
+}
 
 template <typename __T>
-struct __is_void
+inline constexpr bool
+__is_void ()
 {
-  static const bool __value = false;
-};
-
-template <>
-struct __is_void<void>
-{
-  static const bool __value = true;
-};
-
-template <>
-struct __is_void<const void>
-{
-  static const bool __value = true;
-};
+  return false;
+}
 
 template <typename __T>
 class __far_ptr
 {
-  static_assert (__is_void<__T>::__value || __is_trivially_copyable (__T));
+
+  static_assert (__is_void<__T> () || __is_trivially_copyable (__T));
   static_assert (sizeof (__T *) == sizeof (unsigned));
 
   union
@@ -81,7 +104,7 @@ public:
   {
   }
 
-  __far_ptr (__unsigned seg, __T *__off)
+  __far_ptr (unsigned __seg, __T *__off)
   : __off_ (__off), __seg_ (__seg)
   {
   }
@@ -93,6 +116,14 @@ public:
 
   __far_ptr (__T *__near_ptr)
   : __off_ (__near_ptr), __seg_ (__builtin_ia16_near_data_segment ())
+  {
+  }
+
+  template <typename __T2>
+  explicit
+  __far_ptr (__T2 *__near_ptr)
+  : __off_ (reinterpret_cast<__T *> (__near_ptr)),
+    __seg_ (__builtin_ia16_near_data_segment ())
   {
   }
 
@@ -124,5 +155,8 @@ public:
 
 typedef __libi86::__far_ptr<void> __libi86_fpv;
 typedef __libi86::__far_ptr<const void> __libi86_fpcv;
+typedef __libi86::__far_ptr<volatile void> __libi86_fpvv;
+
+} /* extern "C++" */
 
 #endif
