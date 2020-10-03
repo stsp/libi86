@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018--2019 TK Chia
+ * Copyright (c) 2020 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -31,6 +31,7 @@ _DPMIGetDescriptor:
 	pushw	%es
 	LES_ARG2W_BX_ (%di)
 	MOV_ARG0W_BX_ (%bx)
+	movw	$0x000b, %ax
 	int	$0x31
 	sbbw	%ax,	%ax
 	popw	%es
