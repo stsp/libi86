@@ -126,7 +126,7 @@ Unless otherwise stated, functions return 0 on success and non-zero on error.
 
 ### `<graph.h>`
 
-Unlike in Open Watcom, where all functions and data pointers in `<graph.h>` are far, in `libi86` they follow the chosen memory model.  Thus, in a small-memory-model program, `_setvideomode` is a near function.
+Unlike in Open Watcom, where all functions in `<graph.h>` are far, in `libi86` the far-ness of functions follows the chosen memory model.  Thus, in a small-memory-model program, `_setvideomode` is a near function.  However, pointers to data are still far.
 
   * `_setvideomode (`_mode_`);`
     - Does not yet work with DPMI.
