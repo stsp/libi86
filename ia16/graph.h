@@ -19,10 +19,6 @@
 #ifndef _LIBI86_GRAPH_H_
 #define _LIBI86_GRAPH_H_
 
-#ifdef __IA16_FEATURE_DPMIABLE
-# error "libi86 <graph.h> does not work with DPMI yet"
-#endif
-
 #define _DEFAULTMODE	(-1)
 #define _TEXTBW40	0x0000
 #define _TEXTC40	0x0001

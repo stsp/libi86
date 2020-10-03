@@ -33,7 +33,7 @@ int main (void)
     abort ();
   return 0;
 }]],[])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
 [[#include <stdlib.h>
 #include <bios.h>
 static unsigned get_cs (void)
@@ -62,7 +62,7 @@ int main (void)
 AT_CLEANUP
 
 AT_SETUP([[_bios_equiplist]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
 [[#include <stdlib.h>
 #include <bios.h>
 int main (void)

@@ -16,32 +16,22 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-/* Internal implementation of _setvideomode (.) for SuperVGA video modes. */
-
 #include "libi86/internal/call-cvt.h"
-#include "libi86/internal/arch.h"
 
 	.arch	i8086, jumps
 	.code16
 	.att_syntax prefix
 
-	TEXT_ (libi86_setvideomode_svga.S.LIBI86)
-
-	.global	__libi86_setvideomode_svga
-__libi86_setvideomode_svga:
+	TEXT_ (dpmisegmenttodescriptor.S.LIBI86)
+#ifdef __MSDOS__
+	.global	_DPMISegmentToDescriptor
+_DPMISegmentToDescriptor:
 	ENTER_BX_ (2)
-	pushw	%es
 	MOV_ARG0W_BX_ (%bx)
-	movw	$0x4f02, %ax		/* Set the video mode */
-	int	$0x10
-	cmpw	$0x004f, %ax		/* Check for any error */
-	jnz	.error
-	movw	__libi86_bios_ds, %es	/* Find & return the text row count */
-	movb	%es:0x0084, %al
-	incw	%ax
-.done:
-	popw	%es
+	movw	$0x0002, %ax
+	int	$0x31
+	sbbw	%dx,	%dx
 	RET_ (2)
-.error:
-	xorw	%ax,	%ax
-	jmp	.done
+#else
+# warning "unknown target OS; _DPMISegmentToDescriptor (.) not implemented"
+#endif

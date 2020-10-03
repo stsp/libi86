@@ -87,8 +87,22 @@ _DPMIGetDescriptor (uint16_t __sel, __libi86_fpv __desc)
 		  : "=a" (__res), "=b" (__xx)
 		  : "0" (0x000bu), "1" (__sel),
 		    "e" (FP_SEG (__desc)), "D" (FP_OFF (__desc))
-		  : "cx", "dx", "memory");
+		  : "cc", "cx", "dx", "memory");
   return __res;
+}
+
+_LIBI86_ALT_INLINE int32_t
+_DPMISegmentToDescriptor (uint16_t __para)
+{
+  uint16_t __sel, __xx;
+  int __res;
+ __asm volatile ("int {$}0x31; sbb{w} %2, %2"
+		 : "=a" (__sel), "=b" (__xx), "=r" (__res)
+		 : "0" (0x0002u), "1" (__para)
+		 : "cc", "cx", "dx", "memory");
+  if (__res < 0)
+    return -1L;
+  return (int32_t) __sel;
 }
 
 _LIBI86_END_EXTERN_C

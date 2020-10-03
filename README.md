@@ -121,15 +121,16 @@ Unless otherwise stated, functions return 0 on success and non-zero on error.
 
   * `__DPMI_hosted ();`<sup>[IW]</sup>
     - Returns 1 if running in protected mode under DPMI, -1 otherwise.
-    - If the underlying C library has an implementation of this function, `libi86` will defer to it.
+    - If the underlying C library has an implementation of this function, `libi86` will use that instead.
   * `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);`<sup>[IW]</sup>
+  * `_DPMISegmentToDescriptor (`_seg-para_`);`<sup>[IW]</sup>
+    - On success, returns a protected-mode selector value for the real-mode segment _seg-para_`:0`.  On failure, returns a negative value.
 
 ### `<graph.h>`
 
 Unlike in Open Watcom, where all functions in `<graph.h>` are far, in `libi86` the far-ness of functions follows the chosen memory model.  Thus, in a small-memory-model program, `_setvideomode` is a near function.  However, pointers to data are still far.
 
   * `_setvideomode (`_mode_`);`
-    - Does not yet work with DPMI.
     - In the case of SuperVGA screen modes, only works with VESA interface.
 
 ### `<i86.h>`

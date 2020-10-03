@@ -119,6 +119,7 @@ OBJS		= bdos.o \
 		  ungetch.o \
 		  vcprintf.o \
 		  vcscanf.o \
+		  libi86-bios-ds.o \
 		  libi86-conio-init.o \
 		  libi86-fmemmove-backward.o \
 		  libi86-int86-do.o \
