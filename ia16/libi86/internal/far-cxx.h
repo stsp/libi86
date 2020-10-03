@@ -81,12 +81,12 @@ public:
   {
   }
 
-  __far_ptr (__T *__off, unsigned __seg)
+  __far_ptr (__unsigned seg, __T *__off)
   : __off_ (__off), __seg_ (__seg)
   {
   }
 
-  __far_ptr (unsigned __off, unsigned __seg)
+  __far_ptr (unsigned __seg, unsigned __off)
   : __off_ (reinterpret_cast<__T *> (__off)), __seg_ (__seg)
   {
   }
@@ -98,13 +98,13 @@ public:
 
   operator __far_ptr<void> ()
   {
-    return __far_ptr<void> (__off_, __seg_);
+    return __far_ptr<void> (__seg_, __off_);
   }
 
   template <typename __T2>
   explicit operator __far_ptr<__T2> ()
   {
-    return __far_ptr<__T2> (__off_, __seg_);
+    return __far_ptr<__T2> (__seg_, __off_);
   }
 
   unsigned
