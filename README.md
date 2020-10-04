@@ -156,7 +156,6 @@ Unlike in Open Watcom, where all functions in `<graph.h>` are far, in `libi86` t
     - Macro; also `_FP_SEG`.
   * `MK_FP (`_seg_`,` _off_`);`
     - Macro; also `_MK_FP`.
-    - This returns a `volatile void __far *` pointer value, unlike Watcom which returns a `void __far *`.
 
 ### `<libi86/string.h>`
 

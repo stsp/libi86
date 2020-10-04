@@ -34,6 +34,7 @@
 typedef void __far *__libi86_fpv;
 typedef const void __far *__libi86_fpcv;
 typedef volatile void __far *__libi86_fpvv;
+typedef const volatile void __far *__libi86_fpcvv;
 /*
  * As of October 2020, GCC does not yet support named address spaces --- in
  * particular our __far keyword --- for the C++ & Objective-C languages.
@@ -45,7 +46,7 @@ typedef struct
   {
     unsigned long __p_;
   }
-__libi86_fpv, __libi86_fpcv, __libi86_fpvv;
+__libi86_fpv, __libi86_fpcv, __libi86_fpvv, __libi86_fpcvv;
 #endif
 
 /*

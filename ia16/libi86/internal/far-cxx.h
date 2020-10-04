@@ -156,6 +156,7 @@ public:
 typedef __libi86::__far_ptr<void> __libi86_fpv;
 typedef __libi86::__far_ptr<const void> __libi86_fpcv;
 typedef __libi86::__far_ptr<volatile void> __libi86_fpvv;
+typedef __libi86::__far_ptr<const volatile void> __libi86_fpcvv;
 
 } /* extern "C++" */
 

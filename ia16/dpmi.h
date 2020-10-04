@@ -96,10 +96,10 @@ _DPMISegmentToDescriptor (uint16_t __para)
 {
   uint16_t __sel, __xx;
   int __res;
- __asm volatile ("int {$}0x31; sbb{w} %2, %2"
-		 : "=a" (__sel), "=b" (__xx), "=r" (__res)
-		 : "0" (0x0002u), "1" (__para)
-		 : "cc", "cx", "dx", "memory");
+ __asm volatile ("int {$}0x31; sbb{w} %1, %1"
+		 : "=a,a" (__sel), "=d,b" (__res), "=b,d" (__xx)
+		 : "0,0" (0x0002u), "b,b" (__para)
+		 : "cc", "cx", "memory");
   if (__res < 0)
     return -1L;
   return (int32_t) __sel;
