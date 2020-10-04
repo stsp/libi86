@@ -43,16 +43,9 @@ __libi86_setvideomode_nonsvga:
 	popw	%dx
 	cmpw	%bx,	%dx
 	jnz	.error			/* If we successfully set the */
-.ok:					/* video mode, return the text row */
-	movw	%es,	%dx		/* count, else say 0 */
-	movw	__libi86_bios_ds, %es
-	movb	%es:0x0084, %al
-	movw	%dx,	%es
-	testb	%al,	%al		/* Note: %ah == 0 */
-	jnz	.rows
-	movb	$24,	%al
-.rows:
-	incw	%ax
+.ok:					/* video mode, reset the text window */
+	movb	$1,	%cl		/* & return the text row count, else */
+	CALL_ (__libi86_reset_wnd)	/* say 0 */
 	RET_ (2)
 .retry:					/* If using VESA fails, try to */
 	movb	$0x0f,	%ah		/* retrieve the new video mode via */

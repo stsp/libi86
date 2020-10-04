@@ -30,17 +30,13 @@
 	.global	__libi86_setvideomode_svga
 __libi86_setvideomode_svga:
 	ENTER_BX_ (2)
-	pushw	%es
 	MOV_ARG0W_BX_ (%bx)
 	movw	$0x4f02, %ax		/* Set the video mode */
 	int	$0x10
 	cmpw	$0x004f, %ax		/* Check for any error */
 	jnz	.error
-	movw	__libi86_bios_ds, %es	/* Find & return the text row count */
-	movb	%es:0x0084, %al
-	incw	%ax
+	CALL_ (__libi86_reset_wnd_svga)	/* Reset the text window */
 .done:
-	popw	%es
 	RET_ (2)
 .error:
 	xorw	%ax,	%ax

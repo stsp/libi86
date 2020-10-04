@@ -68,7 +68,8 @@ __libi86_setvideomode_default:
 	RET_ (0)
 #endif
 
-	.section .ctors.65535
+/* Note: this constructor must run only after __libi86_bios_ds is set. */
+	.section .ctors.65434
 
 	.balign	2
 	TEXT_PTR_ (.Lctor_setvideomode)
