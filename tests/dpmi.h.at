@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018 TK Chia
+dnl Copyright (c) 2020 TK Chia
 dnl
 dnl This file is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU Lesser General Public License as published by
@@ -29,6 +29,35 @@ main (void)
    * there is one.
    */
   if (__libi86_DPMI_hosted () != __DPMI_hosted ())
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP
+
+AT_SETUP([[_DPMISegmentToDescriptor]])
+AT_LIBI86_CHECK(dnl
+[[#include <stdint.h>
+#include <stdlib.h>
+#include <bios.h>
+#include <dpmi.h>
+#include <i86.h>
+int
+main (void)
+{
+  int32_t res;
+  uint16_t sel;
+  unsigned kb1, kb2;
+  if (__DPMI_hosted () != 1)
+    return 0;
+  res = _DPMISegmentToDescriptor (0);
+  if (res < 0)
+    abort ();
+  if (res > (int32_t) 0xffff)
+    abort ();
+  sel = (uint16_t) res;
+  kb1 = _bios_memsize ();
+  kb2 = * (unsigned __far *) MK_FP (sel, 0x0413);
+  if (kb1 != kb2)
     abort ();
   return 0;
 }]],[])

@@ -117,12 +117,14 @@ Legend:
 
 ### `<dpmi.h>`
 
-Unless otherwise stated, functions return 0 on success and non-zero on error.
-
   * `__DPMI_hosted ();`<sup>[IW]</sup>
     - Returns 1 if running in protected mode under DPMI, -1 otherwise.
     - If the underlying C library has an implementation of this function, `libi86` will use that instead.
+
+Code should only use the following functions if it knows it is running in DPMI mode.
+
   * `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);`<sup>[IW]</sup>
+    - Returns 0 on success, -1 on error.
   * `_DPMISegmentToDescriptor (`_seg-para_`);`<sup>[IW]</sup>
     - On success, returns a protected-mode selector value for the real-mode segment _seg-para_`:0`.  On failure, returns a negative value.
 
