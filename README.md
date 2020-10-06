@@ -69,7 +69,7 @@ Legend:
 ### `<bios.h>`
 
   * `_bios_disk (`_service_`,` \*_diskinfo_`);`
-    - As an extension, also accepts _service_ = `_DISK_DRIVEPARAMS`, which returns drive parameters in \*_diskinfo_.
+    - Also accepts _service_ = `_DISK_DRIVEPARAMS`,<sup>[X]</sup> which returns drive parameters in \*_diskinfo_.
   * `_bios_equiplist ();`
   * `_bios_memsize ();`
   * `_bios_keybrd (`_service_`);`
@@ -108,8 +108,10 @@ Legend:
   * `intdos (`\*_in-regs_`,` \*_out-regs_`);`
   * `intdosx (`\*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
   * `_dos_allocmem (`_size_`,` \*_segment_`);`
+    - Also works under DPMI; yields a starting protected-mode selector.<sup>[X]</sup>
   * `_dos_close (`_handle_`);`
   * `_dos_freemem (`_segment_`);`
+    - Also works under DPMI; accepts a starting protected-mode selector.<sup>[X]</sup>
   * `_dos_getdrive (`\*_drive_`);`
   * `_dos_getfileattr (`\*_path_`,` \*_attributes_`);`
   * `_dos_setfileattr (`\*_path_`,` _attributes_`);`

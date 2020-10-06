@@ -386,7 +386,7 @@ main (int argc, char **argv)
 AT_CLEANUP
 
 AT_SETUP([[_dos_allocmem, _dos_freemem]])
-AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+AT_LIBI86_CHECK(dnl
 [[#include <dos.h>
 #include <errno.h>
 #include <stdio.h>
@@ -429,6 +429,7 @@ main (int argc, char **argv)
       *ptr++ = 0xf6f6f6f6ul;  *ptr++ = 0xf6f6f6f6ul;
     }
 
+#ifndef __IA16_FEATURE_PROTECTED_MODE
   if (max_paras > 0x1000)
     {
       ptr = MK_FP (seg + max_paras - 0x1000, 0);
@@ -439,6 +440,7 @@ main (int argc, char **argv)
 	  *ptr++ = 0xf6f6f6f6ul;  *ptr++ = 0xf6f6f6f6ul;
 	}
     }
+#endif
 
   errno = 0;
   if (_dos_freemem (seg) != 0)
