@@ -1,0 +1,71 @@
+dnl Copyright (c) 2018--2020 TK Chia
+dnl
+dnl This file is free software; you can redistribute it and/or modify it
+dnl under the terms of the GNU Lesser General Public License as published by
+dnl the Free Software Foundation; either version 2 of the License, or
+dnl (at your option) any later version.
+dnl
+dnl This program is distributed in the hope that it will be useful, but
+dnl WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+dnl Lesser General Public License for more details.
+dnl
+dnl You should have received a copy of the GNU Lesser General Public License
+dnl along with this program; see the file COPYING2.LIB.  If not see
+dnl <http://www.gnu.org/licenses/>.
+
+AT_BANNER([[<conio.h> tests (Borland compatibility)]])
+
+AT_SETUP([[inportb, outportb]])
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+[[#define _BORLANDC_SOURCE
+#include <conio.h>
+#include <stdlib.h>
+
+static unsigned ticks (void)
+{
+  return *(unsigned volatile __far *) 0x0040006cul;
+}
+
+static void do_abort (unsigned char s_ocw1)
+{
+  outportb (0x21, s_ocw1);
+  abort ();
+}
+
+int
+main (void)
+{
+  unsigned from, c1, c2;
+  unsigned char s_ocw1 = inportb (0x21);
+
+  if ((s_ocw1 & 0x03) != 0x00)
+    abort ();
+
+  srand (ticks ());
+  c1 = 5000;
+  while (c1-- != 0)
+    {
+      outportb (0x21, 0xff);
+      from = ticks ();
+      c2 = rand() / (RAND_MAX / 100) + 1;
+      while (c2-- != 0)
+	{
+	  if (ticks () != from)
+	    do_abort (s_ocw1);
+        }
+      if (inportb (0x21) != 0xff)
+	do_abort (s_ocw1);
+
+      outportb (0x21, s_ocw1);
+      if (c1 % 200 == 0)
+	while (ticks () == from)
+	  __asm volatile ("hlt");
+      if (inportb (0x21) != s_ocw1)
+	do_abort (s_ocw1);
+    }
+
+  return 0;
+}
+]],[])
+AT_CLEANUP

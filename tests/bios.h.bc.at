@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018--2020 TK Chia
+dnl Copyright (c) 2018 TK Chia
 dnl
 dnl This file is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU Lesser General Public License as published by
@@ -14,23 +14,23 @@ dnl You should have received a copy of the GNU Lesser General Public License
 dnl along with this program; see the file COPYING2.LIB.  If not see
 dnl <http://www.gnu.org/licenses/>.
 
-AT_INIT(libi86)
-AT_COLOR_TESTS
+AT_BANNER([[<bios.h> tests (Borland compatibility)]])
 
-dnl Process options.
-m4_include([option.at])
-
-dnl Test that the test harness works.  Naturally, this should come first.
-m4_include([metacheck.at])
-
-dnl Then do the actual tests...
-m4_include([bios.h.at])
-m4_include([bios.h.bc.at])
-m4_include([conio.h.at])
-m4_include([conio.h.bc.at])
-m4_include([dos.h.at])
-m4_include([dpmi.h.at])
-m4_include([graph.h.at])
-m4_include([i86.h.at])
-m4_include([stdlib.h.at])
-m4_include([string.h.at])
+AT_SETUP([[biosmemory, biosequip, bioskey]])
+AT_LIBI86_CHECK_CONSOLE_FOR_NONDPMIABLE(dnl
+[[#define _BORLANDC_SOURCE
+#include <stdlib.h>
+#include <bios.h>
+int main (void)
+{
+  unsigned short kb = biosmemory ();
+  unsigned short hw = biosequip ();
+  if (kb != * (unsigned short __far *) 0x00400013ul)
+    abort ();
+  if (hw != * (unsigned short __far *) 0x00400010ul)
+    abort ();
+  if (bioskey (0) != 0x3f00u)
+    abort ();
+  return 0;
+}]],[],[[-input '\p200;\F5;']])
+AT_CLEANUP
