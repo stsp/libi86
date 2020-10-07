@@ -62,22 +62,22 @@ To list all the test cases and their test numbers:
 
 Legend:
 
-  * <sup>[BC]</sup> from Borland Turbo C++ — enable with `_BORLANDC_SOURCE`
-  * <sup>[IW]</sup> from internal interfaces in Open Watcom's library code
-  * <sup>[X]</sup> `libi86`-specific extension; not in Open Watcom or Borland C++
+  * ⁽ᵇ⁾ from Borland Turbo C++ — enable with `_BORLANDC_SOURCE`
+  * ⁽ʷ⁾ from internal interfaces in Open Watcom's library code
+  * ⁽ˣ⁾ `libi86`-specific extension; not in Open Watcom or Borland C++
 
 ### `<bios.h>`
 
   * `_bios_disk (`_service_`,` \*_diskinfo_`);`
-    - Also accepts _service_ = `_DISK_DRIVEPARAMS`,<sup>[X]</sup> which returns drive parameters in \*_diskinfo_.
+    - Also accepts _service_ = `_DISK_DRIVEPARAMS`,⁽ˣ⁾ which returns drive parameters in \*_diskinfo_.
   * `_bios_equiplist ();`
-    - Also `biosequip`.<sup>[BC]</sup>
+    - Also `biosequip`.⁽ᵇ⁾
   * `_bios_memsize ();`
-    - Also `biosmemory`.<sup>[BC]</sup>
+    - Also `biosmemory`.⁽ᵇ⁾
   * `_bios_keybrd (`_service_`);`
-    - Also `bioskey`.<sup>[BC]</sup>
+    - Also `bioskey`.⁽ᵇ⁾
   * `_bios_timeofday (`_service_`,` \*_timeval_`);`
-  * `_bios_joystick (`_service_`,` \*_joyinfo_`);`<sup>[X]</sup>
+  * `_bios_joystick (`_service_`,` \*_joyinfo_`);`⁽ˣ⁾
     - Reads joystick status via `int 0x15` function `0x84`.
 
 ### `<conio.h>`
@@ -94,13 +94,13 @@ Legend:
   * `vcprintf (`\*_fmt_`,` _ap_`);`
   * `vcscanf (`\*_fmt_`,` _ap_`);`
   * `inp (`_port_`);`
-    - Also `inportb`<sup>[BC]</sup> or `_inp`.
+    - Also `inportb`⁽ᵇ⁾ or `_inp`.
   * `inpw (`_port_`);`
-    - Also `inportw`<sup>[BC]</sup> or `_inpw`.
+    - Also `inportw`⁽ᵇ⁾ or `_inpw`.
   * `outp (`_port_`,` _value_`);`
-    - Also `outportb`<sup>[BC]</sup> or `_outp`.
+    - Also `outportb`⁽ᵇ⁾ or `_outp`.
   * `outpw (`_port_`,` _value_`);`
-    - Also `outportw`<sup>[BC]</sup> or `_outpw`.
+    - Also `outportw`⁽ᵇ⁾ or `_outpw`.
 
 ### `<dos.h>`
 
@@ -111,10 +111,10 @@ Legend:
   * `intdos (`\*_in-regs_`,` \*_out-regs_`);`
   * `intdosx (`\*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
   * `_dos_allocmem (`_size_`,` \*_segment_`);`
-    - Also works under DPMI; yields a starting protected-mode selector.<sup>[X]</sup>
+    - Also works under DPMI; yields a starting protected-mode selector.⁽ˣ⁾
   * `_dos_close (`_handle_`);`
   * `_dos_freemem (`_segment_`);`
-    - Also works under DPMI; accepts a starting protected-mode selector.<sup>[X]</sup>
+    - Also works under DPMI; accepts a starting protected-mode selector.⁽ˣ⁾
   * `_dos_getdrive (`\*_drive_`);`
   * `_dos_getfileattr (`\*_path_`,` \*_attributes_`);`
   * `_dos_setfileattr (`\*_path_`,` _attributes_`);`
@@ -122,15 +122,15 @@ Legend:
 
 ### `<dpmi.h>`
 
-  * `__DPMI_hosted ();`<sup>[IW]</sup>
+  * `__DPMI_hosted ();`⁽ʷ⁾
     - Returns 1 if running in protected mode under DPMI, -1 otherwise.
     - If the underlying C library has an implementation of this function, `libi86` will use that instead.
 
 Code should only use the following functions if it knows it is running in DPMI mode.
 
-  * `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);`<sup>[IW]</sup>
+  * `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);`⁽ʷ⁾
     - Returns 0 on success, -1 on error.
-  * `_DPMISegmentToDescriptor (`_seg-para_`);`<sup>[IW]</sup>
+  * `_DPMISegmentToDescriptor (`_seg-para_`);`⁽ʷ⁾
     - On success, returns a protected-mode selector value for the real-mode segment _seg-para_`:0`.  On failure, returns a negative value.
 
 ### `<graph.h>`
@@ -151,11 +151,11 @@ Unlike in Open Watcom, where all functions in `<graph.h>` are far, in `libi86` t
   * `int86 (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);`
   * `int86x (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
   * `intr (`_inter-no_`,` \*_regs_`);`
-  * `_int86f (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);`<sup>[X]</sup>
+  * `_int86f (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);`⁽ˣ⁾
     - Loads `SZAPC` flags before issuing interrupt.
-  * `_int86xf (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`<sup>[X]</sup>
+  * `_int86xf (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`⁽ˣ⁾
     - Loads `SZAPC` flags before issuing interrupt.
-  * `_intrf (`_inter-no_`,` \*_regs_`);`<sup>[X]</sup>
+  * `_intrf (`_inter-no_`,` \*_regs_`);`⁽ˣ⁾
     - Loads `SZAPC` flags before issuing interrupt.
   * `FP_OFF (`\*_ptr_`);`
     - Macro; also `_FP_OFF`.
