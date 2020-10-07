@@ -71,8 +71,11 @@ Legend:
   * `_bios_disk (`_service_`,` \*_diskinfo_`);`
     - Also accepts _service_ = `_DISK_DRIVEPARAMS`,<sup>[X]</sup> which returns drive parameters in \*_diskinfo_.
   * `_bios_equiplist ();`
+    - Also `biosequip`.<sup>[BC]</sup>
   * `_bios_memsize ();`
+    - Also `biosmemory`.<sup>[BC]</sup>
   * `_bios_keybrd (`_service_`);`
+    - Also `bioskey`.<sup>[BC]</sup>
   * `_bios_timeofday (`_service_`,` \*_timeval_`);`
   * `_bios_joystick (`_service_`,` \*_joyinfo_`);`<sup>[X]</sup>
     - Reads joystick status via `int 0x15` function `0x84`.

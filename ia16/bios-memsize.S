@@ -24,6 +24,8 @@
 
 	TEXT_ (bios_memsize.S.LIBI86)
 	.global	_bios_memsize
+	.weak	biosmemory
 _bios_memsize:
+biosmemory:
 	int	$0x12
 	RET_(0)

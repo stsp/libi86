@@ -103,6 +103,29 @@ extern unsigned short _bios_joystick (unsigned __service,
 #define _JOY_READTRIG		0
 #define _JOY_READPOS		1
 
+#ifdef _BORLANDC_SOURCE
+_LIBI86_ALT_INLINE unsigned short
+		  _LIBI86_REDIRECT (biosequip, (void), _bios_equiplist),
+		  _LIBI86_REDIRECT (biosmemory, (void), _bios_memsize);
+extern unsigned short _LIBI86_REDIRECT (bioskey, (unsigned), _bios_keybrd);
+
+_LIBI86_ALT_INLINE unsigned short
+biosequip (void)
+{
+  unsigned a;
+  __asm volatile ("int {$}0x11" : "=a" (a));
+  return a;
+}
+
+_LIBI86_ALT_INLINE unsigned short
+biosmemory (void)
+{
+  unsigned a;
+  __asm volatile ("int {$}0x12" : "=a" (a));
+  return a;
+}
+#endif /* _BORLANDC_SOURCE */
+
 _LIBI86_END_EXTERN_C
 
 #endif

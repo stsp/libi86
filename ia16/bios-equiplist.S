@@ -24,6 +24,8 @@
 
 	TEXT_ (bios_equiplist.S.LIBI86)
 	.global	_bios_equiplist
+	.weak	biosequip
 _bios_equiplist:
+biosequip:
 	int	$0x11
 	RET_(0)
