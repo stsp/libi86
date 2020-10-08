@@ -60,24 +60,25 @@ To list all the test cases and their test numbers:
 
 ## Implemented functions
 
-Legend:
+### Legend
 
-  * ⁽ᵇ⁾ from Borland Turbo C++ — enable with `_BORLANDC_SOURCE`
-  * ⁽ʷ⁾ from internal interfaces in Open Watcom's library code
-  * ⁽ˣ⁾ `libi86`-specific extension; not in Open Watcom or Borland C++
+  * +: compatible with Open Watcom, but with extended behaviours.
+  * BC: from Borland Turbo C++ — enable with `_BORLANDC_SOURCE`.
+  * IW: from internal interfaces in Open Watcom's library code.
+  * X: `libi86`-specific extension; not in Open Watcom or Borland C++.
 
 ### `<bios.h>`
 
-  * `_bios_disk (`_service_`,` \*_diskinfo_`);`
-    - Also accepts _service_ = `_DISK_DRIVEPARAMS`,⁽ˣ⁾ which returns drive parameters in \*_diskinfo_.
-  * `_bios_equiplist ();`
-    - Also `biosequip`.⁽ᵇ⁾
-  * `_bios_memsize ();`
-    - Also `biosmemory`.⁽ᵇ⁾
-  * `_bios_keybrd (`_service_`);`
-    - Also `bioskey`.⁽ᵇ⁾
+  * `_bios_disk (`_service_`,` \*_diskinfo_`);` // [+](#legend)
+    - As an extension, also accepts _service_ = `_DISK_DRIVEPARAMS`, which returns drive parameters in \*_diskinfo_.
+  * `_bios_equiplist ();` \
+    `biosequip ();` // [BC](#legend)
+  * `_bios_memsize ();` \
+    `biosmemory ();` // [BC](#legend)
+  * `_bios_keybrd (`_service_`);` \
+    `bioskey (`_service_`);` // [BC](#legend)
   * `_bios_timeofday (`_service_`,` \*_timeval_`);`
-  * `_bios_joystick (`_service_`,` \*_joyinfo_`);`⁽ˣ⁾
+  * `_bios_joystick (`_service_`,` \*_joyinfo_`);` // [X](#legend)
     - Reads joystick status via `int 0x15` function `0x84`.
 
 ### `<conio.h>`
@@ -93,14 +94,18 @@ Legend:
   * `putch (`_ch_`);`
   * `vcprintf (`\*_fmt_`,` _ap_`);`
   * `vcscanf (`\*_fmt_`,` _ap_`);`
-  * `inp (`_port_`);`
-    - Also `inportb`⁽ᵇ⁾ or `_inp`.
-  * `inpw (`_port_`);`
-    - Also `inportw`⁽ᵇ⁾ or `_inpw`.
-  * `outp (`_port_`,` _value_`);`
-    - Also `outportb`⁽ᵇ⁾ or `_outp`.
-  * `outpw (`_port_`,` _value_`);`
-    - Also `outportw`⁽ᵇ⁾ or `_outpw`.
+  * `inp (`_port_`);` \
+    `_inp (`_port_`);` \
+    `inportb (`_port_`);` // [BC](#legend)
+  * `inpw (`_port_`);` \
+    `_inpw (`_port_`);` \
+    `inportw (`_port_`);` // [BC](#legend)
+  * `outp (`_port_`,` _value_`);` \
+    `_outp (`_port_`,` _value_`);` \
+    `outportb (`_port_`,` _value_`);` // [BC](#legend)
+  * `outpw (`_port_`,` _value_`);` \
+    `_outpw (`_port_`,` _value_`);` \
+    `outportw (`_port_`,` _value_`);` // [BC](#legend)
 
 ### `<dos.h>`
 
@@ -110,11 +115,11 @@ Legend:
   * `bdosptr (`_dos-func_`,` \*_dx_`,` _al_`);`
   * `intdos (`\*_in-regs_`,` \*_out-regs_`);`
   * `intdosx (`\*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
-  * `_dos_allocmem (`_size_`,` \*_segment_`);`
-    - Also works under DPMI; yields a starting protected-mode selector.⁽ˣ⁾
+  * `_dos_allocmem (`_size_`,` \*_segment_`);` // [+](#legend)
+    - Also works under DPMI; yields a starting protected-mode selector.
   * `_dos_close (`_handle_`);`
-  * `_dos_freemem (`_segment_`);`
-    - Also works under DPMI; accepts a starting protected-mode selector.⁽ˣ⁾
+  * `_dos_freemem (`_segment_`);` // [+](#legend)
+    - Also works under DPMI; accepts a starting protected-mode selector.
   * `_dos_getdrive (`\*_drive_`);`
   * `_dos_getfileattr (`\*_path_`,` \*_attributes_`);`
   * `_dos_setfileattr (`\*_path_`,` _attributes_`);`
@@ -122,15 +127,15 @@ Legend:
 
 ### `<dpmi.h>`
 
-  * `__DPMI_hosted ();`⁽ʷ⁾
+  * `__DPMI_hosted ();` // [IW](#legend)
     - Returns 1 if running in protected mode under DPMI, -1 otherwise.
     - If the underlying C library has an implementation of this function, `libi86` will use that instead.
 
 Code should only use the following functions if it knows it is running in DPMI mode.
 
-  * `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);`⁽ʷ⁾
+  * `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);` // [IW](#legend)
     - Returns 0 on success, -1 on error.
-  * `_DPMISegmentToDescriptor (`_seg-para_`);`⁽ʷ⁾
+  * `_DPMISegmentToDescriptor (`_seg-para_`);` // [IW](#legend)
     - On success, returns a protected-mode selector value for the real-mode segment _seg-para_`:0`.  On failure, returns a negative value.
 
 ### `<graph.h>`
@@ -151,18 +156,21 @@ Unlike in Open Watcom, where all functions in `<graph.h>` are far, in `libi86` t
   * `int86 (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);`
   * `int86x (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
   * `intr (`_inter-no_`,` \*_regs_`);`
-  * `_int86f (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);`⁽ˣ⁾
+  * `_int86f (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);` // [X](#legend)
     - Loads `SZAPC` flags before issuing interrupt.
-  * `_int86xf (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`⁽ˣ⁾
+  * `_int86xf (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);` // [X](#legend)
     - Loads `SZAPC` flags before issuing interrupt.
-  * `_intrf (`_inter-no_`,` \*_regs_`);`⁽ˣ⁾
+  * `_intrf (`_inter-no_`,` \*_regs_`);` // [X](#legend)
     - Loads `SZAPC` flags before issuing interrupt.
-  * `FP_OFF (`\*_ptr_`);`
-    - Macro; also `_FP_OFF`.
-  * `FP_SEG (`\*_ptr_`);`
-    - Macro; also `_FP_SEG`.
-  * `MK_FP (`_seg_`,` _off_`);`
-    - Macro; also `_MK_FP`.
+  * `FP_OFF (`\*_ptr_`);` \
+    `_FP_OFF (`\*_ptr_`);`
+    - Macro.
+  * `FP_SEG (`\*_ptr_`);` \
+    `_FP_SEG (`\*_ptr_`);`
+    - Macro.
+  * `MK_FP (`_seg_`,` _off_`);` \
+    `_MK_FP (`_seg_`,` _off_`);`
+    - Macro.
 
 ### `<libi86/string.h>`
 
@@ -173,4 +181,6 @@ Unlike in Open Watcom, where all functions in `<graph.h>` are far, in `libi86` t
 
 ### `<libi86/stdlib.h>`
 
-  * `_osmajor` `_osminor` `_psp`
+  * `_osmajor`
+  * `_osminor`
+  * `_psp`
