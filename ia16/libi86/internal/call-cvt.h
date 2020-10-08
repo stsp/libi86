@@ -83,6 +83,10 @@
  *   uses only two registers (%ax and %dx) to hold parameters.  Each of
  *   these macros should be used only after ENTER_BX_.
  *
+ * - LDS_ARG6W_BX_ (REG) moves the fourth shortword into REG, and the fifth
+ *   into %ds; LES_ARG6W_BX_ (REG) moves the shortwords into REG and %es.
+ *   Each of these macros should be used only after ENTER_BX_.
+ *
  * - RET_(N) emits an instruction to return from a function with N bytes of
  *   arguments.
  *
@@ -213,6 +217,8 @@
 				.endif
 # define LDS_ARG4W2_BX_(reg)	ldsw FAR_ADJ__+2(%bx), reg
 # define LES_ARG4W2_BX_(reg)	lesw FAR_ADJ__+2(%bx), reg
+# define LDS_ARG6W_BX_(reg)	ldsw FAR_ADJ__+2(%bx), reg
+# define LES_ARG6W_BX_(reg)	lesw FAR_ADJ__+2(%bx), reg
 # define RET_(n)		.if (n)>6; \
 				RET__ $((n)-6); \
 				.else; \
@@ -263,6 +269,8 @@
 # define LES_ARG2W_BX_(reg)	lesw FAR_ADJ__+4(%bx), reg
 # define LDS_ARG4W2_BX_(reg)	ldsw FAR_ADJ__+6(%bx), reg
 # define LES_ARG4W2_BX_(reg)	lesw FAR_ADJ__+6(%bx), reg
+# define LDS_ARG6W_BX_(reg)	ldsw FAR_ADJ__+8(%bx), reg
+# define LES_ARG6W_BX_(reg)	lesw FAR_ADJ__+8(%bx), reg
 # ifdef __IA16_CALLCVT_STDCALL
 #   define RET_(n)		.if (n); \
 				RET__ $(n); \

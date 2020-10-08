@@ -137,6 +137,9 @@ Code should only use the following functions if it knows it is running in DPMI m
     - Returns 0 on success, -1 on error.
   * `_DPMISegmentToDescriptor (`_seg-para_`);` // [IW](#legend)
     - On success, returns a protected-mode selector value for the real-mode segment _seg-para_`:0`.  On failure, returns a negative value.
+  * `_DPMISimulateRealModeInterrupt (`_inter-no_`,` _reset_`,` _words-to-copy_`,` \*_call-struct_`);` // [IW](#legend)
+    - Returns 0 on success, -1 on error.
+    - _words-to-copy_ should probably be 0.
 
 ### `<graph.h>`
 

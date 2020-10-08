@@ -94,6 +94,7 @@ OBJS		= bdos.o \
 		  dpmi-hosted.o \
 		  dpmigetdescriptor.o \
 		  dpmisegmenttodescriptor.o \
+		  dpmisimulaterealmodeint.o \
 		  enable.o \
 		  fmemcpy.o \
 		  fmemmove.o \

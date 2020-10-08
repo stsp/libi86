@@ -75,6 +75,13 @@ typedef struct __attribute__ ((packed))
   }
 descriptor;
 
+typedef struct __attribute__ ((packed))
+  {
+    uint32_t edi, esi, ebp, reserved, ebx, edx, ecx, eax;
+    uint16_t flags, es, ds, fs, gs, ip, cs, sp, ss;
+  }
+rm_call_struct;
+
 _LIBI86_ALT_INLINE int
 #ifdef __FAR
 _DPMIGetDescriptor (uint16_t __sel, descriptor __far *__desc)
@@ -103,6 +110,22 @@ _DPMISegmentToDescriptor (uint16_t __para)
   if (__res < 0)
     return -1L;
   return (int32_t) __sel;
+}
+
+_LIBI86_ALT_INLINE int
+_DPMISimulateRealModeInterrupt (uint8_t __interrupt, uint8_t __flags,
+				uint16_t __words_to_copy,
+				rm_call_struct __far *__call_st)
+{
+  int __res, __xx1, __xx2;
+  __asm volatile ("int {$}0x31; sbb{w} %0, %0"
+		  : "=a" (__res), "=b" (__xx1), "=c" (__xx2)
+		  : "0" (0x0300u),
+		    "1" ((uint16_t) __flags << 8 | __interrupt),
+		    "2" (__words_to_copy),
+		    "e" (FP_SEG (__call_st)), "D" (FP_OFF (__call_st))
+		  : "cc", "dx", "memory");
+  return __res;
 }
 
 _LIBI86_END_EXTERN_C
