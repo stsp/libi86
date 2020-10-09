@@ -57,7 +57,6 @@ extern int vcprintf (const char *, _LIBI86_VA_LIST);
 extern int vcscanf (const char *, _LIBI86_VA_LIST)
 	   _LIBI86_DEPRECATED (	"libi86 vcscanf is hard to control, and works "
 				"differently from Open Watcom vcscanf");
-
 #ifndef _LIBI86_COMPILING_
 extern int _LIBI86_REDIRECT (getch, (void), _getch);
 extern int _LIBI86_REDIRECT (getche, (void), _getche);
@@ -82,8 +81,26 @@ _LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outportb, unsigned, unsigned,
 			       __libi86_outp)
 _LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outportw, unsigned, unsigned,
 			       __libi86_outpw)
-# endif
-#endif
+# endif /* _BORLANDC_SOURCE */
+#endif /* _LIBI86_COMPILING */
+
+#ifdef _BORLANDC_SOURCE
+enum text_modes
+{
+  BW40 = 0x0000,
+  C40 = 0x0001,
+  BW80 = 0x0002,
+  C80 = 0x0003,
+  MONO = 0x0007,
+  C4350 = 0x0040
+  /*
+   * Borland Turbo C++ 3.0 also defines LASTMODE = -1, but its precise
+   * intended meaning is still unclear to me.  -- tkchia 20201009
+   */
+};
+
+extern void textmode (int);
+#endif /* _BORLANDC_SOURCE */
 
 _LIBI86_END_EXTERN_C
 

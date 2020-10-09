@@ -101,6 +101,7 @@ OBJS		= bdos.o \
 		  getch.o \
 		  getche.o \
 		  getdrive.o \
+		  getvideomode.o \
 		  inp.o \
 		  inpw.o \
 		  int86.o \
@@ -118,6 +119,7 @@ OBJS		= bdos.o \
 		  segread.o \
 		  setvideomode.o \
 		  sound.o \
+		  textmode.o \
 		  ungetch.o \
 		  vcprintf.o \
 		  vcscanf.o \

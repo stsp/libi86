@@ -75,6 +75,8 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
+extern short _getvideomode (void);
+
 /* Used by the inline version of _setvideomode (.) below.  */
 extern short __libi86_setvideomode (short);
 extern short __libi86_setvideomode_default (void);

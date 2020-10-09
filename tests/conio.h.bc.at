@@ -69,3 +69,20 @@ main (void)
 }
 ]],[])
 AT_CLEANUP
+
+AT_SETUP([[textmode]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#define _BORLANDC_SOURCE
+#include <conio.h>
+#include <stdlib.h>
+int
+main (void)
+{
+  textmode (MONO);
+  cputs ("yo ");
+  textmode (MONO);
+  cputs ("dawg\n");
+  return 0;
+}]],[[yo dawg
+]])
+AT_CLEANUP

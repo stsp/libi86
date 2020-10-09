@@ -16,7 +16,7 @@ dnl <http://www.gnu.org/licenses/>.
 
 AT_BANNER([[<graph.h> tests]])
 
-AT_SETUP([[_setvideomode]])
+AT_SETUP([[_setvideomode, _getvideomode]])
 AT_LIBI86_CHECK(dnl
 [[#include <stdio.h>
 #include <stdlib.h>
@@ -32,21 +32,72 @@ do_abort (unsigned line, short r)
 int
 main (void)
 {
+  short m = _getvideomode ();
   short r = _setvideomode (_TEXTC40);
-  if (r != 0 && r != 25)
-    do_abort (__LINE__, r);
+  switch (r)
+    {
+    case 25:
+      m = _TEXTC40;
+      /* fall through */
+    case 0:
+      if (_getvideomode () != m)
+	do_abort (__LINE__, r);
+      break;
+    default:
+      do_abort (__LINE__, r);
+    }
   r = _setvideomode (_TEXTMONO);
-  if (r != 0 && r != 25)
-    do_abort (__LINE__, r);
+  switch (r)
+    {
+    case 25:
+      m = _TEXTMONO;
+      /* fall through */
+    case 0:
+      if (_getvideomode () != m)
+	do_abort (__LINE__, r);
+      break;
+    default:
+      do_abort (__LINE__, r);
+    }
   r = _setvideomode (_MRES4COLOR);
-  if (r != 0 && r != 25)
-    do_abort (__LINE__, r);
+  switch (r)
+    {
+    case 25:
+      m = _MRES4COLOR;
+      /* fall through */
+    case 0:
+      if (_getvideomode () != m)
+	do_abort (__LINE__, r);
+      break;
+    default:
+      do_abort (__LINE__, r);
+    }
   r = _setvideomode (_VRES16COLOR);
-  if (r != 0 && r != 30)
-    do_abort (__LINE__, r);
+  switch (r)
+    {
+    case 30:
+      m = _VRES16COLOR;
+      /* fall through */
+    case 0:
+      if (_getvideomode () != m)
+	do_abort (__LINE__, r);
+      break;
+    default:
+      do_abort (__LINE__, r);
+    }
   r = _setvideomode (_VRES256COLOR);
-  if (r != 0 && r != 30)
-    do_abort (__LINE__, r);
+  switch (r)
+    {
+    case 30:
+      m = _VRES256COLOR;
+      /* fall through */
+    case 0:
+      if (_getvideomode () != m)
+	do_abort (__LINE__, r);
+      break;
+    default:
+      do_abort (__LINE__, r);
+    }
   r = _setvideomode (_DEFAULTMODE);
 #if 0  /* FIXME: this part fails under dosemu 1.4.0.8.  */
   if (! r)

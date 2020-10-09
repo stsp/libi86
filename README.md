@@ -92,6 +92,8 @@ To list all the test cases and their test numbers:
   * `_kbhit ();`
   * `_ungetch (`_ch_`);`
   * `putch (`_ch_`);`
+  * `textmode (`_mode_`);` &nbsp; // [BC](#legend)
+    - Does not support _mode_ = `LASTMODE` yet.
   * `vcprintf (`\*_fmt_`,` _ap_`);`
   * `vcscanf (`\*_fmt_`,` _ap_`);`
   * `inp (`_port_`);` \
@@ -145,6 +147,7 @@ Code should only use the following functions if it knows it is running in DPMI m
 
 Unlike in Open Watcom, where all functions in `<graph.h>` are far, in `libi86` the far-ness of functions follows the chosen memory model.  Thus, in a small-memory-model program, `_setvideomode` is a near function.  However, pointers to data are still far.
 
+  * `_getvideomode ();` &nbsp; // [X](#legend)
   * `_setvideomode (`_mode_`);`
     - In the case of SuperVGA screen modes, only works with VESA interface.
 
