@@ -71,6 +71,8 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[textmode]])
+dnl FIXME...
+AT_SKIP_IF([test yes = "$DOSEMU_IS_1"])
 AT_LIBI86_CHECK_CONSOLE(dnl
 [[#define _BORLANDC_SOURCE
 #include <conio.h>
