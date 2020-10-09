@@ -33,10 +33,10 @@ extern int __libi86_con_in_fd, __libi86_con_out_fd;
 #endif
 extern unsigned __libi86_ungetch_buf;
 
-struct __libi86_text_wnd_t
+struct __libi86_con_mode_cache_t
   {
-    /* Current text window --- top left corner & bottom right corner. */
-    unsigned x1, y1, x2, y2;
+    /* Current mode number. */
+    unsigned mode_num;
     /*
      * Maximum possible extent of text window, i.e. the actual display
      * dimensions.
@@ -44,7 +44,14 @@ struct __libi86_text_wnd_t
     unsigned max_x, max_y;
   };
 
-struct __libi86_text_wnd_t __libi86_con_wnd;
+struct __libi86_con_wnd_t
+  {
+    /* Current text window --- top left corner & bottom right corner. */
+    unsigned x1, y1, x2, y2;
+  };
+
+struct __libi86_con_mode_cache_t __libi86_con_mode_cache;
+struct __libi86_con_wnd_t __libi86_con_wnd;
 
 _LIBI86_END_EXTERN_C
 

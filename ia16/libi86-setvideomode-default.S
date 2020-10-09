@@ -29,28 +29,19 @@
 	.code16
 	.att_syntax prefix
 
-	TEXT_ (setvideomode_default.S.LIBI86)
+	TEXT_ (libi86_setvideomode_default.S.LIBI86)
 
 .Lctor_setvideomode:
-	movw	$0x4f03, %ax		/* Try to retrieve the initial */
-	int	$0x10			/* mode via VESA */
-	cmpw	$0x004f, %ax
-	jz	.error
-	testw	$~0x807f, %bx		/* If this is a SuperVGA video */
-	jz	.good			/* mode & not a classical video */
-	movb	$_TEXTC80, %bl		/* mode, then to simplify things we
-					   treat _TEXTC80 as the "default"
+					/* Get the initial video mode */
+	movw	__libi86_con_mode_cache, %ax
+	testw	$~0x007f, %ax		/* If this is not a classical video */
+	jz	.good			/* mode, then to simplify things we */
+	movb	$_TEXTC80, %al		/* treat _TEXTC80 as the "default"
 					   mode to return to (in fact Open
 					   Watcom does not really handle
 					   this case!) */
-.good:					/* If not a SuperVGA mode, just */
-	movb	%bl,	.Ldef_mode	/* remember the actual screen mode */
-	RET_ (0)
-.error:
-	movb	$0x0f,	%ah		/* If VESA fails, use the classical */
-	int	$0x10			/* interface to get the video mode */
-	andb	$0x7f,	%al
-	movb	%al,	.Ldef_mode
+.good:					/* If a classical mode, just */
+	movb	%al,	.Ldef_mode	/* remember the actual mode */
 	RET_ (0)
 
 	.global	__libi86_setvideomode_default
@@ -68,14 +59,9 @@ __libi86_setvideomode_default:
 	RET_ (0)
 #endif
 
-/* Note: this constructor must run only after __libi86_bios_ds is set. */
-	.section .ctors.65434
+	.section .ctors.65435
 
 	.balign	2
 	TEXT_PTR_ (.Lctor_setvideomode)
 
-	.bss
-
-.Ldef_mode:
-	.skip	1
-	.balign	2
+	.lcomm	.Ldef_mode, 1

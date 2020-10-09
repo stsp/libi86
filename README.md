@@ -62,23 +62,23 @@ To list all the test cases and their test numbers:
 
 ### Legend
 
-  * +: compatible with Open Watcom, but with extended behaviours.
+  * +: behaves like the corresponding function in Open Watcom, but with some extended behaviours.
   * BC: from Borland Turbo C++ — enable with `_BORLANDC_SOURCE`.
   * IW: from internal interfaces in Open Watcom's library code.
   * X: `libi86`-specific extension; not in Open Watcom or Borland C++.
 
 ### `<bios.h>`
 
-  * `_bios_disk (`_service_`,` \*_diskinfo_`);` // [+](#legend)
+  * `_bios_disk (`_service_`,` \*_diskinfo_`);` &nbsp; // [+](#legend)
     - As an extension, also accepts _service_ = `_DISK_DRIVEPARAMS`, which returns drive parameters in \*_diskinfo_.
   * `_bios_equiplist ();` \
-    `biosequip ();` // [BC](#legend)
+    `biosequip ();` &nbsp; // [BC](#legend)
   * `_bios_memsize ();` \
-    `biosmemory ();` // [BC](#legend)
+    `biosmemory ();` &nbsp; // [BC](#legend)
   * `_bios_keybrd (`_service_`);` \
-    `bioskey (`_service_`);` // [BC](#legend)
+    `bioskey (`_service_`);` &nbsp; // [BC](#legend)
   * `_bios_timeofday (`_service_`,` \*_timeval_`);`
-  * `_bios_joystick (`_service_`,` \*_joyinfo_`);` // [X](#legend)
+  * `_bios_joystick (`_service_`,` \*_joyinfo_`);` &nbsp; // [X](#legend)
     - Reads joystick status via `int 0x15` function `0x84`.
 
 ### `<conio.h>`
@@ -96,16 +96,16 @@ To list all the test cases and their test numbers:
   * `vcscanf (`\*_fmt_`,` _ap_`);`
   * `inp (`_port_`);` \
     `_inp (`_port_`);` \
-    `inportb (`_port_`);` // [BC](#legend)
+    `inportb (`_port_`);` &nbsp; // [BC](#legend)
   * `inpw (`_port_`);` \
     `_inpw (`_port_`);` \
-    `inportw (`_port_`);` // [BC](#legend)
+    `inportw (`_port_`);` &nbsp; // [BC](#legend)
   * `outp (`_port_`,` _value_`);` \
     `_outp (`_port_`,` _value_`);` \
-    `outportb (`_port_`,` _value_`);` // [BC](#legend)
+    `outportb (`_port_`,` _value_`);` &nbsp; // [BC](#legend)
   * `outpw (`_port_`,` _value_`);` \
     `_outpw (`_port_`,` _value_`);` \
-    `outportw (`_port_`,` _value_`);` // [BC](#legend)
+    `outportw (`_port_`,` _value_`);` &nbsp; // [BC](#legend)
 
 ### `<dos.h>`
 
@@ -115,10 +115,10 @@ To list all the test cases and their test numbers:
   * `bdosptr (`_dos-func_`,` \*_dx_`,` _al_`);`
   * `intdos (`\*_in-regs_`,` \*_out-regs_`);`
   * `intdosx (`\*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
-  * `_dos_allocmem (`_size_`,` \*_segment_`);` // [+](#legend)
+  * `_dos_allocmem (`_size_`,` \*_segment_`);` &nbsp; // [+](#legend)
     - Also works under DPMI; yields a starting protected-mode selector.
   * `_dos_close (`_handle_`);`
-  * `_dos_freemem (`_segment_`);` // [+](#legend)
+  * `_dos_freemem (`_segment_`);` &nbsp; // [+](#legend)
     - Also works under DPMI; accepts a starting protected-mode selector.
   * `_dos_getdrive (`\*_drive_`);`
   * `_dos_getfileattr (`\*_path_`,` \*_attributes_`);`
@@ -127,17 +127,17 @@ To list all the test cases and their test numbers:
 
 ### `<dpmi.h>`
 
-  * `__DPMI_hosted ();` // [IW](#legend)
+  * `__DPMI_hosted ();` &nbsp; // [IW](#legend)
     - Returns 1 if running in protected mode under DPMI, -1 otherwise.
     - If the underlying C library has an implementation of this function, `libi86` will use that instead.
 
 Code should only use the following functions if it knows it is running in DPMI mode.
 
-  * `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);` // [IW](#legend)
+  * `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);` &nbsp; // [IW](#legend)
     - Returns 0 on success, -1 on error.
-  * `_DPMISegmentToDescriptor (`_seg-para_`);` // [IW](#legend)
+  * `_DPMISegmentToDescriptor (`_seg-para_`);` &nbsp; // [IW](#legend)
     - On success, returns a protected-mode selector value for the real-mode segment _seg-para_`:0`.  On failure, returns a negative value.
-  * `_DPMISimulateRealModeInterrupt (`_inter-no_`,` _reset_`,` _words-to-copy_`,` \*_call-struct_`);` // [IW](#legend)
+  * `_DPMISimulateRealModeInterrupt (`_inter-no_`,` _reset_`,` _words-to-copy_`,` \*_call-struct_`);` &nbsp; // [IW](#legend)
     - Returns 0 on success, -1 on error.
     - _words-to-copy_ should probably be 0.
 
@@ -159,11 +159,11 @@ Unlike in Open Watcom, where all functions in `<graph.h>` are far, in `libi86` t
   * `int86 (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);`
   * `int86x (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
   * `intr (`_inter-no_`,` \*_regs_`);`
-  * `_int86f (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);` // [X](#legend)
+  * `_int86f (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);` &nbsp; // [X](#legend)
     - Loads `SZAPC` flags before issuing interrupt.
-  * `_int86xf (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);` // [X](#legend)
+  * `_int86xf (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);` &nbsp; // [X](#legend)
     - Loads `SZAPC` flags before issuing interrupt.
-  * `_intrf (`_inter-no_`,` \*_regs_`);` // [X](#legend)
+  * `_intrf (`_inter-no_`,` \*_regs_`);` &nbsp; // [X](#legend)
     - Loads `SZAPC` flags before issuing interrupt.
   * `FP_OFF (`\*_ptr_`);` \
     `_FP_OFF (`\*_ptr_`);`

@@ -128,7 +128,8 @@ OBJS		= bdos.o \
 		  libi86-int86x-do.o \
 		  libi86-intr-do.o \
 		  libi86-intr-dispatch.o \
-		  libi86-reset-wnd.o \
+		  libi86-con-mode-cache.o \
+		  libi86-con-wnd.o \
 		  libi86-ret-really-set-errno.o \
 		  libi86-ret-set-errno.o \
 		  libi86-setvideomode-default.o \

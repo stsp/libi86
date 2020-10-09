@@ -87,12 +87,19 @@
  *   into %ds; LES_ARG6W_BX_ (REG) moves the shortwords into REG and %es.
  *   Each of these macros should be used only after ENTER_BX_.
  *
- * - RET_(N) emits an instruction to return from a function with N bytes of
+ * - RET_ (N) emits an instruction to return from a function with N bytes of
  *   arguments.
  *
- * - RET2_(N) does the same as RET_(N), except that for the `regparmcall'
- *   convention, it assumes that the function uses only two registers (%ax and
- *   %dx) to hold parameters.
+ * - RET2_ (N) does the same as RET_ (N), except that for the `regparmcall'
+ *   convention, it assumes that the function uses only two registers (%ax
+ *   and %dx) to hold parameters.
+ *
+ * - TAIL_CALL_ (FUNC, N) does a tail call: it has the same effect as a CALL_
+ *   (FUNC) followed by a RET_ (N).  FUNC should not accept any stack
+ *   arguments.
+ *
+ * - TAIL_CALL2_ (FUNC, N) has the same effect as a CALL_ (FUNC) followed by
+ *   a RET2_ (N).  FUNC should not accept any stack arguments.
  *
  * - RET_SET_ERRNO_ (N) emits instructions to return from a function with N
  *   bytes of arguments and also set errno to the value in %ax, if the carry
@@ -229,17 +236,17 @@
 				.else; \
 				RET__; \
 				.endif
-# define RET_SET_ERRNO_(n)	.if (n)>6; \
-				CALL_ (__libi86_ret_set_errno); \
-				RET__ $((n)-6); \
+# define TAIL_CALL_(func, n)	.if (n)>6; \
+				CALL_ (func); \
+				RET_ (n); \
 				.else; \
-				JMP_ (__libi86_ret_set_errno); \
+				JMP_ (func); \
 				.endif
-# define RET2_SET_ERRNO_(n)	.if (n)>4; \
-				CALL_ (__libi86_ret_set_errno); \
-				RET__ $((n)-4); \
+# define TAIL_CALL2_(func, n)	.if (n)>4; \
+				CALL_ (func); \
+				RET2_ (n); \
 				.else; \
-				JMP_ (__libi86_ret_set_errno); \
+				JMP_ (func); \
 				.endif
 #else
 # define ENTER_BX_(n)		movw %sp, %bx
@@ -277,19 +284,22 @@
 				.else; \
 				RET__; \
 				.endif
-#   define RET_SET_ERRNO_(n)	.if (n); \
-				CALL_ (__libi86_ret_set_errno); \
-				RET__ $(n); \
+#   define TAIL_CALL_(func, n)	.if (n); \
+				CALL_ (func); \
+				RET_ (n); \
 				.else; \
-				JMP_ (__libi86_ret_set_errno); \
+				JMP_ (func); \
 				.endif
+#   define TAIL_CALL2_(func, n)	TAIL_CALL_(func, n)
 # else
 #   ifndef __IA16_CALLCVT_CDECL
 #     warning "not sure which calling convention is in use; assuming cdecl"
 #   endif
 #   define RET_(n)		RET__
-#   define RET_SET_ERRNO_(n)	JMP_ (__libi86_ret_set_errno)
+#   define TAIL_CALL_(func, n)	JMP_ (func)
+#   define TAIL_CALL2_(func, n)	JMP_ (func)
 # endif
 # define RET2_(n)		RET_ (n)
-# define RET2_SET_ERRNO_(n)	RET_SET_ERRNO_ (n)
 #endif
+#define RET_SET_ERRNO_(n)	TAIL_CALL_ (__libi86_ret_set_errno, n)
+#define RET2_SET_ERRNO_(n)	TAIL_CALL2_ (__libi86_ret_set_errno, n)
