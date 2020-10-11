@@ -33,7 +33,7 @@
 
 .Lctor_setvideomode:
 					/* Get the initial video mode */
-	movw	__libi86_con_mode_cache, %ax
+	movw	__libi86_con_vid_state, %ax
 	testw	$~0x007f, %ax		/* If this is not a classical video */
 	jz	.good			/* mode, then to simplify things we */
 	movb	$_TEXTC80, %al		/* treat _TEXTC80 as the "default"

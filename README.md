@@ -147,7 +147,9 @@ Code should only use the following functions if it knows it is running in DPMI m
 
 Unlike in Open Watcom, where all functions in `<graph.h>` are far, in `libi86` the far-ness of functions follows the chosen memory model.  Thus, in a small-memory-model program, `_setvideomode` is a near function.  However, pointers to data are still far.
 
+  * `_gettextposition ();`
   * `_getvideomode ();` &nbsp; // [X](#legend)
+  * `_scrolltextwindow (`_rows_`);`
   * `_setvideomode (`_mode_`);`
     - In the case of SuperVGA screen modes, only works with VESA interface.
 

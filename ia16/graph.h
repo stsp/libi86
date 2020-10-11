@@ -58,7 +58,7 @@
 #define _SVRES32KCOLOR	0x0113
 #define _SVRES64KCOLOR	0x0114
 #define _SVRESTRUECOLOR	0x0115
-#define _XRES32KOLOR	0x0116
+#define _XRES32KCOLOR	0x0116
 #define _XRES64KCOLOR	0x0117
 #define _XRESTRUECOLOR	0x0118
 #define _YRES32KCOLOR	0x0119
@@ -75,7 +75,17 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
+#define _GSCROLLUP	((short) 1)
+#define _GSCROLLDOWN	((short) -1)
+
+struct rccoord
+{
+  short row, col;
+};
+
+extern struct rccoord _gettextposition (void);
 extern short _getvideomode (void);
+extern void _scrolltextwindow (short __rows);
 
 /* Used by the inline version of _setvideomode (.) below.  */
 extern short __libi86_setvideomode (short);

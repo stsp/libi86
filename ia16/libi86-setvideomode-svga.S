@@ -38,7 +38,7 @@ __libi86_setvideomode_svga:
 	popw	%ax
 	jnz	.error
 					/* Reset the text window */
-	TAIL_CALL_ (__libi86_con_reset_wnd, 2)
+	TAIL_CALL_ (__libi86_con_mode_changed, 2)
 .error:
 	xorw	%ax,	%ax
 	RET_ (2)

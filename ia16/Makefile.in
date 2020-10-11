@@ -101,6 +101,7 @@ OBJS		= bdos.o \
 		  getch.o \
 		  getche.o \
 		  getdrive.o \
+		  gettextposition.o \
 		  getvideomode.o \
 		  inp.o \
 		  inpw.o \
@@ -116,6 +117,7 @@ OBJS		= bdos.o \
 		  outpw.o \
 		  psp.o \
 		  putch.o \
+		  scrolltextwindow.o \
 		  segread.o \
 		  setvideomode.o \
 		  sound.o \
@@ -130,8 +132,7 @@ OBJS		= bdos.o \
 		  libi86-int86x-do.o \
 		  libi86-intr-do.o \
 		  libi86-intr-dispatch.o \
-		  libi86-con-mode-cache.o \
-		  libi86-con-wnd.o \
+		  libi86-con-vid-state.o \
 		  libi86-ret-really-set-errno.o \
 		  libi86-ret-set-errno.o \
 		  libi86-setvideomode-default.o \
