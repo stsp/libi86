@@ -31,10 +31,7 @@
 uint16_t __libi86_bios_ds = 0x0040u;
 
 #ifdef __IA16_FEATURE_PROTECTED_MODE
-/*
- * Note: this constructor must run before __libi86_con_vid_state is
- * initialized.
- */
+/* Note: this constructor must run before __libi86_vid_state is initialized. */
 __attribute__ ((constructor (98))) static void
 __libi86_bios_ds_init (void)
 {

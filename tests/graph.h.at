@@ -106,3 +106,18 @@ main (void)
   return 0;
 }]],[])
 AT_CLEANUP
+
+AT_SETUP([[_outmem, _scrolltextwindow]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#include <graph.h>
+int
+main (void)
+{
+  _outmem ("hello\a", 6);
+  _scrolltextwindow (_GSCROLLDOWN);
+  _outmem ("world \b!", 8);
+  return 0;
+}]],[[      world ~010!
+hello~007
+]])
+AT_CLEANUP

@@ -113,6 +113,7 @@ OBJS		= bdos.o \
 		  kbhit.o \
 		  nosound.o \
 		  osmajor-osminor.o \
+		  outmem.o \
 		  outp.o \
 		  outpw.o \
 		  psp.o \
@@ -132,7 +133,6 @@ OBJS		= bdos.o \
 		  libi86-int86x-do.o \
 		  libi86-intr-do.o \
 		  libi86-intr-dispatch.o \
-		  libi86-con-vid-state.o \
 		  libi86-ret-really-set-errno.o \
 		  libi86-ret-set-errno.o \
 		  libi86-setvideomode-default.o \
@@ -140,6 +140,7 @@ OBJS		= bdos.o \
 		  libi86-setvideomode-svga.o \
 		  libi86-sound-by-divisor.o \
 		  libi86-ungetch-buf.o \
+		  libi86-vid-state.o \
 		  $(foreach da,0 1 2 3, \
 		    $(foreach db,0 1 2 3 4 5 6 7, \
 		      $(foreach dc,0 1 2 3 4 5 6 7, \
@@ -155,6 +156,7 @@ HEADERS		= $(filter-out libi86/config.h,$(INSTALL_HEADERS)) \
 		  libi86/internal/arch.h \
 		  libi86/internal/call-cvt.h \
 		  libi86/internal/conio.h \
+		  libi86/internal/graph.h \
 		  libi86/internal/struc.h
 BSP		= $(INSTALL_LIBS)
 

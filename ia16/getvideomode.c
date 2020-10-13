@@ -19,10 +19,10 @@
 #define _LIBI86_COMPILING_
 #include <inttypes.h>
 #include "graph.h"
-#include "libi86/internal/conio.h"
+#include "libi86/internal/graph.h"
 
 short
 _getvideomode (void)
 {
-  return __libi86_con_vid_state.mode_num;
+  return __libi86_vid_state.mode_num;
 }

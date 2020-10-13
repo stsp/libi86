@@ -82,6 +82,7 @@ To list all the test cases and their test numbers:
 |   B | `bioskey (`_service_`);`
 |   W | `_bios_timeofday (`_service_`,` \*_timeval_`);`
 |   X | `_bios_joystick (`_service_`,` \*_joyinfo_`);` | Reads joystick status via `int 0x15` function `0x84`.
+|     |
 |     | **`▗▚▚▚▚ <conio.h> ▞▞▞▞▖`**
 |   W | \*`cgets (`\*_buf_`);`
 |   W | `cprintf (`\*_fmt_`, ...);`
@@ -107,6 +108,7 @@ To list all the test cases and their test numbers:
 |   W | `outpw (`_port_`,` _value_`);`
 |   W | `_outpw (`_port_`,` _value_`);`
 |   B | `outportw (`_port_`,` _value_`);`
+|     |
 |     | **`▗▚▚▚▚ <dos.h> ▞▞▞▞▖`** | **`<dos.h>` also includes `<i86.h>`, described below.**
 |   W | `bdos (`_dos-func_`,` _dx_`,` _al_`);`
 |   W | `bdosptr (`_dos-func_`,` \*_dx_`,` _al_`);`
@@ -119,16 +121,20 @@ To list all the test cases and their test numbers:
 |   W | `_dos_getfileattr (`\*_path_`,` \*_attributes_`);`
 |   W | `_dos_setfileattr (`\*_path_`,` _attributes_`);`
 |   W | `_getdrive ();`
+|     |
 |     | **`▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖`** | **Except for `__DPMI_hosted ()`, functions in `<dpmi.h>` should only be called when the caller knows it is running in DPMI mode.**
 |  IW | `__DPMI_hosted ();` | Returns 1 if running in protected mode under DPMI, -1 otherwise.  If the underlying C library has an implementation of this function, `libi86` will use that instead.
 |  IW | `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);` | `int 0x31` function `0x000b`.  Returns 0 on success, -1 on error.
 |  IW | `_DPMISegmentToDescriptor (`_seg-para_`);` | `int 0x31` function `0x0002`.  On success, returns a protected-mode selector value for the real-mode segment _seg-para_`:0`.  On failure, returns a negative value.
 |  IW | `_DPMISimulateRealModeInterrupt (`_inter-no_`,` _reset_`,` _words-to-copy_`,` \*_call-struct_`);` | `int 0x31` function `0x0300`.  Returns 0 on success, -1 on error.  _words-to-copy_ should probably be 0.
+|     |
 |     | **`▗▚▚▚▚ <graph.h> ▞▞▞▞▖`** | **Unlike in Open Watcom, where all functions in `<graph.h>` are far, in `libi86` the far-ness of functions follows the chosen memory model.  Thus, in a small-memory-model program, `_setvideomode` is a near function.  However, pointers to data are still far.**
 |   W | `_gettextposition ();`
 |   X | `_getvideomode ();`
+|   W | `_outmem (`\*_text_`,` _length_`);`
 |   W | `_scrolltextwindow (`_rows_`);`
 |   W | `_setvideomode (`_mode_`);` | In the case of SuperVGA screen modes, only works with VESA interface.
+|     |
 |     | **`▗▚▚▚▚ <i86.h> ▞▞▞▞▖`**
 |   W | `delay (`_ms_`);`
 |   W | `nosound ();`
@@ -146,8 +152,9 @@ To list all the test cases and their test numbers:
 |   W | `_FP_OFF (`\*_ptr_`);` | Macro.
 |   W | `FP_SEG (`\*_ptr_`);` | Macro.
 |   W | `_FP_SEG (`\*_ptr_`);` | Macro.
-|   W | `MK_FP (`_seg_`,` _off_`);` | Macro.
-|   W | `_MK_FP (`_seg_`,` _off_`);` | Macro.
+|   W | \*`MK_FP (`_seg_`,` _off_`);` | Macro.
+|   W | \*`_MK_FP (`_seg_`,` _off_`);` | Macro.
+|     |
 |     | **`▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖`**
 |   W | \*`_fmemcpy (`\*_dest_`,` \*_src_`,` _n_`);`
 |   W | \*`_fmemmove (`\*_dest_`,` \*_src_`,` _n_`);`

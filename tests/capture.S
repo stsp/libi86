@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2020 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -57,9 +57,12 @@ main:
 	int	$0x10
 	popw	%di
 	popw	%dx
-	cmpb	$'\n',	%al		/* forbid stray '\n' characters */
-	jz	.error
 	cld
+	cmpb	$' ',	%al		/* escape special characters */
+	jb	.special
+	cmpb	$'~',	%al
+	jae	.special
+.special_ok:
 	stosb
 	incb	%dl
 	cmpb	cols,	%dl
@@ -91,6 +94,28 @@ main:
 	popw	%di
 	popw	%si
 	ret
+.special:				/* encode special characters as `~' */
+	xchgw	%ax,	%bx		/* followed by an octal char. code */
+	movb	$'~',	%al
+	stosb
+	movb	%bl,	%bh
+	rolb	%bl
+	rolb	%bl
+	movb	%bl,	%al
+	andb	$0x03,	%al
+	orb	$'0',	%al
+	stosb
+	rolb	%bl
+	rolb	%bl
+	rolb	%bl
+	movb	%bl,	%al
+	andb	$0x07,	%al
+	orb	$'0',	%al
+	stosb
+	movb	%bh,	%al
+	andb	$0x07,	%al
+	orb	$'0',	%al
+	jmp	.special_ok
 
 	.lcomm	page, 1
 	.lcomm	cols, 1

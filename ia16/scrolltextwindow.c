@@ -20,7 +20,7 @@
 #define _LIBI86_COMPILING_
 #include <inttypes.h>
 #include "graph.h"
-#include "libi86/internal/conio.h"
+#include "libi86/internal/graph.h"
 
 void
 _scrolltextwindow (short rows)
@@ -31,10 +31,10 @@ _scrolltextwindow (short rows)
   if (! rows)
     return;
 
-  x1z = __libi86_con_vid_state.x1z;
-  y1z = __libi86_con_vid_state.y1z;
-  x2z = __libi86_con_vid_state.x2z;
-  y2z = __libi86_con_vid_state.y2z;
+  x1z = __libi86_vid_state.x1z;
+  y1z = __libi86_vid_state.y1z;
+  x2z = __libi86_vid_state.x2z;
+  y2z = __libi86_vid_state.y2z;
 
   if (rows > 0)
     {
@@ -51,10 +51,10 @@ _scrolltextwindow (short rows)
 	rows = -rows;
     }
 
-  if (__libi86_con_vid_state.graph_p)
+  if (__libi86_vid_state.graph_p)
     attr = 0;
   else
-    attr = __libi86_con_vid_state.attribute;
+    attr = __libi86_vid_state.attribute;
 
   __asm volatile ("pushw %%bp; int $0x10; popw %%bp"
 		  : "=a" (xx1), "=b" (xx2), "=c" (xx3), "=d" (xx4)

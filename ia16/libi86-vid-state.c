@@ -25,10 +25,10 @@
 #include <stdint.h>
 #include "dos.h"
 #include "i86.h"
-#include "libi86/internal/conio.h"
 #include "graph.h"
+#include "libi86/internal/graph.h"
 
-struct __libi86_con_vid_state_t __libi86_con_vid_state;
+struct __libi86_vid_state_t __libi86_vid_state;
 
 __attribute__ ((regparmcall)) unsigned
 __libi86_con_mode_changed (unsigned mode)
@@ -38,16 +38,17 @@ __libi86_con_mode_changed (unsigned mode)
   uint8_t mode_ctl_reg;
 
   /* Record the mode number. */
-  __libi86_con_vid_state.mode_num = mode;
+  __libi86_vid_state.mode_num = mode;
 
   /* Record the maximum (x, y) coordinates in character units. */
-  max_x = bios_data_byte (0x004a) - 1;
-  __libi86_con_vid_state.max_x = max_x;
+  max_x = * (volatile unsigned char __far *) MK_FP (__libi86_bios_ds, 0x004aU)
+	  - 1;
+  __libi86_vid_state.max_x = max_x;
 
-  max_y = bios_data_byte (0x0084);
+  max_y = * (volatile unsigned char __far *) MK_FP (__libi86_bios_ds, 0x0084U);
   if (! max_y)
     max_y = 24;
-  __libi86_con_vid_state.max_y = max_y;
+  __libi86_vid_state.max_y = max_y;
 
   /*
    * Decide if we are now in a text mode or a graphics mode.
@@ -69,7 +70,7 @@ __libi86_con_mode_changed (unsigned mode)
     case _SVTEXTC132X43:
     case _SVTEXTC132X50:
     case _SVTEXTC132X60:
-      __libi86_con_vid_state.graph_p = 0;
+      __libi86_vid_state.graph_p = 0;
       break;
 
     case _MRES4COLOR:
@@ -110,27 +111,28 @@ __libi86_con_mode_changed (unsigned mode)
     case _ZRES32KCOLOR:
     case _ZRES64KCOLOR:
     case _ZRESTRUECOLOR:
-      __libi86_con_vid_state.graph_p = 1;
+      __libi86_vid_state.graph_p = 1;
       break;
 
     default:
-      mode_ctl_reg = bios_data_byte (0x0065);
-      __libi86_con_vid_state.graph_p = ((mode_ctl_reg & 0x02) != 0);
+      mode_ctl_reg
+	= * (volatile uint8_t __far *) MK_FP (__libi86_bios_ds, 0x0065U);
+      __libi86_vid_state.graph_p = ((mode_ctl_reg & 0x02) != 0);
     }
 
   /* Reset the colour attribute to use for text output. */
-  __libi86_con_vid_state.attribute = 0x07;
+  __libi86_vid_state.attribute = 0x07;
 
   /* Read the current screen border colour, if possible.  If not, assume 0. */
   __asm volatile ("int $0x10" : "=a" (ax), "=b" (bx)
 			      : "0" (0x1008U), "1" (0)
 			      : "cc", "cx", "dx");
-  __libi86_con_vid_state.border = bx >> 8;
+  __libi86_vid_state.border = bx >> 8;
 
   /* Reset the text window. */
-  __libi86_con_vid_state.x1z = __libi86_con_vid_state.y1z = 0;
-  __libi86_con_vid_state.x2z = max_x;
-  __libi86_con_vid_state.y2z = max_y;
+  __libi86_vid_state.x1z = __libi86_vid_state.y1z = 0;
+  __libi86_vid_state.x2z = max_x;
+  __libi86_vid_state.y2z = max_y;
 
   return (unsigned) max_y + 1;
 }
@@ -140,7 +142,7 @@ __libi86_con_mode_changed (unsigned mode)
  * default () is primed.
  */
 __attribute__ ((constructor (99))) static void
-__libi86_con_vid_state_init (void)
+__libi86_vid_state_init (void)
 {
   unsigned ax, mode;
 
