@@ -58,137 +58,105 @@ To list all the test cases and their test numbers:
 
 `libi86` is now distributed under the [GNU Lesser General Public License version 2](COPYING2.LIB) or above.
 
+## Legend
+
+|     | Meaning
+| --: | :------
+|   W | Behaves like the corresponding function in Open Watcom.
+|   + | Behaves like the corresponding function in Open Watcom, but with some extended behaviours.
+|   B | From Borland Turbo C++ — enable with `_BORLANDC_SOURCE`.
+|  IW | from internal interfaces in Open Watcom's library code.
+|   X | `libi86`-specific extension; not in Open Watcom or Borland C++.
+
 ## Implemented functions
 
-### Legend
-
-  * +: behaves like the corresponding function in Open Watcom, but with some extended behaviours.
-  * BC: from Borland Turbo C++ — enable with `_BORLANDC_SOURCE`.
-  * IW: from internal interfaces in Open Watcom's library code.
-  * X: `libi86`-specific extension; not in Open Watcom or Borland C++.
-
-### `<bios.h>`
-
-  * `_bios_disk (`_service_`,` \*_diskinfo_`);` &nbsp; // [+](#legend)
-    - As an extension, also accepts _service_ = `_DISK_DRIVEPARAMS`, which returns drive parameters in \*_diskinfo_.
-  * `_bios_equiplist ();` \
-    `biosequip ();` &nbsp; // [BC](#legend)
-  * `_bios_memsize ();` \
-    `biosmemory ();` &nbsp; // [BC](#legend)
-  * `_bios_keybrd (`_service_`);` \
-    `bioskey (`_service_`);` &nbsp; // [BC](#legend)
-  * `_bios_timeofday (`_service_`,` \*_timeval_`);`
-  * `_bios_joystick (`_service_`,` \*_joyinfo_`);` &nbsp; // [X](#legend)
-    - Reads joystick status via `int 0x15` function `0x84`.
-
-### `<conio.h>`
-
-  * \*`cgets (`\*_buf_`);`
-  * `cprintf (`\*_fmt_`, ...);`
-  * `cputs (`\*_buf_`);`
-  * `cscanf (`\*_fmt_`, ...);`
-  * `_getch ();`
-  * `_getche ();`
-  * `_kbhit ();`
-  * `_ungetch (`_ch_`);`
-  * `putch (`_ch_`);`
-  * `textmode (`_mode_`);` &nbsp; // [BC](#legend)
-    - Does not support _mode_ = `LASTMODE` yet.
-  * `vcprintf (`\*_fmt_`,` _ap_`);`
-  * `vcscanf (`\*_fmt_`,` _ap_`);`
-  * `inp (`_port_`);` \
-    `_inp (`_port_`);` \
-    `inportb (`_port_`);` &nbsp; // [BC](#legend)
-  * `inpw (`_port_`);` \
-    `_inpw (`_port_`);` \
-    `inportw (`_port_`);` &nbsp; // [BC](#legend)
-  * `outp (`_port_`,` _value_`);` \
-    `_outp (`_port_`,` _value_`);` \
-    `outportb (`_port_`,` _value_`);` &nbsp; // [BC](#legend)
-  * `outpw (`_port_`,` _value_`);` \
-    `_outpw (`_port_`,` _value_`);` \
-    `outportw (`_port_`,` _value_`);` &nbsp; // [BC](#legend)
-
-### `<dos.h>`
-
-`<dos.h>` also includes `<i86.h>`.
-
-  * `bdos (`_dos-func_`,` _dx_`,` _al_`);`
-  * `bdosptr (`_dos-func_`,` \*_dx_`,` _al_`);`
-  * `intdos (`\*_in-regs_`,` \*_out-regs_`);`
-  * `intdosx (`\*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
-  * `_dos_allocmem (`_size_`,` \*_segment_`);` &nbsp; // [+](#legend)
-    - Also works under DPMI; yields a starting protected-mode selector.
-  * `_dos_close (`_handle_`);`
-  * `_dos_freemem (`_segment_`);` &nbsp; // [+](#legend)
-    - Also works under DPMI; accepts a starting protected-mode selector.
-  * `_dos_getdrive (`\*_drive_`);`
-  * `_dos_getfileattr (`\*_path_`,` \*_attributes_`);`
-  * `_dos_setfileattr (`\*_path_`,` _attributes_`);`
-  * `_getdrive ();`
-
-### `<dpmi.h>`
-
-  * `__DPMI_hosted ();` &nbsp; // [IW](#legend)
-    - Returns 1 if running in protected mode under DPMI, -1 otherwise.
-    - If the underlying C library has an implementation of this function, `libi86` will use that instead.
-
-Code should only use the following functions if it knows it is running in DPMI mode.
-
-  * `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);` &nbsp; // [IW](#legend)
-    - Returns 0 on success, -1 on error.
-  * `_DPMISegmentToDescriptor (`_seg-para_`);` &nbsp; // [IW](#legend)
-    - On success, returns a protected-mode selector value for the real-mode segment _seg-para_`:0`.  On failure, returns a negative value.
-  * `_DPMISimulateRealModeInterrupt (`_inter-no_`,` _reset_`,` _words-to-copy_`,` \*_call-struct_`);` &nbsp; // [IW](#legend)
-    - Returns 0 on success, -1 on error.
-    - _words-to-copy_ should probably be 0.
-
-### `<graph.h>`
-
-Unlike in Open Watcom, where all functions in `<graph.h>` are far, in `libi86` the far-ness of functions follows the chosen memory model.  Thus, in a small-memory-model program, `_setvideomode` is a near function.  However, pointers to data are still far.
-
-  * `_gettextposition ();`
-  * `_getvideomode ();` &nbsp; // [X](#legend)
-  * `_scrolltextwindow (`_rows_`);`
-  * `_setvideomode (`_mode_`);`
-    - In the case of SuperVGA screen modes, only works with VESA interface.
-
-### `<i86.h>`
-
-  * `delay (`_ms_`);`
-  * `nosound ();`
-  * `sound (`_freq_`);`
-  * `segread (`\*_seg-regs_`);`
-  * `_disable ();`
-  * `_enable ();`
-  * `int86 (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);`
-  * `int86x (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
-  * `intr (`_inter-no_`,` \*_regs_`);`
-  * `_int86f (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);` &nbsp; // [X](#legend)
-    - Loads `SZAPC` flags before issuing interrupt.
-  * `_int86xf (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);` &nbsp; // [X](#legend)
-    - Loads `SZAPC` flags before issuing interrupt.
-  * `_intrf (`_inter-no_`,` \*_regs_`);` &nbsp; // [X](#legend)
-    - Loads `SZAPC` flags before issuing interrupt.
-  * `FP_OFF (`\*_ptr_`);` \
-    `_FP_OFF (`\*_ptr_`);`
-    - Macro.
-  * `FP_SEG (`\*_ptr_`);` \
-    `_FP_SEG (`\*_ptr_`);`
-    - Macro.
-  * `MK_FP (`_seg_`,` _off_`);` \
-    `_MK_FP (`_seg_`,` _off_`);`
-    - Macro.
-
-### `<libi86/string.h>`
-
-  * \*`_fmemcpy (`\*_dest_`,` \*_src_`,` _n_`);`
-  * \*`_fmemmove (`\*_dest_`,` \*_src_`,` _n_`);`
+| Compat.    | Function | Notes
+| ---------: | :------- | :----
+|     | **`▗▚▚▚▚ <bios.h> ▞▞▞▞▖`**
+|   + | `_bios_disk (`_service_`,` \*_diskinfo_`);` | As an extension, also accepts _service_ = `_DISK_DRIVEPARAMS`, which returns drive parameters in \*_diskinfo_.
+|   W | `_bios_equiplist ();`
+|   B | `biosequip ();`
+|   W | `_bios_memsize ();`
+|   B | `biosmemory ();`
+|   W | `_bios_keybrd (`_service_`);`
+|   B | `bioskey (`_service_`);`
+|   W | `_bios_timeofday (`_service_`,` \*_timeval_`);`
+|   X | `_bios_joystick (`_service_`,` \*_joyinfo_`);` | Reads joystick status via `int 0x15` function `0x84`.
+|     | **`▗▚▚▚▚ <conio.h> ▞▞▞▞▖`**
+|   W | \*`cgets (`\*_buf_`);`
+|   W | `cprintf (`\*_fmt_`, ...);`
+|   W | `cputs (`\*_buf_`);`
+|   W | `cscanf (`\*_fmt_`, ...);`
+|   W | `_getch ();`
+|   W | `_getche ();`
+|   W | `_kbhit ();`
+|   W | `_ungetch (`_ch_`);`
+|   W | `putch (`_ch_`);`
+|   B | `textmode (`_mode_`);` | Does not support _mode_ = `LASTMODE` yet.
+|   W | `vcprintf (`\*_fmt_`,` _ap_`);`
+|   W | `vcscanf (`\*_fmt_`,` _ap_`);`
+|   W | `inp (`_port_`);`
+|   W | `_inp (`_port_`);`
+|   B | `inportb (`_port_`);`
+|   W | `inpw (`_port_`);`
+|   W | `_inpw (`_port_`);`
+|   B | `inportw (`_port_`);`
+|   W | `outp (`_port_`,` _value_`);`
+|   W | `_outp (`_port_`,` _value_`);`
+|   B | `outportb (`_port_`,` _value_`);`
+|   W | `outpw (`_port_`,` _value_`);`
+|   W | `_outpw (`_port_`,` _value_`);`
+|   B | `outportw (`_port_`,` _value_`);`
+|     | **`▗▚▚▚▚ <dos.h> ▞▞▞▞▖`** | **`<dos.h>` also includes `<i86.h>`, described below.**
+|   W | `bdos (`_dos-func_`,` _dx_`,` _al_`);`
+|   W | `bdosptr (`_dos-func_`,` \*_dx_`,` _al_`);`
+|   W | `intdos (`\*_in-regs_`,` \*_out-regs_`);`
+|   W | `intdosx (`\*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
+|   + | `_dos_allocmem (`_size_`,` \*_segment_`);` | Also works under DPMI; yields a starting protected-mode selector.
+|   W | `_dos_close (`_handle_`);`
+|   + | `_dos_freemem (`_segment_`);` |  Also works under DPMI; accepts a starting protected-mode selector.
+|   W | `_dos_getdrive (`\*_drive_`);`
+|   W | `_dos_getfileattr (`\*_path_`,` \*_attributes_`);`
+|   W | `_dos_setfileattr (`\*_path_`,` _attributes_`);`
+|   W | `_getdrive ();`
+|     | **`▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖`** | **Except for `__DPMI_hosted ()`, functions in `<dpmi.h>` should only be called when the caller knows it is running in DPMI mode.**
+|  IW | `__DPMI_hosted ();` | Returns 1 if running in protected mode under DPMI, -1 otherwise.  If the underlying C library has an implementation of this function, `libi86` will use that instead.
+|  IW | `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);` | `int 0x31` function `0x000b`.  Returns 0 on success, -1 on error.
+|  IW | `_DPMISegmentToDescriptor (`_seg-para_`);` | `int 0x31` function `0x0002`.  On success, returns a protected-mode selector value for the real-mode segment _seg-para_`:0`.  On failure, returns a negative value.
+|  IW | `_DPMISimulateRealModeInterrupt (`_inter-no_`,` _reset_`,` _words-to-copy_`,` \*_call-struct_`);` | `int 0x31` function `0x0300`.  Returns 0 on success, -1 on error.  _words-to-copy_ should probably be 0.
+|     | **`▗▚▚▚▚ <graph.h> ▞▞▞▞▖`** | **Unlike in Open Watcom, where all functions in `<graph.h>` are far, in `libi86` the far-ness of functions follows the chosen memory model.  Thus, in a small-memory-model program, `_setvideomode` is a near function.  However, pointers to data are still far.**
+|   W | `_gettextposition ();`
+|   X | `_getvideomode ();`
+|   W | `_scrolltextwindow (`_rows_`);`
+|   W | `_setvideomode (`_mode_`);` | In the case of SuperVGA screen modes, only works with VESA interface.
+|     | **`▗▚▚▚▚ <i86.h> ▞▞▞▞▖`**
+|   W | `delay (`_ms_`);`
+|   W | `nosound ();`
+|   W | `sound (`_freq_`);`
+|   W | `segread (`\*_seg-regs_`);`
+|   W | `_disable ();`
+|   W | `_enable ();`
+|   W | `int86 (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);`
+|   W | `int86x (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
+|   W | `intr (`_inter-no_`,` \*_regs_`);`
+|   X | `_int86f (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);` | Loads `SZAPC` flags before issuing interrupt.
+|   X | `_int86xf (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);` | Loads `SZAPC` flags before issuing interrupt.
+|   X | `_intrf (`_inter-no_`,` \*_regs_`);` | Loads `SZAPC` flags before issuing interrupt.
+|   W | `FP_OFF (`\*_ptr_`);` | Macro.
+|   W | `_FP_OFF (`\*_ptr_`);` | Macro.
+|   W | `FP_SEG (`\*_ptr_`);` | Macro.
+|   W | `_FP_SEG (`\*_ptr_`);` | Macro.
+|   W | `MK_FP (`_seg_`,` _off_`);` | Macro.
+|   W | `_MK_FP (`_seg_`,` _off_`);` | Macro.
+|     | **`▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖`**
+|   W | \*`_fmemcpy (`\*_dest_`,` \*_src_`,` _n_`);`
+|   W | \*`_fmemmove (`\*_dest_`,` \*_src_`,` _n_`);`
 
 ## Implemented variables
 
-### `<libi86/stdlib.h>`
-
-  * `_osmajor`
-  * `_osminor`
-  * `_psp`
+| Compat.    | Variable | Notes
+| ---------: | :------- | :----
+|     | **`▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖`**
+|   W | `_osmajor`
+|   W | `_osminor`
+|   W | `_psp`
