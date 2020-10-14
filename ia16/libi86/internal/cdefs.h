@@ -63,6 +63,23 @@ __libi86_fpv, __libi86_fpcv, __libi86_fpvv, __libi86_fpcvv, __libi86_fpcc;
 #define _LIBI86_ASM_NAME_3(prefix, c_name) #prefix c_name
 
 /*
+ * If _BORLANDC_SOURCE is in effect, declare function prototypes that
+ * redirect calls to NAME to call __libi86_bc_NAME instead.  Otherwise,
+ * declare normal function prototypes.
+ */
+#ifdef _BORLANDC_SOURCE
+# define _LIBI86_BC_REDIRECT(name, proto) \
+	 name proto __asm (_LIBI86_BC_ASM_NAME (name))
+# define _LIBI86_BC_ASM_NAME(c_name) \
+	 _LIBI86_BC_ASM_NAME_2(__USER_LABEL_PREFIX__, #c_name)
+# define _LIBI86_BC_ASM_NAME_2(prefix, c_name) \
+	 _LIBI86_BC_ASM_NAME_3(prefix, c_name)
+# define _LIBI86_BC_ASM_NAME_3(prefix, c_name) #prefix "__libi86_bc_" c_name
+#else
+# define _LIBI86_BC_REDIRECT(name, proto) name proto
+#endif
+
+/*
  * Add an attribute to make a function declaration an alias for the function
  * ALIAS_TO.
  */

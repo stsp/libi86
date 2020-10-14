@@ -86,6 +86,7 @@ struct rccoord
 extern struct rccoord _gettextposition (void);
 extern short _getvideomode (void);
 extern void _outmem (__libi86_fpcc __text, short __length);
+extern void _outtext (__libi86_fpcc __text);
 extern void _scrolltextwindow (short __rows);
 
 /* Used by the inline version of _setvideomode (.) below.  */

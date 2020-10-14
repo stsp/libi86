@@ -65,7 +65,8 @@ To list all the test cases and their test numbers:
 |   W | Behaves like the corresponding function in Open Watcom.
 |   + | Behaves like the corresponding function in Open Watcom, but with some extended behaviours.
 |   B | From Borland Turbo C++ — enable with `_BORLANDC_SOURCE`.
-|  IW | from internal interfaces in Open Watcom's library code.
+| W/B | By default, behaves as in Open Watcom; if `_BORLANDC_SOURCE` is defined, behaves as in Borland C++.
+|  IW | From internal interfaces in Open Watcom's library code.
 |   X | `libi86`-specific extension; not in Open Watcom or Borland C++.
 
 ## Implemented functions
@@ -83,19 +84,23 @@ To list all the test cases and their test numbers:
 |   W | `_bios_timeofday (`_service_`,` \*_timeval_`);`
 |   X | `_bios_joystick (`_service_`,` \*_joyinfo_`);` | Reads joystick status via `int 0x15` function `0x84`.
 |     |
-|     | **`▗▚▚▚▚ <conio.h> ▞▞▞▞▖`**
-|   W | \*`cgets (`\*_buf_`);`
-|   W | `cprintf (`\*_fmt_`, ...);`
-|   W | `cputs (`\*_buf_`);`
-|   W | `cscanf (`\*_fmt_`, ...);`
+|     | **`▗▚▚▚▚ <conio.h> ▞▞▞▞▖`** | **If `_BORLANDC_SOURCE` is defined, `<conio.h>` switches to an alternate implementation of the console output routines which is based on `<graph.h>` facilities.**
+| W/B | \*`cgets (`\*_buf_`);`
+| W/B | `cprintf (`\*_fmt_`, ...);`
+| W/B | `cputs (`\*_buf_`);`
+| W/B | `cscanf (`\*_fmt_`, ...);`
+|   W | `getch ();`
 |   W | `_getch ();`
+| W/B | `getche ();`
 |   W | `_getche ();`
+|   W | `kbhit ();`
 |   W | `_kbhit ();`
+|   W | `ungetch (`_ch_`);`
 |   W | `_ungetch (`_ch_`);`
-|   W | `putch (`_ch_`);`
+| W/B | `putch (`_ch_`);`
 |   B | `textmode (`_mode_`);` | Does not support _mode_ = `LASTMODE` yet.
-|   W | `vcprintf (`\*_fmt_`,` _ap_`);`
-|   W | `vcscanf (`\*_fmt_`,` _ap_`);`
+| W/B | `vcprintf (`\*_fmt_`,` _ap_`);`
+| W/B | `vcscanf (`\*_fmt_`,` _ap_`);`
 |   W | `inp (`_port_`);`
 |   W | `_inp (`_port_`);`
 |   B | `inportb (`_port_`);`
@@ -132,6 +137,7 @@ To list all the test cases and their test numbers:
 |   W | `_gettextposition ();`
 |   X | `_getvideomode ();`
 |   W | `_outmem (`\*_text_`,` _length_`);`
+|   W | `_outtext (`\*_text_`);`
 |   W | `_scrolltextwindow (`_rows_`);`
 |   W | `_setvideomode (`_mode_`);` | In the case of SuperVGA screen modes, only works with VESA interface.
 |     |
@@ -158,6 +164,7 @@ To list all the test cases and their test numbers:
 |     | **`▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖`**
 |   W | \*`_fmemcpy (`\*_dest_`,` \*_src_`,` _n_`);`
 |   W | \*`_fmemmove (`\*_dest_`,` \*_src_`,` _n_`);`
+|   W | `_fstrlen (`\*_s_`);`
 
 ## Implemented variables
 

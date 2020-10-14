@@ -16,10 +16,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
 #include <inttypes.h>
-#include "graph.h"
 #include "libi86/internal/graph.h"
 
 void
@@ -27,6 +25,7 @@ _scrolltextwindow (short rows)
 {
   unsigned char x1z, x2z, y1z, y2z, func, attr;
   unsigned xx1, xx2, xx3, xx4;
+  short hm1;
 
   if (! rows)
     return;
@@ -36,16 +35,17 @@ _scrolltextwindow (short rows)
   x2z = __libi86_vid_state.x2z;
   y2z = __libi86_vid_state.y2z;
 
+  hm1 = y2z - y1z;  /* window height minus 1 */
   if (rows > 0)
     {
       func = 0x06;
-      if (rows > (short) 0xff)
+      if (rows > hm1)
 	rows = 0;
     }
   else
     {
       func = 0x07;
-      if (rows < (short) -0xff)
+      if (rows < -hm1)
 	rows = 0;
       else
 	rows = -rows;

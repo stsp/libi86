@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2020 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -16,36 +16,47 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+#define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
 #include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "libi86/internal/conio.h"
+#include "conio.h"
+#include "libi86/internal/graph.h"
 #include "libi86/internal/acconfig.h"
 
-#ifdef __MSDOS__
 int
 vcprintf (const char *fmt, va_list ap)
 {
+  va_list ap_2;
+  int res;
+
   /*
-   * Do _not_ use vdprintf (...) --- it does not convert LF to CRLF as needed.
-   *	-- tkchia 20200712
+   * Find out how many characters we will be writing, so that we can allocate
+   * a large enough buffer.
    */
-  static FILE *__libi86_con_out_fp = NULL;
+  va_copy (ap_2, ap);
+  res = snprintf (NULL, (size_t) 0, fmt, ap_2);
+  va_end (ap_2);
 
-  if (! __libi86_con_out_fp)
-    {
-      __libi86_con_out_fp = fdopen (__libi86_con_out_fd, "at");
-      if (! __libi86_con_out_fp)
-	return -1;
+  if (res < 0)
+    return res;
 
-      setbuf (__libi86_con_out_fp, NULL);
-    }
+  /*
+   * Do an snprintf (...) into a temporary buffer, then write everything out
+   * from there.
+   */
+  {
+    size_t count = (size_t) res + 1;
+    char buf[count];
 
-  return vfprintf (__libi86_con_out_fp, fmt, ap);
+    res = snprintf (buf, count, fmt, ap);
+
+    if (res > 0)
+      __libi86_vid_bc_outmem_do (buf, (size_t) res);
+  }
+
+  return res;
 }
-#else
-# warning "unknown host OS"
-#endif

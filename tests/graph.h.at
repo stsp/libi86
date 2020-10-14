@@ -115,9 +115,22 @@ main (void)
 {
   _outmem ("hello\a", 6);
   _scrolltextwindow (_GSCROLLDOWN);
-  _outmem ("world \b!", 8);
+  _outmem ("world \b!\n", 9);
   return 0;
-}]],[[      world ~010!
+}]],[[      world ~010!~012
 hello~007
+]])
+AT_CLEANUP
+
+AT_SETUP([[_outtext]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#include <graph.h>
+int
+main (void)
+{
+  _outtext ("hello\a\nWorld?\b!\rw");
+  return 0;
+}]],[[hello~007
+world?~010!
 ]])
 AT_CLEANUP

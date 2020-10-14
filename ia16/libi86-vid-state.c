@@ -25,7 +25,6 @@
 #include <stdint.h>
 #include "dos.h"
 #include "i86.h"
-#include "graph.h"
 #include "libi86/internal/graph.h"
 
 struct __libi86_vid_state_t __libi86_vid_state;

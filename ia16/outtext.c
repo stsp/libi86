@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018--2020 TK Chia
+ * Copyright (c) 2020 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -17,27 +17,12 @@
  */
 
 #define _LIBI86_COMPILING_
-#include <stdio.h>
-#include "conio.h"
+#include <inttypes.h>
+#include "libi86/string.h"
+#include "libi86/internal/graph.h"
 
-#ifdef __MSDOS__
-int
-# ifdef _BORLANDC_SOURCE
-getche (void)
-# else
-_getche (void)
-# endif
+void
+_outtext (const char __far *text)
 {
-  int ch = _getch ();
-  if (ch != EOF)
-    return putch (ch);
-  return ch;
+  __libi86_vid_outmem_do (text, _fstrlen (text), true, false);
 }
-
-# ifndef _BORLANDC_SOURCE
-_LIBI86_WEAK_ALIAS (_getche) int
-getche (void);
-# endif
-#else
-# warning "unknown host OS"
-#endif

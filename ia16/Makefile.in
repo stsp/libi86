@@ -98,6 +98,7 @@ OBJS		= bdos.o \
 		  enable.o \
 		  fmemcpy.o \
 		  fmemmove.o \
+		  fstrlen.o \
 		  getch.o \
 		  getche.o \
 		  getdrive.o \
@@ -116,6 +117,7 @@ OBJS		= bdos.o \
 		  outmem.o \
 		  outp.o \
 		  outpw.o \
+		  outtext.o \
 		  psp.o \
 		  putch.o \
 		  scrolltextwindow.o \
@@ -126,6 +128,14 @@ OBJS		= bdos.o \
 		  ungetch.o \
 		  vcprintf.o \
 		  vcscanf.o \
+		  libi86-bc-cgets.o \
+		  libi86-bc-cprintf.o \
+		  libi86-bc-cputs.o \
+		  libi86-bc-cscanf.o \
+		  libi86-bc-getche.o \
+		  libi86-bc-putch.o \
+		  libi86-bc-vcprintf.o \
+		  libi86-bc-vcscanf.o \
 		  libi86-bios-ds.o \
 		  libi86-conio-init.o \
 		  libi86-fmemmove-backward.o \
@@ -140,6 +150,7 @@ OBJS		= bdos.o \
 		  libi86-setvideomode-svga.o \
 		  libi86-sound-by-divisor.o \
 		  libi86-ungetch-buf.o \
+		  libi86-vid-bc-outmem-do.o \
 		  libi86-vid-state.o \
 		  $(foreach da,0 1 2 3, \
 		    $(foreach db,0 1 2 3 4 5 6 7, \
@@ -222,10 +233,19 @@ $(BSP): $(OBJS)
 	$(AR) rcs $@ $+
 
 %.o: %.c $(HEADERS)
+	$(CC) $(CPPFLAGS) -U_BORLANDC_SOURCE $(CFLAGS) $(MULTILIB) -c -o $@ $<
+
+# We need this rule to override the next rule in case we do have a separate
+# libi86-bc-*.c source file.
+libi86-bc-%.o: libi86-bc-%.c $(HEADERS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(MULTILIB) -c -o $@ $<
 
+libi86-bc-%.o: %.c $(HEADERS)
+	$(CC) $(CPPFLAGS) -D_BORLANDC_SOURCE $(CFLAGS) $(MULTILIB) -c -o $@ $<
+
 %.o: %.S $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(ASFLAGS) $(MULTILIB) -c -o $@ $<
+	$(CC) $(CPPFLAGS) -U_BORLANDC_SOURCE $(CFLAGS) $(ASFLAGS) $(MULTILIB) \
+	  -c -o $@ $<
 
 libi86-intr-call-%.o: libi86-intr-call.S $(HEADERS)
 	$(CC) $(CPPFLAGS) -Dintr_no=$* $(CFLAGS) $(ASFLAGS) $(MULTILIB) -c \

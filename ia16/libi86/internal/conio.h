@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2020 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -19,9 +19,14 @@
 #ifndef _LIBI86_LIBI86_INTERNAL_CONIO_H_
 #define _LIBI86_LIBI86_INTERNAL_CONIO_H_
 
+#ifndef _LIBI86_COMPILING_
+# error "<libi86/internal/conio.h> should only be used when compiling libi86!"
+#endif
+
 #include <stdint.h>
-#include "libi86/internal/cdefs.h"
-#include "i86.h"
+#include <libi86/internal/cdefs.h>
+#include <i86.h>
+#include <conio.h>
 
 _LIBI86_BEGIN_EXTERN_C
 

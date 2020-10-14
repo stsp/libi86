@@ -27,6 +27,7 @@ __libi86_fpv _fmemcpy (__libi86_fpv __dest, __libi86_fpcv __src,
 		       __SIZE_TYPE__ __n);
 __libi86_fpv _fmemmove (__libi86_fpv __dest, __libi86_fpcv __src,
 			__SIZE_TYPE__ __n);
+__SIZE_TYPE__ _fstrlen (__libi86_fpcc __s);
 
 _LIBI86_END_EXTERN_C
 

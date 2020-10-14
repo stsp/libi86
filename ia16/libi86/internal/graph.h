@@ -19,9 +19,16 @@
 #ifndef _LIBI86_LIBI86_INTERNAL_GRAPH_H_
 #define _LIBI86_LIBI86_INTERNAL_GRAPH_H_
 
+#ifndef _LIBI86_COMPILING_
+# error "<libi86/internal/graph.h> should only be used when compiling libi86!"
+#endif
+
+#include <stdbool.h>
 #include <stdint.h>
-#include "libi86/internal/cdefs.h"
-#include "i86.h"
+#include <stdlib.h>
+#include <libi86/internal/cdefs.h>
+#include <graph.h>
+#include <i86.h>
 
 _LIBI86_BEGIN_EXTERN_C
 
@@ -59,7 +66,7 @@ struct __libi86_vid_state_t
  */
 struct __libi86_vid_rccoord_t
 {
-  unsigned char col, row;
+  unsigned char x, y;
 };
 
 extern struct __libi86_vid_state_t __libi86_vid_state;
@@ -88,23 +95,133 @@ __libi86_vid_get_rccoord (unsigned char pg_no)
  */
 static inline void
 __libi86_vid_set_rccoord_only (unsigned char pg_no,
-			       struct __libi86_vid_rccoord_t rc)
+			       struct __libi86_vid_rccoord_t pxy)
 {
   * (volatile struct __libi86_vid_rccoord_t __far *)
-    MK_FP (__libi86_bios_ds, 0x0050U + 2 * pg_no) = rc;
+    MK_FP (__libi86_bios_ds, 0x0050U + 2 * pg_no) = pxy;
 }
 
 /* Really set the cursor position for the display page PG_NO. */
 static inline void
-__libi86_vid_go_rccoord (unsigned char pg_no, struct __libi86_vid_rccoord_t rc)
+__libi86_vid_go_rccoord (unsigned char pg_no,
+			 struct __libi86_vid_rccoord_t pxy)
 {
   unsigned xx1, xx2, xx3;
   __asm volatile ("int {$}0x10" : "=a" (xx1), "=b" (xx2), "=d" (xx3)
 				: "Rah" ((uint8_t) 0x02),
 				  "1" ((uint16_t) pg_no << 8),
-				  "2" (rc)
+				  "2" (pxy)
 				: "cc", "cx", "memory");
 }
+
+/*
+ * Update the given cursor position to scroll to the next line in the text
+ * window.  Scroll the window area up if necessary.
+ */
+static inline struct __libi86_vid_rccoord_t
+__libi86_vid_next_line (struct __libi86_vid_rccoord_t pxy)
+{
+  if (pxy.y < __libi86_vid_state.y2z)
+    ++pxy.y;
+  else
+    _scrolltextwindow (_GSCROLLUP);
+  pxy.x = __libi86_vid_state.x1z;
+  return pxy;
+}
+
+/*
+ * Common code for implementing _outmem (, ), _outtext (.), & Borland-like
+ * putch (.), cputs (.), etc.
+ */
+static inline void
+__libi86_vid_outmem_do (const char __far *text, size_t length,
+			bool handle_cr_lf, bool handle_bel_bs)
+{
+  unsigned char pg_no;
+  unsigned char x1z, x2z, y1z, y2z, attr;
+  struct __libi86_vid_rccoord_t pxy;
+  struct rccoord coord;
+
+  if (! length)
+    return;
+
+  /* Get our current text window & output text colour attribute. */
+  x1z = __libi86_vid_state.x1z;
+  y1z = __libi86_vid_state.y1z;
+  x2z = __libi86_vid_state.x2z;
+  y2z = __libi86_vid_state.y2z;
+  attr = __libi86_vid_state.attribute;
+
+  /* Get the current cursor position according to the BIOS. */
+  pg_no = __libi86_vid_get_curr_pg ();
+  pxy = __libi86_vid_get_rccoord (pg_no);
+
+  /* If the cursor is outside the window, mentally move it inside. */
+  if (pxy.x < x1z || pxy.x > x2z || pxy.y < y1z || pxy.y > y2z)
+    {
+      pxy.x = x1z;
+      pxy.y = y1z;
+    }
+
+  /* Display the characters.  Scroll the window as necessary. */
+  while (length-- != 0)
+    {
+      unsigned xx1, xx2, xx3;
+      char ch = *text++;
+
+      if (handle_cr_lf)
+	{
+	  switch (ch)
+	    {
+	    case '\r':
+	      pxy.x = x1z;
+	      continue;
+	    case '\n':
+	      pxy = __libi86_vid_next_line (pxy);
+	      continue;
+	    default:
+	      ;
+	    }
+	}
+
+      if (handle_bel_bs)
+	{
+	  switch (ch)
+	    {
+	    case '\a':
+	      __asm volatile ("pushw %%bp; int $0x10; popw %%bp"
+			      : "=a" (xx1), "=b" (xx2)
+			      : "0" (0x0e00U | '\a'),
+				"1" ((uint16_t) pg_no << 8 | attr)
+			      : "cc", "cx", "dx", "memory");
+	      continue;
+	    case '\b':
+	      if (pxy.x > x1z)
+		--pxy.x;
+		continue;
+	    default:
+	      ;
+	    }
+	}
+
+      __libi86_vid_set_rccoord_only (pg_no, pxy);
+
+      __asm volatile ("int $0x10" : "=a" (xx1), "=b" (xx2), "=c" (xx3)
+				  : "Rah" ((unsigned char) 0x09), "Ral" (ch),
+				    "1" ((uint16_t) pg_no << 8 | attr),
+				    "2" (1U)
+				  : "cc", "dx", "memory");
+      if (pxy.x >= x2z)
+	pxy = __libi86_vid_next_line (pxy);
+      else
+	++pxy.x;
+    }
+
+  /* Move the cursor to where it should now be. */
+  __libi86_vid_go_rccoord (pg_no, pxy);
+}
+
+extern void __libi86_vid_bc_outmem_do (const char *, size_t);
 
 _LIBI86_END_EXTERN_C
 

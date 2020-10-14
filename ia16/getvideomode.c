@@ -18,7 +18,6 @@
 
 #define _LIBI86_COMPILING_
 #include <inttypes.h>
-#include "graph.h"
 #include "libi86/internal/graph.h"
 
 short

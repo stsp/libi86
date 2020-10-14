@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018--2020 TK Chia
+ * Copyright (c) 2020 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -16,28 +16,20 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * Internal routine used by Borland-like cputs (.), putch (.), vcprintf (...),
+ * etc.
+ */
+
+#define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
-#include <stdio.h>
-#include "conio.h"
+#include <stdlib.h>
+#include <string.h>
+#include "libi86/string.h"
+#include "libi86/internal/graph.h"
 
-#ifdef __MSDOS__
-int
-# ifdef _BORLANDC_SOURCE
-getche (void)
-# else
-_getche (void)
-# endif
+void
+__libi86_vid_bc_outmem_do (const char *text, size_t length)
 {
-  int ch = _getch ();
-  if (ch != EOF)
-    return putch (ch);
-  return ch;
+  __libi86_vid_outmem_do (text, length, true, true);
 }
-
-# ifndef _BORLANDC_SOURCE
-_LIBI86_WEAK_ALIAS (_getche) int
-getche (void);
-# endif
-#else
-# warning "unknown host OS"
-#endif

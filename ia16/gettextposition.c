@@ -16,10 +16,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
 #include <inttypes.h>
-#include "graph.h"
 #include "libi86/internal/graph.h"
 
 struct rccoord
@@ -36,14 +34,14 @@ _gettextposition (void)
   x2z = __libi86_vid_state.x2z;
   y2z = __libi86_vid_state.y2z;
 
-  if (pxy.col < x1z || pxy.col > x2z || pxy.row < y1z || pxy.row > y2z)
+  if (pxy.x < x1z || pxy.x > x2z || pxy.y < y1z || pxy.y > y2z)
     {
       coord.row = coord.col = 1;
     }
   else
     {
-      coord.row = (short) pxy.row - y1z + 1;
-      coord.col = (short) pxy.col - x1z + 1;
+      coord.row = (short) pxy.y - y1z + 1;
+      coord.col = (short) pxy.x - x1z + 1;
     }
 
   return coord;
