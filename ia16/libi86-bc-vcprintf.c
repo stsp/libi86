@@ -38,7 +38,7 @@ vcprintf (const char *fmt, va_list ap)
    * a large enough buffer.
    */
   va_copy (ap_2, ap);
-  res = snprintf (NULL, (size_t) 0, fmt, ap_2);
+  res = vsnprintf (NULL, (size_t) 0, fmt, ap_2);
   va_end (ap_2);
 
   if (res < 0)
@@ -52,7 +52,7 @@ vcprintf (const char *fmt, va_list ap)
     size_t count = (size_t) res + 1;
     char buf[count];
 
-    res = snprintf (buf, count, fmt, ap);
+    res = vsnprintf (buf, count, fmt, ap);
 
     if (res > 0)
       __libi86_vid_bc_outmem_do (buf, (size_t) res);

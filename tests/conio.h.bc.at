@@ -70,6 +70,22 @@ main (void)
 ]],[])
 AT_CLEANUP
 
+AT_SETUP([[cprintf, cputs (Borland)]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#define _BORLANDC_SOURCE
+#include <conio.h>
+int
+main (int argc, char **argv)
+{
+  cputs ("hello ");
+  cprintf ("%s%c...\n\n...with argc == %#x\n", "world", (int) '!', argc);
+  return 0;
+}]],[[hello world!...
+
+...with argc == 0x1
+]])
+AT_CLEANUP
+
 AT_SETUP([[textmode]])
 dnl FIXME...
 AT_SKIP_IF([test yes = "$DOSEMU_IS_1"])
