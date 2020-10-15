@@ -93,6 +93,7 @@ To list all the test cases and their test numbers:
 |   W | `_getch ();`
 | W/B | `getche ();`
 |   W | `_getche ();`
+|   B | `gotoxy (`_x_`,` _y_`);`
 |   W | `kbhit ();`
 |   W | `_kbhit ();`
 |   W | `ungetch (`_ch_`);`
@@ -101,6 +102,7 @@ To list all the test cases and their test numbers:
 |   B | `textmode (`_mode_`);` | Does not support _mode_ = `LASTMODE` yet.
 | W/B | `vcprintf (`\*_fmt_`,` _ap_`);`
 | W/B | `vcscanf (`\*_fmt_`,` _ap_`);`
+|   B | `window (`_left_`,` _top_`,` _right_`,` _bottom_`);`
 |   W | `inp (`_port_`);`
 |   W | `_inp (`_port_`);`
 |   B | `inportb (`_port_`);`
@@ -139,6 +141,8 @@ To list all the test cases and their test numbers:
 |   W | `_outmem (`\*_text_`,` _length_`);`
 |   W | `_outtext (`\*_text_`);`
 |   W | `_scrolltextwindow (`_rows_`);`
+|   W | `_settextposition (`_row_`,` _col_`);`
+|   W | `_settextwindow (`_row1_`,` _col1_`,` _row2_`,` _col2_`);`
 |   W | `_setvideomode (`_mode_`);` | In the case of SuperVGA screen modes, only works with VESA interface.
 |     |
 |     | **`▗▚▚▚▚ <i86.h> ▞▞▞▞▖`**

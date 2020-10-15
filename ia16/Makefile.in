@@ -104,6 +104,7 @@ OBJS		= bdos.o \
 		  getdrive.o \
 		  gettextposition.o \
 		  getvideomode.o \
+		  gotoxy.o \
 		  inp.o \
 		  inpw.o \
 		  int86.o \
@@ -122,12 +123,15 @@ OBJS		= bdos.o \
 		  putch.o \
 		  scrolltextwindow.o \
 		  segread.o \
+		  settextposition.o \
+		  settextwindow.o \
 		  setvideomode.o \
 		  sound.o \
 		  textmode.o \
 		  ungetch.o \
 		  vcprintf.o \
 		  vcscanf.o \
+		  window.o \
 		  libi86-bc-cgets.o \
 		  libi86-bc-cprintf.o \
 		  libi86-bc-cputs.o \

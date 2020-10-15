@@ -88,6 +88,9 @@ extern short _getvideomode (void);
 extern void _outmem (__libi86_fpcc __text, short __length);
 extern void _outtext (__libi86_fpcc __text);
 extern void _scrolltextwindow (short __rows);
+extern struct rccoord _settextposition (short __row, short __col);
+extern void _settextwindow (short __row1, short __col1,
+			    short __row2, short __col2);
 
 /* Used by the inline version of _setvideomode (.) below.  */
 extern short __libi86_setvideomode (short);

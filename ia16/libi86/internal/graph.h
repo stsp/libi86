@@ -135,7 +135,7 @@ __libi86_vid_next_line (struct __libi86_vid_rccoord_t pxy)
  */
 static inline void
 __libi86_vid_outmem_do (const char __far *text, size_t length,
-			bool handle_cr_lf, bool handle_bel_bs)
+			bool handle_cr_lf_p, bool handle_bel_bs_p)
 {
   unsigned char pg_no;
   unsigned char x1z, x2z, y1z, y2z, attr;
@@ -169,7 +169,7 @@ __libi86_vid_outmem_do (const char __far *text, size_t length,
       unsigned xx1, xx2, xx3;
       char ch = *text++;
 
-      if (handle_cr_lf)
+      if (handle_cr_lf_p)
 	{
 	  switch (ch)
 	    {
@@ -184,16 +184,25 @@ __libi86_vid_outmem_do (const char __far *text, size_t length,
 	    }
 	}
 
-      if (handle_bel_bs)
+      if (handle_bel_bs_p)
 	{
 	  switch (ch)
 	    {
 	    case '\a':
+	      /* Remember to move the physical cursor before beeping... */
+	      __libi86_vid_go_rccoord (pg_no, pxy);
+	      /* Beep. */
 	      __asm volatile ("pushw %%bp; int $0x10; popw %%bp"
 			      : "=a" (xx1), "=b" (xx2)
 			      : "0" (0x0e00U | '\a'),
 				"1" ((uint16_t) pg_no << 8 | attr)
 			      : "cc", "cx", "dx", "memory");
+	      /*
+	       * If the '\a' is the last character, we can just return.
+	       * Otherwise carry on.
+	       */
+	      if (! length)
+		return;
 	      continue;
 	    case '\b':
 	      if (pxy.x > x1z)

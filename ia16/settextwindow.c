@@ -16,17 +16,29 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
-#include <string.h>
-#include "conio.h"
-#include "libi86/string.h"
 #include "libi86/internal/graph.h"
 
-int
-putch (int ch)
+void
+_settextwindow (short y1, short x1, short y2, short x2)
 {
-  char ch_2 = ch;
-  __libi86_vid_bc_outmem_do (&ch_2, 1);
-  return 0;
+  short x1z, y1z, x2z, y2z;
+
+  if (x1 < 1 || y1 < 1 || x1 > x2 || y1 > y2)
+    return;
+
+  x1z = x1 - 1;
+  y1z = y1 - 1;
+  x2z = x2 - 1;
+  y2z = y2 - 1;
+
+  if (x2z > __libi86_vid_state.max_x || y2z > __libi86_vid_state.max_y)
+    return;
+
+  __libi86_vid_state.x1z = (unsigned char) x1z;
+  __libi86_vid_state.y1z = (unsigned char) y1z;
+  __libi86_vid_state.x2z = (unsigned char) x2z;
+  __libi86_vid_state.y2z = (unsigned char) y2z;
+
+  _settextposition (1, 1);
 }

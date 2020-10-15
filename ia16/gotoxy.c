@@ -18,15 +18,11 @@
 
 #define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
-#include <string.h>
 #include "conio.h"
-#include "libi86/string.h"
 #include "libi86/internal/graph.h"
 
-int
-putch (int ch)
+void
+gotoxy (int x, int y)
 {
-  char ch_2 = ch;
-  __libi86_vid_bc_outmem_do (&ch_2, 1);
-  return 0;
+  _settextposition (y, x);
 }

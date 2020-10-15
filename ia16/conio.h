@@ -99,6 +99,7 @@ _LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outportw, unsigned, unsigned,
 # endif /* _BORLANDC_SOURCE */
 #endif /* _LIBI86_COMPILING */
 
+/* These functions & constants are from Borland C++, & are not in Watcom. */
 #ifdef _BORLANDC_SOURCE
 enum text_modes
 {
@@ -114,7 +115,9 @@ enum text_modes
    */
 };
 
+extern void gotoxy (int __x, int __y);
 extern void textmode (int);
+extern void window (int __left, int __top, int __right, int __bottom);
 #endif /* _BORLANDC_SOURCE */
 
 _LIBI86_END_EXTERN_C

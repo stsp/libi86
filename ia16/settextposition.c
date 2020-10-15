@@ -16,17 +16,31 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
-#include <string.h>
-#include "conio.h"
-#include "libi86/string.h"
+#include <inttypes.h>
 #include "libi86/internal/graph.h"
 
-int
-putch (int ch)
+struct rccoord
+_settextposition (short row, short col)
 {
-  char ch_2 = ch;
-  __libi86_vid_bc_outmem_do (&ch_2, 1);
-  return 0;
+  unsigned char x1z, x2z, y1z, y2z, x, y;
+  struct rccoord coord = _gettextposition ();
+
+  x1z = __libi86_vid_state.x1z;
+  y1z = __libi86_vid_state.y1z;
+  x2z = __libi86_vid_state.x2z;
+  y2z = __libi86_vid_state.y2z;
+
+  if (row >= 1 && col >= 1)
+    {
+      --row;
+      --col;
+      if (row <= y2z - y1z && col <= x2z - x1z)
+	{
+	  struct __libi86_vid_rccoord_t npxy = { col + x1z, row + y1z };
+	  __libi86_vid_go_rccoord (__libi86_vid_get_curr_pg (), npxy);
+	}
+    }
+
+  return coord;
 }

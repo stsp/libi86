@@ -92,7 +92,6 @@ AT_SKIP_IF([test yes = "$DOSEMU_IS_1"])
 AT_LIBI86_CHECK_CONSOLE(dnl
 [[#define _BORLANDC_SOURCE
 #include <conio.h>
-#include <stdlib.h>
 int
 main (void)
 {
@@ -102,5 +101,28 @@ main (void)
   cputs ("dawg\n");
   return 0;
 }]],[[yo dawg
+]])
+AT_CLEANUP
+
+AT_SETUP([[gotoxy, putch, window (Borland)]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#define _BORLANDC_SOURCE
+#include <conio.h>
+int
+main (int argc, char **argv)
+{
+  window (2, 4, 6, 8);
+  cprintf ("hello %s%c\a...argc == %#x\t", "world", (int) '!', argc);
+  gotoxy (3, 2);
+  putch ('*');
+  return 0;
+}]],[[
+
+
+  worl
+ d!*..
+ argc
+ == 0x
+ 1~011
 ]])
 AT_CLEANUP

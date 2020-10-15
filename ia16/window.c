@@ -18,15 +18,11 @@
 
 #define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
-#include <string.h>
 #include "conio.h"
-#include "libi86/string.h"
 #include "libi86/internal/graph.h"
 
-int
-putch (int ch)
+__attribute__ ((weak)) void
+window (int left, int top, int right, int bottom)
 {
-  char ch_2 = ch;
-  __libi86_vid_bc_outmem_do (&ch_2, 1);
-  return 0;
+  _settextwindow (top, left, bottom, right);
 }
