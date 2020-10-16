@@ -104,17 +104,23 @@ main (void)
 ]])
 AT_CLEANUP
 
-AT_SETUP([[gotoxy, putch, window (Borland)]])
+AT_SETUP([[gotoxy, putch, window, wherex, wherey (Borland)]])
 AT_LIBI86_CHECK_CONSOLE(dnl
 [[#define _BORLANDC_SOURCE
 #include <conio.h>
+#include <stdlib.h>
 int
 main (int argc, char **argv)
 {
   window (2, 4, 6, 8);
+  window (11, 10, 10, 11);  /* this should do nothing */
   cprintf ("hello %s%c\a...argc == %#x\t", "world", (int) '!', argc);
+  if (wherex () != 3 || wherey () != 5)
+    abort ();
   gotoxy (3, 2);
   putch ('*');
+  if (wherex () != 4 || wherey () != 2)
+    abort ();
   return 0;
 }]],[[
 

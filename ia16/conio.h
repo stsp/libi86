@@ -117,6 +117,8 @@ enum text_modes
 
 extern void gotoxy (int __x, int __y);
 extern void textmode (int);
+extern int wherex (void);
+extern int wherey (void);
 extern void window (int __left, int __top, int __right, int __bottom);
 #endif /* _BORLANDC_SOURCE */
 

@@ -93,16 +93,20 @@ To list all the test cases and their test numbers:
 |   W | `_getch ();`
 | W/B | `getche ();`
 |   W | `_getche ();`
-|   B | `gotoxy (`_x_`,` _y_`);`
 |   W | `kbhit ();`
 |   W | `_kbhit ();`
 |   W | `ungetch (`_ch_`);`
 |   W | `_ungetch (`_ch_`);`
 | W/B | `putch (`_ch_`);`
-|   B | `textmode (`_mode_`);` | Does not support _mode_ = `LASTMODE` yet.
 | W/B | `vcprintf (`\*_fmt_`,` _ap_`);`
 | W/B | `vcscanf (`\*_fmt_`,` _ap_`);`
+|     |
+|   B | `textmode (`_mode_`);` | Does not support _mode_ = `LASTMODE` yet.
+|   B | `gotoxy (`_x_`,` _y_`);`
+|   B | `wherex ();`
+|   B | `wherey ();`
 |   B | `window (`_left_`,` _top_`,` _right_`,` _bottom_`);`
+|     |
 |   W | `inp (`_port_`);`
 |   W | `_inp (`_port_`);`
 |   B | `inportb (`_port_`);`

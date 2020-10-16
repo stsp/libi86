@@ -131,6 +131,8 @@ OBJS		= bdos.o \
 		  ungetch.o \
 		  vcprintf.o \
 		  vcscanf.o \
+		  wherex.o \
+		  wherey.o \
 		  window.o \
 		  libi86-bc-cgets.o \
 		  libi86-bc-cprintf.o \
