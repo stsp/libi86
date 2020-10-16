@@ -27,15 +27,56 @@
 #include <libi86/internal/cdefs.h>
 #include <i86.h>
 #include <conio.h>
+#ifdef __IA16_FEATURE_PROTECTED_MODE
+# include <dpmi.h>
+# include <fcntl.h>
+#endif
 
 _LIBI86_BEGIN_EXTERN_C
 
-/* Various internal variables used by <conio.h> routines. */
+/* Various internal variables & functions used by <conio.h> routines. */
+
+extern unsigned __libi86_ungetch_buf;
 
 #ifdef __MSDOS__
 extern int __libi86_con_in_fd, __libi86_con_out_fd;
-#endif
-extern unsigned __libi86_ungetch_buf;
+
+static inline int
+__libi86_con_get_dev_info_word (int fd, unsigned *pdw)
+{
+  int rv;
+  unsigned dw;
+  __asm volatile ("int $0x21; sbbw %0, %0" : "=a" (rv), "=d" (dw)
+					   : "0" (0x4400u), "b" (fd)
+					   : "cc");
+  if (rv == 0)
+    *pdw = dw;
+  return rv;
+}
+
+static inline void
+__libi86_con_set_dev_info_word (int fd, unsigned dw)
+{
+  __asm volatile ("int $0x21" : /* no outputs */
+			      : "a" (0x4401u), "b" (fd),
+				"d" ((unsigned) (unsigned char) dw)
+			      : "cc");
+}
+
+static inline int
+__libi86_con_open (const char *pathname, int flags)
+{
+  int fd;
+# ifdef __IA16_FEATURE_PROTECTED_MODE
+  if (__DPMI_hosted () == 1)
+    return open (pathname, flags ? O_WRONLY : O_RDONLY);
+# endif
+  __asm volatile ("int $0x21; jnc 0f; sbbw %0, %0; 0:"
+    : "=a" (fd)
+    : "0" (0x3d00 | (unsigned char) flags), "d" (pathname));
+  return fd;
+}
+#endif /* __MSDOS__ */
 
 _LIBI86_END_EXTERN_C
 

@@ -141,7 +141,8 @@ OBJS		= bdos.o \
 		  libi86-bc-vcprintf.o \
 		  libi86-bc-vcscanf.o \
 		  libi86-bios-ds.o \
-		  libi86-conio-init.o \
+		  libi86-con-in-fd.o \
+		  libi86-con-out-fd.o \
 		  libi86-fmemmove-backward.o \
 		  libi86-int86-do.o \
 		  libi86-int86x-do.o \
