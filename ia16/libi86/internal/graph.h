@@ -230,6 +230,25 @@ __libi86_vid_outmem_do (const char __far *text, size_t length,
   __libi86_vid_go_rccoord (pg_no, pxy);
 }
 
+/* Scroll or clear an area of text characters on the current screen page. */
+static inline void
+__libi86_vid_scroll (unsigned char sx1z, unsigned char sy1z,
+		     unsigned char sx2z, unsigned char sy2z,
+		     unsigned char rows, bool scroll_up_p)
+{
+  unsigned char func = scroll_up_p ? 0x06 : 0x07;
+  unsigned char attr
+    = __libi86_vid_state.graph_p ? 0 : __libi86_vid_state.attribute;
+  unsigned xx1, xx2, xx3, xx4;
+
+  __asm volatile ("pushw %%bp; int $0x10; popw %%bp"
+		  : "=a" (xx1), "=b" (xx2), "=c" (xx3), "=d" (xx4)
+		  : "Rah" (func), "Ral" (rows),
+		    "1" ((unsigned) attr << 8),
+		    "c" (sy1z), "Rcl" (sx1z),
+		    "Rdh" (sy2z), "Rdl" (sx2z));
+}
+
 extern void __libi86_vid_bc_outmem_do (const char *, size_t);
 
 _LIBI86_END_EXTERN_C

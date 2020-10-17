@@ -23,9 +23,9 @@
 void
 _scrolltextwindow (short rows)
 {
-  unsigned char x1z, x2z, y1z, y2z, func, attr;
-  unsigned xx1, xx2, xx3, xx4;
+  unsigned char x1z, x2z, y1z, y2z;
   short hm1;
+  bool scroll_up_p;
 
   if (! rows)
     return;
@@ -38,28 +38,18 @@ _scrolltextwindow (short rows)
   hm1 = y2z - y1z;  /* window height minus 1 */
   if (rows > 0)
     {
-      func = 0x06;
+      scroll_up_p = true;
       if (rows > hm1)
 	rows = 0;
     }
   else
     {
-      func = 0x07;
+      scroll_up_p = false;
       if (rows < -hm1)
 	rows = 0;
       else
 	rows = -rows;
     }
 
-  if (__libi86_vid_state.graph_p)
-    attr = 0;
-  else
-    attr = __libi86_vid_state.attribute;
-
-  __asm volatile ("pushw %%bp; int $0x10; popw %%bp"
-		  : "=a" (xx1), "=b" (xx2), "=c" (xx3), "=d" (xx4)
-		  : "Rah" (func), "Ral" ((unsigned char) rows),
-		    "1" ((unsigned) attr << 8),
-		    "c" (y1z), "Rcl" (x1z),
-		    "Rdh" (y2z), "Rdl" (x2z));
+  __libi86_vid_scroll (x1z, y1z, x2z, y2z, rows, scroll_up_p);
 }
