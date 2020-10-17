@@ -80,6 +80,7 @@ OBJS		= bdos.o \
 		  bios-memsize.o \
 		  bios-timeofday.o \
 		  cgets.o \
+		  clearscreen.o \
 		  cprintf.o \
 		  cputs.o \
 		  cscanf.o \

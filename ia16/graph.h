@@ -69,6 +69,10 @@
 #define _ZRES64KCOLOR	0x011e
 #define _ZRESTRUECOLOR	0x011f
 
+#define _GCLEARSCREEN	0
+#define _GVIEWPORT	1
+#define _GWINDOW	2
+
 #ifndef __ASSEMBLER__
 
 # include <libi86/internal/cdefs.h>
@@ -83,6 +87,7 @@ struct rccoord
   short row, col;
 };
 
+extern void _clearscreen (short __area);
 extern struct rccoord _gettextposition (void);
 extern short _getvideomode (void);
 extern void _outmem (__libi86_fpcc __text, short __length);
