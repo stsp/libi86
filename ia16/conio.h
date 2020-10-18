@@ -115,6 +115,7 @@ enum text_modes
    */
 };
 
+extern void clrscr (void);
 extern void gotoxy (int __x, int __y);
 extern void textmode (int);
 extern int wherex (void);

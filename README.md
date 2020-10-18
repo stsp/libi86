@@ -101,8 +101,9 @@ To list all the test cases and their test numbers:
 | W/B | `vcprintf (`\*_fmt_`,` _ap_`);`
 | W/B | `vcscanf (`\*_fmt_`,` _ap_`);`
 |     |
-|   B | `textmode (`_mode_`);` | Does not support _mode_ = `LASTMODE` yet.
+|   B | `clrscr ();`
 |   B | `gotoxy (`_x_`,` _y_`);`
+|   B | `textmode (`_mode_`);` | Does not support _mode_ = `LASTMODE` yet.
 |   B | `wherex ();`
 |   B | `wherey ();`
 |   B | `window (`_left_`,` _top_`,` _right_`,` _bottom_`);`

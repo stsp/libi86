@@ -29,17 +29,30 @@ _clearscreen (short area)
       __libi86_vid_scroll (__libi86_vid_state.x1z, __libi86_vid_state.y1z,
 			   __libi86_vid_state.x2z, __libi86_vid_state.y2z,
 			   0, true);
+      _settextposition (1, 1);
       break;
 
     case _GVIEWPORT:
-      /* Do nothing if in a text mode.  In a graphics mode, do something. */
-      if (! __libi86_vid_state.graph_p)
-	break;
-      /* fall through */
+      /*
+       * libi86 does not really support specifying a graphics viewport yet,
+       * but we can kind of fake a default viewport.
+       *
+       * Text modes have no graphics viewport at all, so in text modes,
+       * _clearscreen (_GVIEWPORT) should do nothing.  In graphics modes,
+       * though, _clearscreen (_GVIEWPORT) should clear the whole screen,
+       * but not reset the cursor position.
+       */
+      if (__libi86_vid_state.graph_p)
+	__libi86_vid_scroll (0, 0,
+			   __libi86_vid_state.max_x, __libi86_vid_state.max_y,
+			   0, true);
+      else
+	return;
 
     default:
       __libi86_vid_scroll (0, 0,
 			   __libi86_vid_state.max_x, __libi86_vid_state.max_y,
 			   0, true);
+      _settextposition (1, 1);
     }
 }

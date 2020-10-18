@@ -132,3 +132,37 @@ main (int argc, char **argv)
  1~011
 ]])
 AT_CLEANUP
+
+AT_SETUP([[clrscr]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#define _BORLANDC_SOURCE
+#include <conio.h>
+#include <stdlib.h>
+int
+main (void)
+{
+  int i;
+  cputs ("hello!\n");
+  if (wherex () != 1 || wherey () != 2)
+    abort ();
+  clrscr ();
+  if (wherex () != 1 || wherey () != 1)
+    abort ();
+  for (i = 1; i <= 5; ++i)
+    {
+      gotoxy (i, i);
+      cputs ("world");
+    }
+  window (4, 2, 5, 4);
+  clrscr ();
+  putch ('*');
+  if (wherex () != 2 || wherey () != 1)
+    abort ();
+  return 0;
+}]],[[world
+ wo* d
+  w  ld
+     rld
+    world
+]])
+AT_CLEANUP
