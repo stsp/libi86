@@ -46,8 +46,7 @@ _clearscreen (short area)
 	__libi86_vid_scroll (0, 0,
 			   __libi86_vid_state.max_x, __libi86_vid_state.max_y,
 			   0, true);
-      else
-	return;
+      return;
 
     default:
       __libi86_vid_scroll (0, 0,
