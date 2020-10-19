@@ -90,6 +90,30 @@ __libi86_vid_get_rccoord (unsigned char pg_no)
 }
 
 /*
+ * Get the BIOS's idea of the current cursor position for the display page
+ * PG_NO.  If this cursor position is outside the current text window, return
+ * instead the position for the window's top left corner.
+ */
+static inline struct __libi86_vid_rccoord_t
+__libi86_vid_get_and_adjust_rccoord (unsigned char pg_no)
+{
+  unsigned char x1z = __libi86_vid_state.x1z;
+  unsigned char y1z = __libi86_vid_state.y1z;
+  unsigned char x2z = __libi86_vid_state.x2z;
+  unsigned char y2z = __libi86_vid_state.y2z;
+
+  struct __libi86_vid_rccoord_t pxy = __libi86_vid_get_rccoord (pg_no);
+
+  if (pxy.x < x1z || pxy.x > x2z || pxy.y < y1z || pxy.y > y2z)
+    {
+      pxy.x = x1z;
+      pxy.y = y1z;
+    }
+
+  return pxy;
+}
+
+/*
  * Change the BIOS's idea of the current cursor position for the display
  * page PG_NO, without actually moving the displayed cursor.
  */
@@ -138,7 +162,7 @@ __libi86_vid_outmem_do (const char __far *text, size_t length,
 			bool handle_cr_lf_p, bool handle_bel_bs_p)
 {
   unsigned char pg_no;
-  unsigned char x1z, x2z, y1z, y2z, attr;
+  unsigned char x1z, x2z, attr;
   struct __libi86_vid_rccoord_t pxy;
   struct rccoord coord;
 
@@ -147,21 +171,15 @@ __libi86_vid_outmem_do (const char __far *text, size_t length,
 
   /* Get our current text window & output text colour attribute. */
   x1z = __libi86_vid_state.x1z;
-  y1z = __libi86_vid_state.y1z;
   x2z = __libi86_vid_state.x2z;
-  y2z = __libi86_vid_state.y2z;
   attr = __libi86_vid_state.attribute;
 
-  /* Get the current cursor position according to the BIOS. */
+  /*
+   * Get the current cursor position according to the BIOS.  If the cursor
+   * is outside the window, mentally move it inside.
+   */
   pg_no = __libi86_vid_get_curr_pg ();
-  pxy = __libi86_vid_get_rccoord (pg_no);
-
-  /* If the cursor is outside the window, mentally move it inside. */
-  if (pxy.x < x1z || pxy.x > x2z || pxy.y < y1z || pxy.y > y2z)
-    {
-      pxy.x = x1z;
-      pxy.y = y1z;
-    }
+  pxy = __libi86_vid_get_and_adjust_rccoord (pg_no);
 
   /* Display the characters.  Scroll the window as necessary. */
   while (length-- != 0)

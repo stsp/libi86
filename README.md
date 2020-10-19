@@ -101,6 +101,7 @@ To list all the test cases and their test numbers:
 | W/B | `vcprintf (`\*_fmt_`,` _ap_`);`
 | W/B | `vcscanf (`\*_fmt_`,` _ap_`);`
 |     |
+|   B | `clreol ();`
 |   B | `clrscr ();`
 |   B | `gotoxy (`_x_`,` _y_`);`
 |   B | `textmode (`_mode_`);` | Does not support _mode_ = `LASTMODE` yet.

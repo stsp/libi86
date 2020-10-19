@@ -133,6 +133,37 @@ main (int argc, char **argv)
 ]])
 AT_CLEANUP
 
+AT_SETUP([[clreol]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#define _BORLANDC_SOURCE
+#include <conio.h>
+#include <stdlib.h>
+int
+main (void)
+{
+  int i;
+  for (i = 1; i <= 10; ++i)
+    {
+      gotoxy (i, i);
+      cputs ("hello world!");
+    }
+  window (10, 5, 15, 10);
+  gotoxy (4, 2);
+  clreol ();
+  return 0;
+}]],[[hello world!
+ hello world!
+  hello world!
+   hello world!
+    hello world!
+     hello w   d!
+      hello world!
+       hello world!
+        hello world!
+         hello world!
+]])
+AT_CLEANUP
+
 AT_SETUP([[clrscr]])
 AT_LIBI86_CHECK_CONSOLE(dnl
 [[#define _BORLANDC_SOURCE
