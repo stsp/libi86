@@ -6,7 +6,7 @@ An attempt to reimplement non-standard C library facilities (e.g. `<conio.h>`) c
 
 The current aim is to be compatible enough with the [Open Watcom](https://github.com/open-watcom/open-watcom-v2/) runtime — as described in the [_Open Watcom C Library Reference_](https://github.com/open-watcom/open-watcom-v2-wikidocs/blob/master/docs/clib.pdf) — to be useful for building existing MS-DOS code.
 
-Defining the macro `_BORLANDC_SOURCE` will also enable some degree of compatibility with the [Borland Turbo C++](http://cc.embarcadero.com/Item/25636) compiler's C library.
+Defining the macro `_BORLANDC_SOURCE` will also enable some degree of compatibility with the [Borland Turbo C++](http://cc.embarcadero.com/Item/25636) compiler's C library, which is described in the [_Borland C++ 2.0 Library Reference_](https://archive.org/details/bitsavers_borlandborn2.0LibraryReference1991_17218611).
 
 ## Synopsis
 
