@@ -118,6 +118,7 @@ OBJS		= bdos.o \
 		  intr.o \
 		  kbhit.o \
 		  lowvideo.o \
+		  normvideo.o \
 		  nosound.o \
 		  osmajor-osminor.o \
 		  outmem.o \
