@@ -108,6 +108,7 @@ OBJS		= bdos.o \
 		  gettextposition.o \
 		  getvideomode.o \
 		  gotoxy.o \
+		  highvideo.o \
 		  inp.o \
 		  inpw.o \
 		  int86.o \
@@ -116,6 +117,7 @@ OBJS		= bdos.o \
 		  intdosx.o \
 		  intr.o \
 		  kbhit.o \
+		  lowvideo.o \
 		  nosound.o \
 		  osmajor-osminor.o \
 		  outmem.o \

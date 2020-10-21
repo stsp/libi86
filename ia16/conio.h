@@ -118,6 +118,8 @@ enum text_modes
 extern void clreol (void);
 extern void clrscr (void);
 extern void gotoxy (int __x, int __y);
+extern void highvideo (void);
+extern void lowvideo (void);
 extern void textmode (int);
 extern int wherex (void);
 extern int wherey (void);
