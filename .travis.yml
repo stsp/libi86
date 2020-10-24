@@ -17,14 +17,14 @@
 # Configuration file for Travis CI (https://travis-ci.org/).
 
 os: linux
-dist: bionic
+dist: focal
 language: c
 sudo: required
 addons:
   apt:
     sources:
       - sourceline: 'ppa:tkchia/build-ia16'
+      - sourceline: 'ppa:tkchia/de-rebus'
     packages:
-      - gcc-ia16-elf dos2unix autoconf
-install: make -C dosemu-on-travis-ci install
+      - gcc-ia16-elf dosemu2 dos2unix autoconf
 script: ./tests/travis-build-and-check.sh
