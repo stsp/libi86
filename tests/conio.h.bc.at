@@ -197,3 +197,24 @@ main (void)
     world
 ]])
 AT_CLEANUP
+
+AT_SETUP([[insline]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#define _BORLANDC_SOURCE
+#include <conio.h>
+#include <stdlib.h>
+int
+main (void)
+{
+  cputs ("hello ");
+  insline ();
+  if (wherex () != 7 || wherey () != 1)
+    abort ();
+  cputs ("world!");
+  if (wherex () != 13 || wherey () != 1)
+    abort ();
+  return 0;
+}]],[[      world!
+hello
+]])
+AT_CLEANUP

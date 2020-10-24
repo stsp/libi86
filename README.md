@@ -105,6 +105,7 @@ To list all the test cases and their test numbers:
 |   B | `clrscr ();`
 |   B | `gotoxy (`_x_`,` _y_`);`
 |   B | `highvideo ();`
+|   B | `insline ();`
 |   B | `lowvideo ();`
 |   B | `normvideo ();`
 |   B | `textmode (`_mode_`);` | Does not support _mode_ = `LASTMODE` yet.
