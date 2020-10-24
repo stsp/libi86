@@ -29,3 +29,9 @@ fi
 : ${CXX='@CXX@'}
 $CXX -mmsdos -mregparmcall --version -v >/dev/null 2>/dev/null \
   || CXX=false
+if "$at_arg_x_test_underlying"; then
+  CPPFLAGS=-D_LIBI86_INTERNAL_TEST_UNDERLYING
+else
+  CPPFLAGS=
+fi
+

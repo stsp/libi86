@@ -134,10 +134,16 @@ main (void)
       if (di.drive != drive)
 	abort ();
 
-#if 0
-      /* As of writing (20190608), neither DOSBox nor DOSEmu implements int
-	 $0x13 function $0x01 correctly. :-(  QEMU with SeaBIOS does get it
-	 right, though.  */
+#ifdef _LIBI86_INTERNAL_TEST_UNDERLYING
+      /*
+       * Enable this check only if we are trying to stress-test the
+       * underlying DOS implementation or emulation.
+       *
+       * dosbox version 0.74-3 and dosemu 1.x do not implement int $0x13
+       * function $0x01 correctly. :-(  QEMU with SeaBIOS does get it right,
+       * though.  Recent versions of dosemu2 also have this fixed.
+       *	-- tkchia 20201024
+       */
       if (_bios_disk (_DISK_STATUS, &di) >> 8 != status)
 	abort ();
 #endif
