@@ -33,7 +33,7 @@ __attribute__ ((regparmcall)) unsigned
 __libi86_con_mode_changed (unsigned mode)
 {
   unsigned ax, bx;
-  unsigned char max_x, max_y;
+  unsigned char max_x, max_y, attr, ch;
   uint8_t mode_ctl_reg;
 
   /* Record the mode number. */
@@ -121,6 +121,23 @@ __libi86_con_mode_changed (unsigned mode)
 
   /* Reset the colour attribute to use for text output. */
   __libi86_vid_state.attribute = 0x07;
+
+  /*
+   * Get the colour attribute at the current cursor position, for text
+   * output.  This is not really needed for Watcom <graph.h>, but normvideo
+   * () in <conio.h> + _BORLANDC_SOURCE needs it.
+   */
+  if (__libi86_vid_state.graph_p)
+    __libi86_vid_state.borland_normal_attribute = 0x07;
+  else
+    {
+      __asm volatile ("int $0x10" : "=Rah" (attr), "=Ral" (ch), "=b" (bx)
+				  : "0" ((unsigned char) 0x08),
+				    "2" ((unsigned) __libi86_vid_get_curr_pg ()
+					 << 8)
+				  : "cc", "cx", "dx");
+      __libi86_vid_state.borland_normal_attribute = attr & 0x7f;
+    }
 
   /* Read the current screen border colour, if possible.  If not, assume 0. */
   __asm volatile ("int $0x10" : "=a" (ax), "=b" (bx)

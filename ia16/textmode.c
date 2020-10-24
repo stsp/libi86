@@ -26,4 +26,5 @@ textmode (int mode)
 {
   if (_getvideomode () != mode)
     _setvideomode (mode);
+  normvideo ();
 }

@@ -23,5 +23,5 @@
 void
 normvideo (void)
 {
-  __libi86_vid_state.attribute = 0x07;
+  __libi86_vid_state.attribute = __libi86_vid_state.borland_normal_attribute;
 }
