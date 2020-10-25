@@ -22,7 +22,7 @@
 #include "libi86/internal/graph.h"
 
 void
-insline (void)
+delline (void)
 {
-  __libi86_vid_bc_insdelline (false);
+  __libi86_vid_bc_insdelline (true);
 }

@@ -87,6 +87,7 @@ OBJS		= bdos.o \
 		  cputs.o \
 		  cscanf.o \
 		  delay.o \
+		  delline.o \
 		  disable.o \
 		  dos-allocmem.o \
 		  dos-close.o \
@@ -164,6 +165,7 @@ OBJS		= bdos.o \
 		  libi86-setvideomode-svga.o \
 		  libi86-sound-by-divisor.o \
 		  libi86-ungetch-buf.o \
+		  libi86-vid-bc-insdelline.o \
 		  libi86-vid-bc-outmem-do.o \
 		  libi86-vid-state.o \
 		  $(foreach da,0 1 2 3, \

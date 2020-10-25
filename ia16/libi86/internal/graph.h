@@ -273,6 +273,7 @@ __libi86_vid_scroll (unsigned char sx1z, unsigned char sy1z,
 		    "Rdh" (sy2z), "Rdl" (sx2z));
 }
 
+extern void __libi86_vid_bc_insdelline (bool);
 extern void __libi86_vid_bc_outmem_do (const char *, size_t);
 
 _LIBI86_END_EXTERN_C

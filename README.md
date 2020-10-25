@@ -103,6 +103,7 @@ To list all the test cases and their test numbers:
 |     |
 |   B | `clreol ();`
 |   B | `clrscr ();`
+|   B | `delline ();`
 |   B | `gotoxy (`_x_`,` _y_`);`
 |   B | `highvideo ();`
 |   B | `insline ();`

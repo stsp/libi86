@@ -198,6 +198,37 @@ main (void)
 ]])
 AT_CLEANUP
 
+AT_SETUP([[delline]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#define _BORLANDC_SOURCE
+#include <conio.h>
+#include <stdlib.h>
+int
+main (void)
+{
+  int i;
+  for (i = 1; i <= 10; ++i)
+    {
+      gotoxy (i, i);
+      cprintf ("%d hello world!", i);
+    }
+  gotoxy (3, 5);
+  delline ();
+  if (wherex () != 3 || wherey () != 5)
+    abort ();
+  return 0;
+}]],[[1 hello world!
+ 2 hello world!
+  3 hello world!
+   4 hello world!
+     6 hello world!
+      7 hello world!
+       8 hello world!
+        9 hello world!
+         10 hello world!
+]])
+AT_CLEANUP
+
 AT_SETUP([[insline]])
 AT_LIBI86_CHECK_CONSOLE(dnl
 [[#define _BORLANDC_SOURCE
