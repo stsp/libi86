@@ -115,6 +115,16 @@ enum text_modes
    */
 };
 
+enum COLORS
+{
+  BLACK, BLUE, GREEN, CYAN,
+  RED, MAGENTA, BROWN, LIGHTGRAY,
+  DARKGRAY, LIGHTBLUE, LIGHTGREEN, LIGHTCYAN,
+  LIGHTRED, LIGHTMAGENTA, YELLOW, WHITE
+};
+
+#define BLINK		0x80
+
 extern void clreol (void);
 extern void clrscr (void);
 extern void delline (void);
@@ -123,6 +133,7 @@ extern void highvideo (void);
 extern void insline (void);
 extern void lowvideo (void);
 extern void normvideo (void);
+extern void textattr (int __new_attr);
 extern void textmode (int);
 extern int wherex (void);
 extern int wherey (void);

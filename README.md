@@ -109,6 +109,7 @@ To list all the test cases and their test numbers:
 |   B | `insline ();`
 |   B | `lowvideo ();`
 |   B | `normvideo ();`
+|   B | `textattr (`_new-attr_`);`
 |   B | `textmode (`_mode_`);` | Does not support _mode_ = `LASTMODE` yet.
 |   B | `wherex ();`
 |   B | `wherey ();`
