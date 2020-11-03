@@ -249,3 +249,27 @@ main (void)
 hello
 ]])
 AT_CLEANUP
+
+AT_SETUP([[getpass]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#define _BORLANDC_SOURCE
+#include <conio.h>
+#include <string.h>
+int
+main (void)
+{
+  char *pass = getpass ("hello:");
+  cprintf ("world %u\n", (unsigned) strlen (pass));
+  pass = getpass ("hello:");
+  cprintf ("world %u\n", (unsigned) strlen (pass));
+  pass = getpass ("hello:");
+  cprintf ("world %u\n", (unsigned) strlen (pass));
+  return 0;
+}]],[[hello:
+world 3
+hello:
+world 6
+hello:
+world 4
+]],[[-input '\p200;foo\r\p50;blurfl\r\p50;quux\r']])
+AT_CLEANUP
