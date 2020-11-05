@@ -137,6 +137,7 @@ OBJS		= bdos.o \
 		  setvideomode.o \
 		  sound.o \
 		  textattr.o \
+		  textcolor.o \
 		  textmode.o \
 		  ungetch.o \
 		  vcprintf.o \

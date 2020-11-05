@@ -111,6 +111,7 @@ To list all the test cases and their test numbers:
 |   B | `lowvideo ();`
 |   B | `normvideo ();`
 |   B | `textattr (`_new-attr_`);`
+|   B | `textcolor (`_new-color_`);`
 |   B | `textmode (`_mode_`);` | Does not support _mode_ = `LASTMODE` yet.
 |   B | `wherex ();`
 |   B | `wherey ();`

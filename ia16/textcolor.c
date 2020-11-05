@@ -22,8 +22,14 @@
 #include "conio.h"
 #include "libi86/internal/graph.h"
 
+#define FG_MASK		(BLINK | 0x0f)
+
 void
-textattr (int new_attr)
+textcolor (int new_colour)
 {
-  __libi86_vid_state.attribute = new_attr;
+  if (__libi86_vid_state.graph_p)
+    __libi86_vid_state.attribute = new_colour;
+  else
+    __libi86_vid_state.attribute = (__libi86_vid_state.attribute & ~FG_MASK)
+				   | (new_colour & FG_MASK);
 }
