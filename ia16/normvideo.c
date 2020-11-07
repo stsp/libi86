@@ -16,12 +16,39 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+#define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
 #include <inttypes.h>
+#include "conio.h"
 #include "libi86/internal/graph.h"
+
+unsigned char norm_attr = 0x07;
 
 void
 normvideo (void)
 {
-  __libi86_vid_state.attribute = __libi86_vid_state.borland_normal_attribute;
+  __libi86_vid_state.attribute = norm_attr;
+}
+
+void
+__libi86_vid_get_norm_attr (void)
+{
+  /*
+   * If normvideo () is used, then __libi86_con_mode_changed () calls this
+   * routine to determine the "normal" character colour, for normvideo (). 
+   * For text modes, this is the colour attribute of the character cell at
+   * the current cursor position.
+   *
+   * Watcom <graph.h> does not use this attribute.
+   */
+  unsigned char ch;
+  unsigned bx;
+  if (__libi86_vid_state.graph_p)
+    norm_attr = 0x07;
+  else
+    __asm volatile ("int $0x10" : "=Rah" (norm_attr), "=Ral" (ch), "=b" (bx)
+				: "0" ((unsigned char) 0x08),
+				  "2" ((unsigned) __libi86_vid_get_curr_pg ()
+				       << 8)
+				: "cc", "cx", "dx");
 }

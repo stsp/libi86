@@ -53,16 +53,10 @@ struct __libi86_vid_state_t
   unsigned char x1z, y1z, x2z, y2z;
   /* Current colour attribute for text output. */
   unsigned char attribute;
-  /*
-   * "Normal" colour attribute for text output (for Borland-like <conio.h>). 
-   * For text modes, this is taken from the attribute at the initial cursor
-   * position at startup.
-   */
-  unsigned char borland_normal_attribute;
   /* Current screen border colour (& background colour, if graphics mode). */
   unsigned char border;
   /* Whether we are in a graphics mode. */
-  unsigned char graph_p : 1;
+  unsigned graph_p : 1;
 };
 
 /*
