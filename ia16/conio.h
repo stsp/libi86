@@ -135,6 +135,7 @@ extern void insline (void);
 extern void lowvideo (void);
 extern void normvideo (void);
 extern void textattr (int __new_attr);
+extern void textbackground (int __new_color);
 extern void textcolor (int __new_color);
 extern void textmode (int);
 extern int wherex (void);

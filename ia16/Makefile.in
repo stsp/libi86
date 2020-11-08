@@ -132,11 +132,13 @@ OBJS		= bdos.o \
 		  putch.o \
 		  scrolltextwindow.o \
 		  segread.o \
+		  settextcolor.o \
 		  settextposition.o \
 		  settextwindow.o \
 		  setvideomode.o \
 		  sound.o \
 		  textattr.o \
+		  textbackground.o \
 		  textcolor.o \
 		  textmode.o \
 		  ungetch.o \

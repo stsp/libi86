@@ -111,6 +111,7 @@ To list all the test cases and their test numbers:
 |   B | `lowvideo ();`
 |   B | `normvideo ();`
 |   B | `textattr (`_new-attr_`);`
+|   B | `textbackground (`_new-color_`);`
 |   B | `textcolor (`_new-color_`);`
 |   B | `textmode (`_mode_`);` | Does not support _mode_ = `LASTMODE` yet.
 |   B | `wherex ();`
@@ -156,6 +157,7 @@ To list all the test cases and their test numbers:
 |   W | `_outmem (`\*_text_`,` _length_`);`
 |   W | `_outtext (`\*_text_`);`
 |   W | `_scrolltextwindow (`_rows_`);`
+|   W | `_settextcolor (`_pix-val_`);`
 |   W | `_settextposition (`_row_`,` _col_`);`
 |   W | `_settextwindow (`_row1_`,` _col1_`,` _row2_`,` _col2_`);`
 |   W | `_setvideomode (`_mode_`);` | In the case of SuperVGA screen modes, only works with VESA interface.
