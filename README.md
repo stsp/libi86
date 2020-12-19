@@ -12,47 +12,16 @@ Defining the macro `_BORLANDC_SOURCE` will also enable some degree of compatibil
 
 #### Use
 
-`ia16-elf-gcc` [..._gcc-options_...] `-li86` [...]
+  * `ia16-elf-gcc` [..._gcc-options_...] `-li86` [...]
+  * On MS-DOS: `i16gcc` [..._gcc-options_...] `-li86` [...]
 
 #### Installing from pre-compiled Ubuntu Linux packages, for cross development
 
 Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA](https://launchpad.net/~tkchia/+archive/ubuntu/build-ia16/).
 
-#### Building and installing from sources, on Linux
+#### Building from sources, installing, and testing, on Linux
 
- 1. &nbsp;`git clone https://gitlab.com/tkchia/libi86.git`
-
- 2. &nbsp;Install `gcc-ia16-elf`.
-
- 3. &nbsp;`(cd libi86 && ./autogen.sh)`
-
- 4. &nbsp;`mkdir build-libi86`
-
- 5. &nbsp;`cd build-libi86`
-
- 6. &nbsp;`../libi86/configure --prefix=`_install-path_
-
- 7. &nbsp;`make`
-
- 8. &nbsp;`make check`
-
- 9. &nbsp;`make install`
-
-#### Customizing the test suite run
-
-Instead of just saying `make check`, you can specify options to the test suite to control how the tests are run, via the `$(TESTSUITEFLAGS)` makefile variable.  E.g.:
-
-  * &nbsp;`make check TESTSUITEFLAGS='--x-test-underlying --x-with-dosemu=/`_path-to_`/dosemu'`
-  * &nbsp;`make check TESTSUITEFLAGS='16'` &nbsp;# run _only_ test #16
-  * &nbsp;`make check TESTSUITEFLAGS='10 --x-test-underlying'`
-
-To see a complete list of test suite options you can put into `$(TESTSUITEFLAGS)`, run
-
-  * &nbsp;`make helpcheck`
-
-To list all the test cases and their test numbers:
-
-  * &nbsp;`make listcheck`
+[Detailed instructions](README.linux-build.md) for doing so are available.
 
 ## License
 
