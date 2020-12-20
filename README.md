@@ -10,16 +10,16 @@ Defining the macro `_BORLANDC_SOURCE` will also enable some degree of compatibil
 
 ## Synopsis
 
-#### Use
+### Use
 
   * `ia16-elf-gcc` [..._gcc-options_...] `-li86` [...]
   * On MS-DOS: `i16gcc` [..._gcc-options_...] `-li86` [...]
 
-#### Installing from pre-compiled Ubuntu Linux packages, for cross development
+### Installing from pre-compiled Ubuntu Linux packages, for cross development
 
 Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA](https://launchpad.net/~tkchia/+archive/ubuntu/build-ia16/).
 
-#### Building from sources, installing, and testing, on Linux
+### Building from sources, installing, and testing, on Linux
 
 [Detailed instructions](README.linux-build.md) for doing so are available.
 
@@ -27,7 +27,9 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 
 `libi86` is now distributed under the [GNU Lesser General Public License version 2](COPYING2.LIB) or above.
 
-## Legend
+## Implemented facilities
+
+### Legend
 
 |     | Meaning
 | --: | :------
@@ -38,7 +40,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |  IW | From internal interfaces in Open Watcom's library code.
 |   X | `libi86`-specific extension; not in Open Watcom or Borland C++.
 
-## Implemented functions
+### Functions
 
 | Compat.    | Function | Notes
 | ---------: | :------- | :----
@@ -156,7 +158,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |   W | \*`_fmemmove (`\*_dest_`,` \*_src_`,` _n_`);`
 |   W | `_fstrlen (`\*_s_`);`
 
-## Implemented variables
+### Variables
 
 | Compat.    | Variable | Notes
 | ---------: | :------- | :----

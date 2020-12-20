@@ -1,4 +1,4 @@
-#### Building and installing `libi86` from sources, on Linux
+### Building and installing `libi86` from sources, on Linux
 
  1. &nbsp;`git clone https://gitlab.com/tkchia/libi86.git`
 
@@ -20,7 +20,7 @@
 
  9. &nbsp;`make install`
 
-#### Customizing the test suite run
+### Customizing the test suite run
 
 Instead of just saying `make check`, you can specify options to the test suite to control how the tests are run, via the `$(TESTSUITEFLAGS)` makefile variable.  E.g.:
 
