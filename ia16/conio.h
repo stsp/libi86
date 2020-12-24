@@ -125,10 +125,17 @@ enum COLORS
 
 #define BLINK		0x80
 
+struct text_info
+{
+  unsigned char winleft, wintop, winright, winbottom, attribute, normattr,
+		currmode, screenheight, screenwidth, curx, cury;
+};
+
 extern void clreol (void);
 extern void clrscr (void);
 extern void delline (void);
 extern char *getpass (const char *__prompt);
+extern void gettextinfo (struct text_info *__r);
 extern void gotoxy (int __x, int __y);
 extern void highvideo (void);
 extern void insline (void);

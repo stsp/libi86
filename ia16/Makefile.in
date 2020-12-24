@@ -107,6 +107,7 @@ OBJS		= bdos.o \
 		  getche.o \
 		  getdrive.o \
 		  getpass.o \
+		  gettextinfo.o \
 		  gettextposition.o \
 		  getvideomode.o \
 		  gotoxy.o \

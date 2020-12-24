@@ -273,3 +273,24 @@ hello:
 world 4
 ]],[[-input '\p200;foo\r\p50;blurfl\r\p50;quux\r']])
 AT_CLEANUP
+
+AT_SETUP([[gettextinfo]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#define _BORLANDC_SOURCE
+#include <conio.h>
+#include <string.h>
+int
+main (void)
+{
+  struct text_info ti;
+  window (3, 5, 17, 19);
+  gotoxy (2, 4);
+  gettextinfo (&ti);
+  if (ti.winleft != 3 || ti.wintop != 5
+      || ti.winright != 17 || ti.winbottom != 19)
+    abort ();
+  if (ti.curx != 2 || ti.cury != 4)
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP

@@ -37,6 +37,7 @@ _LIBI86_BEGIN_EXTERN_C
 /* Various internal variables & functions used by <conio.h> routines. */
 
 extern unsigned __libi86_ungetch_buf;
+extern unsigned char __libi86_vid_norm_attr;
 
 #ifdef __MSDOS__
 extern int __libi86_con_in_fd, __libi86_con_out_fd;

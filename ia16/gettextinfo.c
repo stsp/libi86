@@ -18,38 +18,31 @@
 
 #define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
-#include <inttypes.h>
 #include "conio.h"
+#include "graph.h"
+#include "libi86/internal/conio.h"
 #include "libi86/internal/graph.h"
 
-unsigned char __libi86_vid_norm_attr = 0x07;
-
 void
-normvideo (void)
+gettextinfo (struct text_info *r)
 {
-  __libi86_vid_state.attribute = __libi86_vid_norm_attr;
-}
-
-void
-__libi86_vid_get_norm_attr (void)
-{
+  struct rccoord coord = _gettextposition ();
+  r->winleft	  = __libi86_vid_state.x1z + 1;
+  r->wintop	  = __libi86_vid_state.y1z + 1;
+  r->winright	  = __libi86_vid_state.x2z + 1;
+  r->winbottom	  = __libi86_vid_state.y2z + 1;
+  r->attribute	  = __libi86_vid_state.attribute;
+  r->normattr	  = __libi86_vid_norm_attr;
   /*
-   * If normvideo () is used, then __libi86_con_mode_changed () calls this
-   * routine to determine the "normal" character colour, for normvideo (). 
-   * For text modes, this is the colour attribute of the character cell at
-   * the current cursor position.
-   *
-   * Watcom <graph.h> does not use this attribute.
+   * FIXME?!?  There is no really good way to square SuperVGA mode numbers
+   * with an 8-byte .curr_mode field.
    */
-  unsigned char ch;
-  unsigned bx;
-  if (__libi86_vid_state.graph_p)
-    __libi86_vid_norm_attr = 0x07;
+  if (__libi86_vid_state.mode_num < 0xff)
+    r->currmode   = (unsigned char) __libi86_vid_state.mode_num;
   else
-    __asm volatile ("int $0x10" : "=Rah" (__libi86_vid_norm_attr), "=Ral" (ch),
-				  "=b" (bx)
-				: "0" ((unsigned char) 0x08),
-				  "2" ((unsigned) __libi86_vid_get_curr_pg ()
-				       << 8)
-				: "cc", "cx", "dx");
+    r->currmode   = 0xff;
+  r->screenheight = __libi86_vid_state.max_y + 1;
+  r->screenwidth  = __libi86_vid_state.max_x + 1;
+  r->curx	  = coord.col;
+  r->cury	  = coord.row;
 }

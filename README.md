@@ -76,6 +76,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |   B | `clrscr ();`
 |   B | `delline ();`
 |   B | \*`getpass (`\*_prompt_`);`
+|   B | `gettextinfo (`\*_text-info_`);` | If the active video mode is a SuperVGA mode, _text-info_`->currmode` may be invalid.
 |   B | `gotoxy (`_x_`,` _y_`);`
 |   B | `highvideo ();`
 |   B | `insline ();`
