@@ -39,6 +39,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 | W/B | By default, behaves as in Open Watcom; if `_BORLANDC_SOURCE` is defined, behaves as in Borland C++.
 |  IW | From internal interfaces in Open Watcom's library code.
 |   X | `libi86`-specific extension; not in Open Watcom or Borland C++.
+|  XB | `libi86`-specific extension.  Behaves slightly differently if `_BORLANDC_SOURCE` is defined.
 
 ### Functions
 
@@ -103,11 +104,11 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |   W | `_outpw (`_port_`,` _value_`);`
 |   B | `outportw (`_port_`,` _value_`);`
 |     |
-|     | **`▗▚▚▚▚ <dos.h> ▞▞▞▞▖`** | **`<dos.h>` also includes `<i86.h>`, described below.**
+|     | **`▗▚▚▚▚ <dos.h> ▞▞▞▞▖`** | **`<dos.h>` also includes `<i86.h>`, described below.  If `_BORLANDC_SOURCE` is defined, the `union REGS` type gets an additional `.x.flags` field, and `<dos.h>` switches accordingly to a different version of the `intdos` and `intdosx` routines.**
 |   W | `bdos (`_dos-func_`,` _dx_`,` _al_`);`
 |   W | `bdosptr (`_dos-func_`,` \*_dx_`,` _al_`);`
-|   W | `intdos (`\*_in-regs_`,` \*_out-regs_`);`
-|   W | `intdosx (`\*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
+| W/B | `intdos (`\*_in-regs_`,` \*_out-regs_`);`
+| W/B | `intdosx (`\*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
 |   + | `_dos_allocmem (`_size_`,` \*_segment_`);` | Also works under DPMI; yields a starting protected-mode selector.
 |   W | `_dos_close (`_handle_`);`
 |   + | `_dos_freemem (`_segment_`);` |  Also works under DPMI; accepts a starting protected-mode selector.
@@ -134,18 +135,18 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |   W | `_settextwindow (`_row1_`,` _col1_`,` _row2_`,` _col2_`);`
 |   W | `_setvideomode (`_mode_`);` | In the case of SuperVGA screen modes, only works with VESA interface.
 |     |
-|     | **`▗▚▚▚▚ <i86.h> ▞▞▞▞▖`**
+|     | **`▗▚▚▚▚ <i86.h> ▞▞▞▞▖`** | **If `_BORLANDC_SOURCE` is defined, the `union REGS` type gets an additional `.x.flags` field, and `<i86.h>` switches accordingly to a different version of the `int86`, `int86x`, `_int86f`, and `_int86xf` routines.**
 |   W | `delay (`_ms_`);`
 |   W | `nosound ();`
 |   W | `sound (`_freq_`);`
 |   W | `segread (`\*_seg-regs_`);`
 |   W | `_disable ();`
 |   W | `_enable ();`
-|   W | `int86 (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);`
-|   W | `int86x (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
+| W/B | `int86 (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);`
+| W/B | `int86x (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
 |   W | `intr (`_inter-no_`,` \*_regs_`);`
-|   X | `_int86f (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);` | Loads `SZAPC` flags before issuing interrupt.
-|   X | `_int86xf (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);` | Loads `SZAPC` flags before issuing interrupt.
+|  XB | `_int86f (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);` | Loads carry flag before issuing interrupt.
+|  XB | `_int86xf (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);` | Loads carry flag before issuing interrupt.
 |   X | `_intrf (`_inter-no_`,` \*_regs_`);` | Loads `SZAPC` flags before issuing interrupt.
 |   W | `FP_OFF (`\*_ptr_`);` | Macro.
 |   W | `_FP_OFF (`\*_ptr_`);` | Macro.

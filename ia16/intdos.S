@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018--2019 TK Chia
+ * Copyright (c) 2018--2021 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -24,8 +24,13 @@
 	.att_syntax prefix
 
 	TEXT_ (intdos.S.LIBI86)
+#ifndef _BORLANDC_SOURCE
 	.global	intdos
 intdos:
+#else
+	.global	__libi86_bc_intdos
+__libi86_bc_intdos:
+#endif
 	ENTER_BX_(4)
 	pushw	%bp
 	pushw	%si

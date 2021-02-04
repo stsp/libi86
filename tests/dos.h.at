@@ -49,6 +49,7 @@ main (void)
   union REGS regs;
   int rv;
 #ifdef __MSDOS__
+  memset (&regs, 0xf6, sizeof (regs));
   regs.h.ah = 0x02;
   regs.h.dl = 'y';
   intdos (&regs, &regs);
@@ -69,12 +70,13 @@ main (void)
   int rv;
 #ifdef __MSDOS__
   static char msg[] = "Hello from intdos!\r\n(ignore this part)";
+  memset (&regs, 0xf6, sizeof (regs));
   regs.h.ah = 0x40;
   regs.w.bx = 1;
   regs.w.cx = 20;
   regs.w.dx = FP_OFF (msg);
   rv = intdos (&regs, &regs);
-  if (rv != 20)
+  if (rv != 20 || regs.w.cflag)
     abort ();
   return 0;
 #else
@@ -109,6 +111,8 @@ main (void)
   union REGS r;
   struct SREGS sr;
 #ifdef __MSDOS__
+  memset (&r, 0xf6, sizeof (r));
+  memset (&sr, 0xf6, sizeof (sr));
   sr.ds = 1;
   sr.es = 2;
   r.h.ah = 0x02;
@@ -158,6 +162,8 @@ hw (void)
   union REGS r;
   struct SREGS sr;
   unsigned cookie = time (NULL);
+  memset (&r, 0xf6, sizeof (r));
+  memset (&sr, 0xf6, sizeof (sr));
   r.h.ah = 0x40;
   r.w.bx = 1;
   r.w.cx = sizeof (msg1) - 1;
@@ -165,7 +171,7 @@ hw (void)
   sr.ds = FP_SEG (msg1);
   sr.es = cookie;
   if (intdosx (&r, &r, &sr) != sizeof (msg1) - 1
-      || r.w.ax != sizeof (msg1) - 1
+      || r.w.ax != sizeof (msg1) - 1 || r.w.cflag
 # ifndef __IA16_CMODEL_IS_FAR_TEXT
       || sr.cs != get_cs ()
 # endif
@@ -181,6 +187,9 @@ main (void)
   const char __far *p;
   union REGS inr, outr;
   struct SREGS sr;
+  memset (&inr, 0xf6, sizeof (inr));
+  memset (&outr, 0xf6, sizeof (outr));
+  memset (&sr, 0xf6, sizeof (sr));
   for (p = msg4; *p; ++p)
     bdos (2, *p, 0);
   hw ();
@@ -190,14 +199,14 @@ main (void)
   inr.w.dx = FP_OFF (msg2);
   sr.ds = FP_SEG (msg2);
   if (intdosx (&inr, &outr, &sr) != sizeof (msg2) - 1
-      || outr.w.ax != sizeof (msg2) - 1)
+      || outr.w.ax != sizeof (msg2) - 1 || outr.w.cflag)
     abort ();
   hw ();
   inr.w.cx = sizeof (msg3) - 1;
   inr.w.dx = FP_OFF (msg3);
   sr.ds = FP_SEG (msg3);
   if (intdosx (&inr, &outr, &sr) != sizeof (msg3) - 1
-      || outr.w.ax != sizeof (msg3) - 1)
+      || outr.w.ax != sizeof (msg3) - 1 || outr.w.cflag)
     abort ();
   hw ();
   inr.h.ah = 9;
@@ -223,7 +232,7 @@ main (void)
   inr.w.cx = 2;
   inr.w.dx = FP_OFF (msg5);
   sr.ds = FP_SEG (msg5);
-  if (intdosx (&inr, &outr, &sr) != 2 || outr.w.ax != 2)
+  if (intdosx (&inr, &outr, &sr) != 2 || outr.w.ax != 2 || outr.w.cflag)
     abort ();
   return 0;
 }]],[[yo dawg I herd you like hello worlds

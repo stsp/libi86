@@ -31,8 +31,13 @@
 	.att_syntax prefix
 
 	.text				/* N.B. */
+#ifndef _BORLANDC_SOURCE
 	.global	__libi86_int86x_do
 __libi86_int86x_do:
+#else
+	.global	__libi86_bc_int86x_do
+__libi86_bc_int86x_do:
+#endif
 	ENTER_BX_(8)
 	pushw	%bp
 	pushw	%si

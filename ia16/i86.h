@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2021 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -28,6 +28,9 @@ _LIBI86_BEGIN_EXTERN_C
 struct WORDREGS
 {
   unsigned short ax, bx, cx, dx, si, di, bp, cflag;
+#ifdef _BORLANDC_SOURCE
+  unsigned flags;
+#endif
 };
 
 struct BYTEREGS
@@ -70,12 +73,22 @@ extern void nosound (void);
 extern void segread (struct SREGS *__seg_regs);
 
 /* Used by the inline versions of int86 (...), intr (...), etc. below.  */
+#ifndef _BORLANDC_SOURCE
 extern int __libi86_int86 (int, const union REGS *, union REGS *);
 extern int __libi86_int86_do (const void *, const union REGS *, union REGS *);
 extern int __libi86_int86x (int, const union REGS *, union REGS *,
 			    struct SREGS *);
 extern int __libi86_int86x_do (const void *, const union REGS *, union REGS *,
 			       struct SREGS *);
+#else
+extern int __libi86_bc_int86 (int, const union REGS *, union REGS *);
+extern int __libi86_bc_int86_do (const void *, const union REGS *,
+				 union REGS *);
+extern int __libi86_bc_int86x (int, const union REGS *, union REGS *,
+			       struct SREGS *);
+extern int __libi86_bc_int86x_do (const void *, const union REGS *,
+				  union REGS *, struct SREGS *);
+#endif
 extern void __libi86_intr (int, union REGPACK *);
 extern void __libi86_intr_do (const void *, union REGPACK *);
 /* Used by the inline version of sound (.) below.  */
@@ -86,19 +99,24 @@ extern void __libi86_sound_by_divisor (unsigned);
 # ifndef __OPTIMIZE__
 extern void _disable (void);
 extern void _enable (void);
-extern int int86 (int, const union REGS *, union REGS *);
-extern int int86x (int, const union REGS *, union REGS *, struct SREGS *);
+extern int _LIBI86_BC_REDIRECT
+	     (int86, (int, const union REGS *, union REGS *));
+extern int _LIBI86_BC_REDIRECT
+	     (int86x, (int, const union REGS *, union REGS *, struct SREGS *));
 extern void intr (int, union REGPACK *);
 /* The _...f (...) functions are new functions, which I am also proposing
    (https://github.com/open-watcom/open-watcom-v2/issues/472) to add to Open
    Watcom. These do the same thing as int86 (...), intr (...), etc., except
    they are also guaranteed to load at least the carry flag from the register
    structures, before raising the interrupt.  */
-extern int _int86f (int, const union REGS *, union REGS *);
-extern int _int86xf (int, const union REGS *, union REGS *, struct SREGS *);
+extern int _LIBI86_BC_REDIRECT
+	     (_int86f, (int, const union REGS *, union REGS *));
+extern int _LIBI86_BC_REDIRECT
+	     (_int86xf, (int, const union REGS *, union REGS *,
+			 struct SREGS *));
 extern void _intrf (int, union REGPACK *);
 extern void sound (unsigned);
-# else
+# else  /* __OPTIMIZE */
 _LIBI86_ALT_INLINE void
 _disable (void)
 {
@@ -122,10 +140,18 @@ _int86f (int __intr_no, const union REGS *__in_regs, union REGS *__out_regs)
 		      : "=g" (__intr_call)
 		      : "n" ((__intr_no >> 6) & 3), "n" ((__intr_no >> 3) & 7),
 			"n" (__intr_no & 7));
+#   ifndef _BORLANDC_SOURCE
       return __libi86_int86_do (__intr_call, __in_regs, __out_regs);
+#   else
+      return __libi86_bc_int86_do (__intr_call, __in_regs, __out_regs);
+#   endif
     }
 
+#   ifndef _BORLANDC_SOURCE
   return __libi86_int86 (__intr_no, __in_regs, __out_regs);
+#   else
+  return __libi86_bc_int86 (__intr_no, __in_regs, __out_regs);
+#   endif
 }
 
 _LIBI86_ALT_INLINE int
@@ -146,11 +172,20 @@ _int86xf (int __intr_no, const union REGS *__in_regs, union REGS *__out_regs,
 		      : "=g" (__intr_call)
 		      : "n" ((__intr_no >> 6) & 3), "n" ((__intr_no >> 3) & 7),
 			"n" (__intr_no & 7));
+#   ifndef _BORLANDC_SOURCE
       return __libi86_int86x_do (__intr_call, __in_regs, __out_regs,
 				 __seg_regs);
+#   else
+      return __libi86_bc_int86x_do (__intr_call, __in_regs, __out_regs,
+				    __seg_regs);
+#   endif
     }
 
+#   ifndef _BORLANDC_SOURCE
   return __libi86_int86x (__intr_no, __in_regs, __out_regs, __seg_regs);
+#   else
+  return __libi86_bc_int86x (__intr_no, __in_regs, __out_regs, __seg_regs);
+#   endif
 }
 
 _LIBI86_ALT_INLINE int
@@ -198,8 +233,8 @@ sound (int __freq)
   else
     __libi86_sound (__freq);
 }
-# endif
-#endif
+# endif	/* __OPTIMIZE__ */
+#endif	/* _LIBI86_COMPILING_ */
 
 #ifdef __FAR
 # define FP_SEG(__p)	__builtin_ia16_selector ((unsigned) \

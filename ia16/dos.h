@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2021 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -37,8 +37,9 @@ _LIBI86_BEGIN_EXTERN_C
 
 extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
 extern int bdosptr (int __dos_func, void *__dx, unsigned __al);
-extern int intdos (const union REGS *, union REGS *);
-extern int intdosx (const union REGS *, union REGS *, struct SREGS *);
+extern int _LIBI86_BC_REDIRECT (intdos, (const union REGS *, union REGS *));
+extern int _LIBI86_BC_REDIRECT
+	     (intdosx, (const union REGS *, union REGS *, struct SREGS *));
 extern unsigned _dos_allocmem (unsigned __size, unsigned *__seg);
 extern unsigned _dos_close (int __handle);
 extern unsigned _dos_freemem (unsigned __seg);

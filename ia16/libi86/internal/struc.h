@@ -38,8 +38,12 @@
 	movw	2(%bx), %bx
 
 /* Store registers and the carry flag to a `union REGS' at (%bx), with the
-   value of .w.bx popped from the stack.  Clobber %cx.  */
-#define STORE_UNION_REGS_BX_POP_CLOBBER_ \
+   value of .w.bx popped from the stack.  Clobber %cx.
+
+   In Borland C compatibility mode, also store all the low order flags, not
+   just the carry flag. */
+#ifndef _BORLANDC_SOURCE
+# define STORE_UNION_REGS_BX_POP_CLOBBER_ \
 	movw	%ax,	(%bx);		\
 	popw	2(%bx);			\
 	movw	%cx,	4(%bx);		\
@@ -49,6 +53,20 @@
 	movw	%bp,	12(%bx);	\
 	sbbw	%cx,	%cx;		\
 	movw	%cx,	14(%bx)
+#else
+# define STORE_UNION_REGS_BX_POP_CLOBBER_ \
+	movw	%ax,	(%bx);		\
+	popw	2(%bx);			\
+	movw	%cx,	4(%bx);		\
+	movw	%dx,	6(%bx);		\
+	movw	%si,	8(%bx);		\
+	movw	%di,	10(%bx);	\
+	movw	%bp,	12(%bx);	\
+	pushfw;				\
+	popw	16(%bx);		\
+	sbbw	%cx,	%cx;		\
+	movw	%cx,	14(%bx)
+#endif
 
 /* Load registers and the SZAPC flags from a `union REGPACK' at (%di).  Note
    that %ds might no longer point to the program's data segment after this.  */

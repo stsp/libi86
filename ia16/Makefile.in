@@ -1,4 +1,4 @@
-# Copyright (c) 2018 TK Chia
+# Copyright (c) 2018--2021 TK Chia
 #
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as published by
@@ -152,6 +152,12 @@ OBJS		= bdos.o \
 		  libi86-bc-cprintf.o \
 		  libi86-bc-cputs.o \
 		  libi86-bc-cscanf.o \
+		  libi86-bc-int86.o \
+		  libi86-bc-int86-do.o \
+		  libi86-bc-int86x.o \
+		  libi86-bc-int86x-do.o \
+		  libi86-bc-intdos.o \
+		  libi86-bc-intdosx.o \
 		  libi86-bc-getche.o \
 		  libi86-bc-putch.o \
 		  libi86-bc-vcprintf.o \
@@ -263,6 +269,12 @@ libi86-bc-%.o: libi86-bc-%.c $(HEADERS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(MULTILIB) -c -o $@ $<
 
 libi86-bc-%.o: %.c $(HEADERS)
+	$(CC) $(CPPFLAGS) -D_BORLANDC_SOURCE $(CFLAGS) $(MULTILIB) -c -o $@ $<
+
+libi86-bc-%.o: libi86-%.S $(HEADERS)
+	$(CC) $(CPPFLAGS) -D_BORLANDC_SOURCE $(CFLAGS) $(MULTILIB) -c -o $@ $<
+
+libi86-bc-%.o: %.S $(HEADERS)
 	$(CC) $(CPPFLAGS) -D_BORLANDC_SOURCE $(CFLAGS) $(MULTILIB) -c -o $@ $<
 
 %.o: %.S $(HEADERS)

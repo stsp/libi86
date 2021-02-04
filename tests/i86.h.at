@@ -103,7 +103,7 @@ static unsigned get_ss (void)
 int main (void)
 {
   struct SREGS sregs;
-  memset (&sregs, 0xf6, sizeof sregs);
+  memset (&sregs, 0xf6, sizeof (sregs));
   segread (&sregs);
 #ifndef __IA16_CMODEL_IS_FAR_TEXT
   if (sregs.cs != get_cs ())
@@ -174,7 +174,7 @@ int main (void)
 #ifdef __MSDOS__
   static char msg[] = "Hello from int86x!\r\n$(ignore this part)\r\n";
   memset (&regs, 0xf6, sizeof (regs));
-  memset (&sregs, 0xf6, sizeof sregs);
+  memset (&sregs, 0xf6, sizeof (sregs));
   sregs.ds = FP_SEG (msg);
   regs.h.ah = 0x09;
   regs.w.dx = FP_OFF (msg);
@@ -206,7 +206,7 @@ int main (void)
 #ifdef __MSDOS__
   static char __far msg[] = "Hello again!\r\n$(ignore this part)\r\n";
   memset (&regs, 0xf6, sizeof (regs));
-  memset (&sregs, 0xf6, sizeof sregs);
+  memset (&sregs, 0xf6, sizeof (sregs));
   sregs.ds = FP_SEG (msg);
   regs.h.ah = 0x09;
   regs.w.dx = FP_OFF (msg);
