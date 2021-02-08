@@ -155,6 +155,9 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |   W | \*`MK_FP (`_seg_`,` _off_`);` | Macro.
 |   W | \*`_MK_FP (`_seg_`,` _off_`);` | Macro.
 |     |
+|     | **`▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖`**
+|   W | `_splitpath (`\*_path_`,` \*_drive_`,` \*_dir_`,` \*_fname_`,` \*_ext_`);` | Long filenames, and network paths starting with two backslashes (`\\`), are not supported.
+|     |
 |     | **`▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖`**
 |   W | \*`_fmemcpy (`\*_dest_`,` \*_src_`,` _n_`);`
 |   W | \*`_fmemmove (`\*_dest_`,` \*_src_`,` _n_`);`

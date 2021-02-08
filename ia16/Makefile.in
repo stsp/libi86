@@ -138,6 +138,7 @@ OBJS		= bdos.o \
 		  settextwindow.o \
 		  setvideomode.o \
 		  sound.o \
+		  splitpath.o \
 		  textattr.o \
 		  textbackground.o \
 		  textcolor.o \

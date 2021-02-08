@@ -64,8 +64,19 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 		  [AC_DEFINE([_LIBI86_INTERNAL_HAVE_ASM_N_CONSTRAINT],[1])
 		   AC_MSG_RESULT(yes)],
 		  [AC_MSG_RESULT(no)])
+dnl ...
 AC_CHECK_FUNC([__DPMI_hosted],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE___DPMI_HOSTED],[1])])
+AC_CHECK_HEADER([sys/syslimits.h],
+		[AC_DEFINE([_LIBI86_INTERNAL_HAVE_SYS_SYSLIMITS_H],[1])])
+if test yes = "$ac_cv_header_sys_syslimits_h"; then
+  AC_CHECK_DECL([_PATH_MAX],
+		[AC_DEFINE([_LIBI86_INTERNAL_HAVE__PATH_MAX],[1])],,
+		[#include <sys/syslimits.h>])
+fi
+AC_CHECK_DECL([PATH_MAX],
+	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_PATH_MAX],[1])],,
+	      [#include <limits.h>])
 
 host_makefile_frag_path=
 host_makefile_frag=

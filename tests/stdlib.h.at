@@ -1,4 +1,4 @@
-dnl Copyright (c) 2019 TK Chia
+dnl Copyright (c) 2019--2021 TK Chia
 dnl
 dnl This file is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU Lesser General Public License as published by
@@ -53,4 +53,100 @@ main (void)
 # error
 #endif
 }]],[[]])
+AT_CLEANUP
+
+AT_SETUP([[_splitpath]])
+AT_LIBI86_CHECK(dnl
+[[#include <stdio.h>
+#include <stdlib.h>
+#include <libi86/stdlib.h>
+#include <string.h>
+static void
+check (unsigned test_num, const char *path, const char *good_drv,
+       const char *good_dir, const char *good_fname, const char *good_ext)
+{
+  char drv[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
+  memset (drv, 0xf6, sizeof drv);
+  memset (dir, 0xf6, sizeof dir);
+  memset (fname, 0xf6, sizeof fname);
+  memset (ext, 0xf6, sizeof ext);
+  _splitpath (path, drv, dir, fname, ext);
+  if (strcasecmp (drv, good_drv) != 0
+      || strcasecmp (dir, good_dir) != 0
+      || strcasecmp (fname, good_fname) != 0
+      || strcasecmp (ext, good_ext) != 0)
+    abort ();
+  printf ("%u OK\n", test_num);
+}
+int
+main (void)
+{
+#ifdef __MSDOS__
+  check (1,  "\\", "", "\\", "", "");
+  check (2,  "/", "", "/", "", "");
+  check (3,  "foo", "", "", "foo", "");
+  check (4,  "Foo.", "", "", "foo", ".");
+  check (5,  "foO.bAr", "", "", "foo", ".bar");
+  check (6,  "/Foo.", "", "/", "foo", ".");
+  check (7,  "\\foO.bAr", "", "\\", "foo", ".bar");
+  check (8,  "foo.Bar/", "", "foo.bar/", "", "");
+  check (9,  "foo.bar\\", "", "foo.bar\\", "", "");
+  check (10, "/foo.Bar/", "", "/foo.bar/", "", "");
+  check (11,  "\\foo.bar\\", "", "\\foo.bar\\", "", "");
+  check (12, "foo.Bar/baz", "", "foo.bar/", "baz", "");
+  check (13, "foo.bar\\BAZ", "", "foo.bar\\", "baz", "");
+  check (14, "\\foo.Bar/ba?z", "", "\\foo.bar/", "ba?z", "");
+  check (15, "/foo.bar\\BA?Z", "", "/foo.bar\\", "ba?z", "");
+  check (16, "\\foo.Bar/*.*", "", "\\foo.bar/", "*", ".*");
+  check (17, "/foo.bar\\*.*", "", "/foo.bar\\", "*", ".*");
+  check (18, "\\foo/Bar/*.*", "", "\\foo/bar/", "*", ".*");
+  check (19, "/foo\\bar\\*.*", "", "/foo\\bar\\", "*", ".*");
+  check (20, "a:\\", "a:", "\\", "", "");
+  check (21, "B:/", "b:", "/", "", "");
+  check (22, "c:foo", "c:", "", "foo", "");
+  check (23, "D:foo.baR", "d:", "", "foo", ".bar");
+  check (24, "e:/foo", "e:", "/", "foo", "");
+  check (25, "F:\\foo.baR", "f:", "\\", "foo", ".bar");
+  check (26, "g:foo\\", "g:", "foo\\", "", "");
+  check (27, "H:foo.baR/", "h:", "foo.bar/", "", "");
+  check (28, "i:/foo\\", "i:", "/foo\\", "", "");
+  check (29, "J:\\foo.baR/", "j:", "\\foo.bar/", "", "");
+  check (30, "y:/foo\\bar/baz.qux\\quux*.q?uuux",
+	     "y:", "/foo\\bar/baz.qux\\", "quux*", ".q?u");
+  check (31, "quuuuuuuuuux", "", "", "quuuuuuu", "");
+#else
+# error
+#endif
+}]],[[1 OK
+2 OK
+3 OK
+4 OK
+5 OK
+6 OK
+7 OK
+8 OK
+9 OK
+10 OK
+11 OK
+12 OK
+13 OK
+14 OK
+15 OK
+16 OK
+17 OK
+18 OK
+19 OK
+20 OK
+21 OK
+22 OK
+23 OK
+24 OK
+25 OK
+26 OK
+27 OK
+28 OK
+29 OK
+30 OK
+31 OK
+]])
 AT_CLEANUP
