@@ -34,7 +34,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |     | Meaning
 | --: | :------
 |   W | Behaves like the corresponding function in Open Watcom.
-|   + | Behaves like the corresponding function in Open Watcom, but with some extended behaviours.
+|  W+ | Behaves like the corresponding function in Open Watcom, but with some extended behaviours.
 |   B | From Borland Turbo C++ — enable with `_BORLANDC_SOURCE`.
 | W/B | By default, behaves as in Open Watcom; if `_BORLANDC_SOURCE` is defined, behaves as in Borland C++.
 |  IW | From internal interfaces in Open Watcom's library code.
@@ -46,7 +46,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 | Compat.    | Function | Notes
 | ---------: | :------- | :----
 |     | **`▗▚▚▚▚ <bios.h> ▞▞▞▞▖`**
-|   + | `_bios_disk (`_service_`,` \*_diskinfo_`);` | As an extension, also accepts _service_ = `_DISK_DRIVEPARAMS`, which returns drive parameters in \*_diskinfo_.
+|  W+ | `_bios_disk (`_service_`,` \*_diskinfo_`);` | As an extension, also accepts _service_ = `_DISK_DRIVEPARAMS`, which returns drive parameters in \*_diskinfo_.
 |   W | `_bios_equiplist ();`
 |   B | `biosequip ();`
 |   W | `_bios_memsize ();`
@@ -109,9 +109,9 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |   W | `bdosptr (`_dos-func_`,` \*_dx_`,` _al_`);`
 | W/B | `intdos (`\*_in-regs_`,` \*_out-regs_`);`
 | W/B | `intdosx (`\*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
-|   + | `_dos_allocmem (`_size_`,` \*_segment_`);` | Also works under DPMI; yields a starting protected-mode selector.
+|  W+ | `_dos_allocmem (`_size_`,` \*_segment_`);` | Also works under DPMI; yields a starting protected-mode selector.
 |   W | `_dos_close (`_handle_`);`
-|   + | `_dos_freemem (`_segment_`);` |  Also works under DPMI; accepts a starting protected-mode selector.
+|  W+ | `_dos_freemem (`_segment_`);` |  Also works under DPMI; accepts a starting protected-mode selector.
 |   W | `_dos_getdrive (`\*_drive_`);`
 |   W | `_dos_getfileattr (`\*_path_`,` \*_attributes_`);`
 |   W | `_dos_setfileattr (`\*_path_`,` _attributes_`);`
@@ -156,6 +156,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |   W | \*`_MK_FP (`_seg_`,` _off_`);` | Macro.
 |     |
 |     | **`▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖`**
+|  W+ | `_makepath (`\*_path_`,` \*_drive_`,` \*_dir_`,` \*_fname_`,` \*_ext_`);` | As extensions, this function (1) checks for buffer overflow, and (2) gives a return value.  Upon an error, the return value is non-zero, `errno` is set, and _path_`[]` holds either an empty string or a truncated path.  Network _drive_`[]` values starting with two backslashes (`\\`) are not supported.
 |   W | `_splitpath (`\*_path_`,` \*_drive_`,` \*_dir_`,` \*_fname_`,` \*_ext_`);` | Long filenames, and network paths starting with two backslashes (`\\`), are not supported.
 |     |
 |     | **`▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖`**

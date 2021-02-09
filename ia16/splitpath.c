@@ -17,36 +17,11 @@
  */
 
 #define _LIBI86_COMPILING_
-#include <stdbool.h>
 #include <string.h>
 #include "libi86/stdlib.h"
+#include "libi86/internal/path.h"
 
-static inline bool
-drive_letter_p (char c)
-{
-  switch (c)
-    {
-    case 'A' ... 'Z':
-    case 'a' ... 'z':
-      return true;
-    default:
-      return false;
-    }
-}
-
-static inline bool
-path_sep_p (char c)
-{
-  switch (c)
-    {
-    case '/':
-    case '\\':
-      return true;
-    default:
-      return false;
-    }
-}
-
+#ifdef __MSDOS__
 static const char *
 copy_component (const char *p, size_t pn, char *buf, size_t bn)
 {
@@ -76,7 +51,7 @@ _splitpath (const char *path, char drive[_MAX_DRIVE], char dir[_MAX_DIR],
   char c;
 
   /* If there is a drive letter, extract it. */
-  if (drive_letter_p (p[0]) && p[1] == ':')
+  if (__libi86_msdos_drive_letter_p (p[0]) && p[1] == ':')
     p = copy_component (p, 2, drive, _MAX_DRIVE);
   else
     skip_component (drive);
@@ -85,7 +60,7 @@ _splitpath (const char *path, char drive[_MAX_DRIVE], char dir[_MAX_DIR],
   q = p;
   while ((c = *q++) != 0)
     {
-      if (path_sep_p (c))
+      if (__libi86_msdos_path_sep_p (c))
 	dir_end = q;
     }
   if (dir_end)
@@ -106,3 +81,6 @@ _splitpath (const char *path, char drive[_MAX_DRIVE], char dir[_MAX_DIR],
       skip_component (ext);
     }
 }
+#else
+# warning "unknown host OS"
+#endif

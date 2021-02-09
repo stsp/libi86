@@ -65,6 +65,9 @@ _LIBI86_BEGIN_EXTERN_C
 extern unsigned _psp;
 extern unsigned char _osmajor, _osminor;
 
+extern int _makepath (char __path[_MAX_PATH], const char *__drive,
+		      const char *__dir, const char *__fname,
+		      const char *__ext);
 extern void _splitpath (const char *__path, char __drive[_MAX_DRIVE],
 			char __dir[_MAX_DIR], char __fname[_MAX_FNAME],
 			char __ext[_MAX_EXT]);

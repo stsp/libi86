@@ -55,6 +55,109 @@ main (void)
 }]],[[]])
 AT_CLEANUP
 
+AT_SETUP([[_makepath]])
+AT_LIBI86_CHECK(dnl
+[[#include <errno.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <libi86/stdlib.h>
+#include <string.h>
+static void
+check (unsigned test_num, bool should_error_p, const char *good_path,
+       const char *drv, const char *dir, const char *fname, const char *ext)
+{
+  char path[_MAX_PATH];
+  int res;
+  memset (path, 0xf6, sizeof path);
+  res = _makepath (path, drv, dir, fname, ext);
+  if (should_error_p)
+    {
+      if (! res)
+	abort ();
+      /* path[] should be a valid string with a null terminator somewhere. */
+      if (! memchr (path, 0, _MAX_PATH))
+	abort ();
+    }
+  else
+    {
+      if (res)
+	abort ();
+      /* path[] should be the same as good_path[] (modulo letter case). */
+      if (strcasecmp (path, good_path) != 0)
+	abort ();
+    }
+  printf ("%u OK\n", test_num);
+}
+int
+main (void)
+{
+#ifdef __MSDOS__
+  char badness[_MAX_PATH];
+  memset (badness, 0xf6, sizeof badness);
+  check (1,  false, "\\", NULL, "\\", NULL, NULL);
+  check (2,  false, "/", NULL, "/", NULL, NULL);
+  check (3,  false, "foo", NULL, NULL, "foo", NULL);
+  check (4,  false, "foo.", NULL, NULL, "Foo", ".");
+  check (5,  false, "foo.bar", NULL, NULL, "foO", ".bAr");
+  check (6,  false, "foo.bar", NULL, NULL, "fOo", "Bar");
+  check (7,  false, "foo.bar/baz", NULL, "foo.Bar/", "baz", NULL);
+  check (8,  false, "foo.bar\\baz", NULL, "foo.bar\\", "BAZ", NULL);
+  check (9,  false, "foo.bar\\baz", NULL, "foo.bar", "BAZ", NULL);
+  check (10, false, "\\foo.bar\\ba?z", NULL, "\\foo.Bar", "ba?z", NULL);
+  check (11, false, "/foo.bar/ba?z", NULL, "/foo.bar", "BA?Z", NULL);
+  check (12, false, "\\foo.Bar/*.*", NULL, "\\foo.bar/", "*", "*");
+  check (13, false, "/foo.bar\\*.*", NULL, "/foo.bar\\", "*", ".*");
+  check (14, false, "\\foo/Bar/*.*", NULL, "\\foo/bar/", "*", "*");
+  check (15, false, "/foo\\bar\\*.*", NULL, "/foo\\bar\\", "*", ".*");
+  check (16, false, "a:\\", "a:", "\\", NULL, NULL);
+  check (17, false, "b:/", "B", "/", NULL, NULL);
+  check (18, true, NULL, "?", NULL, NULL, NULL);
+  check (19, true, NULL, "\\\\volume\\", NULL, NULL, NULL);
+  check (20, true, NULL, "//volume/", NULL, NULL, NULL);
+  check (21, false, "y:/foo\\bar/baz.qux/quux*.q?u",
+		    "y:", "/foo\\bar/baz.qux", "quux*", "q?u");
+  check (22, true, NULL, badness, badness, badness, badness);
+  check (23, true, NULL, NULL, badness, badness, badness);
+  check (24, true, NULL, NULL, NULL, badness, badness);
+  check (25, true, NULL, NULL, NULL, NULL, badness);
+  check (26, true, NULL, NULL, NULL, badness, NULL);
+  check (27, true, NULL, NULL, badness, NULL, NULL);
+  check (28, true, NULL, badness, NULL, NULL, NULL);
+#else
+# error
+#endif
+}]],[[1 OK
+2 OK
+3 OK
+4 OK
+5 OK
+6 OK
+7 OK
+8 OK
+9 OK
+10 OK
+11 OK
+12 OK
+13 OK
+14 OK
+15 OK
+16 OK
+17 OK
+18 OK
+19 OK
+20 OK
+21 OK
+22 OK
+23 OK
+24 OK
+25 OK
+26 OK
+27 OK
+28 OK
+]])
+AT_CLEANUP
+
 AT_SETUP([[_splitpath]])
 AT_LIBI86_CHECK(dnl
 [[#include <stdio.h>
