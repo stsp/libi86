@@ -121,7 +121,9 @@ OBJS		= bdos.o \
 		  intdosx.o \
 		  intr.o \
 		  kbhit.o \
+		  lltoa.o \
 		  lowvideo.o \
+		  ltoa.o \
 		  makepath.o \
 		  normvideo.o \
 		  nosound.o \
@@ -144,6 +146,8 @@ OBJS		= bdos.o \
 		  textbackground.o \
 		  textcolor.o \
 		  textmode.o \
+		  ulltoa.o \
+		  ultoa.o \
 		  ungetch.o \
 		  vcprintf.o \
 		  vcscanf.o \

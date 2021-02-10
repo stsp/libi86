@@ -65,12 +65,25 @@ _LIBI86_BEGIN_EXTERN_C
 extern unsigned _psp;
 extern unsigned char _osmajor, _osminor;
 
+extern char *_lltoa (long long __value, char *__buffer, int __radix);
+extern char *_ltoa (long __value, char *__buffer, int __radix);
 extern int _makepath (char __path[_MAX_PATH], const char *__drive,
 		      const char *__dir, const char *__fname,
 		      const char *__ext);
 extern void _splitpath (const char *__path, char __drive[_MAX_DRIVE],
 			char __dir[_MAX_DIR], char __fname[_MAX_FNAME],
 			char __ext[_MAX_EXT]);
+extern char *_ulltoa (unsigned long long __value, char *__buffer, int __radix);
+extern char *_ultoa (unsigned long __value, char *__buffer, int __radix);
+#ifndef _LIBI86_COMPILING_
+# ifndef __STRICT_ANSI__
+extern char *_LIBI86_REDIRECT (lltoa, (long long, char *, int), _lltoa);
+extern char *_LIBI86_REDIRECT (ltoa, (long, char *, int), _ltoa);
+extern char *_LIBI86_REDIRECT (ulltoa, (unsigned long long, char *, int),
+			       _ulltoa);
+extern char *_LIBI86_REDIRECT (ultoa, (unsigned long, char *, int), _ultoa);
+# endif
+#endif
 
 _LIBI86_END_EXTERN_C
 
