@@ -30,11 +30,11 @@ qw_as_sw_t;
 /*
  * Well, it looks like Open Watcom has the right idea here.  Since the base
  * is always in the range 2 to 36, we really only need to divide a 64-bit
- * dividend by a (!) 6-bit divisor, without roping in a generic 64-bit-by-
- * -64-bit division routine.
+ * dividend by a (!) 6-bit divisor --- & we do not have to rope in a generic
+ * (& expensive) 64-bit-by-64-bit division routine.
  *
  * The only wrinkle is that this simpler division, for now, must be
- * implemented using customized code.  -- tkchia 20210210
+ * implemented using customized code.  -- tkchia 20210211
  */
 static void
 ulldiv (unsigned long long dividend, unsigned divisor,

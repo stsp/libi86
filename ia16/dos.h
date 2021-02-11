@@ -45,6 +45,7 @@ extern unsigned _dos_close (int __handle);
 extern unsigned _dos_freemem (unsigned __seg);
 extern void _dos_getdrive (unsigned *__drive);
 extern unsigned _dos_getfileattr (const char *__path, unsigned *__attributes);
+extern void _dos_setdrive (unsigned __drive, unsigned *__total);
 extern unsigned _dos_setfileattr (const char *__path, unsigned __attributes);
 /* Note:  The Open Watcom C Library Reference has
 	int _getdrive (void);

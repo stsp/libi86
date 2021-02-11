@@ -260,19 +260,50 @@ int main (int argc, char **argv)
 }]],[[]])
 AT_CLEANUP
 
-AT_SETUP([[_dos_getdrive, _getdrive]])
+AT_SETUP([[_dos_getdrive, _getdrive, _dos_setdrive]])
 AT_LIBI86_CHECK(dnl
 [[#include <dos.h>
-#include <errno.h>
 void abort (void);
-int main (int argc, char **argv)
+int
+main (void)
 {
-  unsigned drive = 0xf6f6u;
+  unsigned drive = 0xf6f6u, total = 0xf6f6, new_drive, new_total = 0xf6f6;
   _dos_getdrive (&drive);
   if (drive < 1 || drive > 0xff)
     abort ();
   if (drive != _getdrive ())
     abort ();
+  _dos_setdrive (drive, &total);
+  if (total < drive || total > 0xff)
+    abort ();
+  if (_getdrive () != drive)
+    abort ();
+  _dos_setdrive (0, &new_total);  /* this should do nothing */
+  if (new_total != total)
+    abort ();
+  if (_getdrive () != drive)
+    abort ();
+  new_total = 0xf6f6;
+  _dos_setdrive (total + 1, &new_total);  /* this should also do nothing */
+  if (new_total != total)
+    abort ();
+  if (_getdrive () != drive)
+    abort ();
+  new_total = 0xf6f6;
+  _dos_setdrive (drive + 0x100, &new_total);  /* this should also do nothing */
+  if (new_total != total)
+    abort ();
+  if (_getdrive () != drive)
+    abort ();
+  for (new_drive = 1; new_drive <= drive; ++new_drive)
+    {
+      new_total = 0xf6f6;
+      _dos_setdrive (new_drive, &new_total);  /* this should do something */
+      if (new_total != total)
+	abort ();
+      if (_getdrive () != new_drive)
+	abort ();
+    }
   return 0;
 }]],[[]])
 AT_CLEANUP
