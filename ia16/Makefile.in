@@ -97,6 +97,8 @@ OBJS		= bdos.o \
 		  dos-setdrive.o \
 		  dos-setfileattr.o \
 		  dpmi-hosted.o \
+		  dpmiallocatedosmemoryblock.o \
+		  dpmifreedosmemoryblock.o \
 		  dpmigetdescriptor.o \
 		  dpmisegmenttodescriptor.o \
 		  dpmisimulaterealmodeint.o \

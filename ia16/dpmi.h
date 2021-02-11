@@ -82,6 +82,39 @@ typedef struct __attribute__ ((packed))
   }
 rm_call_struct;
 
+typedef struct
+  {
+    uint16_t rm, pm;
+  }
+dpmi_dos_block;
+
+_LIBI86_ALT_INLINE dpmi_dos_block
+_DPMIAllocateDOSMemoryBlock (uint16_t __paras)
+{
+  dpmi_dos_block __blk;
+  int __xx;
+  __asm volatile ("int {$}0x31; "
+		  "jnc 0f; "
+		  "xor{w} %0, %0; "
+		  "cw{t}d; "
+		  "0:"
+		  : "=a" (__blk.rm), "=d" (__blk.pm), "=b" (__xx)
+		  : "0" (0x0100U), "2" (__paras)
+		  : "cc", "memory");
+  return __blk;
+}
+
+_LIBI86_ALT_INLINE int
+_DPMIFreeDOSMemoryBlock (uint16_t __sel)
+{
+  int __res;
+  __asm volatile ("int {$}0x31; sbb{w} %0, %0"
+		  : "=a" (__res)
+		  : "0" (0x0101U), "d" (__sel)
+		  : "cc", "memory");
+  return __res;
+}
+
 _LIBI86_ALT_INLINE int
 #ifdef __FAR
 _DPMIGetDescriptor (uint16_t __sel, descriptor __far *__desc)
@@ -89,24 +122,24 @@ _DPMIGetDescriptor (uint16_t __sel, descriptor __far *__desc)
 _DPMIGetDescriptor (uint16_t __sel, __libi86_fpv __desc)
 #endif
 {
-  int __res, __xx;
+  int __res;
   __asm volatile ("int {$}0x31; sbb{w} %0, %0"
-		  : "=a" (__res), "=b" (__xx)
-		  : "0" (0x000bu), "1" (__sel),
+		  : "=a" (__res)
+		  : "0" (0x000bU), "b" (__sel),
 		    "e" (FP_SEG (__desc)), "D" (FP_OFF (__desc))
-		  : "cc", "cx", "dx", "memory");
+		  : "cc", "memory");
   return __res;
 }
 
 _LIBI86_ALT_INLINE int32_t
 _DPMISegmentToDescriptor (uint16_t __para)
 {
-  uint16_t __sel, __xx;
+  uint16_t __sel;
   int __res;
  __asm volatile ("int {$}0x31; sbb{w} %1, %1"
-		 : "=a,a" (__sel), "=d,b" (__res), "=b,d" (__xx)
-		 : "0,0" (0x0002u), "b,b" (__para)
-		 : "cc", "cx", "memory");
+		 : "=a" (__sel), "=r" (__res)
+		 : "0" (0x0002U), "b" (__para)
+		 : "cc", "memory");
   if (__res < 0)
     return -1L;
   return (int32_t) __sel;
@@ -117,14 +150,14 @@ _DPMISimulateRealModeInterrupt (uint8_t __interrupt, uint8_t __flags,
 				uint16_t __words_to_copy,
 				rm_call_struct __far *__call_st)
 {
-  int __res, __xx1, __xx2;
+  int __res;
   __asm volatile ("int {$}0x31; sbb{w} %0, %0"
-		  : "=a" (__res), "=b" (__xx1), "=c" (__xx2)
-		  : "0" (0x0300u),
-		    "1" ((uint16_t) __flags << 8 | __interrupt),
-		    "2" (__words_to_copy),
+		  : "=a" (__res)
+		  : "0" (0x0300U),
+		    "b" ((uint16_t) __flags << 8 | __interrupt),
+		    "c" (__words_to_copy),
 		    "e" (FP_SEG (__call_st)), "D" (FP_OFF (__call_st))
-		  : "cc", "dx", "memory");
+		  : "cc", "memory");
   return __res;
 }
 

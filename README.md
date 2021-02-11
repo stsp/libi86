@@ -120,6 +120,8 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |     |
 |     | **`▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖`** | **Except for `__DPMI_hosted ()`, functions in `<dpmi.h>` should only be called when the caller knows it is running in DPMI mode.**
 |  IW | `__DPMI_hosted ();` | Returns 1 if running in protected mode under DPMI, -1 otherwise.  If the underlying C library has an implementation of this function, `libi86` will use that instead.
+|  IW | `_DPMIAllocateDOSMemoryBlock (`_paras_`);` | `int 0x31` function `0x0100`.  Returns a structure giving the real mode segment and protected mode selector for the DOS memory block.  On failure, returns `{ 0, 0 }`.
+|  IW | `_DPMIFreeDOSMemoryBlock (`_sel_`);` | `int 0x31` function `0x0101`.  Returns 0 on success, -1 on error.
 |  IW | `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);` | `int 0x31` function `0x000b`.  Returns 0 on success, -1 on error.
 |  IW | `_DPMISegmentToDescriptor (`_seg-para_`);` | `int 0x31` function `0x0002`.  On success, returns a protected-mode selector value for the real-mode segment _seg-para_`:0`.  On failure, returns a negative value.
 |  IW | `_DPMISimulateRealModeInterrupt (`_inter-no_`,` _reset_`,` _words-to-copy_`,` \*_call-struct_`);` | `int 0x31` function `0x0300`.  Returns 0 on success, -1 on error.  _words-to-copy_ should probably be 0.
