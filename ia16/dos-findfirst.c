@@ -109,7 +109,7 @@ _dos_findfirst (const char *path, unsigned attr, struct find_t *buf)
       rmc.cx = attr;
       rmc.ds = path_blk.rm;
       rmc.dx = 0;
-      res = _DPMISimulateRealModeInterrupt (0x21, 0, 0, &rmc) != 0;
+      res = _DPMISimulateRealModeInterrupt (0x21, 0, 0, &rmc);
 
       __libi86_dpmi_low_free_str (path_blk);
       *buf = *dta;
