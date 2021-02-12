@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2021 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -17,47 +17,62 @@
  */
 
 #define _LIBI86_COMPILING_
-#include <stdint.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+#include "dos.h"
 #include "libi86/internal/dos.h"
 #ifdef __IA16_FEATURE_PROTECTED_MODE
 # include "dpmi.h"
 #endif
 
 unsigned
-_dos_allocmem (unsigned size, unsigned *seg)
+_dos_findnext (struct find_t *buf)
 {
-  unsigned ax, max_paras;
-  int res;
 #ifdef __IA16_FEATURE_PROTECTED_MODE
   if (__DPMI_hosted () == 1)
     {
-      unsigned sel;
-      __asm volatile ("int $0x31; sbbw %3, %3"
-		      : "=a" (ax), "=d" (sel), "=b" (max_paras), "=c" (res)
-		      : "0" (0x0100u), "2" (size)
-		      : "cc", "memory");
-      if (! res)
+      struct find_t __far *dta = __libi86_dpmi_set_dta ();
+      rm_call_struct rmc;
+      int res;
+
+      if (! dta)
+	return errno;
+
+      *dta = *buf;
+
+      rmc.ax = 0x4f00U;
+      res = _DPMISimulateRealModeInterrupt (0x21, 0, 0, &rmc) != 0;
+
+      *buf = *dta;
+
+      if (res != 0)
 	{
-	  *seg = sel;
-	  return 0;
+	  errno = res = EIO;
+	  return res;
 	}
+
+      if ((rmc.flags & 1) != 0)
+	{
+	  errno = res = rmc.ax;
+	  return res;
+	}
+
+      return 0;
     }
   else
 #endif
     {
-      int xx;
-      __asm volatile ("int $0x21; sbbw %2, %2"
-		      : "=a,a" (ax), "=b,b" (max_paras),
-			"=c,d" (res), "=d,c" (xx)
-		      : "Rah,Rah" ((unsigned char) 0x48), "1,1" (size)
-		      : "cc", "memory");
-      if (! res)
-	{
-	  *seg = ax;
-	  return 0;
-	}
-    }
+      unsigned ax, res, xx1, xx2;
 
-  *seg = max_paras;
-  return __libi86_ret_really_set_errno (ax);
+      __libi86_msdos_set_dta (buf);
+      __asm volatile ("int $0x21; sbbw %1, %1"
+		      : "=a" (ax), "=bcd" (res), "=bcd" (xx1), "=bcd" (xx2)
+		      : "Rah" ((unsigned char) 0x4f)
+		      : "cc", "memory");
+
+      if (res)
+	return __libi86_ret_really_set_errno (ax);
+      return 0;
+    }
 }

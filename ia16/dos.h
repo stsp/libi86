@@ -35,6 +35,16 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
+struct __attribute__ ((__packed__)) find_t
+{
+  char reserved[21];
+  char attrib;
+  unsigned short wr_time;
+  unsigned short wr_date;
+  unsigned long size;
+  char name[13];
+};
+
 extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
 extern int bdosptr (int __dos_func, void *__dx, unsigned __al);
 extern int _LIBI86_BC_REDIRECT (intdos, (const union REGS *, union REGS *));
@@ -42,6 +52,10 @@ extern int _LIBI86_BC_REDIRECT
 	     (intdosx, (const union REGS *, union REGS *, struct SREGS *));
 extern unsigned _dos_allocmem (unsigned __size, unsigned *__seg);
 extern unsigned _dos_close (int __handle);
+extern unsigned _dos_findfirst (const char *__path, unsigned __attr,
+				struct find_t *__buf);
+extern unsigned _dos_findnext (struct find_t *__buf);
+extern unsigned _dos_findclose (struct find_t *__buf);
 extern unsigned _dos_freemem (unsigned __seg);
 extern void _dos_getdrive (unsigned *__drive);
 extern unsigned _dos_getfileattr (const char *__path, unsigned *__attributes);
@@ -52,6 +66,12 @@ extern unsigned _dos_setfileattr (const char *__path, unsigned __attributes);
    but the actual <dos.h> and <direct.h> files in Open Watcom both give an
    unsigned return type.  */
 extern unsigned _getdrive (void);
+
+_LIBI86_ALT_INLINE unsigned
+_dos_findclose (struct find_t *__buf)
+{
+  return 0;
+}
 
 _LIBI86_END_EXTERN_C
 

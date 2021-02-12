@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019--2020 TK Chia
+ * Copyright (c) 2019--2021 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -45,20 +45,20 @@ extern int __libi86_DPMI_hosted (void);
  * very library.
  */
 
-typedef struct __attribute__ ((packed))
+typedef struct __attribute__ ((__packed__))
   {
     uint8_t accessed : 1, rdwr : 1, exp_down: 1, execute : 1,
 	    mustbe_1 : 1, dpl : 2, present : 1;
   }
 dsc_type;
 
-typedef struct __attribute__ ((packed))
+typedef struct __attribute__ ((__packed__))
   {
     uint8_t : 4, useravail : 1, mustbe_0 : 1, use32 : 1, page_gran : 1;
   }
 dsc_xtype;
 
-typedef struct __attribute__ ((packed))
+typedef struct __attribute__ ((__packed__))
   {
     uint16_t lim_0_15, base_0_15;
     uint8_t base_16_23;
@@ -77,7 +77,42 @@ descriptor;
 
 typedef struct __attribute__ ((packed))
   {
-    uint32_t edi, esi, ebp, reserved, ebx, edx, ecx, eax;
+    union
+      {
+	uint32_t edi;
+	uint16_t di;
+      };
+    union
+      {
+	uint32_t esi;
+	uint16_t si;
+      };
+    union
+      {
+	uint32_t ebp;
+	uint16_t bp;
+      };
+    uint32_t reserved;
+    union
+      {
+	uint32_t ebx;
+	uint16_t bx;
+      };
+    union
+      {
+	uint32_t edx;
+	uint16_t dx;
+      };
+    union
+      {
+	uint32_t ecx;
+	uint16_t cx;
+      };
+    union
+      {
+	uint32_t eax;
+	uint16_t ax;
+      };
     uint16_t flags, es, ds, fs, gs, ip, cs, sp, ss;
   }
 rm_call_struct;

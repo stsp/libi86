@@ -504,3 +504,31 @@ main (int argc, char **argv)
 8 OK
 ]])
 AT_CLEANUP
+
+AT_SETUP([[_dos_findfirst, _dos_findnext, _dos_findclose]])
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+#include <errno.h>
+#include <string.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+#ifdef __MSDOS__
+  struct find_t find;
+  memset (&find, 0xf6, sizeof find);
+  /* This program should be able to find itself, exactly once... */
+  if (_dos_findfirst (argv[0], _A_HIDDEN | _A_SYSTEM, &find) != 0)
+    abort ();
+  if ((find.attrib & (_A_VOLID | _A_SUBDIR)) != 0)
+    abort ();
+  if (_dos_findnext (&find) != 18)  /* "no more files" */
+    abort ();
+  if (_dos_findclose (&find) != 0)
+    abort ();
+  return 0;
+#else
+# error
+#endif
+}]],[[]])
+AT_CLEANUP

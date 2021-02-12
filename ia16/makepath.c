@@ -21,7 +21,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "libi86/stdlib.h"
-#include "libi86/internal/path.h"
+#include "libi86/internal/dos.h"
 
 #ifdef __MSDOS__
 # define ADD_CHAR(x) \

@@ -18,12 +18,10 @@
 
 #define _LIBI86_COMPILING_
 #include <stdint.h>
+#include "libi86/internal/dos.h"
 #ifdef __IA16_FEATURE_PROTECTED_MODE
 # include "dpmi.h"
 #endif
-
-extern __attribute__ ((regparmcall)) unsigned
-__libi86_ret_really_set_errno (unsigned);
 
 unsigned
 _dos_freemem (unsigned seg)

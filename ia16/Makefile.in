@@ -91,6 +91,9 @@ OBJS		= bdos.o \
 		  disable.o \
 		  dos-allocmem.o \
 		  dos-close.o \
+		  dos-findclose.o \
+		  dos-findfirst.o \
+		  dos-findnext.o \
 		  dos-freemem.o \
 		  dos-getdrive.o \
 		  dos-getfileattr.o \
@@ -204,8 +207,8 @@ HEADERS		= $(filter-out libi86/config.h,$(INSTALL_HEADERS)) \
 		  libi86/internal/arch.h \
 		  libi86/internal/call-cvt.h \
 		  libi86/internal/conio.h \
+		  libi86/internal/dos.h \
 		  libi86/internal/graph.h \
-		  libi86/internal/path.h \
 		  libi86/internal/struc.h
 BSP		= $(INSTALL_LIBS)
 

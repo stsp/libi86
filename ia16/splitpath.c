@@ -19,7 +19,7 @@
 #define _LIBI86_COMPILING_
 #include <string.h>
 #include "libi86/stdlib.h"
-#include "libi86/internal/path.h"
+#include "libi86/internal/dos.h"
 
 #ifdef __MSDOS__
 static const char *

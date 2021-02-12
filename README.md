@@ -111,6 +111,9 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 | W/B | `intdosx (`\*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
 |  W+ | `_dos_allocmem (`_size_`,` \*_segment_`);` | Also works under DPMI; yields a starting protected-mode selector.
 |   W | `_dos_close (`_handle_`);`
+|   W | `_dos_findfirst (`\*_path_`,` _attributes_`,` \*_buffer_`);`
+|   W | `_dos_findnext (`\*_buffer_`);`
+|   W | `_dos_findclose (`\*_buffer_`);`
 |  W+ | `_dos_freemem (`_segment_`);` | Also works under DPMI; accepts a starting protected-mode selector.
 |   W | `_dos_getdrive (`\*_drive_`);`
 |   W | `_dos_getfileattr (`\*_path_`,` \*_attributes_`);`
@@ -159,16 +162,16 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |   W | \*`_MK_FP (`_seg_`,` _off_`);` | Macro.
 |     |
 |     | **`▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖`**
-|   W | `lltoa (`_value_`,` \*_buffer_`,` _radix_`);`
-|   W | `_lltoa (`_value_`,` \*_buffer_`,` _radix_`);`
-|   W | `ltoa (`_value_`,` \*_buffer_`,` _radix_`);`
-|   W | `_ltoa (`_value_`,` \*_buffer_`,` _radix_`);`
+|   W | \*`lltoa (`_value_`,` \*_buffer_`,` _radix_`);`
+|   W | \*`_lltoa (`_value_`,` \*_buffer_`,` _radix_`);`
+|   W | \*`ltoa (`_value_`,` \*_buffer_`,` _radix_`);`
+|   W | \*`_ltoa (`_value_`,` \*_buffer_`,` _radix_`);`
 |  W+ | `_makepath (`\*_path_`,` \*_drive_`,` \*_dir_`,` \*_fname_`,` \*_ext_`);` | As extensions, this function (1) checks for buffer overflow, and (2) gives a return value.  Upon an error, the return value is non-zero, `errno` is set, and _path_`[]` holds either an empty string or a truncated path.  Network _drive_`[]` values starting with two backslashes (`\\`) are not supported.
 |   W | `_splitpath (`\*_path_`,` \*_drive_`,` \*_dir_`,` \*_fname_`,` \*_ext_`);` | Long filenames, and network paths starting with two backslashes (`\\`), are not supported.
-|   W | `ulltoa (`_value_`,` \*_buffer_`,` _radix_`);`
-|   W | `_ulltoa (`_value_`,` \*_buffer_`,` _radix_`);`
-|   W | `ultoa (`_value_`,` \*_buffer_`,` _radix_`);`
-|   W | `_ultoa (`_value_`,` \*_buffer_`,` _radix_`);`
+|   W | \*`ulltoa (`_value_`,` \*_buffer_`,` _radix_`);`
+|   W | \*`_ulltoa (`_value_`,` \*_buffer_`,` _radix_`);`
+|   W | \*`ultoa (`_value_`,` \*_buffer_`,` _radix_`);`
+|   W | \*`_ultoa (`_value_`,` \*_buffer_`,` _radix_`);`
 |     |
 |     | **`▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖`**
 |   W | \*`_fmemcpy (`\*_dest_`,` \*_src_`,` _n_`);`
