@@ -91,6 +91,7 @@ OBJS		= bdos.o \
 		  disable.o \
 		  dos-allocmem.o \
 		  dos-close.o \
+		  dos-commit.o \
 		  dos-findclose.o \
 		  dos-findfirst.o \
 		  dos-findnext.o \

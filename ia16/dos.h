@@ -52,6 +52,7 @@ extern int _LIBI86_BC_REDIRECT
 	     (intdosx, (const union REGS *, union REGS *, struct SREGS *));
 extern unsigned _dos_allocmem (unsigned __size, unsigned *__seg);
 extern unsigned _dos_close (int __handle);
+extern unsigned _dos_commit (int __handle);
 extern unsigned _dos_findfirst (const char *__path, unsigned __attr,
 				struct find_t *__buf);
 extern unsigned _dos_findnext (struct find_t *__buf);

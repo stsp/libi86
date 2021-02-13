@@ -111,6 +111,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 | W/B | `intdosx (`\*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
 |  W+ | `_dos_allocmem (`_size_`,` \*_segment_`);` | Also works under DPMI; yields a starting protected-mode selector.
 |   W | `_dos_close (`_handle_`);`
+|   W | `_dos_commit (`_handle_`);`
 |   W | `_dos_findfirst (`\*_path_`,` _attributes_`,` \*_buffer_`);`
 |   W | `_dos_findnext (`\*_buffer_`);`
 |   W | `_dos_findclose (`\*_buffer_`);`
