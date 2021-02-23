@@ -98,6 +98,7 @@ OBJS		= bdos.o \
 		  dos-freemem.o \
 		  dos-getdrive.o \
 		  dos-getfileattr.o \
+		  dos-getvect.o \
 		  dos-setdrive.o \
 		  dos-setfileattr.o \
 		  dpmi-hosted.o \

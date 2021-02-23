@@ -97,8 +97,12 @@ __libi86_fpv, __libi86_fpcv, __libi86_fpvv, __libi86_fpcvv, __libi86_fpcc;
  */
 #ifdef _LIBI86_COMPILING_
 # define _LIBI86_DEPRECATED(msg)
+# define _LIBI86_WARNING(msg)
+# define _LIBI86_ERROR(msg)
 #else
 # define _LIBI86_DEPRECATED(msg) __attribute__ ((__deprecated__ (msg)))
+# define _LIBI86_WARNING(msg)	__attribute__ ((__warning__ (msg)))
+# define _LIBI86_ERROR(msg)	__attribute__ ((__error__ (msg)))
 #endif
 /*
  * Many of the header files have `extern inline' versions of functions which

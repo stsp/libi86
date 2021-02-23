@@ -108,7 +108,7 @@ extern short __libi86_setvideomode_svga (short);
 # ifndef __OPTIMIZE__
 extern short _setvideomode (short);
 # else  /* __OPTIMIZE__ */
-__attribute__ ((always_inline)) static short
+__attribute__ ((__always_inline__)) static short
 __libi86_setvideomode_inline_dispatch (short mode)
 {
   switch (mode)

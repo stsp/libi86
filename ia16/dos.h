@@ -49,7 +49,7 @@ extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
 extern int bdosptr (int __dos_func, void *__dx, unsigned __al);
 extern int _LIBI86_BC_REDIRECT (intdos, (const union REGS *, union REGS *));
 extern int _LIBI86_BC_REDIRECT
-	     (intdosx, (const union REGS *, union REGS *, struct SREGS *));
+		     (intdosx, (const union REGS *, union REGS *, struct SREGS *));
 extern unsigned _dos_allocmem (unsigned __size, unsigned *__seg);
 extern unsigned _dos_close (int __handle);
 extern unsigned _dos_commit (int __handle);
@@ -62,11 +62,40 @@ extern void _dos_getdrive (unsigned *__drive);
 extern unsigned _dos_getfileattr (const char *__path, unsigned *__attributes);
 extern void _dos_setdrive (unsigned __drive, unsigned *__total);
 extern unsigned _dos_setfileattr (const char *__path, unsigned __attributes);
-/* Note:  The Open Watcom C Library Reference has
-	int _getdrive (void);
-   but the actual <dos.h> and <direct.h> files in Open Watcom both give an
-   unsigned return type.  */
+/*
+ * Note:  The Open Watcom C Library Reference has
+ *	int _getdrive (void);
+ * but the actual <dos.h> and <direct.h> files in Open Watcom both give an
+ * unsigned return type.
+ */
 extern unsigned _getdrive (void);
+
+#ifdef __IA16_FEATURE_ATTRIBUTE_INTERRUPT
+typedef void __far (*__libi86_isr_t) (/* ... */)
+				     __attribute__ ((__interrupt__));
+extern __libi86_isr_t _dos_getvect (unsigned __intr_no);
+extern void _dos_setvect (unsigned __intr_no, __libi86_isr_t __isr);
+#else
+typedef const void __far *__libi86_isr_t;
+extern __libi86_isr_t _dos_getvect (unsigned __intr_no)
+		      _LIBI86_WARNING ("_dos_getvect (.) not fully supported: "
+				       "interrupt attribute unrecognized");
+/*
+ * If the compiler does not know about __attribute__ ((interrupt)) at all,
+ * it may simply ignore the attribute & treat interrupt routines as normal
+ * routines.
+ *
+ * This may result in incorrect code for interrupt routines, which will be
+ * bad.
+ *
+ * To try to avert such a situation, if a program tries to install its own
+ * interrupt handler with _dos_setvect (, ), & __attribute__ ((interrupt))
+ * is not recognized, then flag an error.
+ */
+extern void _dos_setvect (unsigned __intr_no, __libi86_isr_t __isr);
+	    _LIBI86_ERROR ("_dos_setvect (.) not supported: "
+			   "interrupt attribute unrecognized");
+#endif
 
 _LIBI86_ALT_INLINE unsigned
 _dos_findclose (struct find_t *__buf)

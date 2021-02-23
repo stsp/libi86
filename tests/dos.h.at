@@ -532,3 +532,25 @@ main (int argc, char **argv)
 #endif
 }]],[[]])
 AT_CLEANUP
+
+AT_SETUP([[_dos_getvect]])
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+[[#include <dos.h>
+void abort (void);
+int
+main (void)
+{
+#ifdef __MSDOS__
+  /*
+   * Check that the interrupt 0x30 vector "address" is the start of a far
+   * jump instruction.  This only works in real or V86 mode.
+   */
+  unsigned long vec_0x30 = (unsigned long) _dos_getvect (0x30);
+  if ((unsigned char) vec_0x30 != 0xea)
+    abort ();
+  return 0;
+#else
+# error
+#endif
+}]],[[]])
+AT_CLEANUP

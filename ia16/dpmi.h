@@ -75,7 +75,7 @@ typedef struct __attribute__ ((__packed__))
   }
 descriptor;
 
-typedef struct __attribute__ ((packed))
+typedef struct __attribute__ ((__packed__))
   {
     union
       {
