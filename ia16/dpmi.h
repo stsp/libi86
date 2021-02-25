@@ -154,7 +154,7 @@ _LIBI86_ALT_INLINE int
 #ifdef __FAR
 _DPMIGetDescriptor (uint16_t __sel, descriptor __far *__desc)
 #else
-_DPMIGetDescriptor (uint16_t __sel, __libi86_fpv __desc)
+_DPMIGetDescriptor (uint16_t __sel, __libi86_fpv_t __desc)
 #endif
 {
   int __res;
@@ -181,7 +181,7 @@ _DPMISegmentToDescriptor (uint16_t __para)
 }
 
 _LIBI86_ALT_INLINE int
-_DPMISimulateRealModeInterrupt (uint8_t __interrupt, uint8_t __flags,
+_DPMISimulateRealModeInterrupt (uint8_t __intr_no, uint8_t __flags,
 				uint16_t __words_to_copy,
 				rm_call_struct __far *__call_st)
 {
@@ -189,7 +189,7 @@ _DPMISimulateRealModeInterrupt (uint8_t __interrupt, uint8_t __flags,
   __asm volatile ("int {$}0x31; sbb{w} %0, %0"
 		  : "=a" (__res)
 		  : "0" (0x0300U),
-		    "b" ((uint16_t) __flags << 8 | __interrupt),
+		    "b" ((uint16_t) __flags << 8 | __intr_no),
 		    "c" (__words_to_copy),
 		    "e" (FP_SEG (__call_st)), "D" (FP_OFF (__call_st))
 		  : "cc", "memory");

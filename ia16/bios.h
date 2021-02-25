@@ -26,7 +26,7 @@ _LIBI86_BEGIN_EXTERN_C
 struct diskinfo_t
 {
   unsigned drive, head, track, sector, nsectors;
-  __libi86_fpv buffer;
+  __libi86_fpv_t buffer;
 };
 
 /* Not in Open Watcom.  */

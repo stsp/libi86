@@ -90,8 +90,8 @@ struct rccoord
 extern void _clearscreen (short __area);
 extern struct rccoord _gettextposition (void);
 extern short _getvideomode (void);
-extern void _outmem (__libi86_fpcc __text, short __length);
-extern void _outtext (__libi86_fpcc __text);
+extern void _outmem (__libi86_fpcc_t __text, short __length);
+extern void _outtext (__libi86_fpcc_t __text);
 extern void _scrolltextwindow (short __rows);
 extern struct rccoord _settextposition (short __row, short __col);
 extern short _settextcolor (short __pixval);

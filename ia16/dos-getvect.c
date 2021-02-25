@@ -17,6 +17,7 @@
  */
 
 #define _LIBI86_COMPILING_
+#include "libi86/internal/cdefs.h"
 #include "dos.h"
 #ifdef __IA16_FEATURE_PROTECTED_MODE
 # include "dpmi.h"
@@ -25,8 +26,7 @@
 __libi86_isr_t
 _dos_getvect (unsigned intr_no)
 {
-  typedef __typeof__ ((__builtin_ia16_selector (8))) SEG_t;
-  SEG_t seg;
+  _LIBI86_SEG_SELECTOR seg;
   unsigned off;
 #ifdef __IA16_FEATURE_PROTECTED_MODE
   if (__DPMI_hosted () == 1)

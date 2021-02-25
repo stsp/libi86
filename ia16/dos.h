@@ -70,31 +70,18 @@ extern unsigned _dos_setfileattr (const char *__path, unsigned __attributes);
  */
 extern unsigned _getdrive (void);
 
-#ifdef __IA16_FEATURE_ATTRIBUTE_INTERRUPT
-typedef void __far (*__libi86_isr_t) (/* ... */)
-				     __attribute__ ((__interrupt__));
+#ifdef __INTERRUPT
+typedef void __interrupt __far (*__libi86_isr_t) (/* ... */);
 extern __libi86_isr_t _dos_getvect (unsigned __intr_no);
 extern void _dos_setvect (unsigned __intr_no, __libi86_isr_t __isr);
 #else
-typedef const void __far *__libi86_isr_t;
+typedef __libi86_fpcv_t __libi86_isr_t;
 extern __libi86_isr_t _dos_getvect (unsigned __intr_no)
 		      _LIBI86_WARNING ("_dos_getvect (.) not fully supported: "
-				       "interrupt attribute unrecognized");
-/*
- * If the compiler does not know about __attribute__ ((interrupt)) at all,
- * it may simply ignore the attribute & treat interrupt routines as normal
- * routines.
- *
- * This may result in incorrect code for interrupt routines, which will be
- * bad.
- *
- * To try to avert such a situation, if a program tries to install its own
- * interrupt handler with _dos_setvect (, ), & __attribute__ ((interrupt))
- * is not recognized, then flag an error.
- */
-extern void _dos_setvect (unsigned __intr_no, __libi86_isr_t __isr);
+				       "__interrupt unrecognized");
+extern void _dos_setvect (unsigned __intr_no, __libi86_isr_t __isr)
 	    _LIBI86_ERROR ("_dos_setvect (.) not supported: "
-			   "interrupt attribute unrecognized");
+			   "__interrupt unrecognized");
 #endif
 
 _LIBI86_ALT_INLINE unsigned

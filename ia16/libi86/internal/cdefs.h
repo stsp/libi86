@@ -2,7 +2,7 @@
  * Various macros and type definitions, for use by libi86 modules and other
  * libi86 header files.
  *
- * Copyright (c) 2018--2020 TK Chia
+ * Copyright (c) 2018--2021 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -31,11 +31,11 @@
 #endif
 
 #ifdef __FAR
-typedef void __far *__libi86_fpv;
-typedef const void __far *__libi86_fpcv;
-typedef volatile void __far *__libi86_fpvv;
-typedef const volatile void __far *__libi86_fpcvv;
-typedef const char __far *__libi86_fpcc;
+typedef void __far *__libi86_fpv_t;
+typedef const void __far *__libi86_fpcv_t;
+typedef volatile void __far *__libi86_fpvv_t;
+typedef const volatile void __far *__libi86_fpcvv_t;
+typedef const char __far *__libi86_fpcc_t;
 /*
  * As of October 2020, GCC does not yet support named address spaces --- in
  * particular our __far keyword --- for the C++ & Objective-C languages.
@@ -47,7 +47,8 @@ typedef struct
   {
     unsigned long __p_;
   }
-__libi86_fpv, __libi86_fpcv, __libi86_fpvv, __libi86_fpcvv, __libi86_fpcc;
+__libi86_fpv_t, __libi86_fpcv_t, __libi86_fpvv_t, __libi86_fpcvv_t,
+__libi86_fpcc_t;
 #endif
 
 /*
@@ -135,6 +136,19 @@ __libi86_fpv, __libi86_fpcv, __libi86_fpvv, __libi86_fpcvv, __libi86_fpcc;
 	{ \
 	  return alias_to (__arg1, __arg2); \
 	}
+
+/*
+ * Try to define a Watcom-compatible __interrupt "type qualifier", if the
+ * compiler does not already define or recognize it.
+ */
+#ifndef __INTERRUPT
+# if defined __interrupt
+#   warning "suspicious __interrupt macro definition"
+# elif defined __IA16_FEATURE_ATTRIBUTE_INTERRUPT
+#   define __interrupt	__attribute__ ((__interrupt__))
+#   define __INTERRUPT
+# endif
+#endif
 
 /* And... */
 typedef __builtin_va_list _LIBI86_VA_LIST;

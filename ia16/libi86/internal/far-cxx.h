@@ -153,11 +153,11 @@ public:
 
 } /* namespace __libi86 */
 
-typedef __libi86::__far_ptr<void> __libi86_fpv;
-typedef __libi86::__far_ptr<const void> __libi86_fpcv;
-typedef __libi86::__far_ptr<volatile void> __libi86_fpvv;
-typedef __libi86::__far_ptr<const volatile void> __libi86_fpcvv;
-typedef __libi86::__far_ptr<const char> __libi86_fpcc;
+typedef __libi86::__far_ptr<void> __libi86_fpv_t;
+typedef __libi86::__far_ptr<const void> __libi86_fpcv_t;
+typedef __libi86::__far_ptr<volatile void> __libi86_fpvv_t;
+typedef __libi86::__far_ptr<const volatile void> __libi86_fpcvv_t;
+typedef __libi86::__far_ptr<const char> __libi86_fpcc_t;
 
 } /* extern "C++" */
 
