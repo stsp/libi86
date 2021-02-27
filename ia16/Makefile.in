@@ -101,6 +101,7 @@ OBJS		= bdos.o \
 		  dos-getvect.o \
 		  dos-setdrive.o \
 		  dos-setfileattr.o \
+		  dos-setvect.o \
 		  dpmi-hosted.o \
 		  dpmiallocatedosmemoryblock.o \
 		  dpmifreedosmemoryblock.o \

@@ -118,9 +118,10 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |  W+ | `_dos_freemem (`_segment_`);` | Also works under DPMI; accepts a starting protected-mode selector.
 |   W | `_dos_getdrive (`\*_drive_`);`
 |   W | `_dos_getfileattr (`\*_path_`,` \*_attributes_`);`
-|   W | \*`_dos_getvect (`_intr-no_`);` | Some versions of `gcc-ia16` may not understand the `interrupt` function attribute.  In this case, this function will return a far data pointer.
+|   W | \*`_dos_getvect (`_intr-no_`);` | Some versions of `gcc-ia16` may not understand the `interrupt` function attribute.  In that case, this function will return a far data pointer.
 |   W | `_dos_setdrive (`_drive_`,` \*_total_`);`
 |   W | `_dos_setfileattr (`\*_path_`,` _attributes_`);`
+|   W | `_dos_setvect (`_intr-no_`,` \*_handler_`);` | Some versions of `gcc-ia16` may not understand the `interrupt` function attribute.  In that case, this function will not be supported.
 |   W | `_getdrive ();`
 |     |
 |     | **`▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖`** | **Except for `__DPMI_hosted ()`, functions in `<dpmi.h>` should only be called when the caller knows it is running in DPMI mode.**
