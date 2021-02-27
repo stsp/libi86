@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2021 TK Chia
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,21 @@ int
 putch (int ch)
 {
   unsigned char ch2 = (unsigned char) ch;
-  ssize_t n = write (__libi86_con_out_fd, &ch2, 1);
+  ssize_t n;
+
+  if (ch2 == (unsigned char) '\n')
+    {
+      unsigned char cr = '\r';
+      n = write (__libi86_con_out_fd, &cr, 1);
+      if (n != 1)
+	{
+	  if (n >= 0)
+	    errno = EIO;
+	  return EOF;
+	}
+    }
+
+  n = write (__libi86_con_out_fd, &ch2, 1);
   if (n == 1)
     return (int) ch2;
 
