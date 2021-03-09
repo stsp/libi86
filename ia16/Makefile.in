@@ -72,133 +72,134 @@ INSTALL_HEADERS	= bios.h \
 CLEAN_HEADERS	= libi86/config.h \
 		  libi86/internal/acconfig.h
 
-OBJS		= bdos.o \
-		  bios-disk.o \
-		  bios-equiplist.o \
-		  bios-joystick.o \
-		  bios-keybrd.o \
-		  bios-memsize.o \
-		  bios-timeofday.o \
-		  cgets.o \
-		  clearscreen.o \
-		  clreol.o \
-		  clrscr.o \
-		  cprintf.o \
-		  cputs.o \
-		  cscanf.o \
-		  delay.o \
-		  delline.o \
-		  disable.o \
-		  dos-allocmem.o \
-		  dos-close.o \
-		  dos-commit.o \
-		  dos-findclose.o \
-		  dos-findfirst.o \
-		  dos-findnext.o \
-		  dos-freemem.o \
-		  dos-getdrive.o \
-		  dos-getfileattr.o \
-		  dos-getvect.o \
-		  dos-setdrive.o \
-		  dos-setfileattr.o \
-		  dos-setvect.o \
-		  dpmi-hosted.o \
-		  dpmiallocatedosmemoryblock.o \
-		  dpmifreedosmemoryblock.o \
-		  dpmigetdescriptor.o \
-		  dpmisegmenttodescriptor.o \
-		  dpmisimulaterealmodeint.o \
-		  enable.o \
-		  fmemcpy.o \
-		  fmemmove.o \
-		  fstrlen.o \
-		  getch.o \
-		  getche.o \
-		  getdrive.o \
-		  getpass.o \
-		  gettextinfo.o \
-		  gettextposition.o \
-		  getvideomode.o \
-		  gotoxy.o \
-		  highvideo.o \
-		  inp.o \
-		  inpw.o \
-		  insline.o \
-		  int86.o \
-		  int86x.o \
-		  intdos.o \
-		  intdosx.o \
-		  intr.o \
-		  kbhit.o \
-		  lltoa.o \
-		  lowvideo.o \
-		  ltoa.o \
-		  makepath.o \
-		  normvideo.o \
-		  nosound.o \
-		  osmajor-osminor.o \
-		  outmem.o \
-		  outp.o \
-		  outpw.o \
-		  outtext.o \
-		  psp.o \
-		  putch.o \
-		  scrolltextwindow.o \
-		  segread.o \
-		  settextcolor.o \
-		  settextposition.o \
-		  settextwindow.o \
-		  setvideomode.o \
-		  sound.o \
-		  splitpath.o \
-		  textattr.o \
-		  textbackground.o \
-		  textcolor.o \
-		  textmode.o \
-		  ulltoa.o \
-		  ultoa.o \
-		  ungetch.o \
-		  vcprintf.o \
-		  vcscanf.o \
-		  wherex.o \
-		  wherey.o \
-		  window.o \
-		  libi86-bc-cgets.o \
-		  libi86-bc-cprintf.o \
-		  libi86-bc-cputs.o \
-		  libi86-bc-cscanf.o \
-		  libi86-bc-int86.o \
-		  libi86-bc-int86-do.o \
-		  libi86-bc-int86x.o \
-		  libi86-bc-int86x-do.o \
-		  libi86-bc-intdos.o \
-		  libi86-bc-intdosx.o \
-		  libi86-bc-getche.o \
-		  libi86-bc-putch.o \
-		  libi86-bc-vcprintf.o \
-		  libi86-bc-vcscanf.o \
-		  libi86-bios-ds.o \
-		  libi86-con-in-fd.o \
-		  libi86-con-out-fd.o \
-		  libi86-fmemmove-backward.o \
-		  libi86-int86-do.o \
-		  libi86-int86x-do.o \
-		  libi86-intr-do.o \
-		  libi86-intr-dispatch.o \
-		  libi86-ret-really-set-errno.o \
-		  libi86-ret-set-errno.o \
-		  libi86-setvideomode-default.o \
-		  libi86-setvideomode-nonsvga.o \
-		  libi86-setvideomode-svga.o \
-		  libi86-sound-by-divisor.o \
-		  libi86-ungetch-buf.o \
-		  libi86-vid-bc-insdelline.o \
-		  libi86-vid-bc-outmem-do.o \
-		  libi86-vid-state.o \
+OBJS		= bios/bios-disk.o \
+		  bios/bios-equiplist.o \
+		  bios/bios-joystick.o \
+		  bios/bios-keybrd.o \
+		  bios/bios-memsize.o \
+		  bios/bios-timeofday.o \
+		  conio/cgets.o \
+		  conio/clreol.o \
+		  conio/clrscr.o \
+		  conio/cprintf.o \
+		  conio/cputs.o \
+		  conio/cscanf.o \
+		  conio/delline.o \
+		  conio/getch.o \
+		  conio/getche.o \
+		  conio/getpass.o \
+		  conio/gettextinfo.o \
+		  conio/gotoxy.o \
+		  conio/highvideo.o \
+		  conio/inp.o \
+		  conio/inpw.o \
+		  conio/insline.o \
+		  conio/kbhit.o \
+		  conio/lowvideo.o \
+		  conio/normvideo.o \
+		  conio/outp.o \
+		  conio/outpw.o \
+		  conio/putch.o \
+		  conio/textattr.o \
+		  conio/textbackground.o \
+		  conio/textcolor.o \
+		  conio/textmode.o \
+		  conio/ungetch.o \
+		  conio/vcprintf.o \
+		  conio/vcscanf.o \
+		  conio/wherex.o \
+		  conio/wherey.o \
+		  conio/window.o \
+		  conio/libi86-bc-cgets.o \
+		  conio/libi86-bc-cprintf.o \
+		  conio/libi86-bc-cputs.o \
+		  conio/libi86-bc-cscanf.o \
+		  conio/libi86-bc-getche.o \
+		  conio/libi86-bc-putch.o \
+		  conio/libi86-bc-vcprintf.o \
+		  conio/libi86-bc-vcscanf.o \
+		  conio/libi86-con-in-fd.o \
+		  conio/libi86-con-out-fd.o \
+		  conio/libi86-ungetch-buf.o \
+		  conio/libi86-vid-bc-insdelline.o \
+		  conio/libi86-vid-bc-outmem-do.o \
+		  dos/bdos.o \
+		  dos/dos-allocmem.o \
+		  dos/dos-close.o \
+		  dos/dos-commit.o \
+		  dos/dos-findclose.o \
+		  dos/dos-findfirst.o \
+		  dos/dos-findnext.o \
+		  dos/dos-freemem.o \
+		  dos/dos-getdrive.o \
+		  dos/dos-getfileattr.o \
+		  dos/dos-getvect.o \
+		  dos/dos-setdrive.o \
+		  dos/dos-setfileattr.o \
+		  dos/dos-setvect.o \
+		  dos/getdrive.o \
+		  dos/intdos.o \
+		  dos/intdosx.o \
+		  dos/libi86-bc-intdos.o \
+		  dos/libi86-bc-intdosx.o \
+		  dos/libi86-ret-really-set-errno.o \
+		  dos/libi86-ret-set-errno.o \
+		  dpmi/dpmi-hosted.o \
+		  dpmi/dpmiallocatedosmemoryblock.o \
+		  dpmi/dpmifreedosmemoryblock.o \
+		  dpmi/dpmigetdescriptor.o \
+		  dpmi/dpmisegmenttodescriptor.o \
+		  dpmi/dpmisimulaterealmodeint.o \
+		  graph/clearscreen.o \
+		  graph/gettextposition.o \
+		  graph/getvideomode.o \
+		  graph/outmem.o \
+		  graph/outtext.o \
+		  graph/scrolltextwindow.o \
+		  graph/settextcolor.o \
+		  graph/settextposition.o \
+		  graph/settextwindow.o \
+		  graph/setvideomode.o \
+		  graph/libi86-bios-ds.o \
+		  graph/libi86-setvideomode-default.o \
+		  graph/libi86-setvideomode-nonsvga.o \
+		  graph/libi86-setvideomode-svga.o \
+		  graph/libi86-vid-state.o \
+		  i86/delay.o \
+		  i86/disable.o \
+		  i86/enable.o \
+		  i86/int86.o \
+		  i86/int86x.o \
+		  i86/intr.o \
+		  i86/libi86-bc-int86.o \
+		  i86/libi86-bc-int86-do.o \
+		  i86/libi86-bc-int86x.o \
+		  i86/libi86-bc-int86x-do.o \
+		  i86/libi86-int86-do.o \
+		  i86/libi86-int86x-do.o \
 		  $(foreach da,0 1 2 3, \
 		    $(foreach db,0 1 2 3 4 5 6 7, \
 		      $(foreach dc,0 1 2 3 4 5 6 7, \
-			libi86-intr-call-0$(da)$(db)$(dc).o)))
+			i86/libi86-intr-call-0$(da)$(db)$(dc).o))) \
+		  i86/libi86-intr-do.o \
+		  i86/libi86-intr-dispatch.o \
+		  i86/libi86-sound-by-divisor.o \
+		  i86/nosound.o \
+		  i86/segread.o \
+		  i86/sound.o \
+		  string/fmemcpy.o \
+		  string/fmemmove.o \
+		  string/fstrlen.o \
+		  string/libi86-fmemmove-backward.o \
+		  stdlib/lltoa.o \
+		  stdlib/ltoa.o \
+		  stdlib/makepath.o \
+		  stdlib/osmajor-osminor.o \
+		  stdlib/psp.o \
+		  stdlib/splitpath.o \
+		  stdlib/ulltoa.o \
+		  stdlib/ultoa.o
+OBJ_SUBDIRS	= $(sort $(dir $(OBJS)))
 CFLAGS		= -mseparate-code-segment
 ifeq "" "$(filter -O%,$(CC) $(CFLAGS) $(MULTILIB))"
   CFLAGS	+= -Os
@@ -263,9 +264,12 @@ clean mostlyclean: clean-here
 
 .PHONY: clean-here
 clean-here:
-	$(RM) -f a.out core *.i *.o *-test *.srec *.dis *.x *.hex $(BSP) \
-	  $(CLEAN_HEADERS)
-	-rmdir libi86
+	$(RM) $(BSP) $(CLEAN_HEADERS)
+	for d in . $(OBJ_SUBDIRS); do \
+		$(RM) "$$d"/a.out "$$d"/core "$$d"/*.[iox] "$$d"/*-test \
+		      "$$d"/*.srec "$$d"/*.dis "$$d"/*.hex; \
+	done
+	-rmdir libi86/internal libi86 $(OBJ_SUBDIRS)
 
 .PHONY: distclean maintainer-clean realclean
 distclean maintainer-clean realclean: clean
@@ -277,27 +281,38 @@ $(BSP): $(OBJS)
 	$(AR) rcs $@ $+
 
 %.o: %.c $(HEADERS)
+	mkdir -p $(@D)
 	$(CC) $(CPPFLAGS) -U_BORLANDC_SOURCE $(CFLAGS) $(MULTILIB) -c -o $@ $<
 
 # We need this rule to override the next rule in case we do have a separate
-# libi86-bc-*.c source file.
-libi86-bc-%.o: libi86-bc-%.c $(HEADERS)
+# conio/libi86-bc-*.c source file.
+conio/libi86-bc-%.o: conio/libi86-bc-%.c $(HEADERS)
+	mkdir -p $(@D)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(MULTILIB) -c -o $@ $<
 
-libi86-bc-%.o: %.c $(HEADERS)
+conio/libi86-bc-%.o: conio/%.c $(HEADERS)
+	mkdir -p $(@D)
 	$(CC) $(CPPFLAGS) -D_BORLANDC_SOURCE $(CFLAGS) $(MULTILIB) -c -o $@ $<
 
-libi86-bc-%.o: libi86-%.S $(HEADERS)
+dos/libi86-bc-%.o: dos/%.S $(HEADERS)
+	mkdir -p $(@D)
 	$(CC) $(CPPFLAGS) -D_BORLANDC_SOURCE $(CFLAGS) $(MULTILIB) -c -o $@ $<
 
-libi86-bc-%.o: %.S $(HEADERS)
+i86/libi86-bc-%.o: i86/libi86-%.S $(HEADERS)
+	mkdir -p $(@D)
+	$(CC) $(CPPFLAGS) -D_BORLANDC_SOURCE $(CFLAGS) $(MULTILIB) -c -o $@ $<
+
+i86/libi86-bc-%.o: i86/%.S $(HEADERS)
+	mkdir -p $(@D)
 	$(CC) $(CPPFLAGS) -D_BORLANDC_SOURCE $(CFLAGS) $(MULTILIB) -c -o $@ $<
 
 %.o: %.S $(HEADERS)
+	mkdir -p $(@D)
 	$(CC) $(CPPFLAGS) -U_BORLANDC_SOURCE $(CFLAGS) $(ASFLAGS) $(MULTILIB) \
 	  -c -o $@ $<
 
-libi86-intr-call-%.o: libi86-intr-call.S $(HEADERS)
+i86/libi86-intr-call-%.o: i86/libi86-intr-call.S $(HEADERS)
+	mkdir -p $(@D)
 	$(CC) $(CPPFLAGS) -Dintr_no=$* $(CFLAGS) $(ASFLAGS) $(MULTILIB) -c \
 	  -o $@ $<
 
