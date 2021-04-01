@@ -25,7 +25,11 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 
 ## License
 
-`libi86` is now distributed under the [GNU Lesser General Public License version 2](COPYING2.LIB) or above.
+`libi86` as a whole is now distributed under the [GNU Lesser General Public License version 2](COPYING.LGPL-2) or above.
+
+Some files are distributed under the [3-clause BSD License](COPYING.BSD), which is compatible with the GNU LGPL v2.  These files are
+  * the `autoconf` input programs `configure.ac` and `acsite.m4`; and
+  * the code for the test cases (`tests/`).
 
 ## Implemented facilities
 
