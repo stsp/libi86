@@ -25,20 +25,6 @@ dnl LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-dnl This file is free software; you can redistribute it and/or modify it
-dnl under the terms of the GNU Lesser General Public License as published by
-dnl the Free Software Foundation; either version 2 of the License, or
-dnl (at your option) any later version.
-dnl
-dnl This program is distributed in the hope that it will be useful, but
-dnl WITHOUT ANY WARRANTY; without even the implied warranty of
-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-dnl Lesser General Public License for more details.
-dnl
-dnl You should have received a copy of the GNU Lesser General Public License
-dnl along with this program; see the file COPYING2.LIB.  If not see
-dnl <http://www.gnu.org/licenses/>.
-
 dnl For the actual build, this script mostly just hands over to ia16/configure,
 dnl which sets things up for an automated multilib build.  It seems that
 dnl setting up a project top-level directory for a multilib build is not
