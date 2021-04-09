@@ -26,6 +26,7 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 abs_srcdir = @abs_srcdir@
+libi86_hostdir = @libi86_hostdir@
 
 CXX = @CXX@
 
@@ -33,7 +34,7 @@ default: all
 .PHONY: default
 
 distclean maintainer-clean:
-	$(MAKE) -C ia16 $@
+	$(MAKE) -C $(libi86_hostdir) $@
 	$(MAKE) -C examples $@
 	$(RM) Makefile config.cache config.log config.status
 .PHONY: distclean maintainer-clean
@@ -67,6 +68,6 @@ $(abs_srcdir)/tests/testsuite: $(abs_srcdir)/tests/testsuite.at \
 	cd $(abs_srcdir)/tests && exec autom4te --language=autotest -o $@ $<
 
 %:
-	$(MAKE) -C ia16 $@
+	$(MAKE) -C $(libi86_hostdir) $@
 	$(MAKE) -C examples $@
 .PHONY: %

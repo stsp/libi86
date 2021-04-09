@@ -38,6 +38,9 @@ AC_INIT([libi86],m4_esyscmd_s([
 AC_CONFIG_SRCDIR(bios/bios-memsize.S)
 AC_CONFIG_SRCDIR(make-config.sh)
 
+m4_include([../aclocal.m4])
+_LIBI86_ACK_FIX
+
 if test "${enable_shared}" = "yes" ; then
   echo "Shared libraries not supported for cross compiling, ignored"
 fi

@@ -25,10 +25,10 @@ dnl LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-dnl For the actual build, this script mostly just hands over to ia16/configure,
-dnl which sets things up for an automated multilib build.  It seems that
-dnl setting up a project top-level directory for a multilib build is not
-dnl supported.
+dnl For the actual build, this script mostly just hands over to
+dnl host-gcc/configure, which sets things up for an automated multilib build.
+dnl It seems that setting up a project top-level directory for a multilib
+dnl build is not supported.
 dnl
 dnl For tests, however, this script _does_ do the actual work of setting up
 dnl the test suite runs, using the GNU Autotools' experimental Autotest
@@ -44,6 +44,7 @@ AC_INIT([libi86],m4_esyscmd_s([
   fi]),,[libi86])
 
 _LIBI86_DEFAULT_OPTIONS
+_LIBI86_ACK_FIX
 
 AC_DISABLE_OPTION_CHECKING
 AC_CANONICAL_BUILD
@@ -52,7 +53,8 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PATH_PROG(DOSEMU, dosemu, /bin/false)
 
-AC_CONFIG_SUBDIRS([ia16 examples])
+_LIBI86_SET_AND_CONFIG_HOST_DIR
+AC_CONFIG_SUBDIRS([examples])
 AC_CONFIG_TESTDIR([tests])
 AC_CONFIG_FILES([Makefile tests/atlocal])
 AC_OUTPUT

@@ -36,6 +36,9 @@ AC_INIT([libi86],m4_esyscmd_s([
   fi]),,[libi86])
 AC_CONFIG_SRCDIR(drivei86.c)
 
+m4_include([../aclocal.m4])
+_LIBI86_ACK_FIX
+
 if test "${enable_shared}" = "yes" ; then
   echo "Shared libraries not supported for cross compiling, ignored"
 fi
@@ -63,6 +66,7 @@ host_makefile_frag_path=
 host_makefile_frag=
 AC_SUBST(host_makefile_frag_path)
 AC_SUBST(host_makefile_frag)
+AC_SUBST(libi86_hostdir)
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

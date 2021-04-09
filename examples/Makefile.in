@@ -29,6 +29,7 @@ DESTDIR =
 VPATH = @srcdir@
 srcdir = @srcdir@
 objdir = .
+libi86_hostdir = @libi86_hostdir@
 srcroot = $(srcdir)/..
 objroot = $(objdir)/..
 
@@ -55,19 +56,21 @@ ifeq "" "$(filter -O%,$(CC) $(CFLAGS))"
   CFLAGS	+= -O2
 endif
 LDFLAGS		= -L$(objroot)/$(shell $(CC) $(CFLAGS) \
-					     -print-multi-directory)/ia16
+				     -print-multi-directory)/$(libi86_hostdir)
 LDLIBS		= -li86
 ASFLAGS		=
 # Headers we depend on...
-HEADERS		= $(wildcard $(srcroot)/ia16/*.h \
-			     $(srcroot)/ia16/libi86/internal/*.h \
-			     $(objroot)/ia16/libi86/*.h \
-			     $(objroot)/ia16/libi86/internal/*.h)
+HEADERS		= $(wildcard $(srcroot)/$(libi86_hostdir)/*.h \
+			     $(srcroot)/$(libi86_hostdir)/libi86/internal/*.h \
+			     $(objroot)/$(libi86_hostdir)/libi86/*.h \
+			     $(objroot)/$(libi86_hostdir)/libi86/internal/*.h)
 
 # Host specific makefile fragment comes in here.
 @host_makefile_frag@
 
-CPPFLAGS += $(INCLUDES) -I$(srcdir) -I. -I$(objroot)/ia16 -I$(srcroot)/ia16
+CPPFLAGS += $(INCLUDES) -I$(srcdir) -I. \
+	    -I$(objroot)/$(libi86_hostdir) -I$(srcroot)/$(libi86_hostdir) \
+	    -I$(srcroot)/include
 
 .PHONY: default
 default: all

@@ -28,11 +28,11 @@
 # Derived from libgloss/cr16/Makefile.in in Newlib.
 
 DESTDIR =
-VPATH = @srcdir@
 srcdir = @srcdir@
 objdir = .
 srcroot = $(srcdir)/..
 objroot = $(objdir)/..
+VPATH = $(srcdir):$(srcroot)/include
 mkinstalldirs = $(SHELL) $(srcroot)/mkinstalldirs
 
 prefix = @prefix@
@@ -230,7 +230,7 @@ BSP		= $(INSTALL_LIBS)
 # Host specific makefile fragment comes in here.
 @host_makefile_frag@
 
-CPPFLAGS += $(INCLUDES) -I$(srcdir) -I.
+CPPFLAGS += $(INCLUDES) -I. -I$(srcdir) -I$(srcroot)/include
 
 .PHONY: default
 default: all
@@ -259,8 +259,10 @@ install: $(INSTALL_LIBS) $(INSTALL_HEADERS)
 	for f in $(INSTALL_HEADERS); do \
 	  if [ -f "$$f" ]; then \
 	    $(INSTALL_DATA) "$$f" "$$d/$$f"; \
-	  else \
+	  elif [ -f $(srcdir)/"$$f" ]; then \
 	    $(INSTALL_DATA) $(srcdir)/"$$f" "$$d/$$f"; \
+	  else \
+	    $(INSTALL_DATA) $(srcroot)/include/"$$f" "$$d/$$f"; \
 	  fi; \
 	done
 	+@$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=$@
