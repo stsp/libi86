@@ -57,7 +57,9 @@ struct __attribute__ ((__packed__)) find_t
 };
 
 extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
+#ifdef _BORLANDC_SOURCE
 extern int bdosptr (int __dos_func, void *__dx, unsigned __al);
+#endif
 extern int _LIBI86_BC_REDIRECT (intdos, (const union REGS *, union REGS *));
 extern int _LIBI86_BC_REDIRECT
 		     (intdosx, (const union REGS *, union REGS *, struct SREGS *));

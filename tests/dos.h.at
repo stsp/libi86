@@ -27,26 +27,26 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 AT_BANNER([[<dos.h> tests]])
 
-AT_SETUP([[bdos, bdosptr]])
-AT_LIBI86_CHECK(dnl
+AT_SETUP([[bdos]])
+AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL(dnl
 [[#include <dos.h>
 int
 main (void)
 {
 #ifdef __MSDOS__
-  bdosptr (9, "Hello $(ignore this)", 0);
+  bdos (9, (unsigned) "Hello $(ignore this)", 0);
   bdos (2, '$', 0);
   bdos (2, 'f', 0);
   bdos (2, 'r', 0);
   bdos (2, 'o', 0);
   bdos (2, 'm', 0);
   bdos (2, '$', 0);
-  bdosptr (9, " bdos and bdosptr!\r\n$(and ignore this too)", 0);
+  bdos (9, (unsigned) " bdos!\r\n$(and ignore this too)", 0);
 #else
 # error
 #endif
   return 0;
-}]],[[Hello $from$ bdos and bdosptr!
+}]],[[Hello $from$ bdos!
 ]])
 AT_CLEANUP
 

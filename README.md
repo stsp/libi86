@@ -108,7 +108,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |     |
 |     | **`▗▚▚▚▚ <dos.h> ▞▞▞▞▖`** | **`<dos.h>` also includes `<i86.h>`, described below.  If `_BORLANDC_SOURCE` is defined, the `union REGS` type gets an additional `.x.flags` field, and `<dos.h>` switches accordingly to a different version of the `intdos` and `intdosx` routines.**
 |   W | `bdos (`_dos-func_`,` _dx_`,` _al_`);`
-|   W | `bdosptr (`_dos-func_`,` \*_dx_`,` _al_`);`
+|   B | `bdosptr (`_dos-func_`,` \*_dx_`,` _al_`);`
 | W/B | `intdos (`\*_in-regs_`,` \*_out-regs_`);`
 | W/B | `intdosx (`\*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
 |  W+ | `_dos_allocmem (`_size_`,` \*_segment_`);` | Also works under DPMI; yields a starting protected-mode selector.
