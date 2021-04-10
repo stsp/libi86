@@ -1,4 +1,4 @@
-dnl Copyright (c) 2020 TK Chia
+dnl Copyright (c) 2018--2021 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -25,6 +25,7 @@ dnl LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+dnl Derived from libgloss/cr16/configure.in in Newlib.
 set -x
 AC_PREREQ(2.69)
 AC_INIT([libi86],m4_esyscmd_s([
@@ -34,7 +35,8 @@ AC_INIT([libi86],m4_esyscmd_s([
   else
     TZ=UTC0 date +%Y%m%d
   fi]),,[libi86])
-AC_CONFIG_SRCDIR(drivei86.c)
+AC_CONFIG_SRCDIR(bios/bios-memsize.S)
+AC_CONFIG_SRCDIR(make-config.sh)
 
 m4_include([../aclocal.m4])
 _LIBI86_ACK_FIX
@@ -45,9 +47,9 @@ fi
 
 if test "$srcdir" = "." ; then
   if test "${with_target_subdir}" != "." ; then
-    libi86_topdir="${srcdir}/../.."
+    libi86_topdir="${srcdir}/${with_multisrctop}../.."
   else
-    libi86_topdir="${srcdir}/.."
+    libi86_topdir="${srcdir}/${with_multisrctop}.."
   fi
 else
   libi86_topdir="${srcdir}/.."
@@ -58,16 +60,27 @@ AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_ARG_PROGRAM
 
+AC_PROG_INSTALL
+
 AC_PROG_CC
-AC_CHECK_TOOL(AS, as, false)
-AC_CHECK_TOOL(LD, ld, false)
+AC_CHECK_TOOL(AR, aal, false)
+dnl make-config.sh uses nm and awk.
+AC_CHECK_TOOL(NM, anm, false)
+AC_PROG_AWK
+
+AC_CHECK_DECLS([__ACK],,dnl
+[AC_MSG_WARN([supposedly using Amsterdam Compiler Kit,])
+AC_MSG_WARN([but __ACK undefined])])
+
+AC_CHECK_DECLS([__MSDOS__],[libi86_ackhost=msdos86],[libi86_ackhost=pc86])
+AC_SUBST(libi86_ackhost)
 
 host_makefile_frag_path=
 host_makefile_frag=
 AC_SUBST(host_makefile_frag_path)
 AC_SUBST(host_makefile_frag)
-AC_SUBST(libi86_hostdir)
-AC_SUBST(ac_compiler_gnu)
 
 AC_CONFIG_FILES([Makefile])
+AC_DEFINE_UNQUOTED([_LIBI86_VERSION],[${PACKAGE_VERSION}L])
+AC_CONFIG_HEADERS([libi86/internal/acconfig.h])
 AC_OUTPUT

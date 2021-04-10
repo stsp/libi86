@@ -1,0 +1,181 @@
+# Copyright (c) 2018--2021 TK Chia
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#   * Redistributions of source code must retain the above copyright notice,
+#     this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#   * Neither the name of the developer(s) nor the names of its contributors
+#     may be used to endorse or promote products derived from this software
+#     without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+# IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# Derived from libgloss/cr16/Makefile.in in Newlib.
+
+DESTDIR =
+srcdir = @srcdir@
+objdir = .
+srcroot = $(srcdir)/..
+objroot = $(objdir)/..
+VPATH = $(srcdir):$(srcroot)/include
+mkinstalldirs = $(SHELL) $(srcroot)/mkinstalldirs
+
+prefix = @prefix@
+
+host_alias = @host_alias@
+
+bindir = @bindir@
+libdir = @libdir@
+libi86_ackhost = @libi86_ackhost@
+tooldir = $(prefix)/share/ack/$(libi86_ackhost)
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+
+SHELL =	/bin/sh
+
+CC = @CC@
+
+AS = @AS@
+AR = @AR@
+LD = @LD@
+NM = @NM@
+AWK = @AWK@
+RANLIB = @RANLIB@
+PACKAGE_VERSION = @PACKAGE_VERSION@
+
+INSTALL_LIBS	= libi86.a
+INSTALL_HEADERS	= bios.h \
+		  libi86/internal/cdefs.h \
+		  libi86/internal/sect.h \
+		  $(CLEAN_HEADERS)
+CLEAN_HEADERS	= libi86/config.h \
+		  libi86/internal/acconfig.h
+
+OBJS		= bios/bios-equiplist.o \
+		  bios/bios-memsize.o
+OBJ_SUBDIRS	= $(sort $(dir $(OBJS)))
+CFLAGS		= -O6 -S
+ASFLAGS		=
+# Headers we depend on when creating .o files; these do not include
+# libi86/config.h which is only generated after creating the library.
+HEADERS		= $(filter-out libi86/config.h,$(INSTALL_HEADERS))
+BSP		= $(INSTALL_LIBS)
+
+# Host specific makefile fragment comes in here.
+@host_makefile_frag@
+
+CPPFLAGS += $(INCLUDES) -I. -I$(srcdir) -I$(srcroot)/include
+
+.PHONY: default
+default: all
+
+.PHONY: all
+all: $(INSTALL_LIBS) $(INSTALL_HEADERS)
+
+.PHONY: install
+install: $(INSTALL_LIBS) $(INSTALL_HEADERS)
+	$(mkinstalldirs) $(DESTDIR)$(tooldir)/include \
+			 $(DESTDIR)$(tooldir)/include/libi86 \
+			 $(DESTDIR)$(tooldir)/include/libi86/internal
+	set -e; \
+	d=$(DESTDIR)$(tooldir); \
+	for f in $(INSTALL_LIBS); do \
+	  if [ -f "$$f" ]; then \
+	    $(INSTALL_DATA) "$$f" "$$d/$$f"; \
+	  else \
+	    $(INSTALL_DATA) $(srcdir)/"$$f" "$$d/$$f"; \
+	  fi; \
+	done
+	set -e; \
+	d=$(DESTDIR)$(tooldir)/include; \
+	for f in $(INSTALL_HEADERS); do \
+	  if [ -f "$$f" ]; then \
+	    $(INSTALL_DATA) "$$f" "$$d/$$f"; \
+	  elif [ -f $(srcdir)/"$$f" ]; then \
+	    $(INSTALL_DATA) $(srcdir)/"$$f" "$$d/$$f"; \
+	  else \
+	    $(INSTALL_DATA) $(srcroot)/include/"$$f" "$$d/$$f"; \
+	  fi; \
+	done
+
+.PHONY: test doc info install-info clean-info
+test doc info install-info clean-info:
+
+.PHONY: clean mostlyclean
+clean mostlyclean: clean-here
+
+.PHONY: clean-here
+clean-here:
+	$(RM) $(BSP) $(CLEAN_HEADERS)
+	for d in . $(OBJ_SUBDIRS); do \
+		$(RM) "$$d"/a.out "$$d"/core "$$d"/*.[iox] "$$d"/*-test \
+		      "$$d"/*.srec "$$d"/*.dis "$$d"/*.hex; \
+	done
+	-rmdir libi86/internal libi86 $(OBJ_SUBDIRS)
+
+.PHONY: distclean maintainer-clean realclean
+distclean maintainer-clean realclean: clean
+	rm -f Makefile config.cache config.log config.status *~
+
+$(BSP): $(OBJS)
+	$(RM) $@
+	$(AR) qc $@ $+
+
+%.o: %.c $(HEADERS)
+	mkdir -p $(@D)
+	$(CC) $(CPPFLAGS) -U_BORLANDC_SOURCE $(CFLAGS) -c -o $@ $<
+
+# We need this rule to override the next rule in case we do have a separate
+# conio/libi86-bc-*.c source file.
+conio/libi86-bc-%.o: conio/libi86-bc-%.c $(HEADERS)
+	mkdir -p $(@D)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
+
+conio/libi86-bc-%.o: conio/%.c $(HEADERS)
+	mkdir -p $(@D)
+	$(CC) $(CPPFLAGS) -D_BORLANDC_SOURCE $(CFLAGS) -c -o $@ $<
+
+dos/libi86-bc-%.o: dos/%.s $(HEADERS)
+	mkdir -p $(@D)
+	$(CC) $(CPPFLAGS) -D_BORLANDC_SOURCE $(CFLAGS) -c -o $@ $<
+
+i86/libi86-bc-%.o: i86/libi86-%.s $(HEADERS)
+	mkdir -p $(@D)
+	$(CC) $(CPPFLAGS) -D_BORLANDC_SOURCE $(CFLAGS) -c -o $@ $<
+
+i86/libi86-bc-%.o: i86/%.s $(HEADERS)
+	mkdir -p $(@D)
+	$(CC) $(CPPFLAGS) -D_BORLANDC_SOURCE $(CFLAGS) -c -o $@ $<
+
+%.o: %.s $(HEADERS)
+	mkdir -p $(@D)
+	$(CC) $(CPPFLAGS) -U_BORLANDC_SOURCE $(CFLAGS) $(ASFLAGS) -c -o $@ $<
+
+libi86/config.h: make-config.sh $(BSP)
+	mkdir -p $(@D)
+	NM='$(NM)' AWK='$(AWK)' PACKAGE_VERSION='$(PACKAGE_VERSION)' \
+	  $(SHELL) $< $(BSP) >$@.tmp
+	mv $@.tmp $@
+
+Makefile: Makefile.in config.status @host_makefile_frag_path@
+	$(SHELL) config.status
+
+config.status: configure
+	$(SHELL) config.status --recheck

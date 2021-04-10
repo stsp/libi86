@@ -54,6 +54,7 @@ union _joyinfo_t
     } pos;
 };
 
+#ifdef __GNUC__
 _LIBI86_ALT_INLINE unsigned short
 _bios_equiplist (void)
 {
@@ -69,6 +70,7 @@ _bios_memsize (void)
   __asm volatile ("int {$}0x12" : "=a" (a));
   return a;
 }
+#endif /* __GNUC__ */
 
 extern unsigned short _bios_disk (unsigned __service,
 				  struct diskinfo_t *__diskinfo);
@@ -115,6 +117,7 @@ extern unsigned short _bios_joystick (unsigned __service,
 #define _JOY_READPOS		1
 
 #ifdef _BORLANDC_SOURCE
+# ifdef __GNUC__
 _LIBI86_ALT_INLINE unsigned short
 		  _LIBI86_REDIRECT (biosequip, (void), _bios_equiplist),
 		  _LIBI86_REDIRECT (biosmemory, (void), _bios_memsize);
@@ -135,6 +138,12 @@ biosmemory (void)
   __asm volatile ("int {$}0x12" : "=a" (a));
   return a;
 }
+# else /* ! __GNUC__ */
+_LIBI86_REDIRECT_AND_INLINE_0 (unsigned short, biosequip, _bios_equiplist)
+_LIBI86_REDIRECT_AND_INLINE_0 (unsigned short, biosmemory, _bios_memsize)
+_LIBI86_REDIRECT_AND_INLINE_1 (unsigned short, bioskey, unsigned,
+			       _bios_keybrd)
+# endif /* ! __GNUC__ */
 #endif /* _BORLANDC_SOURCE */
 
 _LIBI86_END_EXTERN_C

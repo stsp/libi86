@@ -1,0 +1,6 @@
+#ifndef _LIBI86_INTERNAL_ACCONFIG_H
+#define _LIBI86_INTERNAL_ACCONFIG_H
+
+#undef _LIBI86_VERSION
+
+#endif

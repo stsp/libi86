@@ -37,6 +37,7 @@ prefix = @prefix@
 exec_prefix = @exec_prefix@
 
 host_alias = @host_alias@
+ac_compiler_gnu = @ac_compiler_gnu@
 
 bindir = @bindir@
 libdir = @libdir@
@@ -50,20 +51,29 @@ AS = @AS@
 LD = @LD@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 
-PROGRAMS	= dpmii86.exe drivei86.exe joyi86.exe
-CFLAGS		= -mcmodel=small -mregparmcall -Os -mnewlib-autofloat-stdio
-ifeq "" "$(filter -O%,$(CC) $(CFLAGS))"
-  CFLAGS	+= -O2
-endif
-LDFLAGS		= -L$(objroot)/$(shell $(CC) $(CFLAGS) \
+PROGRAMS	= drivei86.exe
+ifeq "yes" "$(ac_compiler_gnu)"
+  PROGRAMS	+= dpmii86.exe joyi86.exe
+  CFLAGS	= -mcmodel=small -mregparmcall -Os -mnewlib-autofloat-stdio
+  ifeq "" "$(filter -O%,$(CC) $(CFLAGS))"
+    CFLAGS	+= -O2
+  endif
+  LDFLAGS	= -L$(objroot)/$(shell $(CC) $(CFLAGS) \
 				     -print-multi-directory)/$(libi86_hostdir)
+else
+  CFLAGS	= -O6 -S
+  LDFLAGS	= -L$(objroot)/$(libi86_hostdir)
+endif
 LDLIBS		= -li86
 ASFLAGS		=
 # Headers we depend on...
 HEADERS		= $(wildcard $(srcroot)/$(libi86_hostdir)/*.h \
 			     $(srcroot)/$(libi86_hostdir)/libi86/internal/*.h \
 			     $(objroot)/$(libi86_hostdir)/libi86/*.h \
-			     $(objroot)/$(libi86_hostdir)/libi86/internal/*.h)
+			     $(objroot)/$(libi86_hostdir)/libi86/internal/*.h \
+			     $(srcroot)/include/*.h \
+			     $(srcroot)/include/libi86/*.h \
+			     $(srcroot)/include/libi86/internal/*.h)
 
 # Host specific makefile fragment comes in here.
 @host_makefile_frag@
