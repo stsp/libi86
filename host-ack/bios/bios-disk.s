@@ -1,6 +1,5 @@
+#
 /*
- * Macros to declare sections for an ACK assembly language module.
- *
  * Copyright (c) 2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,20 +28,53 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_INTERNAL_SECT_H_
-#define _LIBI86_INTERNAL_SECT_H_
+#include "libi86/internal/sect.h"
 
-/*
- * Declare default sections.  The order is important.
- *
- * See https://github.com/davidgiven/ack/issues/162 .
- */
-
-	.sect	.text
-	.sect	.rom
-	.sect	.data
-	.sect	.bss
-
-	.sect	.text
-
-#endif
+	.define	__bios_disk
+__bios_disk:
+	mov	bx, sp
+	movb	ah, 2(bx)		! service
+	mov	bx, 4(bx)		! diskinfo
+	movb	dl, (bx)		! diskinfo->drive
+	cmpb	ah, 8			! _DISK_DRIVEPARAMS is a special case
+	jz	.driveparams
+	movb	al, 8(bx)		! diskinfo->nsectors
+	mov	cx, 4(bx)		! diskinfo->track
+	xchgb	ch, cl
+	rorb	cl, 1
+	rorb	cl, 1
+	andb	cl, 0xc0
+	orb	cl, 6(bx)		! diskinfo->sector
+	movb	dh, 2(bx)		! diskinfo->head
+	les	bx, 10(bx)		! diskinfo->buffer
+	int	0x13
+	push	ds
+	pop	es
+	ret
+.driveparams:
+	push	di			! Ralf Brown's Interrupt List says
+	xor	di, di			! to set es = di = 0 "to guard
+	mov	es, di			! against BIOS bugs"
+	push	bx
+	int	0x13
+	pop	bx
+	push	ds
+	pop	es
+	xchg	di, ax
+	xorb	ah, ah
+	movb	al, dl
+	mov	(bx), ax		! diskinfo->drive --- actually the
+					! number of drives...
+	movb	al, dh
+	mov	2(bx), ax		! diskinfo->head
+	movb	al, cl
+	andb	al, 0x3f
+	mov	6(bx), ax		! diskinfo->sector
+	xor	ax, cx
+	xchgb	ah, al
+	rolb	ah, 1
+	rolb	ah, 1
+	mov	4(bx), ax		! diskinfo->track
+	xchg	di, ax
+	pop	di
+	ret

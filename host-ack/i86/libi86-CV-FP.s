@@ -1,6 +1,5 @@
+#
 /*
- * Macros to declare sections for an ACK assembly language module.
- *
  * Copyright (c) 2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,20 +28,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_INTERNAL_SECT_H_
-#define _LIBI86_INTERNAL_SECT_H_
+#include "libi86/internal/sect.h"
 
-/*
- * Declare default sections.  The order is important.
- *
- * See https://github.com/davidgiven/ack/issues/162 .
- */
-
-	.sect	.text
-	.sect	.rom
-	.sect	.data
-	.sect	.bss
-
-	.sect	.text
-
-#endif
+	.define	___libi86_CV_FP
+___libi86_CV_FP:
+	mov	bx, sp
+	mov	ax, 4(bx)
+	mov	bx, 2(bx)
+	mov	(bx), ax
+	mov	2(bx), ds
+	xchg	bx, ax
+	ret

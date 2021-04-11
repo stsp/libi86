@@ -62,14 +62,17 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 
 INSTALL_LIBS	= libi86.a
 INSTALL_HEADERS	= bios.h \
+		  i86.h \
 		  libi86/internal/cdefs.h \
 		  libi86/internal/sect.h \
 		  $(CLEAN_HEADERS)
 CLEAN_HEADERS	= libi86/config.h \
 		  libi86/internal/acconfig.h
 
-OBJS		= bios/bios-equiplist.o \
-		  bios/bios-memsize.o
+OBJS		= bios/bios-disk.o \
+		  bios/bios-equiplist.o \
+		  bios/bios-memsize.o \
+		  i86/libi86-CV-FP.o
 OBJ_SUBDIRS	= $(sort $(dir $(OBJS)))
 CFLAGS		= -O6 -S
 ASFLAGS		=

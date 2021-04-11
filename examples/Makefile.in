@@ -60,11 +60,12 @@ ifeq "yes" "$(ac_compiler_gnu)"
   endif
   LDFLAGS	= -L$(objroot)/$(shell $(CC) $(CFLAGS) \
 				     -print-multi-directory)/$(libi86_hostdir)
+  LDLIBS	= -li86
 else
   CFLAGS	= -O6 -S
-  LDFLAGS	= -L$(objroot)/$(libi86_hostdir)
+  LDFLAGS	= -.c
+  LDLIBS	= $(objroot)/$(libi86_hostdir)/libi86.a
 endif
-LDLIBS		= -li86
 ASFLAGS		=
 # Headers we depend on...
 HEADERS		= $(wildcard $(srcroot)/$(libi86_hostdir)/*.h \
@@ -102,7 +103,7 @@ clean-here:
 distclean maintainer-clean realclean: clean
 	rm -f Makefile config.cache config.log config.status *~
 
-%.exe: %.c $(HEADERS)
+%.exe: %.o $(HEADERS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ $< $(LDLIBS)
 
 dpmii86.exe : CFLAGS += -mdpmiable

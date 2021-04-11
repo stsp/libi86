@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2020--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -34,6 +34,11 @@
 
 #include <stdio.h>
 #include <bios.h>
+#include <i86.h>
+
+#ifndef _CV_FP
+# define _CV_FP(ptr)	(ptr)
+#endif
 
 static void
 test_drive (unsigned drive)
@@ -66,13 +71,13 @@ test_drive (unsigned drive)
       diskinfo.track = diskinfo.head = 0;
       diskinfo.sector = diskinfo.nsectors = 1;
       p = buf;
-      diskinfo.buffer = p;
+      diskinfo.buffer = _CV_FP (p);
 
       rv = _bios_disk (_DISK_READ, &diskinfo) >> 8;
       if (rv)
 	{
 	  p = buf + 512;
-	  diskinfo.buffer = p;
+	  diskinfo.buffer = _CV_FP (p);
 	  rv = _bios_disk (_DISK_READ, &diskinfo) >> 8;
 	}
 
