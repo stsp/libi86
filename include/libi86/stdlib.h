@@ -88,11 +88,10 @@ extern char *_ulltoa (unsigned long long __value, char *__buffer, int __radix);
 extern char *_ultoa (unsigned long __value, char *__buffer, int __radix);
 #ifndef _LIBI86_COMPILING_
 # ifndef __STRICT_ANSI__
-extern char *_LIBI86_REDIRECT (lltoa, (long long, char *, int), _lltoa);
-extern char *_LIBI86_REDIRECT (ltoa, (long, char *, int), _ltoa);
-extern char *_LIBI86_REDIRECT (ulltoa, (unsigned long long, char *, int),
-			       _ulltoa);
-extern char *_LIBI86_REDIRECT (ultoa, (unsigned long, char *, int), _ultoa);
+_LIBI86_REDIRECT_3 (char *, lltoa, long long, char *, int, _lltoa)
+_LIBI86_REDIRECT_3 (char *, ltoa, long, char *, int, _ltoa)
+_LIBI86_REDIRECT_3 (char *, ulltoa, unsigned long long, char *, int, _ulltoa)
+_LIBI86_REDIRECT_3 (char *, ultoa, unsigned long, char *, int, _ultoa)
 # endif
 #endif
 

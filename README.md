@@ -165,6 +165,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |   W | `_FP_SEG (`\*_ptr_`);` | Macro.
 |   W | \*`MK_FP (`_seg_`,` _off_`);` | Macro.
 |   W | \*`_MK_FP (`_seg_`,` _off_`);` | Macro.
+|   X | \*`_CV_FP (`\*_ptr_`);` | Convert a default-sized pointer to a far pointer.  This is reserved for future use with compilers that lack built-in far pointers support.
 |     |
 |     | **`▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖`**
 |   W | \*`lltoa (`_value_`,` \*_buffer_`,` _radix_`);`

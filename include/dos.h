@@ -60,9 +60,9 @@ extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
 #ifdef _BORLANDC_SOURCE
 extern int bdosptr (int __dos_func, void *__dx, unsigned __al);
 #endif
-extern int _LIBI86_BC_REDIRECT (intdos, (const union REGS *, union REGS *));
-extern int _LIBI86_BC_REDIRECT
-		     (intdosx, (const union REGS *, union REGS *, struct SREGS *));
+_LIBI86_BC_REDIRECT_2 (int, intdos, const union REGS *, union REGS *)
+_LIBI86_BC_REDIRECT_3 (int, intdosx, const union REGS *, union REGS *,
+				     struct SREGS *)
 extern unsigned _dos_allocmem (unsigned __size, unsigned *__seg);
 extern unsigned _dos_close (int __handle);
 extern unsigned _dos_commit (int __handle);

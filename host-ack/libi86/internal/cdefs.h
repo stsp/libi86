@@ -54,9 +54,9 @@ __libi86_fpcc_t;
  */
 #define _LIBI86_ALT_INLINE	static
 /*
- * Define a local (and most likely inline) 0-, 1, or 2-argument function NAME
- * which calls ALIAS_TO.  RET_TYPE is the (non-void) return type of the
- * function, and TYPE1 and TYPE2 are argument types.
+ * Define a local (and most likely inline) 0-, 1-, 2-, 3, or 4-argument
+ * function NAME which calls ALIAS_TO.  RET_TYPE is the (non-void) return
+ * type of the function, and TYPE1, TYPE2, TYPE3, and TYPE4 are argument types.
  */
 #define _LIBI86_REDIRECT_AND_INLINE_0(ret_type, name, alias_to) \
 	extern ret_type alias_to (void); \
@@ -76,6 +76,66 @@ __libi86_fpcc_t;
 	{ \
 	  return alias_to (__arg1, __arg2); \
 	}
+#define _LIBI86_REDIRECT_AND_INLINE_3(ret_type, name, type1, type2, type3, \
+				      alias_to) \
+	extern ret_type alias_to (type1, type2, type3); \
+	_LIBI86_ALT_INLINE ret_type name (type1 __arg1, type2 __arg2, \
+					  type3 __arg3) \
+	{ \
+	  return alias_to (__arg1, __arg2, __arg3); \
+	}
+#define _LIBI86_REDIRECT_AND_INLINE_4(ret_type, name, type1, type2, type3, \
+				      type4, alias_to) \
+	extern ret_type alias_to (type1, type2, type3, type4); \
+	_LIBI86_ALT_INLINE ret_type name (type1 __arg1, type2 __arg2, \
+					  type3 __arg3, type4 __arg4) \
+	{ \
+	  return alias_to (__arg1, __arg2, __arg3, __arg4); \
+	}
+#define _LIBI86_REDIRECT_0	_LIBI86_REDIRECT_AND_INLINE_0
+#define _LIBI86_REDIRECT_1	_LIBI86_REDIRECT_AND_INLINE_1
+#define _LIBI86_REDIRECT_2	_LIBI86_REDIRECT_AND_INLINE_2
+#define _LIBI86_REDIRECT_3	_LIBI86_REDIRECT_AND_INLINE_3
+#define _LIBI86_REDIRECT_4	_LIBI86_REDIRECT_AND_INLINE_4
+/*
+ * If _BORLANDC_SOURCE is in effect, define a local 0-, 1-, 2-, 3- or
+ * 4-argument function function NAME which calls __libi86_bc_NAME. 
+ * Otherwise, define a normal function prototype.
+ */
+#ifdef _BORLANDC_SOURCE
+# define _LIBI86_BC_REDIRECT_AND_INLINE_0(ret_type, name) \
+	 _LIBI86_REDIRECT_AND_INLINE_0(ret_type, name, __libi86_bc_ ## name)
+# define _LIBI86_BC_REDIRECT_AND_INLINE_1(ret_type, name, type1) \
+	 _LIBI86_REDIRECT_AND_INLINE_1(ret_type, name, type1, \
+				       __libi86_bc_ ## name)
+# define _LIBI86_BC_REDIRECT_AND_INLINE_2(ret_type, name, type1, type2) \
+	 _LIBI86_REDIRECT_AND_INLINE_2(ret_type, name, type1, type2, \
+				       __libi86_bc_ ## name)
+# define _LIBI86_BC_REDIRECT_AND_INLINE_3(ret_type, name, type1, type2, type3)\
+	 _LIBI86_REDIRECT_AND_INLINE_3(ret_type, name, type1, type2, type3, \
+				       __libi86_bc_ ## name)
+# define _LIBI86_BC_REDIRECT_AND_INLINE_4(ret_type, name, type1, type2, type3,\
+					  type4) \
+	 _LIBI86_REDIRECT_AND_INLINE_4(ret_type, name, type1, type2, type3, \
+				       type4, __libi86_bc_ ## name)
+#else  /* ! _BORLANDC_SOURCE */
+# define _LIBI86_BC_REDIRECT_AND_INLINE_0(ret_type, name) \
+	 extern ret_type name (void);
+# define _LIBI86_BC_REDIRECT_AND_INLINE_1(ret_type, name, type1) \
+	 extern ret_type name (type1);
+# define _LIBI86_BC_REDIRECT_AND_INLINE_2(ret_type, name, type1, type2) \
+	 extern ret_type name (type1, type2);
+# define _LIBI86_BC_REDIRECT_AND_INLINE_3(ret_type, name, type1, type2, type3)\
+	 extern ret_type name (type1, type2, type3);
+# define _LIBI86_BC_REDIRECT_AND_INLINE_4(ret_type, name, type1, type2, type3,\
+					  type4) \
+	 extern ret_type name (type1, type2, type3, type4);
+#endif  /* ! _BORLANDC_SOURCE */
+#define _LIBI86_BC_REDIRECT_0	_LIBI86_BC_REDIRECT_AND_INLINE_0
+#define _LIBI86_BC_REDIRECT_1	_LIBI86_BC_REDIRECT_AND_INLINE_1
+#define _LIBI86_BC_REDIRECT_2	_LIBI86_BC_REDIRECT_AND_INLINE_2
+#define _LIBI86_BC_REDIRECT_3	_LIBI86_BC_REDIRECT_AND_INLINE_3
+#define _LIBI86_BC_REDIRECT_4	_LIBI86_BC_REDIRECT_AND_INLINE_4
 
 /* Yep, `va_list' is a pointer-to-char on ACK for the i86 target. */
 typedef char *_LIBI86_VA_LIST;

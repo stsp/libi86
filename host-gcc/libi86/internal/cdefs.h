@@ -67,12 +67,24 @@ __libi86_fpcc_t;
  * instead.  These macros work similarly to __REDIRECT (...) and friends in
  * glibc <sys/cdefs.h>.
  */
-#define _LIBI86_REDIRECT(name, proto, alias_to) \
-	name proto __asm (_LIBI86_ASM_NAME (alias_to))
+#define _LIBI86_REDIRECT_0(ret_type, name, alias_to) \
+	extern ret_type name (void) __asm (_LIBI86_ASM_NAME (alias_to));
+#define _LIBI86_REDIRECT_1(ret_type, name, type1, alias_to) \
+	extern ret_type name (type1) __asm (_LIBI86_ASM_NAME (alias_to));
+#define _LIBI86_REDIRECT_2(ret_type, name, type1, type2, alias_to) \
+	extern ret_type name (type1, type2) \
+			__asm (_LIBI86_ASM_NAME (alias_to));
+#define _LIBI86_REDIRECT_3(ret_type, name, type1, type2, type3, alias_to) \
+	extern ret_type name (type1, type2, type3) \
+			__asm (_LIBI86_ASM_NAME (alias_to));
+#define _LIBI86_REDIRECT_4(ret_type, name, type1, type2, type3, type4, \
+			   alias_to) \
+	extern ret_type name (type1, type2, type3, type4) \
+			__asm (_LIBI86_ASM_NAME (alias_to));
 #define _LIBI86_ASM_NAME(c_name) \
-	_LIBI86_ASM_NAME_2(__USER_LABEL_PREFIX__, #c_name)
-#define _LIBI86_ASM_NAME_2(prefix, c_name) _LIBI86_ASM_NAME_3(prefix, c_name)
-#define _LIBI86_ASM_NAME_3(prefix, c_name) #prefix c_name
+	_LIBI86_ASM_NAME_P2(__USER_LABEL_PREFIX__, #c_name)
+#define _LIBI86_ASM_NAME_P2(prefix, c_name) _LIBI86_ASM_NAME_P3(prefix, c_name)
+#define _LIBI86_ASM_NAME_P3(prefix, c_name) #prefix c_name
 
 /*
  * If _BORLANDC_SOURCE is in effect, declare function prototypes that
@@ -80,15 +92,42 @@ __libi86_fpcc_t;
  * declare normal function prototypes.
  */
 #ifdef _BORLANDC_SOURCE
-# define _LIBI86_BC_REDIRECT(name, proto) \
+# define _LIBI86_BC_REDIRECT_0(ret_type, name) \
+	 _LIBI86_REDIRECT_0 (ret_type, name, __libi86_bc_ ## name)
+# define _LIBI86_BC_REDIRECT_1(ret_type, name, type1) \
+	 _LIBI86_REDIRECT_1 (ret_type, name, type1, __libi86_bc_ ## name)
+# define _LIBI86_BC_REDIRECT_2(ret_type, name, type1, type2) \
+	 _LIBI86_REDIRECT_2 (ret_type, name, type1, type2, \
+			     __libi86_bc_ ## name)
+# define _LIBI86_BC_REDIRECT_3(ret_type, name, type1, type2, type3) \
+	 _LIBI86_REDIRECT_3 (ret_type, name, type1, type2, type3, \
+			     __libi86_bc_ ## name)
+# define _LIBI86_BC_REDIRECT_4(ret_type, name, type1, type2, type3, type4) \
+	 _LIBI86_REDIRECT_4 (ret_type, name, type1, type2, type3, type4, \
+			     __libi86_bc_ ## name)
+/*
+ * This macro is for corner cases which require special handling under GCC ---
+ * e.g. variadic arguments, extra function attributes.
+ */
+# define _LIBI86_BC_REDIRECT_X(name, proto) \
 	 name proto __asm (_LIBI86_BC_ASM_NAME (name))
 # define _LIBI86_BC_ASM_NAME(c_name) \
-	 _LIBI86_BC_ASM_NAME_2(__USER_LABEL_PREFIX__, #c_name)
-# define _LIBI86_BC_ASM_NAME_2(prefix, c_name) \
-	 _LIBI86_BC_ASM_NAME_3(prefix, c_name)
-# define _LIBI86_BC_ASM_NAME_3(prefix, c_name) #prefix "__libi86_bc_" c_name
+	 _LIBI86_BC_ASM_NAME_P2(__USER_LABEL_PREFIX__, #c_name)
+# define _LIBI86_BC_ASM_NAME_P2(prefix, c_name) \
+	 _LIBI86_BC_ASM_NAME_P3(prefix, c_name)
+# define _LIBI86_BC_ASM_NAME_P3(prefix, c_name) #prefix "__libi86_bc_" c_name
 #else
-# define _LIBI86_BC_REDIRECT(name, proto) name proto
+# define _LIBI86_BC_REDIRECT_0(ret_type, name) \
+	 extern ret_type name (void);
+# define _LIBI86_BC_REDIRECT_1(ret_type, name, type1) \
+	 extern ret_type name (type1);
+# define _LIBI86_BC_REDIRECT_2(ret_type, name, type1, type2) \
+	 extern ret_type name (type1, type2);
+# define _LIBI86_BC_REDIRECT_3(ret_type, name, type1, type2, type3) \
+	 extern ret_type name (type1, type2, type3);
+# define _LIBI86_BC_REDIRECT_4(ret_type, name, type1, type2, type3, type4) \
+	 extern ret_type name (type1, type2, type3, type4);
+# define _LIBI86_BC_REDIRECT_X(name, proto) name proto
 #endif
 
 /*
@@ -124,25 +163,25 @@ __libi86_fpcc_t;
 #define _LIBI86_ALT_INLINE	__attribute__ ((__gnu_inline__)) extern inline
 
 /*
- * Redirect out-of-line calls to a 1-argument function NAME to call
- * ALIAS_TO, _and_ also define an inline version of NAME which calls
+ * Redirect out-of-line calls to a 0-, 1-, or 2-argument function NAME to
+ * call ALIAS_TO, _and_ also define an inline version of NAME which calls
  * ALIAS_TO.  RET_TYPE is the (non-void) return type of the function, and
- * TYPE1 is the argument type.
+ * TYPE1 and TYPE2 are the argument types.
  */
+#define _LIBI86_REDIRECT_AND_INLINE_0(ret_type, name, alias_to) \
+	_LIBI86_REDIRECT_0 (ret_type, name, alias_to) \
+	_LIBI86_ALT_INLINE ret_type name (void) \
+	{ \
+	  return alias_to (); \
+	}
 #define _LIBI86_REDIRECT_AND_INLINE_1(ret_type, name, type1, alias_to) \
-	extern ret_type _LIBI86_REDIRECT (name, (type1), alias_to); \
+	_LIBI86_REDIRECT_1 (ret_type, name, type1, alias_to) \
 	_LIBI86_ALT_INLINE ret_type name (type1 __arg1) \
 	{ \
 	  return alias_to (__arg1); \
 	}
-/*
- * Redirect out-of-line calls to a 2-argument function NAME to call
- * ALIAS_TO, _and_ also define an inline version of NAME which calls
- * ALIAS_TO.  RET_TYPE is the (non-void) return type of the function, and
- * TYPE1 and TYPE2 are the argument types.
- */
 #define _LIBI86_REDIRECT_AND_INLINE_2(ret_type, name, type1, type2, alias_to) \
-	extern ret_type _LIBI86_REDIRECT (name, (type1, type2), alias_to); \
+	_LIBI86_REDIRECT_2 (ret_type, name, type1, type2, alias_to) \
 	_LIBI86_ALT_INLINE ret_type name (type1 __arg1, type2 __arg2) \
 	{ \
 	  return alias_to (__arg1, __arg2); \

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018--2020 TK Chia
+ * Copyright (c) 2018--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -58,14 +58,14 @@ extern int _getche (void);
 extern int _kbhit (void);
 extern int _ungetch (int);
 #ifndef _LIBI86_COMPILING_
-extern int _LIBI86_REDIRECT (getch, (void), _getch);
+_LIBI86_REDIRECT_0 (int, getch, _getch)
 # ifdef _BORLANDC_SOURCE
-extern int _LIBI86_BC_REDIRECT (getche, (void));
+_LIBI86_BC_REDIRECT_0 (int, getche)
 # else
-extern int _LIBI86_REDIRECT (getche, (void), _getche);
+_LIBI86_REDIRECT_0 (int, getche, _getche)
 # endif
-extern int _LIBI86_REDIRECT (kbhit, (void), _kbhit);
-extern int _LIBI86_REDIRECT (ungetch, (int), _ungetch);
+_LIBI86_REDIRECT_0 (int, kbhit, _kbhit)
+_LIBI86_REDIRECT_1 (int, ungetch, int, _ungetch)
 #endif
 
 /*
@@ -73,19 +73,29 @@ extern int _LIBI86_REDIRECT (ungetch, (int), _ungetch);
  * Borand compatibility mode (!).  If _BORLANDC_SOURCE is defined, cputs (.)
  * for example is redirected to __libi86_bc_cputs (.).
  */
-extern char *_LIBI86_BC_REDIRECT (cgets, (char *));
-extern int _LIBI86_BC_REDIRECT (cprintf, (const char *, ...))
+_LIBI86_BC_REDIRECT_1 (char *, cgets, char *)
+_LIBI86_BC_REDIRECT_1 (int, cputs, const char *)
+_LIBI86_BC_REDIRECT_1 (int, putch, int)
+_LIBI86_BC_REDIRECT_2 (int, vcprintf, const char *, _LIBI86_VA_LIST)
+#ifdef __GNUC__
+extern int _LIBI86_BC_REDIRECT_X (cprintf, (const char *, ...))
 	   __attribute__ ((__format__ (__printf__, 1, 2)));
-extern int _LIBI86_BC_REDIRECT (cputs, (const char *));
-extern int _LIBI86_BC_REDIRECT (cscanf, (const char *, ...))
+extern int _LIBI86_BC_REDIRECT_X (cscanf, (const char *, ...))
 	   __attribute__ ((__format__ (__scanf__, 1, 2)))
 	   _LIBI86_DEPRECATED ("libi86 cscanf is hard to control, and works "
 			       "differently from Open Watcom cscanf");
-extern int _LIBI86_BC_REDIRECT (putch, (int));
-extern int _LIBI86_BC_REDIRECT (vcprintf, (const char *, _LIBI86_VA_LIST));
-extern int _LIBI86_BC_REDIRECT (vcscanf, (const char *, _LIBI86_VA_LIST))
+extern int _LIBI86_BC_REDIRECT_X (vcscanf, (const char *, _LIBI86_VA_LIST))
 	   _LIBI86_DEPRECATED ("libi86 vcscanf is hard to control, and works "
 			       "differently from Open Watcom vcscanf");
+#else  /* ! __GNUC__ */
+_LIBI86_BC_REDIRECT_2 (int, vcscanf, const char *, _LIBI86_VA_LIST)
+# ifdef _BORLANDC_SOURCE
+#   define cprintf	__libi86_bc_cprintf	/* FIXME */
+#   define cscanf	__libi86_bc_cscanf
+# endif  /* _BORLANDC_SOURCE */
+extern int cprintf (const char *, ...);
+extern int cscanf (const char *, ...);
+#endif  /* ! __GNUC__ */
 
 #ifndef _LIBI86_COMPILING_
 _LIBI86_REDIRECT_AND_INLINE_1 (unsigned, inp, unsigned, __libi86_inp)

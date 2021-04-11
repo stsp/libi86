@@ -83,15 +83,16 @@ extern void delay (unsigned);
 extern void nosound (void);
 extern void segread (struct SREGS *__seg_regs);
 
+#ifdef __GNUC__
 /* Used by the inline versions of int86 (...), intr (...), etc. below.  */
-#ifndef _BORLANDC_SOURCE
+# ifndef _BORLANDC_SOURCE
 extern int __libi86_int86 (int, const union REGS *, union REGS *);
 extern int __libi86_int86_do (const void *, const union REGS *, union REGS *);
 extern int __libi86_int86x (int, const union REGS *, union REGS *,
 			    struct SREGS *);
 extern int __libi86_int86x_do (const void *, const union REGS *, union REGS *,
 			       struct SREGS *);
-#else
+# else  /* _BORLANDC_SOURCE */
 extern int __libi86_bc_int86 (int, const union REGS *, union REGS *);
 extern int __libi86_bc_int86_do (const void *, const union REGS *,
 				 union REGS *);
@@ -99,35 +100,33 @@ extern int __libi86_bc_int86x (int, const union REGS *, union REGS *,
 			       struct SREGS *);
 extern int __libi86_bc_int86x_do (const void *, const union REGS *,
 				  union REGS *, struct SREGS *);
-#endif
+# endif  /* _BORLANDC_SOURCE */
 extern void __libi86_intr (int, union REGPACK *);
 extern void __libi86_intr_do (const void *, union REGPACK *);
 /* Used by the inline version of sound (.) below.  */
 extern void __libi86_sound (unsigned);
 extern void __libi86_sound_by_divisor (unsigned);
+#endif  /* __GNUC__ */
 
 #ifndef _LIBI86_COMPILING_
-# ifndef __OPTIMIZE__
+# if ! defined __GNUC__ || ! defined __OPTIMIZE__
 extern void _disable (void);
 extern void _enable (void);
-extern int _LIBI86_BC_REDIRECT
-	     (int86, (int, const union REGS *, union REGS *));
-extern int _LIBI86_BC_REDIRECT
-	     (int86x, (int, const union REGS *, union REGS *, struct SREGS *));
+_LIBI86_BC_REDIRECT_3 (int, int86, int, const union REGS *, union REGS *)
+_LIBI86_BC_REDIRECT_4 (int, int86x, int, const union REGS *, union REGS *,
+				    struct SREGS *)
 extern void intr (int, union REGPACK *);
 /* The _...f (...) functions are new functions, which I am also proposing
    (https://github.com/open-watcom/open-watcom-v2/issues/472) to add to Open
    Watcom. These do the same thing as int86 (...), intr (...), etc., except
    they are also guaranteed to load at least the carry flag from the register
    structures, before raising the interrupt.  */
-extern int _LIBI86_BC_REDIRECT
-	     (_int86f, (int, const union REGS *, union REGS *));
-extern int _LIBI86_BC_REDIRECT
-	     (_int86xf, (int, const union REGS *, union REGS *,
-			 struct SREGS *));
+_LIBI86_BC_REDIRECT_3 (int, _int86f, int, const union REGS *, union REGS *)
+_LIBI86_BC_REDIRECT_4 (int, _int86xf, int, const union REGS *, union REGS *,
+				      struct SREGS *)
 extern void _intrf (int, union REGPACK *);
 extern void sound (unsigned);
-# else  /* __OPTIMIZE */
+# else  /* __GNUC__ && __OPTIMIZE__ */
 _LIBI86_ALT_INLINE void
 _disable (void)
 {
@@ -244,10 +243,10 @@ sound (int __freq)
   else
     __libi86_sound (__freq);
 }
-# endif	/* __OPTIMIZE__ */
+# endif	/* __GNUC__ && __OPTIMIZE__ */
 #endif	/* _LIBI86_COMPILING_ */
 
-#ifdef __FAR
+#if defined __FAR
 # define FP_SEG(__p)	__builtin_ia16_selector ((unsigned) \
 			  ((unsigned long) (volatile void __far *) (__p) \
 			    >> 16))
@@ -256,12 +255,35 @@ sound (int __freq)
 			((void __far *) \
 			 ((unsigned long) (unsigned) (__s) << 16 | \
 			  (unsigned) (__o)))
-#elif defined __cplusplus
+# define _CV_FP(__p)	(__libi86_CV_FP (__p))
+
+static inline void __far *
+__libi86_CV_FP (const volatile void *__p)
+{
+  return (void __far *) __p;
+}
+#elif defined __cplusplus  /* ! __FAR */
 # define FP_SEG(__p)	((__libi86_fpcvv_t (__p)).__FP_SEG ())
 # define FP_OFF(__p)	((__libi86_fpcvv_t (__p)).__FP_OFF ())
 # define MK_FP(__s, __o) \
 			(__libi86_fpv_t ((__s), (__o)))
-#endif
+# define _CV_FP(__p)	(__libi86_fpv_t (__p))
+#else  /* ! __FAR && ! __cplusplus */
+# define FP_SEG(__p)	((unsigned) ((__p).__p_ >> 16))
+# define FP_OFF(__p)	((unsigned) (__p).__p_)
+# define MK_FP(__s, __o) (__libi86_MK_FP ((__s), (__o)))
+# define _CV_FP(__p)	(__libi86_CV_FP (__p))
+
+_LIBI86_ALT_INLINE __libi86_fpv_t
+__libi86_MK_FP (unsigned __seg, unsigned __off)
+{
+  __libi86_fpv_t __p = { (unsigned long) __seg << 16 | __off };
+  return __p;
+}
+
+extern __libi86_fpv_t __libi86_CV_FP (const volatile void *);
+#endif  /* ! __FAR && ! __cplusplus */
+
 #define _FP_SEG(__p)	FP_SEG (__p)
 #define _FP_OFF(__p)	FP_OFF (__p)
 #define _MK_FP(__s, __o) MK_FP (__s, __o)
