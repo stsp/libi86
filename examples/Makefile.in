@@ -1,4 +1,4 @@
-# Copyright (c) 2020 TK Chia
+# Copyright (c) 2020--2021 TK Chia
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -51,9 +51,9 @@ AS = @AS@
 LD = @LD@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 
-PROGRAMS	= drivei86.exe
+PROGRAMS	= drivei86.exe joyi86.exe
 ifeq "yes" "$(ac_compiler_gnu)"
-  PROGRAMS	+= dpmii86.exe joyi86.exe
+  PROGRAMS	+= dpmii86.exe
   CFLAGS	= -mcmodel=small -mregparmcall -Os -mnewlib-autofloat-stdio
   ifeq "" "$(filter -O%,$(CC) $(CFLAGS))"
     CFLAGS	+= -O2
@@ -72,16 +72,16 @@ HEADERS		= $(wildcard $(srcroot)/$(libi86_hostdir)/*.h \
 			     $(srcroot)/$(libi86_hostdir)/libi86/internal/*.h \
 			     $(objroot)/$(libi86_hostdir)/libi86/*.h \
 			     $(objroot)/$(libi86_hostdir)/libi86/internal/*.h \
-			     $(srcroot)/include/*.h \
-			     $(srcroot)/include/libi86/*.h \
-			     $(srcroot)/include/libi86/internal/*.h)
+			     $(srcroot)/common/*.h \
+			     $(srcroot)/common/libi86/*.h \
+			     $(srcroot)/common/libi86/internal/*.h)
 
 # Host specific makefile fragment comes in here.
 @host_makefile_frag@
 
 CPPFLAGS += $(INCLUDES) -I$(srcdir) -I. \
 	    -I$(objroot)/$(libi86_hostdir) -I$(srcroot)/$(libi86_hostdir) \
-	    -I$(srcroot)/include
+	    -I$(srcroot)/common
 
 .PHONY: default
 default: all

@@ -32,7 +32,7 @@ srcdir = @srcdir@
 objdir = .
 srcroot = $(srcdir)/..
 objroot = $(objdir)/..
-VPATH = $(srcdir):$(srcroot)/include
+VPATH = $(srcdir):$(srcroot)/common
 mkinstalldirs = $(SHELL) $(srcroot)/mkinstalldirs
 
 prefix = @prefix@
@@ -130,6 +130,7 @@ OBJS		= bios/bios-disk.o \
 		  conio/libi86-bc-vcprintf.o \
 		  conio/libi86-bc-vcscanf.o \
 		  conio/libi86-con-in-fd.o \
+		  conio/libi86-con-name.o \
 		  conio/libi86-con-out-fd.o \
 		  conio/libi86-ungetch-buf.o \
 		  conio/libi86-vid-bc-insdelline.o \
@@ -230,7 +231,7 @@ BSP		= $(INSTALL_LIBS)
 # Host specific makefile fragment comes in here.
 @host_makefile_frag@
 
-CPPFLAGS += $(INCLUDES) -I. -I$(srcdir) -I$(srcroot)/include
+CPPFLAGS += $(INCLUDES) -I. -I$(srcdir) -I$(srcroot)/common
 
 .PHONY: default
 default: all
@@ -242,9 +243,9 @@ all: $(INSTALL_LIBS) $(INSTALL_HEADERS)
 .PHONY: install
 install: $(INSTALL_LIBS) $(INSTALL_HEADERS)
 	$(mkinstalldirs) $(DESTDIR)$(tooldir)/lib$(MULTISUBDIR) \
-			 $(DESTDIR)$(tooldir)/include \
-			 $(DESTDIR)$(tooldir)/include/libi86 \
-			 $(DESTDIR)$(tooldir)/include/libi86/internal
+			 $(DESTDIR)$(tooldir)/common \
+			 $(DESTDIR)$(tooldir)/common/libi86 \
+			 $(DESTDIR)$(tooldir)/common/libi86/internal
 	set -e; \
 	d=$(DESTDIR)$(tooldir)/lib$(MULTISUBDIR); \
 	for f in $(INSTALL_LIBS); do \
@@ -262,7 +263,7 @@ install: $(INSTALL_LIBS) $(INSTALL_HEADERS)
 	  elif [ -f $(srcdir)/"$$f" ]; then \
 	    $(INSTALL_DATA) $(srcdir)/"$$f" "$$d/$$f"; \
 	  else \
-	    $(INSTALL_DATA) $(srcroot)/include/"$$f" "$$d/$$f"; \
+	    $(INSTALL_DATA) $(srcroot)/common/"$$f" "$$d/$$f"; \
 	  fi; \
 	done
 	+@$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=$@

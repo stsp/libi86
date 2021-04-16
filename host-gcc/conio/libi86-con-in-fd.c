@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018--2020 TK Chia
+ * Copyright (c) 2018--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -64,7 +64,7 @@ __libi86_con_in_fd_init (void)
   if (__libi86_con_get_dev_info_word (0, &dw) != 0
       || (dw & 0x0081u) != 0x0081u)
     {
-      fd = __libi86_con_open ("CON", 0);
+      fd = __libi86_con_open (__libi86_con_name, 0);
       if (fd != -1)
 	{
 	  __libi86_con_in_fd = fd;
