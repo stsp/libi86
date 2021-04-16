@@ -2880,6 +2880,14 @@ host_makefile_frag=
 
 
 
+if test $ac_compiler_gnu = yes; then
+  libi86_hostdir=host-gcc
+
+else
+    libi86_hostdir=host-ack
+
+fi
+
 ac_config_files="$ac_config_files Makefile"
 
 cat >confcache <<\_ACEOF

@@ -3005,7 +3005,6 @@ else
   subdirs="$subdirs host-ack"
 
 fi
-export libi86_hostdir
 
 subdirs="$subdirs examples"
 

@@ -55,7 +55,6 @@ else
   libi86_hostdir=host-ack
   $1([host-ack])
 fi
-export libi86_hostdir
 AC_SUBST(libi86_hostdir)])
 
 dnl Determine which host-specific subdirectory to build the actual libi86
