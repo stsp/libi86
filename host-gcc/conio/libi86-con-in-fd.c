@@ -72,6 +72,13 @@ __libi86_con_in_fd_init (void)
 	      && __libi86_con_get_dev_info_word (fd, &dw) == 0
 	      && (dw & 0x0080u) != 0)
 	    {
+	      /*
+	       * Ralf Brown's Interrupt List says, for int 0x21, ax =
+	       * 0x4401, "DH [= high part of device information word] must
+	       * be zero for DOS version prior to 6.x".
+	       */
+	      dw = (unsigned char) dw;
+
 	      __libi86_con_in_info_word = dw;
 	      __libi86_con_set_dev_info_word (fd, dw | 0x0020u);
 	    }
