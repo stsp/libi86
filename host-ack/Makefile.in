@@ -32,7 +32,7 @@ srcdir = @srcdir@
 objdir = .
 srcroot = $(srcdir)/..
 objroot = $(objdir)/..
-VPATH = $(srcdir):$(srcroot)/include
+VPATH = $(srcdir):$(srcroot)/common
 mkinstalldirs = $(SHELL) $(srcroot)/mkinstalldirs
 
 prefix = @prefix@
@@ -62,6 +62,7 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 
 INSTALL_LIBS	= libi86.a
 INSTALL_HEADERS	= bios.h \
+		  conio.h \
 		  i86.h \
 		  libi86/internal/cdefs.h \
 		  libi86/internal/sect.h \
@@ -71,7 +72,18 @@ CLEAN_HEADERS	= libi86/config.h \
 
 OBJS		= bios/bios-disk.o \
 		  bios/bios-equiplist.o \
+		  bios/bios-joystick.o \
 		  bios/bios-memsize.o \
+		  conio/cputs.o \
+		  conio/inp.o \
+		  conio/inpw.o \
+		  conio/libi86-con-name.o \
+		  conio/libi86-con-out-fd.o \
+		  conio/outp.o \
+		  conio/outpw.o \
+		  conio/putch.o \
+		  i86/disable.o \
+		  i86/enable.o \
 		  i86/libi86-CV-FP.o
 OBJ_SUBDIRS	= $(sort $(dir $(OBJS)))
 CFLAGS		= -O6 -S
@@ -84,7 +96,7 @@ BSP		= $(INSTALL_LIBS)
 # Host specific makefile fragment comes in here.
 @host_makefile_frag@
 
-CPPFLAGS += $(INCLUDES) -I. -I$(srcdir) -I$(srcroot)/include
+CPPFLAGS += $(INCLUDES) -I. -I$(srcdir) -I$(srcroot)/common
 
 .PHONY: default
 default: all
@@ -114,7 +126,7 @@ install: $(INSTALL_LIBS) $(INSTALL_HEADERS)
 	  elif [ -f $(srcdir)/"$$f" ]; then \
 	    $(INSTALL_DATA) $(srcdir)/"$$f" "$$d/$$f"; \
 	  else \
-	    $(INSTALL_DATA) $(srcroot)/include/"$$f" "$$d/$$f"; \
+	    $(INSTALL_DATA) $(srcroot)/common/"$$f" "$$d/$$f"; \
 	  fi; \
 	done
 

@@ -243,9 +243,9 @@ all: $(INSTALL_LIBS) $(INSTALL_HEADERS)
 .PHONY: install
 install: $(INSTALL_LIBS) $(INSTALL_HEADERS)
 	$(mkinstalldirs) $(DESTDIR)$(tooldir)/lib$(MULTISUBDIR) \
-			 $(DESTDIR)$(tooldir)/common \
-			 $(DESTDIR)$(tooldir)/common/libi86 \
-			 $(DESTDIR)$(tooldir)/common/libi86/internal
+			 $(DESTDIR)$(tooldir)/include \
+			 $(DESTDIR)$(tooldir)/include/libi86 \
+			 $(DESTDIR)$(tooldir)/include/libi86/internal
 	set -e; \
 	d=$(DESTDIR)$(tooldir)/lib$(MULTISUBDIR); \
 	for f in $(INSTALL_LIBS); do \
