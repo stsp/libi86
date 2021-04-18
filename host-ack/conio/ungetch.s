@@ -1,5 +1,6 @@
+#
 /*
- * Copyright (c) 2018--2020 TK Chia
+ * Copyright (c) 2018--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,28 +28,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define _LIBI86_COMPILING_
-#include <stdio.h>
-#include "conio.h"
+#include "libi86/internal/sect.h"
 
-#ifdef __MSDOS__
-int
-# ifdef _BORLANDC_SOURCE
-getche (void)
-# else
-_getche (void)
-# endif
-{
-  int ch = _getch ();
-  if (ch != EOF)
-    return putch (ch);
-  return ch;
-}
-
-# ifndef _BORLANDC_SOURCE
-_LIBI86_WEAK_ALIAS (_getche) int
-getche (void);
-# endif
-#else
-# warning "unknown host OS"
-#endif
+	.define	__ungetch
+__ungetch:
+	mov	bx, sp
+	movb	al, 2(bx)
+	mov	bx, ___libi86_ungetch_buf
+	cmp	(bx), 0
+	jnz	.error
+	lahf				! put something non-zero into ah;
+					! we know ZF is set at this point
+	mov	(bx), ax
+	movb	ah, 0
+	ret	2
+.error:
+	mov	ax, -1
+	ret

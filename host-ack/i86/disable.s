@@ -1,5 +1,6 @@
+#
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,44 +28,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define _LIBI86_COMPILING_
-#include <errno.h>
-#include <stdio.h>
-#include <unistd.h>
-#include "libi86/internal/conio.h"
+#include "libi86/internal/sect.h"
 
-#ifdef __MSDOS__
-int
-_getch (void)
-{
-  unsigned char ch, scratch;
-  ssize_t n;
-
-  if (__libi86_ungetch_buf)
-    {
-      ch = (unsigned char) __libi86_ungetch_buf;
-      __libi86_ungetch_buf = 0;
-      return ch;
-    }
-
-  if (__libi86_con_in_fd == 0)
-    {
-      __asm volatile ("int $0x21" : "=Ral" (ch), "=Rah" (scratch)
-				  : "1" ((unsigned char) 0x07)
-				  : "cc");
-      return ch;
-    }
-
-  n = read (__libi86_con_in_fd, &ch, 1);
-  if (n == 1)
-    return ch;
-  if (n >= 0)
-    errno = EIO;
-  return EOF;
-}
-
-_LIBI86_WEAK_ALIAS (_getch) int
-getch (void);
-#else
-# warning "unknown host OS"
-#endif
+	.define	__disable
+__disable:
+	cli
+	ret

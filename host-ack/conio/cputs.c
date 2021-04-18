@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -29,34 +29,34 @@
 
 #define _LIBI86_COMPILING_
 #include <errno.h>
-#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include "libi86/internal/conio.h"
-#include "libi86/internal/acconfig.h"
 
-#ifdef __MSDOS__
 int
-vcprintf (const char *fmt, va_list ap)
+cputs (const char *buf)
 {
-  /*
-   * Do _not_ use vdprintf (...) --- it does not convert LF to CRLF as needed.
-   *	-- tkchia 20200712
-   */
-  static FILE *__libi86_con_out_fp = NULL;
+#ifdef __MSDOS__
+  char *p_nl;
+  size_t len;
+  ssize_t n;
 
-  if (! __libi86_con_out_fp)
-    {
-      __libi86_con_out_fp = fdopen (__libi86_con_out_fd, "at");
-      if (! __libi86_con_out_fp)
-	return -1;
+  __libi86_con_out_fd_init ();
 
-      setbuf (__libi86_con_out_fp, NULL);
-    }
+  len = strlen (buf);
+  n = write (__libi86_con_out_fd, buf, len);
 
-  return vfprintf (__libi86_con_out_fp, fmt, ap);
+  if (n == len)
+    return 0;
+
+  if (n >= 0)
+    errno = EIO;
+
+  return EOF;
+#else  /* ! __MSDOS__ */
+  int r = fputs (buf, stdout);
+  return r >= 0 ? 0 : EOF;
+#endif  /* ! __MSDOS__ */
 }
-#else
-# warning "unknown host OS"
-#endif

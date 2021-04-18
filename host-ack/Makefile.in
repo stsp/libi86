@@ -73,15 +73,25 @@ CLEAN_HEADERS	= libi86/config.h \
 OBJS		= bios/bios-disk.o \
 		  bios/bios-equiplist.o \
 		  bios/bios-joystick.o \
+		  bios/bios-keybrd.o \
 		  bios/bios-memsize.o \
+		  conio/cprintf.o \
 		  conio/cputs.o \
+		  conio/getch.o \
+		  conio/getche.o \
 		  conio/inp.o \
 		  conio/inpw.o \
+		  conio/kbhit.o \
+		  conio/libi86-con-in-fd.o \
 		  conio/libi86-con-name.o \
 		  conio/libi86-con-out-fd.o \
+		  conio/libi86-ungetch-buf.o \
 		  conio/outp.o \
 		  conio/outpw.o \
 		  conio/putch.o \
+		  conio/ungetch.o \
+		  conio/vcprintf.o \
+		  dos/bdos.o \
 		  i86/disable.o \
 		  i86/enable.o \
 		  i86/libi86-CV-FP.o

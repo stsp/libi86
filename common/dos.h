@@ -46,7 +46,11 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
-struct __attribute__ ((__packed__)) find_t
+struct
+#ifdef __GNUC__
+__attribute__ ((__packed__))
+#endif
+find_t
 {
   char reserved[21];
   char attrib;
@@ -97,11 +101,13 @@ extern void _dos_setvect (unsigned __intr_no, __libi86_isr_t __isr)
 			   "__interrupt unrecognized");
 #endif
 
+#ifdef __GNUC__
 _LIBI86_ALT_INLINE unsigned
 _dos_findclose (struct find_t *__buf)
 {
   return 0;
 }
+#endif
 
 _LIBI86_END_EXTERN_C
 
