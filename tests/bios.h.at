@@ -222,11 +222,37 @@ main (void)
 }]],[])
 AT_CLEANUP
 
+AT_SETUP([[_bios_timeofday]])
+AT_LIBI86_CHECK(dnl
+[[#include <stdlib.h>
+#include <bios.h>
+int
+main (void)
+{
+  long timeval1 = 0x41414141L, timeval2;
+  unsigned short midnight = _bios_timeofday (_TIME_GETCLOCK, &timeval1);
+  if (midnight > 1 || timeval1 < 0 || timeval1 >= 0x1800b0L)
+    abort ();
+  do
+    {
+      timeval2 = 0x42424242L;
+      midnight = _bios_timeofday (_TIME_GETCLOCK, &timeval2);
+    }
+  while (! midnight && timeval2 == timeval1);
+  if (midnight > 1 || timeval2 < 0 || timeval2 >= 0x1800b0L)
+    abort ();
+  if (! midnight && timeval2 < timeval1)
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP
+
 AT_SETUP([[_bios_joystick]])
 AT_LIBI86_CHECK(dnl
 [[#include <stdlib.h>
 #include <bios.h>
-int main (void)
+int
+main (void)
 {
   unsigned short r1, r2;
   union _joyinfo_t info1, info2;

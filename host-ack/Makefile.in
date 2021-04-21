@@ -75,6 +75,7 @@ OBJS		= bios/bios-disk.o \
 		  bios/bios-joystick.o \
 		  bios/bios-keybrd.o \
 		  bios/bios-memsize.o \
+		  bios/bios-timeofday.o \
 		  conio/cprintf.o \
 		  conio/cputs.o \
 		  conio/getch.o \
