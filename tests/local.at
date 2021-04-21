@@ -27,8 +27,9 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 dnl $1 = file name of program to compile
 dnl $2 = file to write compiled binary to (default a.exe)
-dnl $3 = GCC options
+dnl $3 = C compiler options
 m4_define([AT_LIBI86_COMPILE],[dnl
+if test yes = "$ac_compiler_gnu"; then
 at_libi86_multilib="`$CC $CPPFLAGS $3 -print-multi-directory`"
 AT_CHECK([[$CC -o ]m4_default($2,a.exe)[ $CPPFLAGS ]]dnl
 [[-isystem "$abs_top_builddir"/"$libi86_hostdir" ]]dnl
@@ -36,11 +37,21 @@ AT_CHECK([[$CC -o ]m4_default($2,a.exe)[ $CPPFLAGS ]]dnl
 [[-isystem "$abs_top_srcdir"/common ]]dnl
 [[-Wall -Werror=strict-prototypes -Werror=missing-prototypes ]][$3] [$1] dnl
 [["$abs_top_builddir"/"$at_libi86_multilib"/"$libi86_hostdir"/libi86.a]],dnl
-,[[ignore]],[[ignore]])])
+,[[ignore]],[[ignore]])
+else
+AT_CHECK([[$CC -c -o a.o $CPPFLAGS ]]dnl
+[[-I"$abs_top_builddir"/"$libi86_hostdir" ]]dnl
+[[-I"$abs_top_srcdir"/"$libi86_hostdir" ]]dnl
+[[-I"$abs_top_srcdir"/common ]][$3] [$1],dnl
+,[[ignore]],[[ignore]])
+AT_CHECK([[$CC -.c -o ]m4_default($2,a.exe) $3[ a.o ]]dnl
+[["$abs_top_builddir"/"$libi86_hostdir"/libi86.a]],dnl
+,[[ignore]],[[ignore]])
+fi])
 
 dnl $1 = file name of program to compile
 dnl $2 = file to write compiled binary to (default a.exe)
-dnl $3 = G++ options
+dnl $3 = C++ compiler options
 m4_define([AT_LIBI86_COMPILE_CXX],[dnl
 at_libi86_multilib="`$CXX $CPPFLAGS $3 -print-multi-directory`"
 AT_CHECK([[$CXX -o ]m4_default($2,a.exe)[ $CPPFLAGS ]]dnl
@@ -87,10 +98,17 @@ AT_LIBI86_COMPILE_CXX($2,$3,$1)
 AT_CHECK([AT_LIBI86_RUN($4,,$5,$6)],,[[expout]],[[ignore]])])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_B],[dnl
+if test yes = "$ac_compiler_gnu"; then
 _AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os ]]$@)
 if "$at_arg_x_test_underlying"; then :; else
 _AT_LIBI86_DO_CHECK_EXPOUT_A([[-O0 ]]$@)
 _AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os -masm=intel ]]$@)
+fi
+else
+_AT_LIBI86_DO_CHECK_EXPOUT_A([[-O6 -S ]]$@)
+if "$at_arg_x_test_underlying"; then :; else
+_AT_LIBI86_DO_CHECK_EXPOUT_A([[-O0 ]]$@)
+fi
 fi])
 
 m4_define([_AT_LIBI86_DO_CHECK_CXX_EXPOUT_B],[dnl
@@ -107,11 +125,15 @@ _AT_LIBI86_DO_CHECK_EXPOUT_B([[-march=any_186 ]]$@)
 fi])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_D],[dnl
+if test yes = "$ac_compiler_gnu"; then
 if "$at_arg_x_test_underlying"; then :; else
 _AT_LIBI86_DO_CHECK_EXPOUT_B($@)
 _AT_LIBI86_DO_CHECK_EXPOUT_B([[-mrtd ]]$@)
 fi
-_AT_LIBI86_DO_CHECK_EXPOUT_C([[-mregparmcall ]]$@)])
+_AT_LIBI86_DO_CHECK_EXPOUT_C([[-mregparmcall ]]$@)
+else
+_AT_LIBI86_DO_CHECK_EXPOUT_B($@)
+fi])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_E],[dnl
 [case x"$at_libi86_cc_have_medium_model",']$1[' in
@@ -122,7 +144,7 @@ xno,*-mcmodel=medium*)
 ;;
 esac]])
 
-dnl $1 = GCC options
+dnl $1 = C compiler options
 dnl $2 = file name of program to compile
 dnl $3 = file to write compiled binary to (default a.exe)
 dnl $4 = program to run on dosemu (default a.exe)
@@ -131,9 +153,11 @@ dnl $6 = Unix program to run to postprocess dosemu output (default
 dnl	 postproc-stdout.sh in this file's source directory)
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_F],[dnl
 _AT_LIBI86_DO_CHECK_EXPOUT_E($@)
+if test yes = "$ac_compiler_gnu"; then
 _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mdpmiable ]]$@)
 if "$at_arg_x_test_underlying"; then :; else
 _AT_LIBI86_DO_CHECK_EXPOUT_C([[-mprotected-mode ]]$@)
+fi
 fi])
 
 m4_define([AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL_NONDPMIABLE],[dnl
@@ -141,8 +165,10 @@ AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
 _AT_LIBI86_DO_CHECK_EXPOUT_E(,a.c,,m4_shift(m4_shift($@)))
+if test yes = "$ac_compiler_gnu"; then
 _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
-_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))])
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))
+fi])
 
 m4_define([AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL],[dnl
 AT_DATA([[a.c]],[$1
@@ -151,9 +177,11 @@ AT_DATA([[expout]],[$2])
 if "$at_arg_x_test_underlying"; then :; else
 _AT_LIBI86_DO_CHECK_EXPOUT_F(,a.c,,m4_shift(m4_shift($@)))
 fi
+if test yes = "$ac_compiler_gnu"; then
 _AT_LIBI86_DO_CHECK_EXPOUT_F([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
 dnl do not try -mdpmiable for medium model for now
-_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))])
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))
+fi])
 
 m4_define([AT_LIBI86_CHECK_CXX_FOR_NEAR_DATA_MODEL],[dnl
 dnl (1) if ia16-elf-g++ does not exist or does not work, just skip test(s)
@@ -188,6 +216,7 @@ m4_define([AT_LIBI86_CHECK_CXX],[dnl
 AT_LIBI86_CHECK_CXX_FOR_NEAR_DATA_MODEL($@)])
 
 m4_define([AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE],[dnl
+AT_SKIP_IF([test yes != "$ac_compiler_gnu"])
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
@@ -195,6 +224,7 @@ _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
 _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))])
 
 m4_define([AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE],[dnl
+AT_SKIP_IF([test yes != "$ac_compiler_gnu"])
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
@@ -206,17 +236,24 @@ AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
 _AT_LIBI86_DO_CHECK_EXPOUT_E(,a.c,,m4_shift(m4_shift($@)))
+if test yes = "$ac_compiler_gnu"; then
 _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
-_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))])
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))
+fi])
 
-m4_define([AT_LIBI86_CONSOLE_CAPTURE_PROG],["$abs_srcdir"/capture.S])
+m4_define([AT_LIBI86_COMPILE_CONSOLE_CAPTURE_PROG],[dnl
+if test yes = "$ac_compiler_gnu"; then
+AT_LIBI86_COMPILE(["$abs_srcdir"/capture-gcc.S],[capture.exe],[-nostdlib])
+else
+AT_CHECK([[$CC -o capture.exe "$abs_srcdir"/capture-ack.s]])
+fi])
 
 dnl $1 = text of program to test
 dnl $2 = expected program output on console
 dnl $3 = additional options to pass to dosemu (especially -input ...)
 m4_define([AT_LIBI86_CHECK_CONSOLE],[dnl
 dnl FIXME: capture.exe is rebuilt at each call to AT_LIBI86_CHECK_CONSOLE(...).
-AT_LIBI86_COMPILE(AT_LIBI86_CONSOLE_CAPTURE_PROG,capture.exe,-Os -mregparmcall)
+AT_LIBI86_COMPILE_CONSOLE_CAPTURE_PROG
 AT_DATA([[x.bat]],dnl
 [[@echo off
 cls
@@ -233,7 +270,7 @@ AT_LIBI86_CHECK([$1],[$2],[[x.bat]],[$3 [-t >/dev/null]],dnl
 [["$abs_srcdir"/postproc-console.sh]])])
 
 m4_define([AT_LIBI86_CHECK_CONSOLE_FOR_NONDPMIABLE],[dnl
-AT_LIBI86_COMPILE(AT_LIBI86_CONSOLE_CAPTURE_PROG,capture.exe,-Os -mregparmcall)
+AT_LIBI86_COMPILE_CONSOLE_CAPTURE_PROG
 AT_DATA([[x.bat]],dnl
 [[@echo off
 cls

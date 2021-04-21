@@ -32,14 +32,18 @@ DOSEMU_IS_1=no
    && DOSEMU_IS_1=yes
 
 : ${CC='@CC@'}
-if $CC -mcmodel=medium -x c -E /dev/null -o /dev/null 2>/dev/null; then
+: ${ac_compiler_gnu='@ac_compiler_gnu@'}
+if test yes = $ac_compiler_gnu \
+   && $CC -mcmodel=medium -x c -E /dev/null -o /dev/null >/dev/null 2>/dev/null
+then
   at_libi86_cc_have_medium_model=yes
 else
   at_libi86_cc_have_medium_model=no
 fi
 
 : ${CXX='@CXX@'}
-$CXX -mmsdos -mregparmcall --version -v >/dev/null 2>/dev/null \
+(test yes = $ac_compiler_gnu \
+ && $CXX -mmsdos -mregparmcall --version -v >/dev/null 2>/dev/null) \
   || CXX=false
 if "$at_arg_x_test_underlying"; then
   CPPFLAGS=-D_LIBI86_INTERNAL_TEST_UNDERLYING

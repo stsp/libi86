@@ -1,5 +1,6 @@
+#
 /*
- * Copyright (c) 2018--2020 TK Chia
+ * Copyright (c) 2018--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -30,106 +31,96 @@
 /* Capture the contents of the current screen page.  This is a tiny memory
    model program.  */
 
-	.arch	i8086, jumps
-	.code16
-	.att_syntax prefix
+	.sect	.text
+	.sect	.rom
+	.sect	.data
+	.sect	.bss
 
-	.text
-	.global	main
-main:
-	pushw	%si
-	pushw	%di
-	pushw	%bp
-	xorw	%ax,	%ax		/* get number of rows on screen */
-	movw	%ax,	%ds		/* (assumes EGA video or above!) */
-	movb	0x484,	%cl
-	pushw	%ss
-	popw	%ds
-	incw	%cx
+	.sect	.text
+
+	xor	cx, cx			/* get number of rows on screen */
+	mov	ds, cx			/* (assumes EGA video or above!) */
+	movb	cl, (0x484)
+	push	ss
+	pop	ds
+	inc	cx
 	jcxz	.done
-	mov	%cl,	rows
-	movb	$0x0f,	%ah		/* get number of columns on screen, */
-	int	$0x10			/* and active display page */
-	movb	%bh,	page
-	movb	%ah,	cols
-	movb	$0x03,	%ah		/* store the current cursor position */
-	int	$0x10
-	movw	%dx,	curs_pos
-	movw	$buf,	%di
-	xorw	%dx,	%dx
+	movb	(rows), cl
+	movb	ah, 0x0f		/* get number of columns on screen, */
+	int	0x10			/* and active display page */
+	movb	(page), bh
+	movb	(cols), ah
+	mov	di, buf
+	xor	dx, dx
 .loop:					/* now loop through the whole screen */
-	movb	$0x02,	%ah
-	movb	page,	%bh
-	pushw	%dx
-	pushw	%di
-	int	$0x10
-	movb	$0x08,	%ah
-	movb	page,	%bh
-	int	$0x10
-	popw	%di
-	popw	%dx
+	movb	ah, 0x02
+	movb	bh, (page)
+	push	dx
+	push	di
+	int	0x10
+	movb	ah, 0x08
+	movb	bh, (page)
+	int	0x10
+	pop	di
+	pop	dx
 	cld
-	cmpb	$' ',	%al		/* escape special characters */
+	cmpb	al, ' '			/* escape special characters */
 	jb	.special
-	cmpb	$'~',	%al
+	cmpb	al, '~'
 	jae	.special
 .special_ok:
 	stosb
-	incb	%dl
-	cmpb	cols,	%dl
+	incb	dl
+	cmpb	dl, (cols)
 	jnz	.loop
-	movb	$'\n',	%al		/* add a '\n' after each row */
+	movb	al, '\n'		/* add a '\n' after each row */
 	stosb
-	xorb	%dl,	%dl
-	incb	%dh
-	cmpb	rows,	%dh
+	xorb	dl, dl
+	incb	dh
+	cmpb	dh, (rows)
 	jnz	.loop
-	movb	$0x40,	%ah		/* we are done; write the captured */
-	movw	$1,	%bx		/* screen contents to stdout */
-	movw	$buf,	%dx
-	movw	%di,	%cx
-	subw	%dx,	%cx
-	int	$0x21
+	movb	ah, 0x40		/* we are done; write the captured */
+	mov	bx, 1			/* screen contents to stdout */
+	mov	dx, buf
+	mov	cx, di
+	sub	cx, dx
+	int	0x21
 	jc	.error
-	cmpw	%cx,	%ax
+	cmp	ax, cx
 	jnz	.error
 .done:
-	xorw	%ax,	%ax
-	popw	%bp
-	popw	%di
-	popw	%si
-	ret
+	mov	ax, 0x4c00
+	int	0x21
 .error:
-	movw	$1,	%ax
-	popw	%bp
-	popw	%di
-	popw	%si
-	ret
+	mov	ax, 0x4c01
+	int	0x21
 .special:				/* encode special characters as `~' */
-	xchgw	%ax,	%bx		/* followed by an octal char. code */
-	movb	$'~',	%al
+	xchg	bx, ax			/* followed by an octal char. code */
+	movb	al, '~'
 	stosb
-	movb	%bl,	%bh
-	rolb	%bl
-	rolb	%bl
-	movb	%bl,	%al
-	andb	$0x03,	%al
-	orb	$'0',	%al
+	movb	bh, bl
+	rolb	bl, 1
+	rolb	bl, 1
+	movb	al, bl
+	andb	al, 0x03
+	orb	al, '0'
 	stosb
-	rolb	%bl
-	rolb	%bl
-	rolb	%bl
-	movb	%bl,	%al
-	andb	$0x07,	%al
-	orb	$'0',	%al
+	rolb	bl, 1
+	rolb	bl, 1
+	rolb	bl, 1
+	movb	al, bl
+	andb	al, 0x07
+	orb	al, '0'
 	stosb
-	movb	%bh,	%al
-	andb	$0x07,	%al
-	orb	$'0',	%al
+	movb	al, bh
+	andb	al, 0x07
+	orb	al, '0'
 	jmp	.special_ok
 
-	.lcomm	page, 1
-	.lcomm	cols, 1
-	.lcomm	rows, 1
-	.lcomm	curs_pos, 2
-	.lcomm	buf, 0xc000
+	.sect	.bss
+
+	.comm	page, 1
+	.comm	cols, 1
+	.comm	rows, 1
+	.comm	curs_pos, 2
+	.comm	buf, 0xc000

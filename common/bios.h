@@ -70,7 +70,10 @@ _bios_memsize (void)
   __asm volatile ("int {$}0x12" : "=a" (a));
   return a;
 }
-#endif /* __GNUC__ */
+#else  /* ! __GNUC__ */
+extern unsigned short _bios_equiplist (void);
+extern unsigned short _bios_memsize (void);
+#endif  /* ! __GNUC__ */
 
 extern unsigned short _bios_disk (unsigned __service,
 				  struct diskinfo_t *__diskinfo);

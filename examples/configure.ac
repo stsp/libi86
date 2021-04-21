@@ -68,7 +68,7 @@ AC_SUBST(host_makefile_frag_path)
 AC_SUBST(host_makefile_frag)
 AC_SUBST(libi86_hostdir)
 AC_SUBST(ac_compiler_gnu)
-
 _LIBI86_SET_HOST_DIR
+
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

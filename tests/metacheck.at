@@ -44,11 +44,11 @@ AT_CHECK([AT_LIBI86_RUN(hello.com,"$abs_srcdir")]dnl
 
 AT_CLEANUP
 
-AT_SETUP([[GCC toolchain]])
+AT_SETUP([[C compiler toolchain]])
 
 AT_CHECK([[$CC --version -v]],,[[ignore]],[[ignore]])
 AT_LIBI86_CHECK(dnl
-[[#if ! defined __ia16__
+[[#if ! defined __ia16__ && ! defined __i86
 # error
 #endif
 #include <stdio.h>
@@ -63,11 +63,11 @@ main (void)
 
 AT_CLEANUP
 
-AT_SETUP([[G++ toolchain]])
+AT_SETUP([[C++ compiler toolchain]])
 
 AT_SKIP_IF([test false = "$CXX"])
 AT_LIBI86_CHECK_CXX(dnl
-[[#if ! defined __ia16__ || ! defined __cplusplus
+[[#if (! defined __ia16__ && ! defined __i86) || ! defined __cplusplus
 # error
 #endif
 /* We may build libi86 right after building the stage 1 GCC --- without

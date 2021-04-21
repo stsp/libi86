@@ -53,7 +53,9 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PATH_PROG(DOSEMU, dosemu, /bin/false)
 
+AC_SUBST(ac_compiler_gnu)
 _LIBI86_SET_AND_CONFIG_HOST_DIR
+
 AC_CONFIG_SUBDIRS([examples])
 AC_CONFIG_TESTDIR([tests])
 AC_CONFIG_FILES([Makefile tests/atlocal])
