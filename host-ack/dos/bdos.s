@@ -50,5 +50,5 @@ _bdosptr:
 	pop	si
 	push	ss
 	pop	ds
-	ret	6
+	ret
 #endif  /* __MSDOS__ */
