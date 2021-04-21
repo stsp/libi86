@@ -36,10 +36,14 @@ int main (void)
 {
   unsigned short kb = biosmemory ();
   unsigned short hw = biosequip ();
+  if (kb <= 1 || kb >= 1024)
+    abort ();
+#ifdef __FAR
   if (kb != * (unsigned short __far *) 0x00400013ul)
     abort ();
   if (hw != * (unsigned short __far *) 0x00400010ul)
     abort ();
+#endif
   if (bioskey (0) != 0x3f00u)
     abort ();
   return 0;

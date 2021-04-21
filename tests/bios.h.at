@@ -47,6 +47,7 @@ int main (void)
 AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
 [[#include <stdlib.h>
 #include <bios.h>
+#ifdef __GNUC__
 static unsigned get_cs (void)
 {
   unsigned v;
@@ -59,15 +60,22 @@ static unsigned get_ss (void)
   __asm volatile ("{movw %%ss, %0|mov %0, ss}" : "=r" (v));
   return v;
 }
+#endif
 int main (void)
 {
   unsigned short kb = _bios_memsize ();
+  if (kb <= 1 || kb >= 1024)
+    abort ();
+#ifdef __FAR
   if (kb != * (unsigned short __far *) 0x00400013ul)
     abort ();
+#endif
+#ifdef __GNUC__
   if (get_cs () >= 0x40u * kb)
     abort ();
   if (get_ss () >= 0x40u * kb)
     abort ();
+#endif
   return 0;
 }]],[])
 AT_CLEANUP
@@ -79,8 +87,10 @@ AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
 int main (void)
 {
   unsigned short hw = _bios_equiplist ();
+#ifdef __FAR
   if (hw != * (unsigned short __far *) 0x00400010ul)
     abort ();
+#endif
   return 0;
 }]],[])
 AT_CLEANUP
