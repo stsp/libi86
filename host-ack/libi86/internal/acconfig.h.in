@@ -3,4 +3,6 @@
 
 #undef _LIBI86_VERSION
 
+#undef _LIBI86_INTERNAL_HAVE_O_TEXT
+
 #endif

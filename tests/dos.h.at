@@ -52,7 +52,10 @@ AT_CLEANUP
 
 AT_SETUP([[intdos]])
 AT_LIBI86_CHECK(dnl
-[[#include <dos.h>
+[[#include <libi86/internal/acconfig.h>
+#include <dos.h>
+#include <string.h>
+#include <unistd.h>
 void abort (void);
 int
 main (void)
@@ -64,7 +67,16 @@ main (void)
   regs.h.ah = 0x02;
   regs.h.dl = 'y';
   intdos (&regs, &regs);
+  /*
+   * This is a bit of a kludge.  Assume that platforms that define O_TEXT in
+   * <fcntl.h> will convert LF to CRLF on default upon a write (...) to
+   * stdout, and platforms that do not define O_TEXT will not do this.
+   */
+# ifndef _LIBI86_INTERNAL_HAVE_O_TEXT
   write (1, "o\r\n", 3);
+# else
+  write (1, "o\n", 2);
+# endif
   return 0;
 #else
 # error
@@ -85,7 +97,7 @@ main (void)
   regs.h.ah = 0x40;
   regs.w.bx = 1;
   regs.w.cx = 20;
-  regs.w.dx = FP_OFF (msg);
+  regs.w.dx = FP_OFF (_CV_FP (msg));
   rv = intdos (&regs, &regs);
   if (rv != 20 || regs.w.cflag)
     abort ();
@@ -99,7 +111,8 @@ AT_CLEANUP
 
 AT_SETUP([[intdosx]])
 AT_LIBI86_CHECK(dnl
-[[#include <dos.h>
+[[#include <libi86/internal/acconfig.h>
+#include <dos.h>
 #include <unistd.h>
 void abort (void);
 static unsigned
@@ -135,7 +148,11 @@ main (void)
 # endif
       || sr.ss != get_ss ())
     abort ();
+# ifndef _LIBI86_INTERNAL_HAVE_O_TEXT
   write (1, "o\r\n", 3);
+# else
+  write (1, "o\n", 2);
+# endif
   return 0;
 #else
 # error

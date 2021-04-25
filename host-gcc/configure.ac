@@ -92,6 +92,9 @@ fi
 AC_CHECK_DECL([PATH_MAX],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_PATH_MAX],[1])],,
 	      [#include <limits.h>])
+AC_CHECK_DECL([O_TEXT],
+	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_O_TEXT],[1])],,
+	      [#include <fcntl.h>])
 
 host_makefile_frag_path=
 host_makefile_frag=

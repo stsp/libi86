@@ -13,4 +13,6 @@
 
 #undef _LIBI86_INTERNAL_HAVE_PATH_MAX
 
+#undef _LIBI86_INTERNAL_HAVE_O_TEXT
+
 #endif

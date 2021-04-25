@@ -67,6 +67,7 @@ INSTALL_HEADERS	= bios.h \
 		  libi86/internal/cdefs.h \
 		  libi86/internal/farptr.h \
 		  libi86/internal/sect.h \
+		  libi86/internal/struc.h \
 		  $(CLEAN_HEADERS) \
 		  $(DISTCLEAN_HEADERS)
 CLEAN_HEADERS	= libi86/config.h
@@ -95,6 +96,8 @@ OBJS		= bios/bios-disk.o \
 		  conio/ungetch.o \
 		  conio/vcprintf.o \
 		  dos/bdos.o \
+		  dos/intdos.o \
+		  dos/libi86-bc-intdos.o \
 		  i86/disable.o \
 		  i86/enable.o \
 		  i86/libi86-CV-FP.o

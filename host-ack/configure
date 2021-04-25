@@ -3629,6 +3629,13 @@ $as_echo "$as_me: WARNING: supposedly using Amsterdam Compiler Kit," >&2;}
 $as_echo "$as_me: WARNING: but __ACK undefined" >&2;}
 fi
 
+ac_fn_c_check_decl "$LINENO" "O_TEXT" "ac_cv_have_decl_O_TEXT" "#include <fcntl.h>
+"
+if test "x$ac_cv_have_decl_O_TEXT" = xyes; then :
+  $as_echo "#define _LIBI86_INTERNAL_HAVE_O_TEXT 1" >>confdefs.h
+
+fi
+
 
 ac_fn_c_check_decl "$LINENO" "__MSDOS__" "ac_cv_have_decl___MSDOS__" "$ac_includes_default"
 if test "x$ac_cv_have_decl___MSDOS__" = xyes; then :

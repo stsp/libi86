@@ -4141,6 +4141,13 @@ if test "x$ac_cv_have_decl_PATH_MAX" = xyes; then :
 
 fi
 
+ac_fn_c_check_decl "$LINENO" "O_TEXT" "ac_cv_have_decl_O_TEXT" "#include <fcntl.h>
+"
+if test "x$ac_cv_have_decl_O_TEXT" = xyes; then :
+  $as_echo "#define _LIBI86_INTERNAL_HAVE_O_TEXT 1" >>confdefs.h
+
+fi
+
 
 host_makefile_frag_path=
 host_makefile_frag=
