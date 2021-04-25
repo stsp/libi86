@@ -73,23 +73,43 @@ AT_SETUP([[inp, outp]])
 AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
 [[#include <conio.h>
 #include <stdlib.h>
+#ifndef __FAR
+# include <bios.h>
+#endif
 
-static unsigned ticks (void)
-{
-  return *(unsigned volatile __far *) 0x0040006cul;
-}
+static unsigned char s_ocw1;
 
-static void do_abort (unsigned char s_ocw1)
+static void do_abort (void)
 {
   outp (0x21, s_ocw1);
   abort ();
+}
+
+static unsigned ticks (void)
+{
+#ifdef __FAR
+  return *(unsigned volatile __far *) 0x0040006cul;
+#else
+  long tv;
+  if (_bios_timeofday (_TIME_GETCLOCK, &tv) < 0)
+    do_abort ();
+  return (unsigned) tv;
+#endif
+}
+
+static void hlt (void)
+{
+#ifdef __GNUC__
+  __asm volatile ("hlt");
+#endif
 }
 
 int
 main (void)
 {
   unsigned from, c1, c2;
-  unsigned char s_ocw1 = inp (0x21);
+
+  s_ocw1 = inp (0x21);
 
   /* Check that the PIC 1 interrupt mask given by the output control word 1
      (OCW1) does not have either IRQ 0 or IRQ 1 disabled.  */
@@ -108,10 +128,10 @@ main (void)
       while (c2-- != 0)
 	{
 	  if (ticks () != from)
-	    do_abort (s_ocw1);
+	    do_abort ();
         }
       if (inp (0x21) != 0xff)
-	do_abort (s_ocw1);
+	do_abort ();
 
       outp (0x21, s_ocw1 | 0x01);
       /* Check that the IRQ 0 handler cannot update the tick count when IRQ
@@ -120,19 +140,19 @@ main (void)
       while (c2-- != 0)
 	{
 	  if (ticks () != from)
-	    do_abort (s_ocw1);
+	    do_abort ();
         }
       if (inp (0x21) != (s_ocw1 | 0x01))
-	do_abort (s_ocw1);
+	do_abort ();
 
       /* Allow IRQs 0--7 for a while.  Every now and then, also wait for the
 	 timer tick count to get updated.  */
       outp (0x21, s_ocw1);
       if (c1 % 200 == 0)
 	while (ticks () == from)
-	  __asm volatile ("hlt");
+	  hlt ();
       if (inp (0x21) != s_ocw1)
-	do_abort (s_ocw1);
+	do_abort ();
     }
 
   return 0;
