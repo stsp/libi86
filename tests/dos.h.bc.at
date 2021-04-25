@@ -90,20 +90,6 @@ AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE(dnl
 #endif
 void abort (void);
 __far const char msg1[] = "hello world ~\n";
-static unsigned
-get_cs (void)
-{
-  unsigned v;
-  __asm volatile ("{movw %%cs, %0|mov %0, cs}" : "=r" (v));
-  return v;
-}
-static unsigned
-get_ss (void)
-{
-  unsigned v;
-  __asm volatile ("{movw %%ss, %0|mov %0, ss}" : "=r" (v));
-  return v;
-}
 int
 main (void)
 {
@@ -122,9 +108,10 @@ main (void)
       || r.x.ax != sizeof (msg1) - 1
       || r.x.cflag || (r.x.flags & 0x0701) != 0x0200
 # ifndef __IA16_CMODEL_IS_FAR_TEXT
-      || sr.cs != get_cs ()
+      || sr.cs != __libi86_get_cs ()
 # endif
-      || sr.ss != get_ss () || sr.ds != FP_SEG (msg1) || sr.es != cookie)
+      || sr.ss != __libi86_get_ss ()
+      || sr.ds != FP_SEG (msg1) || sr.es != cookie)
     abort ();
   return 0;
 }]],[[hello world ~

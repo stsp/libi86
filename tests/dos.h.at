@@ -115,20 +115,6 @@ AT_LIBI86_CHECK(dnl
 #include <dos.h>
 #include <unistd.h>
 void abort (void);
-static unsigned
-get_cs (void)
-{
-  unsigned v;
-  __asm volatile ("{movw %%cs, %0|mov %0, cs}" : "=r" (v));
-  return v;
-}
-static unsigned
-get_ss (void)
-{
-  unsigned v;
-  __asm volatile ("{movw %%ss, %0|mov %0, ss}" : "=r" (v));
-  return v;
-}
 int
 main (void)
 {
@@ -144,9 +130,9 @@ main (void)
   intdosx (&r, &r, &sr);
   if ((sr.ds & ~3u) != 0 || (sr.es & ~3u) != 0
 # ifndef __IA16_CMODEL_IS_FAR_TEXT
-      || sr.cs != get_cs ()
+      || sr.cs != __libi86_get_cs ()
 # endif
-      || sr.ss != get_ss ())
+      || sr.ss != __libi86_get_ss ())
     abort ();
 # ifndef _LIBI86_INTERNAL_HAVE_O_TEXT
   write (1, "o\r\n", 3);
@@ -170,20 +156,6 @@ void abort (void);
 __far const char msg1[] = "hello world",
 		 msg2[] = "s\r\nso I put a ",
 		 msg3[] = " in your ";
-static unsigned
-get_cs (void)
-{
-  unsigned v;
-  __asm volatile ("{movw %%cs, %0|mov %0, cs}" : "=r" (v));
-  return v;
-}
-static unsigned
-get_ss (void)
-{
-  unsigned v;
-  __asm volatile ("{movw %%ss, %0|mov %0, ss}" : "=r" (v));
-  return v;
-}
 static void
 hw (void)
 {
@@ -201,9 +173,10 @@ hw (void)
   if (intdosx (&r, &r, &sr) != sizeof (msg1) - 1
       || r.w.ax != sizeof (msg1) - 1 || r.w.cflag
 # ifndef __IA16_CMODEL_IS_FAR_TEXT
-      || sr.cs != get_cs ()
+      || sr.cs != __libi86_get_cs ()
 # endif
-      || sr.ss != get_ss () || sr.ds != FP_SEG (msg1) || sr.es != cookie)
+      || sr.ss != __libi86_get_ss ()
+      || sr.ds != FP_SEG (msg1) || sr.es != cookie)
     abort ();
 }
 int

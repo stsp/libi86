@@ -256,6 +256,28 @@ sound (int __freq)
 #define _FP_OFF(__p)	FP_OFF (__p)
 #define _MK_FP(__s, __o) MK_FP (__s, __o)
 
+/* These are here for testing purposes. */
+#ifdef __GNUC__
+static inline unsigned short
+__libi86_get_cs (void)
+{
+  unsigned short v;
+  __asm volatile ("{movw %%cs, %0|mov %0, cs}" : "=rm" (v));
+  return v;
+}
+
+static inline unsigned short
+__libi86_get_ss (void)
+{
+  unsigned short v;
+  __asm volatile ("{movw %%ss, %0|mov %0, ss}" : "=rm" (v));
+  return v;
+}
+#else  /* ! __GNUC__ */
+extern unsigned short __libi86_get_cs (void);
+extern unsigned short __libi86_get_ss (void);
+#endif  /* ! __GNUC__ */
+
 _LIBI86_END_EXTERN_C
 
 #endif

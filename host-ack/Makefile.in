@@ -102,7 +102,9 @@ OBJS		= bios/bios-disk.o \
 		  dos/libi86-bc-intdosx.o \
 		  i86/disable.o \
 		  i86/enable.o \
-		  i86/libi86-CV-FP.o
+		  i86/libi86-CV-FP.o \
+		  i86/libi86-get-cs.o \
+		  i86/libi86-get-ss.o
 OBJ_SUBDIRS	= $(sort $(dir $(OBJS)))
 CFLAGS		= -O6 -S
 ASFLAGS		=

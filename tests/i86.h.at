@@ -35,16 +35,10 @@ AT_LIBI86_CHECK_CXX(dnl
 # error
 #endif
 volatile int y = 2;
-static unsigned get_ss (void)
-{
-  unsigned v;
-  __asm volatile ("{movw %%ss, %0|mov %0, ss}" : "=r" (v));
-  return v;
-}
 int
 main (void)
 {
-  if (FP_SEG (&y) != get_ss ())
+  if (FP_SEG (&y) != __libi86_get_ss ())
     abort ();
   if (FP_OFF (&y) != (unsigned) &y)
     abort ();
@@ -58,21 +52,9 @@ volatile int __far x = 1;
 volatile int __far *px = &x;
 #endif
 volatile int y = 2;
-static unsigned get_cs (void)
-{
-  unsigned v;
-  __asm volatile ("{movw %%cs, %0|mov %0, cs}" : "=r" (v));
-  return v;
-}
-static unsigned get_ss (void)
-{
-  unsigned v;
-  __asm volatile ("{movw %%ss, %0|mov %0, ss}" : "=r" (v));
-  return v;
-}
 int main (void)
 {
-  if (FP_SEG (main) != get_cs ())
+  if (FP_SEG (main) != __libi86_get_cs ())
     abort ();
   if (FP_OFF (main) != (unsigned) main)
     abort ();
@@ -86,7 +68,7 @@ int main (void)
   if (FP_OFF (&x) != (unsigned) (unsigned long) px)
     abort ();
 #endif
-  if (FP_SEG (&y) != get_ss ())
+  if (FP_SEG (&y) != __libi86_get_ss ())
     abort ();
   if (FP_OFF (&y) != (unsigned) &y)
     abort ();
@@ -99,30 +81,18 @@ AT_LIBI86_CHECK(dnl
 [[#include <stdlib.h>
 #include <string.h>
 #include <i86.h>
-static unsigned get_cs (void)
-{
-  unsigned v;
-  __asm volatile ("{movw %%cs, %0|mov %0, cs}" : "=r" (v));
-  return v;
-}
-static unsigned get_ss (void)
-{
-  unsigned v;
-  __asm volatile ("{movw %%ss, %0|mov %0, ss}" : "=r" (v));
-  return v;
-}
 int main (void)
 {
   struct SREGS sregs;
   memset (&sregs, 0xf6, sizeof (sregs));
   segread (&sregs);
 #ifndef __IA16_CMODEL_IS_FAR_TEXT
-  if (sregs.cs != get_cs ())
+  if (sregs.cs != __libi86_get_cs ())
     abort ();
   if (sregs.cs != FP_SEG (main))
     abort ();
 #endif
-  if (sregs.ss != get_ss ())
+  if (sregs.ss != __libi86_get_ss ())
     abort ();
   if (sregs.ss != FP_SEG (&sregs))
     abort ();
