@@ -31,6 +31,7 @@
 #define _LIBI86_I86_H_
 
 #include <libi86/internal/cdefs.h>
+#include <libi86/internal/farptr.h>
 
 _LIBI86_BEGIN_EXTERN_C
 
@@ -246,44 +247,10 @@ sound (int __freq)
 # endif	/* __GNUC__ && __OPTIMIZE__ */
 #endif	/* _LIBI86_COMPILING_ */
 
-#if defined __FAR
-# define FP_SEG(__p)	__builtin_ia16_selector ((unsigned) \
-			  ((unsigned long) (volatile void __far *) (__p) \
-			    >> 16))
-# define FP_OFF(__p)	__builtin_ia16_FP_OFF (__p)
-# define MK_FP(__s, __o) \
-			((void __far *) \
-			 ((unsigned long) (unsigned) (__s) << 16 | \
-			  (unsigned) (__o)))
-# define _CV_FP(__p)	(__libi86_CV_FP (__p))
-
-static inline void __far *
-__libi86_CV_FP (const volatile void *__p)
-{
-  return (void __far *) __p;
-}
-#elif defined __cplusplus  /* ! __FAR */
-# define FP_SEG(__p)	((__libi86_fpcvv_t (__p)).__FP_SEG ())
-# define FP_OFF(__p)	((__libi86_fpcvv_t (__p)).__FP_OFF ())
-# define MK_FP(__s, __o) \
-			(__libi86_fpv_t ((__s), (__o)))
-# define _CV_FP(__p)	(__libi86_fpv_t (__p))
-#else  /* ! __FAR && ! __cplusplus */
-# define FP_SEG(__p)	((unsigned) ((__p).__p_ >> 16))
-# define FP_OFF(__p)	((unsigned) (__p).__p_)
-# define MK_FP(__s, __o) (__libi86_MK_FP ((__s), (__o)))
-# define _CV_FP(__p)	(__libi86_CV_FP (__p))
-
-_LIBI86_ALT_INLINE __libi86_fpv_t
-__libi86_MK_FP (unsigned __seg, unsigned __off)
-{
-  __libi86_fpv_t __p;
-  __p.__p_ = (unsigned long) __seg << 16 | __off;
-  return __p;
-}
-
-extern __libi86_fpv_t __libi86_CV_FP (const volatile void *);
-#endif  /* ! __FAR && ! __cplusplus */
+#define FP_SEG(__p)	__libi86_FP_SEG (__p)
+#define FP_OFF(__p)	__libi86_FP_OFF (__p)
+#define MK_FP(__s, __o)	__libi86_MK_FP ((__s), (__o))
+#define _CV_FP(__p)	__libi86_CV_FP (__p)
 
 #define _FP_SEG(__p)	FP_SEG (__p)
 #define _FP_OFF(__p)	FP_OFF (__p)

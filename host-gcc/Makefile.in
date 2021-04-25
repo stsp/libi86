@@ -78,10 +78,12 @@ INSTALL_HEADERS	= bios.h \
 		  libi86/string.h \
 		  libi86/internal/cdefs.h \
 		  libi86/internal/far-cxx.h \
+		  libi86/internal/farptr.h \
 		  libi86/internal/portio.h \
-		  $(CLEAN_HEADERS)
-CLEAN_HEADERS	= libi86/config.h \
-		  libi86/internal/acconfig.h
+		  $(CLEAN_HEADERS) \
+		  $(DISTCLEAN_HEADERS)
+CLEAN_HEADERS	= libi86/config.h
+DISTCLEAN_HEADERS = libi86/internal/acconfig.h
 
 OBJS		= bios/bios-disk.o \
 		  bios/bios-equiplist.o \
@@ -288,7 +290,8 @@ clean-here:
 .PHONY: distclean maintainer-clean realclean
 distclean maintainer-clean realclean: clean
 	+@$(MULTICLEAN) $(FLAGS_TO_PASS) multi-clean DO=$@
-	rm -f Makefile config.cache config.log config.status *~
+	rm -f $(DISTCLEAN_HEADERS) Makefile \
+	      config.cache config.log config.status *~
 
 $(BSP): $(OBJS)
 	$(RM) $@
