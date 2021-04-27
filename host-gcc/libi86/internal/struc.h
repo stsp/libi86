@@ -79,11 +79,10 @@
 	movw	%cx,	14(%bx)
 #endif
 
-/* Load registers and the SZAPC flags from a `union REGPACK' at (%di).  Note
-   that %ds might no longer point to the program's data segment after this.  */
+/* Load registers from a `union REGPACK' at (%di) --- but not the flags,
+   which are unchanged.  Note that %ds might no longer point to the
+   program's data segment after this.  */
 #define LOAD_UNION_REGPACK_DI_		\
-	movb	18(%di), %ah;		\
-	sahf;				\
 	movw	(%di),	%ax;		\
 	movw	2(%di),	%bx;		\
 	movw	4(%di), %cx;		\

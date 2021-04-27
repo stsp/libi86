@@ -110,7 +110,8 @@ extern int __libi86_bc_int86x_do (const void *, const union REGS *,
 extern const void *__libi86_intr_dispatch (int);
 # endif  /* __GNUC__ */
 extern void __libi86_intr (int, union REGPACK *);
-extern void __libi86_intr_do (const void *, union REGPACK *);
+extern void __libi86_intrf (int, union REGPACK *);
+extern void __libi86_intrf_do (const void *, union REGPACK *, unsigned);
 /* Used by the inline version of sound (.) below.  */
 extern void __libi86_sound (unsigned);
 extern void __libi86_sound_by_divisor (unsigned);
@@ -126,13 +127,18 @@ _LIBI86_BC_REDIRECT_4 (int, int86x, int, const union REGS *, union REGS *,
 extern void intr (int, union REGPACK *);
 /* The _...f (...) functions are new functions, which I am also proposing
    (https://github.com/open-watcom/open-watcom-v2/issues/472) to add to Open
-   Watcom. These do the same thing as int86 (...), intr (...), etc., except
+   Watcom. These do the same thing as int86 (...), int86x (...), etc., except
    they are also guaranteed to load at least the carry flag from the register
-   structures, before raising the interrupt.  */
+   structures, before raising the interrupt.
+
+   (Of these, _intrf (...) has been accepted for inclusion in Open Watcom
+   in late 2018, under the name intrf (...).  OW also kind of "redefined"
+   intr (...)'s semantics to always clear the SZAPC flags before issuing
+   the interrupt.)  */
 _LIBI86_BC_REDIRECT_3 (int, _int86f, int, const union REGS *, union REGS *)
 _LIBI86_BC_REDIRECT_4 (int, _int86xf, int, const union REGS *, union REGS *,
 				      struct SREGS *)
-extern void _intrf (int, union REGPACK *);
+_LIBI86_REDIRECT_2 (int, intrf, int, union REGPACK *, _intrf)
 extern void sound (unsigned);
 # else  /* __GNUC__ && __OPTIMIZE__ */
 _LIBI86_ALT_INLINE void
@@ -224,16 +230,27 @@ _intrf (int __intr_no, union REGPACK *__regs)
 		      : "=g" (__intr_call)
 		      : "n" ((__intr_no >> 6) & 3), "n" ((__intr_no >> 3) & 7),
 			"n" (__intr_no & 7));
-      __libi86_intr_do (__intr_call, __regs);
+      __libi86_intrf_do (__intr_call, __regs, __regs->w.flags);
     }
   else
-    __libi86_intr (__intr_no, __regs);
+    __libi86_intrf (__intr_no, __regs);
 }
 
 _LIBI86_ALT_INLINE void
 intr (int __intr_no, union REGPACK *__regs)
 {
-  _intrf (__intr_no, __regs);
+  if (__builtin_constant_p (__intr_no))
+    {
+      const void *__intr_call;
+      __asm volatile ("{movw $__libi86_intr_call_0%c1%c2%c3, %0"
+		      "|mov %0, offset __libi86_intr_call_0%c1%c2%c3}"
+		      : "=g" (__intr_call)
+		      : "n" ((__intr_no >> 6) & 3), "n" ((__intr_no >> 3) & 7),
+			"n" (__intr_no & 7));
+      __libi86_intrf_do (__intr_call, __regs, 0);
+    }
+  else
+    __libi86_intr (__intr_no, __regs);
 }
 
 _LIBI86_ALT_INLINE void

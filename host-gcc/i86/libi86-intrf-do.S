@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018--2019 TK Chia
+ * Copyright (c) 2018--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -42,9 +42,9 @@
 	.att_syntax prefix
 
 	.text				/* N.B. */
-	.global	__libi86_intr_do
-__libi86_intr_do:
-	ENTER_BX_(4)
+	.global	__libi86_intrf_do
+__libi86_intrf_do:
+	ENTER_BX_(6)
 	pushw	%bp
 	pushw	%si
 	pushw	%di
@@ -53,6 +53,8 @@ __libi86_intr_do:
 	pushw	%di
 	PUSH_IMM_VIA_(.done, %si)
 	pushw	ARG0W_BX_		/* intr_call */
+	MOV_ARG4B_BX_(%ah)
+	sahf
 	LOAD_UNION_REGPACK_DI_
 	ret
 .done:
@@ -68,4 +70,4 @@ __libi86_intr_do:
 	popw	%di
 	popw	%si
 	popw	%bp
-	RET_(4)
+	RET_(6)

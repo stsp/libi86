@@ -28,8 +28,8 @@
  */
 
 /*
- * Out-of-line implementation of intr (INTR_NO, ...) for cases where INTR_NO
- * is not a compile-time constant.
+ * Out-of-line implementation of intrf (INTR_NO, ...) for cases where
+ * INTR_NO is not a compile-time constant.
  */
 
 #define _LIBI86_COMPILING_
@@ -39,10 +39,14 @@
 extern const void * const __libi86_intr_dispatch[0x100];
 
 void
-__libi86_intr (int intr_no, union REGPACK *regs)
+__libi86_intrf (int intr_no, union REGPACK *regs)
 {
-  __libi86_intrf_do (__libi86_intr_dispatch[(uint8_t) intr_no], regs, 0);
+  __libi86_intrf_do (__libi86_intr_dispatch[(uint8_t) intr_no], regs,
+		     regs->w.flags);
 }
 
-_LIBI86_WEAK_ALIAS (__libi86_intr) int
-intr (int intr_no, union REGPACK *regs);
+_LIBI86_ALIAS (__libi86_intrf) int
+_intrf (int intr_no, union REGPACK *regs);
+
+_LIBI86_WEAK_ALIAS (__libi86_intrf) int
+intrf (int intr_no, union REGPACK *regs);

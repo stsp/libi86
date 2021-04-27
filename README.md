@@ -157,9 +157,10 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |   W | `_enable ();`
 | W/B | `int86 (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);`
 | W/B | `int86x (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);`
-|   W | `intr (`_inter-no_`,` \*_regs_`);`
+|   W | `intr (`_inter-no_`,` \*_regs_`);` | Clears `SZAPC` flags to 0 before issuing interrupt.  (This follows a documentation change in Open Watcom versions after Oct 2018.)
 |  XB | `_int86f (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`);` | Loads carry flag before issuing interrupt.
 |  XB | `_int86xf (`_inter-no_`,` \*_in-regs_`,` \*_out-regs_`,` \*_seg-regs_`);` | Loads carry flag before issuing interrupt.
+|   W | `intrf (`_inter-no_`,` \*_regs_`);` | Loads `SZAPC` flags before issuing interrupt.
 |   X | `_intrf (`_inter-no_`,` \*_regs_`);` | Loads `SZAPC` flags before issuing interrupt.
 |   W | `FP_OFF (`\*_ptr_`);` | Macro.
 |   W | `_FP_OFF (`\*_ptr_`);` | Macro.

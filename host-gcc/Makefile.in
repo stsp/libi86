@@ -185,6 +185,7 @@ OBJS		= bios/bios-disk.o \
 		  i86/int86.o \
 		  i86/int86x.o \
 		  i86/intr.o \
+		  i86/intrf.o \
 		  i86/libi86-bc-int86.o \
 		  i86/libi86-bc-int86-do.o \
 		  i86/libi86-bc-int86x.o \
@@ -195,7 +196,7 @@ OBJS		= bios/bios-disk.o \
 		    $(foreach db,0 1 2 3 4 5 6 7, \
 		      $(foreach dc,0 1 2 3 4 5 6 7, \
 			i86/libi86-intr-call-0$(da)$(db)$(dc).o))) \
-		  i86/libi86-intr-do.o \
+		  i86/libi86-intrf-do.o \
 		  i86/libi86-intr-dispatch.o \
 		  i86/libi86-sound-by-divisor.o \
 		  i86/nosound.o \
