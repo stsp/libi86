@@ -174,13 +174,15 @@ m4_define([AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL],[dnl
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
+if test yes = "$ac_compiler_gnu"; then
 if "$at_arg_x_test_underlying"; then :; else
 _AT_LIBI86_DO_CHECK_EXPOUT_F(,a.c,,m4_shift(m4_shift($@)))
 fi
-if test yes = "$ac_compiler_gnu"; then
 _AT_LIBI86_DO_CHECK_EXPOUT_F([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
 dnl do not try -mdpmiable for medium model for now
 _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))
+else
+_AT_LIBI86_DO_CHECK_EXPOUT_F(,a.c,,m4_shift(m4_shift($@)))
 fi])
 
 m4_define([AT_LIBI86_CHECK_CXX_FOR_NEAR_DATA_MODEL],[dnl
@@ -216,20 +218,22 @@ m4_define([AT_LIBI86_CHECK_CXX],[dnl
 AT_LIBI86_CHECK_CXX_FOR_NEAR_DATA_MODEL($@)])
 
 m4_define([AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE],[dnl
-AT_SKIP_IF([test yes != "$ac_compiler_gnu"])
+if test yes = "$ac_compiler_gnu"; then
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
 _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
-_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))])
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))
+fi])
 
 m4_define([AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE],[dnl
-AT_SKIP_IF([test yes != "$ac_compiler_gnu"])
+if test yes = "$ac_compiler_gnu"; then
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
 _AT_LIBI86_DO_CHECK_EXPOUT_F([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
-_AT_LIBI86_DO_CHECK_EXPOUT_F([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))])
+_AT_LIBI86_DO_CHECK_EXPOUT_F([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))
+fi])
 
 m4_define([AT_LIBI86_CHECK_FOR_NONDPMIABLE],[dnl
 AT_DATA([[a.c]],[$1

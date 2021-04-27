@@ -84,8 +84,12 @@ extern void delay (unsigned);
 extern void nosound (void);
 extern void segread (struct SREGS *__seg_regs);
 
-#ifdef __GNUC__
-/* Used by the inline versions of int86 (...), intr (...), etc. below.  */
+/*
+ * Used by the actual implementations of int86 (...), intr (...), etc.  Under
+ * GCC, these are also used by the inline versions of these routines, defined
+ * further below.
+ */
+#if defined __GNUC__ || defined _LIBI86_COMPILING_
 # ifndef _BORLANDC_SOURCE
 extern int __libi86_int86 (int, const union REGS *, union REGS *);
 extern int __libi86_int86_do (const void *, const union REGS *, union REGS *);
@@ -102,12 +106,15 @@ extern int __libi86_bc_int86x (int, const union REGS *, union REGS *,
 extern int __libi86_bc_int86x_do (const void *, const union REGS *,
 				  union REGS *, struct SREGS *);
 # endif  /* _BORLANDC_SOURCE */
+# ifndef __GNUC__
+extern const void *__libi86_intr_dispatch (int);
+# endif  /* __GNUC__ */
 extern void __libi86_intr (int, union REGPACK *);
 extern void __libi86_intr_do (const void *, union REGPACK *);
 /* Used by the inline version of sound (.) below.  */
 extern void __libi86_sound (unsigned);
 extern void __libi86_sound_by_divisor (unsigned);
-#endif  /* __GNUC__ */
+#endif  /* __GNUC__ || _LIBI86_COMPILING_ */
 
 #ifndef _LIBI86_COMPILING_
 # if ! defined __GNUC__ || ! defined __OPTIMIZE__

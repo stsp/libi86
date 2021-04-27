@@ -80,6 +80,42 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[intdosx (Borland)]])
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+[[#define _BORLANDC_SOURCE
+#include <dos.h>
+#include <string.h>
+#include <time.h>
+#ifndef __MSDOS__
+# error
+#endif
+void abort (void);
+const char msg1[] = "hello world ~\n";
+int
+main (void)
+{
+  union REGS r;
+  struct SREGS sr;
+  unsigned cookie = time (NULL);
+  memset (&r, 0xf6, sizeof (r));
+  memset (&sr, 0xf6, sizeof (sr));
+  r.h.ah = 0x40;
+  r.x.bx = 1;
+  r.x.cx = sizeof (msg1) - 1;
+  r.x.dx = FP_OFF (_CV_FP (msg1));
+  sr.ds = FP_SEG (_CV_FP (msg1));
+  sr.es = cookie;
+  if (intdosx (&r, &r, &sr) != sizeof (msg1) - 1
+      || r.x.ax != sizeof (msg1) - 1
+      || r.x.cflag || (r.x.flags & 0x0701) != 0x0200
+# ifndef __IA16_CMODEL_IS_FAR_TEXT
+      || sr.cs != __libi86_get_cs ()
+# endif
+      || sr.ss != __libi86_get_ss ()
+      || sr.ds != FP_SEG (_CV_FP (msg1)) || sr.es != cookie)
+    abort ();
+  return 0;
+}]],[[hello world ~
+]])
 AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE(dnl
 [[#define _BORLANDC_SOURCE
 #include <dos.h>

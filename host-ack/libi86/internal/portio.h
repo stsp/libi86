@@ -30,7 +30,6 @@
 #ifndef _LIBI86_LIBI86_INTERNAL_PORTIO_H_
 #define _LIBI86_LIBI86_INTERNAL_PORTIO_H_
 
-#include <libi86/internal/acconfig.h>
 #include <libi86/internal/cdefs.h>
 
 _LIBI86_BEGIN_EXTERN_C
