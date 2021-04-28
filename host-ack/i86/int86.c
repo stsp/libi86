@@ -27,47 +27,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * Internal implementation routine used by both the inline and out-of-line
- * versions of intr (...) and _intrf (...).  This takes as its first argument
- * not an interrupt number, but a pointer to a routine that calls the
- * interrupt.
- */
+#define _LIBI86_COMPILING_
+#include "i86.h"
 
-#include "libi86/internal/call-cvt.h"
-#include "libi86/internal/arch.h"
-#include "libi86/internal/struc.h"
+int
+_int86f (int intr_no, const union REGS *in_regs, union REGS *out_regs)
+{
+  return __libi86_int86_do (__libi86_intr_dispatch (intr_no),
+			    in_regs, out_regs);
+}
 
-	.code16
-	.att_syntax prefix
-
-	.text				/* N.B. */
-	.global	__libi86_intrf_do
-__libi86_intrf_do:
-	ENTER_BX_(6)
-	pushw	%bp
-	pushw	%si
-	pushw	%di
-	pushw	%es
-	MOV_ARG2W_BX_(%di)		/* regs */
-	pushw	%di
-	PUSH_IMM_VIA_(.done, %si)
-	pushw	ARG0W_BX_		/* intr_call */
-	MOV_ARG4B_BX_(%ah)		/* flags */
-	sahf
-	LOAD_UNION_REGPACK_DI_
-	ret
-.done:
-	pushw	%bp
-	movw	%sp,	%bp
-	movw	2(%bp),	%bp		/* regs */
-	STORE_UNION_REGPACK_BP_POP_
-	popw	%ax
-	cld
-	movw	%ss,	%ax
-	movw	%ax,	%ds
-	popw	%es
-	popw	%di
-	popw	%si
-	popw	%bp
-	RET_(6)
+int
+int86 (int intr_no, const union REGS *in_regs, union REGS *out_regs)
+{
+  return _int86f (intr_no, in_regs, out_regs);
+}

@@ -39,7 +39,7 @@ int main (void)
   static char msg[] = "Hello from int86!\r\n$(ignore this part)\r\n";
   memset (&regs, 0xf6, sizeof (regs));
   regs.h.ah = 0x09;
-  regs.x.dx = FP_OFF (msg);
+  regs.x.dx = FP_OFF (_CV_FP (msg));
   int86 (0x21, &regs, &regs);
   /*
    * Check that there is a `flags' field & that its contents look OK.  IF
@@ -69,21 +69,21 @@ int main (void)
   static char msg[] = "Hello from int86x!\r\n$(ignore this part)\r\n";
   memset (&regs, 0xf6, sizeof (regs));
   memset (&sregs, 0xf6, sizeof (sregs));
-  sregs.ds = FP_SEG (msg);
+  sregs.ds = FP_SEG (_CV_FP (msg));
   regs.h.ah = 0x09;
-  regs.x.dx = FP_OFF (msg);
+  regs.x.dx = FP_OFF (_CV_FP (msg));
   int86x (0x21, &regs, &regs, &sregs);
   if ((regs.x.flags & 0x0700) != 0x0200)
     abort ();
 # ifndef __IA16_CMODEL_IS_FAR_TEXT
-  if (sregs.cs != FP_SEG (main))
+  if (sregs.cs != __libi86_get_cs ())
     abort ();
 # endif
-  if (sregs.ds != FP_SEG (msg))
+  if (sregs.ds != FP_SEG (_CV_FP (msg)))
     abort ();
   if (sregs.es != 0xf6f6u)
     abort ();
-  if (sregs.ss != FP_SEG (&regs))
+  if (sregs.ss != FP_SEG (_CV_FP (&regs)))
     abort ();
 #else
 # error

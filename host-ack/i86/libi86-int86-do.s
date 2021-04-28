@@ -1,3 +1,4 @@
+#
 /*
  * Copyright (c) 2018--2021 TK Chia
  *
@@ -27,47 +28,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * Internal implementation routine used by both the inline and out-of-line
- * versions of intr (...) and _intrf (...).  This takes as its first argument
- * not an interrupt number, but a pointer to a routine that calls the
- * interrupt.
- */
+/* Internal implementation routine used by int86 (...) and _int86f (...). */
 
-#include "libi86/internal/call-cvt.h"
-#include "libi86/internal/arch.h"
+#include "libi86/internal/sect.h"
 #include "libi86/internal/struc.h"
 
-	.code16
-	.att_syntax prefix
-
-	.text				/* N.B. */
-	.global	__libi86_intrf_do
-__libi86_intrf_do:
-	ENTER_BX_(6)
-	pushw	%bp
-	pushw	%si
-	pushw	%di
-	pushw	%es
-	MOV_ARG2W_BX_(%di)		/* regs */
-	pushw	%di
-	PUSH_IMM_VIA_(.done, %si)
-	pushw	ARG0W_BX_		/* intr_call */
-	MOV_ARG4B_BX_(%ah)		/* flags */
-	sahf
-	LOAD_UNION_REGPACK_DI_
+#ifndef _BORLANDC_SOURCE
+	.define	___libi86_int86_do
+___libi86_int86_do:
+#else
+	.define	___libi86_bc_int86_do
+___libi86_bc_int86_do:
+#endif
+	mov	bx, sp
+	push	bp
+	push	si
+	push	di
+	push	es
+	mov	si, ds			/* good idea to set es = ds here */
+	mov	es, si
+	push	6(bx)			/* out_regs */
+	mov	si, .done
+	push	si
+	push	2(bx)			/* intr_call */
+	mov	bx, 4(bx)		/* in_regs */
+	LOAD_UNION_REGS_BX_
 	ret
 .done:
-	pushw	%bp
-	movw	%sp,	%bp
-	movw	2(%bp),	%bp		/* regs */
-	STORE_UNION_REGPACK_BP_POP_
-	popw	%ax
+	push	bx
+	mov	bx, ss			/* restore ds */
+	mov	ds, bx
+	mov	bx, sp
+	mov	bx, 2(bx)		/* out_regs */
+	STORE_UNION_REGS_BX_POP_CLOBBER_
+	pop	cx
 	cld
-	movw	%ss,	%ax
-	movw	%ax,	%ds
-	popw	%es
-	popw	%di
-	popw	%si
-	popw	%bp
-	RET_(6)
+	pop	es
+	pop	di
+	pop	si
+	pop	bp
+	ret

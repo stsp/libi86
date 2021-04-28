@@ -1,5 +1,6 @@
+#
 /*
- * Copyright (c) 2018--2021 TK Chia
+ * Copyright (c) 2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,47 +28,89 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * Internal implementation routine used by both the inline and out-of-line
- * versions of intr (...) and _intrf (...).  This takes as its first argument
- * not an interrupt number, but a pointer to a routine that calls the
- * interrupt.
- */
+#include "libi86/internal/sect.h"
 
-#include "libi86/internal/call-cvt.h"
-#include "libi86/internal/arch.h"
-#include "libi86/internal/struc.h"
-
-	.code16
-	.att_syntax prefix
-
-	.text				/* N.B. */
-	.global	__libi86_intrf_do
-__libi86_intrf_do:
-	ENTER_BX_(6)
-	pushw	%bp
-	pushw	%si
-	pushw	%di
-	pushw	%es
-	MOV_ARG2W_BX_(%di)		/* regs */
-	pushw	%di
-	PUSH_IMM_VIA_(.done, %si)
-	pushw	ARG0W_BX_		/* intr_call */
-	MOV_ARG4B_BX_(%ah)		/* flags */
-	sahf
-	LOAD_UNION_REGPACK_DI_
+	.define	___libi86_intr_dispatch
+___libi86_intr_dispatch:
+	mov	bx, sp
+	movb	al, 2(bx)
+	xorb	ah, ah
+	mov	bx, ax
+	shl	bx, 1
+	add	ax, bx
+	add	ax, .dispatch
 	ret
-.done:
-	pushw	%bp
-	movw	%sp,	%bp
-	movw	2(%bp),	%bp		/* regs */
-	STORE_UNION_REGPACK_BP_POP_
-	popw	%ax
-	cld
-	movw	%ss,	%ax
-	movw	%ax,	%ds
-	popw	%es
-	popw	%di
-	popw	%si
-	popw	%bp
-	RET_(6)
+
+#define INTS4(i) \
+	int	[i];		\
+	ret;			\
+	int	[i] + 1;	\
+	ret;			\
+	int	[i] + 2;	\
+	ret;			\
+	int	[i] + 3;	\
+	ret
+#define INTS8(i)		\
+	INTS4 (i);		\
+	INTS4 ([i] + 4)
+#define INTS16(i)		\
+	INTS8 (i);		\
+	INTS8 ([i] + 8)
+
+.dispatch:
+	int	0x00
+	ret
+	int	0x01
+	ret
+	int	0x02
+	ret
+	int	0x03			/* `int 3' is a 1-byte instruction; */
+	ret				/* hence the `nop' */
+	nop
+	INTS4 (0x04)
+	INTS8 (0x08)
+	INTS16 (0x10)
+	INTS4 (0x20)
+#ifdef __MSDOS__
+	int	0x24
+	ret
+	jmp	.int25
+	jmp	.int26
+	int	0x27
+	ret
+#else
+	INTS4 (0x24)
+#endif
+	INTS8 (0x28)
+	INTS16 (0x30)
+	INTS16 (0x40)
+	INTS16 (0x50)
+	INTS16 (0x60)
+	INTS16 (0x70)
+	INTS16 (0x80)
+	INTS16 (0x90)
+	INTS16 (0xa0)
+	INTS16 (0xb0)
+	INTS16 (0xc0)
+	INTS16 (0xd0)
+	INTS16 (0xe0)
+	INTS16 (0xf0)
+
+#ifdef __MSDOS__
+.int25:
+	int	0x25
+	jc	.cy
+	popf
+	clc
+	ret
+.int26:
+	int	0x26
+	jc	.cy
+	popf
+	clc
+	ret
+.cy:
+	popf
+	stc
+	ret
+#endif
