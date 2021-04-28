@@ -33,5 +33,4 @@
 	.define	___libi86_get_cs
 ___libi86_get_cs:
 	mov	ax, cs
-	cli
 	ret

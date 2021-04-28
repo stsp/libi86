@@ -282,24 +282,28 @@ sound (int __freq)
 
 /* These are here for testing purposes. */
 #ifdef __GNUC__
-static inline unsigned short
-__libi86_get_cs (void)
-{
-  unsigned short v;
-  __asm volatile ("{movw %%cs, %0|mov %0, cs}" : "=rm" (v));
-  return v;
-}
-
-static inline unsigned short
-__libi86_get_ss (void)
-{
-  unsigned short v;
-  __asm volatile ("{movw %%ss, %0|mov %0, ss}" : "=rm" (v));
-  return v;
-}
+# define __libi86_get_cs() \
+	({ \
+	  unsigned short __cs; \
+	  __asm volatile ("{movw %%cs, %0|mov %0, cs}" : "=rm" (__cs)); \
+	  __cs; \
+	})
+# define __libi86_get_ss() \
+	({ \
+	  unsigned short __ss; \
+	  __asm volatile ("{movw %%ss, %0|mov %0, ss}" : "=rm" (__ss)); \
+	  __ss; \
+	})
+# define __libi86_get_flags() \
+	({ \
+	  unsigned short __flags; \
+	  __asm volatile ("pushfw; pop{w} %0" : "=rm" (__flags)); \
+	  __flags; \
+	})
 #else  /* ! __GNUC__ */
 extern unsigned short __libi86_get_cs (void);
 extern unsigned short __libi86_get_ss (void);
+extern unsigned short __libi86_get_flags (void);
 #endif  /* ! __GNUC__ */
 
 _LIBI86_END_EXTERN_C

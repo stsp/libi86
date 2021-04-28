@@ -110,6 +110,7 @@ OBJS		= bios/bios-disk.o \
 		  i86/libi86-bc-int86x-do.o \
 		  i86/libi86-CV-FP.o \
 		  i86/libi86-get-cs.o \
+		  i86/libi86-get-flags.o \
 		  i86/libi86-get-ss.o \
 		  i86/libi86-int86-do.o \
 		  i86/libi86-int86x-do.o \

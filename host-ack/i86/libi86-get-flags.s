@@ -30,7 +30,8 @@
 
 #include "libi86/internal/sect.h"
 
-	.define	___libi86_get_ss
-___libi86_get_ss:
-	mov	ax, ss
+	.define	___libi86_get_flags
+___libi86_get_flags:
+	pushf
+	pop	ax
 	ret

@@ -47,18 +47,19 @@ main (void)
 AT_LIBI86_CHECK(dnl
 [[#include <stdlib.h>
 #include <i86.h>
-#ifndef __IA16_CMODEL_TINY__
+#if !defined __IA16_CMODEL_TINY__ && defined __FAR
 volatile int __far x = 1;
 volatile int __far *px = &x;
 #endif
 volatile int y = 2;
 int main (void)
 {
+#ifdef __FAR
   if (FP_SEG (main) != __libi86_get_cs ())
     abort ();
   if (FP_OFF (main) != (unsigned) main)
     abort ();
-#ifndef __IA16_CMODEL_TINY__
+# ifndef __IA16_CMODEL_TINY__
   if (FP_SEG (&x) != (unsigned long) &x >> 16)
     abort ();
   if (FP_SEG (&x) != (unsigned long) px >> 16)
@@ -67,10 +68,11 @@ int main (void)
     abort ();
   if (FP_OFF (&x) != (unsigned) (unsigned long) px)
     abort ();
+# endif
 #endif
-  if (FP_SEG (&y) != __libi86_get_ss ())
+  if (FP_SEG (_CV_FP (&y)) != __libi86_get_ss ())
     abort ();
-  if (FP_OFF (&y) != (unsigned) &y)
+  if (FP_OFF (_CV_FP (&y)) != (unsigned) &y)
     abort ();
   return 0;
 }]],[])
@@ -89,12 +91,14 @@ int main (void)
 #ifndef __IA16_CMODEL_IS_FAR_TEXT
   if (sregs.cs != __libi86_get_cs ())
     abort ();
+# ifdef __FAR
   if (sregs.cs != FP_SEG (main))
     abort ();
+# endif
 #endif
   if (sregs.ss != __libi86_get_ss ())
     abort ();
-  if (sregs.ss != FP_SEG (&sregs))
+  if (sregs.ss != FP_SEG (_CV_FP (&sregs)))
     abort ();
   return 0;
 }]],[])
@@ -324,27 +328,26 @@ AT_CLEANUP
 
 AT_SETUP([[_disable, _enable]])
 AT_LIBI86_CHECK(dnl
-[[#include <i86.h>
+[[#include <bios.h>
+#include <i86.h>
 #include <stdlib.h>
-
-static unsigned ticks (void)
-{
-  return *(unsigned volatile __far *) 0x0040006cul;
-}
-
-#ifndef __IA16_FEATURE_PROTECTED_MODE
-static unsigned flags (void)
-{
-  unsigned f;
-  __asm volatile ("pushf{w}; pop{w} %0" : "=g" (f) : : "memory");
-  return f;
-}
-#endif
 
 static void do_abort (void)
 {
   _enable ();
   abort ();
+}
+
+static unsigned ticks (void)
+{
+#ifdef __FAR
+  return *(unsigned volatile __far *) 0x0040006cul;
+#else
+  long tv;
+  if (_bios_timeofday (_TIME_GETCLOCK, &tv) < 0)
+    do_abort ();
+  return (unsigned) tv;
+#endif
 }
 
 int
@@ -353,7 +356,7 @@ main (void)
   unsigned from, c1, c2;
 
 #ifndef __IA16_FEATURE_PROTECTED_MODE
-  if (! (flags () & 0x0200u))
+  if (! (__libi86_get_flags () & 0x0200u))
     abort ();
 #endif
 
@@ -367,7 +370,7 @@ main (void)
 	 update the tick count, when all IRQs are disabled.  */
       from = ticks ();
 #ifndef __IA16_FEATURE_PROTECTED_MODE
-      if (flags () & 0x0200u)
+      if (__libi86_get_flags () & 0x0200u)
 	do_abort ();
 #endif
       c2 = rand() / (RAND_MAX / 100) + 1;
@@ -378,7 +381,7 @@ main (void)
         }
 
 #ifndef __IA16_FEATURE_PROTECTED_MODE
-      if (flags () & 0x0200u)
+      if (__libi86_get_flags () & 0x0200u)
 	do_abort ();
 #endif
 
@@ -388,15 +391,17 @@ main (void)
       if (c1 % 200 == 0)
 	while (ticks () == from)
 	  {
-#ifndef __IA16_FEATURE_PROTECTED_MODE
+#ifdef __GNUC__
+# ifndef __IA16_FEATURE_PROTECTED_MODE
 	    __asm volatile ("hlt");
-#else
+# else
 	    unsigned ax;
 	    __asm volatile ("int {$}0x2f" : "=a" (ax) : "0" (0x1680u) : "cc");
+# endif
 #endif
 	  }
 #ifndef __IA16_FEATURE_PROTECTED_MODE
-      if (! (flags () & 0x0200u))
+      if (! (__libi86_get_flags () & 0x0200u))
 	do_abort ();
 #endif
     }
