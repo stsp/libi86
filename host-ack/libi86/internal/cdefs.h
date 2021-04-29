@@ -38,7 +38,7 @@
 
 typedef struct
   {
-    unsigned long __p_;
+    unsigned __off_, __seg_;
   }
 __libi86_fpv_t, __libi86_fpcv_t, __libi86_fpvv_t, __libi86_fpcvv_t,
 __libi86_fpcc_t;

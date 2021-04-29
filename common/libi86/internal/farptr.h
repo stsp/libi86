@@ -55,14 +55,15 @@ __libi86_CV_FP (const volatile void *__p)
 				(__libi86_fpv_t ((__s), (__o)))
 # define __libi86_CV_FP(__p)	(__libi86_fpv_t (__p))
 #else  /* ! __FAR && ! __cplusplus */
-# define __libi86_FP_SEG(__p)	((unsigned) ((__p).__p_ >> 16))
-# define __libi86_FP_OFF(__p)	((unsigned) (__p).__p_)
+# define __libi86_FP_SEG(__p)	((__p).__seg_)
+# define __libi86_FP_OFF(__p)	((__p).__off_)
 
 _LIBI86_ALT_INLINE __libi86_fpv_t
 __libi86_MK_FP (unsigned __seg, unsigned __off)
 {
   __libi86_fpv_t __p;
-  __p.__p_ = (unsigned long) __seg << 16 | __off;
+  __p.__seg_ = __seg;
+  __p.__off_ = __off;
   return __p;
 }
 
