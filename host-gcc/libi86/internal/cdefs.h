@@ -202,6 +202,7 @@ __libi86_fpcc_t;
 
 /* And... */
 typedef __builtin_va_list _LIBI86_VA_LIST;
+typedef __SIZE_TYPE__ _LIBI86_SIZE_T;
 #ifdef _LIBI86_COMPILING_
 typedef __typeof__ (__builtin_ia16_selector (0u)) _LIBI86_SEG_SELECTOR;
 #endif

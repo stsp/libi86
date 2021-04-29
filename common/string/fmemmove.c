@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -31,23 +31,34 @@
 #include <stdlib.h>
 #include "i86.h"
 
-extern void __far *__libi86_fmemmove_forward (void __far *,
-					      const void __far *, size_t);
-extern void __far *__libi86_fmemmove_backward (void __far *,
-					       const void __far *, size_t);
+#ifndef __GNUC__
+# define __builtin_expect(__thang, __expect) (__thang)
+#endif
+
+extern __libi86_fpv_t __libi86_fmemmove_forward (__libi86_fpv_t,
+						 __libi86_fpcv_t, size_t);
+extern __libi86_fpv_t __libi86_fmemmove_backward (__libi86_fpv_t,
+						  __libi86_fpcv_t, size_t);
 
 static unsigned long
-linear_addr_rm (const void __far *p)
+linear_addr_rm (__libi86_fpcv_t p)
 {
   return ((unsigned long) FP_SEG (p) << 4) + FP_OFF (p);
 }
 
-void __far *
-_fmemmove (void __far *dest, const void __far *src, size_t n)
+__libi86_fpv_t
+_fmemmove (__libi86_fpv_t dest, __libi86_fpcv_t src, size_t n)
 {
   unsigned long dest_start_l, src_start_l;
 
-  if (dest == src || ! n)
+  if (! n)
+    return dest;
+
+#ifdef __FAR
+  if (dest == src)
+#else
+  if (FP_OFF (dest) == FP_OFF (src) && FP_SEG (dest) == FP_SEG (src))
+#endif
     return dest;
 
   if (FP_SEG (dest) == FP_SEG (src))
@@ -72,8 +83,8 @@ _fmemmove (void __far *dest, const void __far *src, size_t n)
   if (__builtin_expect (src_start_l > 0xffffful
 			|| dest_start_l > 0xffffful, 0))
     {
-      src_start_l &= 0xffffful;
-      dest_start_l &= 0xffffful;
+      src_start_l &= 0xfffffUL;
+      dest_start_l &= 0xfffffUL;
 
       if (src_start_l < dest_start_l && src_start_l + n > dest_start_l)
 	return __libi86_fmemmove_backward (dest, src, n);

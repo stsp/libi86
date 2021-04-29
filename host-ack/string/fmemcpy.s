@@ -1,5 +1,6 @@
+#
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,19 +28,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_LIBI86_STRING_H_
-#define _LIBI86_LIBI86_STRING_H_
+#include "libi86/internal/sect.h"
 
-#include <libi86/internal/cdefs.h>
-
-_LIBI86_BEGIN_EXTERN_C
-
-__libi86_fpv_t _fmemcpy (__libi86_fpv_t __dest, __libi86_fpcv_t __src,
-			 _LIBI86_SIZE_T __n);
-__libi86_fpv_t _fmemmove (__libi86_fpv_t __dest, __libi86_fpcv_t __src,
-			  _LIBI86_SIZE_T __n);
-_LIBI86_SIZE_T _fstrlen (__libi86_fpcc_t __s);
-
-_LIBI86_END_EXTERN_C
-
-#endif
+	.define	__fmemcpy
+	.define	___libi86_fmemmove_forward
+__fmemcpy:
+___libi86_fmemmove_forward:
+	mov	bx, sp
+	push	ds
+	push	es
+	push	si
+	push	di
+	mov	cx, 12(bx)		/* n */
+	les	di, 4(bx)		/* dest */
+	mov	si, 2(bx)		/* return value := dest */
+	mov	(si), di
+	mov	2(si), es
+	xchg	si, ax
+	lds	si, 8(bx)		/* src */
+	shr	cx, 1
+	rep movsw
+	adc	cx, cx
+	rep movsb
+	pop	di
+	pop	si
+	pop	es
+	pop	ds
+	ret
