@@ -41,12 +41,14 @@ _fstrlen:
 	pushw   %es
 	LES_ARG0W_BX_(%di)
 	movw	%di,	%bx
-	xorb	%al,	%al
+	xorw	%ax,	%ax
 	movw    $-1,    %cx
 	repne   scasb
-	movw    %di,    %ax
-	subw	%bx,	%ax
-	decw    %ax
+	jnz	.0
+	decw	%ax
+.0:
+	decw	%ax
+	subw	%cx,	%ax
 	popw    %es
 	popw    %di
 	RET_(4)
