@@ -105,6 +105,8 @@ OBJS		= bios/bios-disk.o \
 		  dos/intdosx.o \
 		  dos/libi86-bc-intdos.o \
 		  dos/libi86-bc-intdosx.o \
+		  dos/libi86-ret-set-errno.o \
+		  dos/libi86-ret-really-set-errno.o \
 		  i86/disable.o \
 		  i86/enable.o \
 		  i86/int86.o \

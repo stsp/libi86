@@ -37,5 +37,5 @@ __dos_close:
 	mov	bx, 2(bx)
 	movb	ah, 0x3e
 	int	0x21
-	ret
+	jmp	.__libi86_ret_set_errno
 #endif

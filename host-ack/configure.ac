@@ -74,6 +74,9 @@ AC_MSG_WARN([but __ACK undefined])])
 AC_CHECK_DECL([O_TEXT],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_O_TEXT],[1])],,
 	      [#include <fcntl.h>])
+AC_CHECK_FUNC([_sys_seterrno],
+	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE__SYS_SETERRNO],[1])],,
+	      [long _sys_seterrno (unsigned);])
 
 AC_CHECK_DECLS([__MSDOS__],[libi86_ackhost=msdos86],[libi86_ackhost=pc86])
 AC_SUBST(libi86_ackhost)

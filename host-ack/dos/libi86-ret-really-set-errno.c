@@ -1,6 +1,5 @@
-#
 /*
- * Copyright (c) 2018--2021 TK Chia
+ * Copyright (c) 2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -28,15 +27,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "libi86/internal/sect.h"
+#define _LIBI86_COMPILING_
+#include <errno.h>
+#include "libi86/internal/cdefs.h"
 
-#ifdef __MSDOS__
-	.define	__dos_commit
-__dos_commit:
-	mov	bx, sp
-	mov	bx, 2(bx)
-	movb	ah, 0x68
-	clc				/* (?) per Open Watcom */
-	int	0x21
-	jmp	.__libi86_ret_set_errno
+/* Convert a system error code to an `errno' value. */
+
+long
+__libi86_ret_really_set_errno (unsigned sys_err)
+{
+#ifndef _LIBI86_INTERNAL_HAVE__SYS_SETERRNO
+  extern long _sys_seterrno (unsigned);
+  return _sys_seterrno (sys_err);
+#else
+  errno = EIO;  /* a bogus default */
+  return -1;
 #endif
+}

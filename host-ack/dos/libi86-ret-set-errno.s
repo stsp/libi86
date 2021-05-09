@@ -30,13 +30,13 @@
 
 #include "libi86/internal/sect.h"
 
-#ifdef __MSDOS__
-	.define	__dos_commit
-__dos_commit:
-	mov	bx, sp
-	mov	bx, 2(bx)
-	movb	ah, 0x68
-	clc				/* (?) per Open Watcom */
-	int	0x21
-	jmp	.__libi86_ret_set_errno
-#endif
+	.define	.__libi86_ret_set_errno
+.__libi86_ret_set_errno:
+	jc	.0
+	xor	ax, ax
+	ret
+.0:
+	push	ax
+	call	___libi86_ret_really_set_errno
+	pop	cx
+	ret
