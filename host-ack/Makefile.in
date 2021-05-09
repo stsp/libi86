@@ -100,6 +100,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-commit.o \
 		  dos/dos-getdrive.o \
 		  dos/dos-setdrive.o \
+		  dos/dos-getfileattr.o \
 		  dos/getdrive.o \
 		  dos/intdos.o \
 		  dos/intdosx.o \
