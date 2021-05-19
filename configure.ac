@@ -26,13 +26,13 @@ dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 dnl For the actual build, this script mostly just hands over to
-dnl host-gcc/configure, which sets things up for an automated multilib build.
+dnl host-*/configure, which sets things up for an automated multilib build.
 dnl It seems that setting up a project top-level directory for a multilib
 dnl build is not supported.
 dnl
 dnl For tests, however, this script _does_ do the actual work of setting up
 dnl the test suite runs, using the GNU Autotools' experimental Autotest
-dnl feature.	-- tkchia 20181118
+dnl feature.	-- tkchia 20210519
 
 AC_PREREQ(2.69)
 AC_INIT([libi86],m4_esyscmd_s([
