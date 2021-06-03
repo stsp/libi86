@@ -436,7 +436,9 @@ int
 main (int argc, char **argv)
 {
   unsigned max_paras = 0, seg = 0, i;
+#ifdef __FAR
   unsigned long __far *ptr = 0;
+#endif
 #ifdef __MSDOS__
   errno = 0;
   if (_dos_allocmem (0xffffu, &max_paras) != ENOMEM)
@@ -460,6 +462,7 @@ main (int argc, char **argv)
     abort ();
   puts ("6 OK");
 
+#ifdef __FAR
   ptr = MK_FP (seg, 0);
   i = max_paras;
   if (i > 0x1000)
@@ -469,8 +472,10 @@ main (int argc, char **argv)
       *ptr++ = 0xf6f6f6f6ul;  *ptr++ = 0xf6f6f6f6ul;
       *ptr++ = 0xf6f6f6f6ul;  *ptr++ = 0xf6f6f6f6ul;
     }
+#endif
 
 #ifndef __IA16_FEATURE_PROTECTED_MODE
+# ifdef __FAR
   if (max_paras > 0x1000)
     {
       ptr = MK_FP (seg + max_paras - 0x1000, 0);
@@ -481,6 +486,7 @@ main (int argc, char **argv)
 	  *ptr++ = 0xf6f6f6f6ul;  *ptr++ = 0xf6f6f6f6ul;
 	}
     }
+# endif
 #endif
 
   errno = 0;

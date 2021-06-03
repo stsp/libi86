@@ -96,8 +96,10 @@ OBJS		= bios/bios-disk.o \
 		  conio/ungetch.o \
 		  conio/vcprintf.o \
 		  dos/bdos.o \
+		  dos/dos-allocmem.o \
 		  dos/dos-close.o \
 		  dos/dos-commit.o \
+		  dos/dos-freemem.o \
 		  dos/dos-getdrive.o \
 		  dos/dos-setdrive.o \
 		  dos/dos-getfileattr.o \
