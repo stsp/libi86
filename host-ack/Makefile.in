@@ -66,8 +66,6 @@ INSTALL_HEADERS	= bios.h \
 		  i86.h \
 		  libi86/internal/cdefs.h \
 		  libi86/internal/farptr.h \
-		  libi86/internal/sect.h \
-		  libi86/internal/struc.h \
 		  $(CLEAN_HEADERS) \
 		  $(DISTCLEAN_HEADERS)
 CLEAN_HEADERS	= libi86/config.h
@@ -99,6 +97,9 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-allocmem.o \
 		  dos/dos-close.o \
 		  dos/dos-commit.o \
+		  dos/dos-findclose.o \
+		  dos/dos-findfirst.o \
+		  dos/dos-findnext.o \
 		  dos/dos-freemem.o \
 		  dos/dos-getdrive.o \
 		  dos/dos-setdrive.o \
@@ -108,6 +109,9 @@ OBJS		= bios/bios-disk.o \
 		  dos/intdosx.o \
 		  dos/libi86-bc-intdos.o \
 		  dos/libi86-bc-intdosx.o \
+		  dos/libi86-msdos-do-findfirst.o \
+		  dos/libi86-msdos-do-findnext.o \
+		  dos/libi86-msdos-set-dta.o \
 		  dos/libi86-ret-set-errno.o \
 		  dos/libi86-ret-really-set-errno.o \
 		  i86/disable.o \
@@ -138,7 +142,10 @@ CFLAGS		= -O6 -S
 ASFLAGS		=
 # Headers we depend on when creating .o files; these do not include
 # libi86/config.h which is only generated after creating the library.
-HEADERS		= $(filter-out libi86/config.h,$(INSTALL_HEADERS))
+HEADERS		= $(filter-out libi86/config.h,$(INSTALL_HEADERS)) \
+		  libi86/internal/dos.h \
+		  libi86/internal/sect.h \
+		  libi86/internal/struc.h
 BSP		= $(INSTALL_LIBS)
 
 # Host specific makefile fragment comes in here.
