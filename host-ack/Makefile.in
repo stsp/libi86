@@ -102,8 +102,9 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-findnext.o \
 		  dos/dos-freemem.o \
 		  dos/dos-getdrive.o \
-		  dos/dos-setdrive.o \
 		  dos/dos-getfileattr.o \
+		  dos/dos-setdrive.o \
+		  dos/dos-setfileattr.o \
 		  dos/getdrive.o \
 		  dos/intdos.o \
 		  dos/intdosx.o \
