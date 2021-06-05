@@ -133,8 +133,11 @@ AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
 #include <string.h>
 #include <unistd.h>
 #include <bios.h>
+#include <i86.h>
+
 #define BYTES_PER_SECT 0x200
 #define EXTRA 0x40
+
 int
 main (void)
 {
@@ -173,14 +176,14 @@ main (void)
       memset (buf2, 0xcc, sizeof buf2);
       di.head = di.track = 0;
       di.sector = di.nsectors = 1;
-      di.buffer = buf1;
+      di.buffer = _CV_FP (buf1);
       j = 5;
       do
 	{
 	  status = _bios_disk (_DISK_READ, &di) >> 8;
 	  if (di.drive != drive || di.head != 0 || di.track != 0
 	      || di.sector != 1 || di.nsectors != 1
-	      || di.buffer != (void __far *) buf1)
+	      || ! _FP_EQ (di.buffer, _CV_FP (buf1)))
 	    abort ();
 
 	  for (k = 0; k < EXTRA; ++k)
@@ -194,14 +197,14 @@ main (void)
       if (status != 0)
 	continue;
 
-      di.buffer = buf2;
+      di.buffer = _CV_FP (buf2);
       j = 5;
       do
 	{
 	  status = _bios_disk (_DISK_READ, &di) >> 8;
 	  if (di.drive != drive || di.head != 0 || di.track != 0
 	      || di.sector != 1 || di.nsectors != 1
-	      || di.buffer != (void __far *) buf2)
+	      || ! _FP_EQ (di.buffer, _CV_FP (buf2)))
 	    abort ();
 
 	  for (k = 0; k < EXTRA; ++k)

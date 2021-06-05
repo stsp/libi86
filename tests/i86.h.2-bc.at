@@ -1,0 +1,94 @@
+dnl Copyright (c) 2021 TK Chia
+dnl
+dnl Redistribution and use in source and binary forms, with or without
+dnl modification, are permitted provided that the following conditions are
+dnl met:
+dnl
+dnl   * Redistributions of source code must retain the above copyright
+dnl     notice, this list of conditions and the following disclaimer.
+dnl   * Redistributions in binary form must reproduce the above copyright
+dnl     notice, this list of conditions and the following disclaimer in the
+dnl     documentation and/or other materials provided with the distribution.
+dnl   * Neither the name of the developer(s) nor the names of its
+dnl     contributors may be used to endorse or promote products derived from
+dnl     this software without specific prior written permission.
+dnl
+dnl THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+dnl IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+dnl TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+dnl PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+dnl HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+dnl SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+dnl TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+dnl PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+dnl LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+AT_BANNER([[<i86.h> tests (part 2, Borland compatibility)]])
+
+AT_SETUP([[int86 (Borland)]])
+AT_LIBI86_CHECK(dnl
+[[#define _BORLANDC_SOURCE
+#include <i86.h>
+#include <string.h>
+int main (void)
+{
+  union REGS regs;
+#ifdef __MSDOS__
+  static char msg[] = "Hello from int86!\r\n$(ignore this part)\r\n";
+  memset (&regs, 0xf6, sizeof (regs));
+  regs.h.ah = 0x09;
+  regs.x.dx = FP_OFF (_CV_FP (msg));
+  int86 (0x21, &regs, &regs);
+  /*
+   * Check that there is a `flags' field & that its contents look OK.  IF
+   * should be set, while DF & TF should be clear.
+   */
+  if ((regs.x.flags & 0x0700) != 0x0200)
+    abort ();
+#else
+# error
+#endif
+  return 0;
+}]],[[Hello from int86!
+]])
+AT_CLEANUP
+
+AT_SETUP([[int86x (Borland)]])
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+[[#define _BORLANDC_SOURCE
+#include <stdlib.h>
+#include <i86.h>
+#include <string.h>
+int main (void)
+{
+  union REGS regs;
+  struct SREGS sregs;
+#ifdef __MSDOS__
+  static char msg[] = "Hello from int86x!\r\n$(ignore this part)\r\n";
+  memset (&regs, 0xf6, sizeof (regs));
+  memset (&sregs, 0xf6, sizeof (sregs));
+  sregs.ds = FP_SEG (_CV_FP (msg));
+  regs.h.ah = 0x09;
+  regs.x.dx = FP_OFF (_CV_FP (msg));
+  int86x (0x21, &regs, &regs, &sregs);
+  if ((regs.x.flags & 0x0700) != 0x0200)
+    abort ();
+# ifndef __IA16_CMODEL_IS_FAR_TEXT
+  if (sregs.cs != __libi86_get_cs ())
+    abort ();
+# endif
+  if (sregs.ds != FP_SEG (_CV_FP (msg)))
+    abort ();
+  if (sregs.es != 0xf6f6u)
+    abort ();
+  if (sregs.ss != FP_SEG (_CV_FP (&regs)))
+    abort ();
+#else
+# error
+#endif
+  return 0;
+}]],[[Hello from int86x!
+]])
+AT_CLEANUP

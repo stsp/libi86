@@ -1,4 +1,4 @@
-dnl Copyright (c) 2021 TK Chia
+dnl Copyright (c) 2018--2021 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -25,70 +25,76 @@ dnl LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AT_BANNER([[<i86.h> tests (Borland compatibility)]])
+AT_BANNER([[<i86.h> tests (part 1)]])
 
-AT_SETUP([[int86 (Borland)]])
-AT_LIBI86_CHECK(dnl
-[[#define _BORLANDC_SOURCE
+dnl These tests come first because the <bios.h> tests, at least under the
+dnl Amsterdam Compiler Kit, depend on some <i86.h> features such as _FP_EQ
+dnl (, ), and we should probably make sure these features work first.
+
+AT_SETUP([[FP_SEG, FP_OFF, _CV_FP]])
+AT_LIBI86_CHECK_CXX(dnl
+[[#include <stdlib.h>
 #include <i86.h>
-#include <string.h>
-int main (void)
-{
-  union REGS regs;
-#ifdef __MSDOS__
-  static char msg[] = "Hello from int86!\r\n$(ignore this part)\r\n";
-  memset (&regs, 0xf6, sizeof (regs));
-  regs.h.ah = 0x09;
-  regs.x.dx = FP_OFF (_CV_FP (msg));
-  int86 (0x21, &regs, &regs);
-  /*
-   * Check that there is a `flags' field & that its contents look OK.  IF
-   * should be set, while DF & TF should be clear.
-   */
-  if ((regs.x.flags & 0x0700) != 0x0200)
-    abort ();
-#else
+#ifndef __cplusplus
 # error
 #endif
+volatile int y = 2;
+int
+main (void)
+{
+  if (FP_SEG (&y) != __libi86_get_ss ())
+    abort ();
+  if (FP_OFF (&y) != (unsigned) &y)
+    abort ();
   return 0;
-}]],[[Hello from int86!
-]])
-AT_CLEANUP
-
-AT_SETUP([[int86x (Borland)]])
-AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
-[[#define _BORLANDC_SOURCE
-#include <stdlib.h>
+}]],[])
+AT_LIBI86_CHECK(dnl
+[[#include <stdlib.h>
 #include <i86.h>
-#include <string.h>
+#if !defined __IA16_CMODEL_TINY__ && defined __FAR
+volatile int __far x = 1;
+volatile int __far *px = &x;
+#endif
+volatile int y = 2;
 int main (void)
 {
-  union REGS regs;
-  struct SREGS sregs;
-#ifdef __MSDOS__
-  static char msg[] = "Hello from int86x!\r\n$(ignore this part)\r\n";
-  memset (&regs, 0xf6, sizeof (regs));
-  memset (&sregs, 0xf6, sizeof (sregs));
-  sregs.ds = FP_SEG (_CV_FP (msg));
-  regs.h.ah = 0x09;
-  regs.x.dx = FP_OFF (_CV_FP (msg));
-  int86x (0x21, &regs, &regs, &sregs);
-  if ((regs.x.flags & 0x0700) != 0x0200)
+#ifdef __FAR
+  if (FP_SEG (main) != __libi86_get_cs ())
     abort ();
-# ifndef __IA16_CMODEL_IS_FAR_TEXT
-  if (sregs.cs != __libi86_get_cs ())
+  if (FP_OFF (main) != (unsigned) main)
+    abort ();
+# ifndef __IA16_CMODEL_TINY__
+  if (FP_SEG (&x) != (unsigned long) &x >> 16)
+    abort ();
+  if (FP_SEG (&x) != (unsigned long) px >> 16)
+    abort ();
+  if (FP_OFF (&x) != (unsigned) (unsigned long) &x)
+    abort ();
+  if (FP_OFF (&x) != (unsigned) (unsigned long) px)
     abort ();
 # endif
-  if (sregs.ds != FP_SEG (_CV_FP (msg)))
-    abort ();
-  if (sregs.es != 0xf6f6u)
-    abort ();
-  if (sregs.ss != FP_SEG (_CV_FP (&regs)))
-    abort ();
-#else
-# error
 #endif
+  if (FP_SEG (_CV_FP (&y)) != __libi86_get_ss ())
+    abort ();
+  if (FP_OFF (_CV_FP (&y)) != (unsigned) &y)
+    abort ();
   return 0;
-}]],[[Hello from int86x!
-]])
+}]],[])
+AT_CLEANUP
+
+AT_SETUP([[_FP_EQ]])
+AT_LIBI86_CHECK(dnl
+[[#include <stdlib.h>
+#include <i86.h>
+volatile int x = 1, y = 1;
+int main (void)
+{
+  if (_FP_EQ (_CV_FP (&x), _CV_FP (&y)))
+    abort ();
+  if (! _FP_EQ (_CV_FP (&x), _CV_FP (&x)))
+    abort ();
+  if (_FP_EQ (_CV_FP (&x), MK_FP (0x0040, 0x006c)))
+    abort ();
+  return 0;
+}]],[])
 AT_CLEANUP

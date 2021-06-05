@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018--2020 TK Chia
+dnl Copyright (c) 2018--2021 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -25,58 +25,7 @@ dnl LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AT_BANNER([[<i86.h> tests]])
-
-AT_SETUP([[FP_SEG, FP_OFF]])
-AT_LIBI86_CHECK_CXX(dnl
-[[#include <stdlib.h>
-#include <i86.h>
-#ifndef __cplusplus
-# error
-#endif
-volatile int y = 2;
-int
-main (void)
-{
-  if (FP_SEG (&y) != __libi86_get_ss ())
-    abort ();
-  if (FP_OFF (&y) != (unsigned) &y)
-    abort ();
-  return 0;
-}]],[])
-AT_LIBI86_CHECK(dnl
-[[#include <stdlib.h>
-#include <i86.h>
-#if !defined __IA16_CMODEL_TINY__ && defined __FAR
-volatile int __far x = 1;
-volatile int __far *px = &x;
-#endif
-volatile int y = 2;
-int main (void)
-{
-#ifdef __FAR
-  if (FP_SEG (main) != __libi86_get_cs ())
-    abort ();
-  if (FP_OFF (main) != (unsigned) main)
-    abort ();
-# ifndef __IA16_CMODEL_TINY__
-  if (FP_SEG (&x) != (unsigned long) &x >> 16)
-    abort ();
-  if (FP_SEG (&x) != (unsigned long) px >> 16)
-    abort ();
-  if (FP_OFF (&x) != (unsigned) (unsigned long) &x)
-    abort ();
-  if (FP_OFF (&x) != (unsigned) (unsigned long) px)
-    abort ();
-# endif
-#endif
-  if (FP_SEG (_CV_FP (&y)) != __libi86_get_ss ())
-    abort ();
-  if (FP_OFF (_CV_FP (&y)) != (unsigned) &y)
-    abort ();
-  return 0;
-}]],[])
-AT_CLEANUP
+AT_BANNER([[<i86.h> tests (part 2)]])
 
 AT_SETUP([[segread]])
 AT_LIBI86_CHECK(dnl

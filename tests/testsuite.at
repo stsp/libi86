@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018--2020 TK Chia
+dnl Copyright (c) 2018--2021 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -35,6 +35,7 @@ dnl Test that the test harness works.  Naturally, this should come first.
 m4_include([metacheck.at])
 
 dnl Then do the actual tests...
+m4_include([i86.h.1.at])
 m4_include([bios.h.at])
 m4_include([bios.h.bc.at])
 m4_include([conio.h.at])
@@ -43,7 +44,7 @@ m4_include([dos.h.at])
 m4_include([dos.h.bc.at])
 m4_include([dpmi.h.at])
 m4_include([graph.h.at])
-m4_include([i86.h.at])
-m4_include([i86.h.bc.at])
+m4_include([i86.h.2.at])
+m4_include([i86.h.2-bc.at])
 m4_include([stdlib.h.at])
 m4_include([string.h.at])
