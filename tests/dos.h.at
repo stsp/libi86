@@ -247,7 +247,8 @@ AT_LIBI86_CHECK(dnl
 [[#include <dos.h>
 #include <errno.h>
 void abort (void);
-int main (int argc, char **argv)
+int
+main (int argc, char **argv)
 {
   /* Try to close the stdin file descriptor.  This should succeed.  */
   if (_dos_close (0) != 0)
@@ -560,4 +561,41 @@ main (void)
 # error
 #endif
 }]],[[]])
+AT_CLEANUP
+
+AT_SETUP([[_dos_creat, _dos_creatnew]])
+AT_LIBI86_CHECK_WITH_TMP_FILE(dnl
+[[#include <dos.h>
+#include <stdio.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+#ifdef __MSDOS__
+  int fd = -1;
+  if (_dos_creatnew (argv[0], _A_NORMAL, &fd) == 0)
+    abort ();
+  puts ("1 OK");
+  if (_dos_creatnew (TMP_FILE, _A_NORMAL, &fd) == 0)
+    abort ();
+  puts ("2 OK");
+  if (_dos_creat (TMP_FILE, _A_NORMAL, &fd) != 0)
+    abort ();
+  puts ("3 OK");
+  if (fd == -1)
+    abort ();
+  puts ("4 OK");
+  if (_dos_close (fd) != 0)
+    abort ();
+  puts ("5 OK");
+  return 0;
+#else
+# error
+#endif
+}]],[[1 OK
+2 OK
+3 OK
+4 OK
+5 OK
+]])
 AT_CLEANUP

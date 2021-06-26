@@ -97,6 +97,8 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-allocmem.o \
 		  dos/dos-close.o \
 		  dos/dos-commit.o \
+		  dos/dos-creat.o \
+		  dos/dos-creatnew.o \
 		  dos/dos-findclose.o \
 		  dos/dos-findfirst.o \
 		  dos/dos-findnext.o \

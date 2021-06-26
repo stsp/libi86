@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018--2020 TK Chia
+dnl Copyright (c) 2018--2021 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -289,3 +289,16 @@ if errorlevel 1 del a.log
 unix2dos x.bat
 AT_LIBI86_CHECK_FOR_NONDPMIABLE([$1],[$2],[[x.bat]],[$3 [-t >/dev/null]],dnl
 [["$abs_srcdir"/postproc-console.sh]])])
+
+dnl run a program with an additional temporary file as input
+dnl $1 = text of program to test
+dnl $2 = expected program output
+dnl $3 = additional options to pass to dosemu
+m4_define([AT_LIBI86_CHECK_WITH_TMP_FILE],[dnl
+AT_DATA([[temp.tmp]],dnl
+[Hello world!
+])
+AT_LIBI86_CHECK(dnl
+[[#define TMP_FILE "temp.tmp"
+#line 1
+]$1],[$2],,[$3])])

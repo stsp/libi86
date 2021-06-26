@@ -141,6 +141,8 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-allocmem.o \
 		  dos/dos-close.o \
 		  dos/dos-commit.o \
+		  dos/dos-creat.o \
+		  dos/dos-creatnew.o \
 		  dos/dos-findclose.o \
 		  dos/dos-findfirst.o \
 		  dos/dos-findnext.o \
@@ -218,6 +220,9 @@ OBJ_SUBDIRS	= $(sort $(dir $(OBJS)))
 CFLAGS		= -mseparate-code-segment
 ifeq "" "$(filter -O%,$(CC) $(CFLAGS) $(MULTILIB))"
   CFLAGS	+= -Os
+endif
+ifeq "" "$(filter -mdpmi%,$(CC) $(CFLAGS) $(MULTILIB))"
+  OBJS		+= dos/libi86-dpmi.o
 endif
 ASFLAGS		=
 # Headers we depend on when creating .o files; these do not include

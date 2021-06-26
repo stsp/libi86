@@ -1,5 +1,6 @@
+#
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2019--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,63 +28,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_LIBI86_INTERNAL_DOS_H_
-#define _LIBI86_LIBI86_INTERNAL_DOS_H_
+#include "libi86/internal/sect.h"
 
-#ifndef _LIBI86_COMPILING_
-# error "<libi86/internal/dos.h> should only be used when compiling libi86!"
-#endif
-
-#include <stdbool.h>
-#include <dpmi.h>
-#include <i86.h>
-#include <libi86/internal/cdefs.h>
-
-_LIBI86_BEGIN_EXTERN_C
-
-extern __attribute__ ((regparmcall)) unsigned
-__libi86_ret_really_set_errno (unsigned);
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-extern struct find_t __far *__libi86_dpmi_set_dta (void);
-extern dpmi_dos_block __libi86_dpmi_low_dup_str (const char *);
-extern void __libi86_dpmi_low_free_str (dpmi_dos_block);
-#endif
-
-static inline bool
-__libi86_msdos_drive_letter_p (char c)
-{
-  switch (c)
-    {
-    case 'A' ... 'Z':
-    case 'a' ... 'z':
-      return true;
-    default:
-      return false;
-    }
-}
-
-static inline bool
-__libi86_msdos_path_sep_p (char c)
-{
-  switch (c)
-    {
-    case '/':
-    case '\\':
-      return true;
-    default:
-      return false;
-    }
-}
-
-static inline void
-__libi86_msdos_set_dta (void __far *new_dta)
-{
-  unsigned xx1, xx2;
-  __asm volatile ("int $0x21"
-		  : "=a" (xx1), "=d" (xx2)
-		  : "Rah" ((unsigned char) 0x1a),
-		    "Rds" (FP_SEG (new_dta)), "1" (FP_OFF (new_dta))
-		  : "cc", "bx", "cx", "memory");
-}
-
+#ifdef __MSDOS__
+	.define	__dos_creatnew
+__dos_creatnew:
+	mov	bx, sp
+	mov	dx, 2(bx)
+	mov	cx, 4(bx)
+	movb	ah, 0x5b
+	int	0x21
+	jc	.error
+	mov	bx, sp
+	mov	bx, 6(bx)
+	mov	(bx), ax
+.error:
+	jmp	.__libi86_ret_set_errno
 #endif

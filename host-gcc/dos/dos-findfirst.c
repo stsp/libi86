@@ -76,26 +76,6 @@ __libi86_dpmi_set_dta (void)
 
   return (struct find_t __far *) MK_FP (dta_blk.pm, 0);
 }
-
-static dpmi_dos_block
-__libi86_dpmi_low_dup_str (const char *str)
-{
-  size_t size = strlen (str) + 1;
-  dpmi_dos_block str_blk = _DPMIAllocateDOSMemoryBlock ((size + 15) / 16);
-
-  if (! str_blk.pm)
-    errno = ENOMEM;
-  else
-    _fmemcpy (MK_FP (str_blk.pm, 0), str, size);
-
-  return str_blk;
-}
-
-static void
-__libi86_dpmi_low_free_str (dpmi_dos_block str_blk)
-{
-  _DPMIFreeDOSMemoryBlock (str_blk.pm);
-}
 #endif
 
 unsigned
