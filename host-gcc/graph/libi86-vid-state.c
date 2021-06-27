@@ -167,7 +167,7 @@ __libi86_con_mode_changed (unsigned mode)
 
 /*
  * Note: this constructor must run before __libi86_setvideomode_default ()
- * default () is primed.
+ * is primed.
  */
 __attribute__ ((constructor (99))) static void
 __libi86_vid_state_init (void)
