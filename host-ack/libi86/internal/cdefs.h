@@ -92,6 +92,45 @@ __libi86_fpcc_t;
 	{ \
 	  return alias_to (__arg1, __arg2, __arg3, __arg4); \
 	}
+/*
+ * Define a local (and most likely inline) 0-, 1-, 2-, 3, or 4-argument
+ * function NAME which returns void and calls ALIAS_TO.  TYPE1, TYPE2, TYPE3,
+ * and TYPE4 are argument types.
+ */
+#define _LIBI86_REDIRECT_AND_INLINE_VOID_0(name, alias_to) \
+	extern void alias_to (void); \
+	_LIBI86_ALT_INLINE void name (void) \
+	{ \
+	  alias_to (); \
+	}
+#define _LIBI86_REDIRECT_AND_INLINE_VOID_1(name, type1, alias_to) \
+	extern void alias_to (type1); \
+	_LIBI86_ALT_INLINE void name (type1 __arg1) \
+	{ \
+	  alias_to (__arg1); \
+	}
+#define _LIBI86_REDIRECT_AND_INLINE_VOID_2(name, type1, type2, alias_to) \
+	extern void alias_to (type1, type2); \
+	_LIBI86_ALT_INLINE void name (type1 __arg1, type2 __arg2) \
+	{ \
+	  alias_to (__arg1, __arg2); \
+	}
+#define _LIBI86_REDIRECT_AND_INLINE_VOID_3(name, type1, type2, type3, \
+					   alias_to) \
+	extern void alias_to (type1, type2, type3); \
+	_LIBI86_ALT_INLINE void name (type1 __arg1, type2 __arg2, \
+					  type3 __arg3) \
+	{ \
+	  alias_to (__arg1, __arg2, __arg3); \
+	}
+#define _LIBI86_REDIRECT_AND_INLINE_VOID_4(name, type1, type2, type3, \
+					   type4, alias_to) \
+	extern void alias_to (type1, type2, type3, type4); \
+	_LIBI86_ALT_INLINE void name (type1 __arg1, type2 __arg2, \
+				      type3 __arg3, type4 __arg4) \
+	{ \
+	  alias_to (__arg1, __arg2, __arg3, __arg4); \
+	}
 #define _LIBI86_REDIRECT_0	_LIBI86_REDIRECT_AND_INLINE_0
 #define _LIBI86_REDIRECT_1	_LIBI86_REDIRECT_AND_INLINE_1
 #define _LIBI86_REDIRECT_2	_LIBI86_REDIRECT_AND_INLINE_2

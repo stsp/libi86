@@ -162,6 +162,10 @@ OBJS		= bios/bios-disk.o \
 		  dos/libi86-bc-intdosx.o \
 		  dos/libi86-ret-really-set-errno.o \
 		  dos/libi86-ret-set-errno.o \
+		  dos/peek.o \
+		  dos/peekb.o \
+		  dos/poke.o \
+		  dos/pokeb.o \
 		  dpmi/dpmi-hosted.o \
 		  dpmi/dpmiallocatedosmemoryblock.o \
 		  dpmi/dpmifreedosmemoryblock.o \

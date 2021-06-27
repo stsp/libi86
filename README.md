@@ -130,6 +130,10 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |   W | `_dos_setfileattr (`\*_path_`,` _attributes_`);`
 |   W | `_dos_setvect (`_intr-no_`,` \*_handler_`);` | Some versions of `gcc-ia16` may not understand the `interrupt` function attribute.  In that case, this function will not be supported.
 |   W | `_getdrive ();`
+|   B | `peek (`_segment_`,` _offset_`);`
+|   B | `peekb (`_segment_`,` _offset_`);`
+|   B | `poke (`_segment_`,` _offset_`,` _word-value_`);`
+|   B | `pokeb (`_segment_`,` _offset_`,` _byte-value_`);`
 |     |
 |     | **`▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖`** | **Except for `__DPMI_hosted ()`, functions in `<dpmi.h>` should only be called when the caller knows it is running in DPMI mode.**
 |  IW | `__DPMI_hosted ();` | Returns 1 if running in protected mode under DPMI, -1 otherwise.  If the underlying C library has an implementation of this function, `libi86` will use that instead.

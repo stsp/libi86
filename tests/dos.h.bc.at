@@ -153,3 +153,43 @@ main (void)
 }]],[[hello world ~
 ]])
 AT_CLEANUP
+
+AT_SETUP([[peek, peekb]])
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+[[#define _BORLANDC_SOURCE
+#include <stdlib.h>
+#include <bios.h>
+#include <dos.h>
+int
+main (void)
+{
+  unsigned short kb = biosmemory ();
+  unsigned short hw = biosequip ();
+  if (kb != peek (0x0040, 0x0013))
+    abort ();
+  if ((unsigned char) hw != (unsigned char) peekb (0x0040, 0x0010))
+    abort ();
+  if ((unsigned char) (hw >> 8) != (unsigned char) peekb (0x0040, 0x0011))
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP
+
+AT_SETUP([[poke, pokeb]])
+AT_LIBI86_CHECK(dnl
+[[#define _BORLANDC_SOURCE
+#include <stdlib.h>
+#include <dos.h>
+volatile unsigned x = 0xb3ac;
+int
+main (void)
+{
+  poke (__libi86_get_ss (), (unsigned) &x, 0x4ab8);
+  if (x != 0x4ab8)
+    abort ();
+  pokeb (__libi86_get_ss (), (unsigned) &x, 0xd2);
+  if (x != 0x4ad2)
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP

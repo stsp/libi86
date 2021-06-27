@@ -116,6 +116,15 @@ _dos_findclose (struct find_t *__buf)
 }
 #endif
 
+#ifdef _BORLANDC_SOURCE
+_LIBI86_REDIRECT_AND_INLINE_2 (int, peek, unsigned, unsigned, __libi86_peek)
+_LIBI86_REDIRECT_AND_INLINE_2 (char, peekb, unsigned, unsigned, __libi86_peekb)
+_LIBI86_REDIRECT_AND_INLINE_VOID_3 (poke, unsigned, unsigned, int,
+				    __libi86_poke)
+_LIBI86_REDIRECT_AND_INLINE_VOID_3 (pokeb, unsigned, unsigned, char,
+				    __libi86_pokeb)
+#endif
+
 _LIBI86_END_EXTERN_C
 
 #endif

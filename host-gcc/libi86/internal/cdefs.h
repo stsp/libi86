@@ -161,12 +161,11 @@ __libi86_fpcc_t;
  * rather long-winded incantation to work as intended...
  */
 #define _LIBI86_ALT_INLINE	__attribute__ ((__gnu_inline__)) extern inline
-
 /*
- * Redirect out-of-line calls to a 0-, 1-, or 2-argument function NAME to
- * call ALIAS_TO, _and_ also define an inline version of NAME which calls
+ * Redirect out-of-line calls to a 0-, 1-, 2-, or 3-argument function NAME
+ * to call ALIAS_TO, _and_ also define an inline version of NAME which calls
  * ALIAS_TO.  RET_TYPE is the (non-void) return type of the function, and
- * TYPE1 and TYPE2 are the argument types.
+ * TYPE1, TYPE2, and TYPE3 are the argument types.
  */
 #define _LIBI86_REDIRECT_AND_INLINE_0(ret_type, name, alias_to) \
 	_LIBI86_REDIRECT_0 (ret_type, name, alias_to) \
@@ -185,6 +184,46 @@ __libi86_fpcc_t;
 	_LIBI86_ALT_INLINE ret_type name (type1 __arg1, type2 __arg2) \
 	{ \
 	  return alias_to (__arg1, __arg2); \
+	}
+#define _LIBI86_REDIRECT_AND_INLINE_3(ret_type, name, type1, type2, type3, \
+				      alias_to) \
+	_LIBI86_REDIRECT_3 (ret_type, name, type1, type2, type3, alias_to) \
+	_LIBI86_ALT_INLINE ret_type name (type1 __arg1, type2 __arg2, \
+					  type3 __arg3) \
+	{ \
+	  return alias_to (__arg1, __arg2, __arg3); \
+	}
+/*
+ * Redirect out-of-line calls to a 0-, 1-, 2-, or 3-argument function NAME
+ * which returns void to call ALIAS_TO, _and_ also define an inline version
+ * of NAME which calls ALIAS_TO.  TYPE1, TYPE2, and TYPE3 are the argument
+ * types.
+ */
+#define _LIBI86_REDIRECT_AND_INLINE_VOID_0(name, alias_to) \
+	_LIBI86_REDIRECT_0 (void, name, alias_to) \
+	_LIBI86_ALT_INLINE void name (void) \
+	{ \
+	  alias_to (); \
+	}
+#define _LIBI86_REDIRECT_AND_INLINE_VOID_1(name, type1, alias_to) \
+	_LIBI86_REDIRECT_1 (void, name, type1, alias_to) \
+	_LIBI86_ALT_INLINE void name (type1 __arg1) \
+	{ \
+	  alias_to (__arg1); \
+	}
+#define _LIBI86_REDIRECT_AND_INLINE_VOID_2(name, type1, type2, alias_to) \
+	_LIBI86_REDIRECT_2 (void, name, type1, type2, alias_to) \
+	_LIBI86_ALT_INLINE void name (type1 __arg1, type2 __arg2) \
+	{ \
+	  alias_to (__arg1, __arg2); \
+	}
+#define _LIBI86_REDIRECT_AND_INLINE_VOID_3(name, type1, type2, type3, \
+					   alias_to) \
+	_LIBI86_REDIRECT_3 (void, name, type1, type2, type3, alias_to) \
+	_LIBI86_ALT_INLINE void name (type1 __arg1, type2 __arg2, \
+				      type3 __arg3) \
+	{ \
+	  alias_to (__arg1, __arg2, __arg3); \
 	}
 
 /*
