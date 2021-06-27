@@ -74,6 +74,7 @@ INSTALL_HEADERS	= bios.h \
 		  dpmi.h \
 		  graph.h \
 		  i86.h \
+		  share.h \
 		  libi86/stdlib.h \
 		  libi86/string.h \
 		  libi86/internal/cdefs.h \
@@ -150,6 +151,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-getdrive.o \
 		  dos/dos-getfileattr.o \
 		  dos/dos-getvect.o \
+		  dos/dos-open.o \
 		  dos/dos-setdrive.o \
 		  dos/dos-setfileattr.o \
 		  dos/dos-setvect.o \

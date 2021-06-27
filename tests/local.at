@@ -295,9 +295,7 @@ dnl $1 = text of program to test
 dnl $2 = expected program output
 dnl $3 = additional options to pass to dosemu
 m4_define([AT_LIBI86_CHECK_WITH_TMP_FILE],[dnl
-AT_DATA([[temp.tmp]],dnl
-[Hello world!
-])
+AT_DATA([[temp.tmp]],[])
 AT_LIBI86_CHECK(dnl
 [[#define TMP_FILE "temp.tmp"
 #line 1

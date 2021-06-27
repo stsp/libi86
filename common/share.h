@@ -27,55 +27,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_LIBI86_INTERNAL_DOS_H_
-#define _LIBI86_LIBI86_INTERNAL_DOS_H_
+/*
+ * MS-DOS 3+ file sharing modes as accepted by _dos_open (...) & al.  The
+ * precise semantics of these sharing modes are described in Ralf Brown's
+ * Interrupt List (under int 0x21, ah = 0x3d).
+ *
+ * NOTE: these sharing mode flags will only be honoured at runtime if
+ * share.exe (or share.com) is loaded!
+ */
 
-#ifndef _LIBI86_COMPILING_
-# error "<libi86/internal/dos.h> should only be used when compiling libi86!"
-#endif
+#ifndef _LIBI86_SHARE_H_
+#define _LIBI86_SHARE_H_
 
-#include <stdbool.h>
-#include <i86.h>
-#include <libi86/internal/cdefs.h>
+#define _SH_COMPAT	0x00		/* compatibility mode */
+#define _SH_DENYRW	0x10		/* deny read/write access by others */
+#define _SH_DENYWR	0x20		/* deny write access by others */
+#define _SH_DENYRD	0x30		/* deny read access by others */
+#define _SH_DENYNO	0x40		/* allow full access by others */
 
-_LIBI86_BEGIN_EXTERN_C
-
-static bool
-__libi86_msdos_drive_letter_p (char c)
-{
-  switch (c)
-    {
-    case 'A':  case 'B':  case 'C':  case 'D':  case 'E':  case 'F':  case 'G':
-    case 'H':  case 'I':  case 'J':  case 'K':  case 'L':  case 'M':  case 'N':
-    case 'O':  case 'P':  case 'Q':  case 'R':  case 'S':  case 'T':  case 'U':
-    case 'V':  case 'W':  case 'X':  case 'Y':  case 'Z':
-    case 'a':  case 'b':  case 'c':  case 'd':  case 'e':  case 'f':  case 'g':
-    case 'h':  case 'i':  case 'j':  case 'k':  case 'l':  case 'm':  case 'n':
-    case 'o':  case 'p':  case 'q':  case 'r':  case 's':  case 't':  case 'u':
-    case 'v':  case 'w':  case 'x':  case 'y':  case 'z':
-      return true;
-    default:
-      return false;
-    }
-}
-
-static bool
-__libi86_msdos_path_sep_p (char c)
-{
-  switch (c)
-    {
-    case '/':
-    case '\\':
-      return true;
-    default:
-      return false;
-    }
-}
-
-extern void __libi86_msdos_set_dta (void *new_dta);
-extern unsigned __libi86_msdos_do_findfirst (const char *path, unsigned attr);
-extern unsigned __libi86_msdos_do_findnext (void);
-extern unsigned __libi86_msdos_do_open (const char *path, unsigned mode,
-					int *handle);
+#ifndef __STRICT_ANSI__
+# define SH_COMPAT	_SH_COMPAT
+# define SH_DENYRW	_SH_DENYRW
+# define SH_DENYWR	_SH_DENYWR
+# define SH_DENYRD	_SH_DENYRD
+# define SH_DENYNO	_SH_DENYNO
+#endif  /* ! __STRICT_ANSI__ */
 
 #endif

@@ -64,6 +64,7 @@ INSTALL_LIBS	= libi86.a
 INSTALL_HEADERS	= bios.h \
 		  conio.h \
 		  i86.h \
+		  share.h \
 		  libi86/internal/cdefs.h \
 		  libi86/internal/farptr.h \
 		  $(CLEAN_HEADERS) \
@@ -106,6 +107,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-getdrive.o \
 		  dos/dos-getfileattr.o \
 		  dos/dos-getvect.o \
+		  dos/dos-open.o \
 		  dos/dos-setdrive.o \
 		  dos/dos-setfileattr.o \
 		  dos/getdrive.o \
@@ -115,6 +117,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/libi86-bc-intdosx.o \
 		  dos/libi86-msdos-do-findfirst.o \
 		  dos/libi86-msdos-do-findnext.o \
+		  dos/libi86-msdos-do-open.o \
 		  dos/libi86-msdos-set-dta.o \
 		  dos/libi86-ret-set-errno.o \
 		  dos/libi86-ret-really-set-errno.o \

@@ -563,31 +563,68 @@ main (void)
 }]],[[]])
 AT_CLEANUP
 
-AT_SETUP([[_dos_creat, _dos_creatnew]])
+AT_SETUP([[_dos_creat, _dos_creatnew, _dos_open]])
 AT_LIBI86_CHECK_WITH_TMP_FILE(dnl
 [[#include <dos.h>
+#include <fcntl.h>
 #include <stdio.h>
+#include <unistd.h>
 void abort (void);
 int
 main (int argc, char **argv)
 {
 #ifdef __MSDOS__
   int fd = -1;
+  char buf[1];
+  static const char hello[5] = "hello";
+
   if (_dos_creatnew (argv[0], _A_NORMAL, &fd) == 0)
     abort ();
   puts ("1 OK");
+
   if (_dos_creatnew (TMP_FILE, _A_NORMAL, &fd) == 0)
     abort ();
   puts ("2 OK");
-  if (_dos_creat (TMP_FILE, _A_NORMAL, &fd) != 0)
+
+  if (_dos_open (TMP_FILE, O_WRONLY | O_NOINHERIT, &fd) != 0)
     abort ();
   puts ("3 OK");
+
   if (fd == -1)
     abort ();
   puts ("4 OK");
-  if (_dos_close (fd) != 0)
+
+  /* read access should be denied */
+  if (read (fd, buf, sizeof buf) >= 0)
     abort ();
   puts ("5 OK");
+
+  /* write access should be allowed */
+  if (write (fd, hello, sizeof hello) != sizeof hello)
+    abort ();
+  puts ("6 OK");
+
+  if (_dos_close (fd) != 0)
+    abort ();
+  puts ("7 OK");
+
+  if (_dos_creat (TMP_FILE, _A_NORMAL, &fd) != 0)
+    abort ();
+  puts ("8 OK");
+
+  if (fd == -1)
+    abort ();
+  puts ("9 OK");
+
+  /* file should now be truncated to zero bytes */
+  if (lseek (fd, (off_t) 0, SEEK_END) != 0)
+    abort ();
+  puts ("10 OK");
+
+  if (_dos_close (fd) != 0)
+    abort ();
+  puts ("11 OK");
+
   return 0;
 #else
 # error
@@ -597,5 +634,11 @@ main (int argc, char **argv)
 3 OK
 4 OK
 5 OK
+6 OK
+7 OK
+8 OK
+9 OK
+10 OK
+11 OK
 ]])
 AT_CLEANUP

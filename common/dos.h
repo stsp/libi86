@@ -44,6 +44,8 @@
 #define _A_SUBDIR	0x10u
 #define _A_ARCH		0x20u
 
+#define O_NOINHERIT	0x80
+
 _LIBI86_BEGIN_EXTERN_C
 
 struct
@@ -81,6 +83,7 @@ extern unsigned _dos_findclose (struct find_t *__buf);
 extern unsigned _dos_freemem (unsigned __seg);
 extern void _dos_getdrive (unsigned *__drive);
 extern unsigned _dos_getfileattr (const char *__path, unsigned *__attributes);
+extern unsigned _dos_open (const char *__path, unsigned __mode, int *__handle);
 extern void _dos_setdrive (unsigned __drive, unsigned *__total);
 extern unsigned _dos_setfileattr (const char *__path, unsigned __attributes);
 /*

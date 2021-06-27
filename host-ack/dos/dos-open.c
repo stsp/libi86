@@ -27,55 +27,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_LIBI86_INTERNAL_DOS_H_
-#define _LIBI86_LIBI86_INTERNAL_DOS_H_
-
-#ifndef _LIBI86_COMPILING_
-# error "<libi86/internal/dos.h> should only be used when compiling libi86!"
+#define _LIBI86_COMPILING_
+#include <errno.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include "dos.h"
+#include "libi86/string.h"
+#include "libi86/internal/dos.h"
+#ifdef __IA16_FEATURE_PROTECTED_MODE
+# include "dpmi.h"
 #endif
 
-#include <stdbool.h>
-#include <i86.h>
-#include <libi86/internal/cdefs.h>
+#define POSIX_O_ACCMODE	((unsigned) (O_RDONLY | O_WRONLY | O_RDWR))
+#define DOS_BAD_ACCESS	12  /* MS-DOS error code for "invalid access" */
 
-_LIBI86_BEGIN_EXTERN_C
-
-static bool
-__libi86_msdos_drive_letter_p (char c)
+unsigned
+_dos_open (const char *path, unsigned mode, int *handle)
 {
-  switch (c)
-    {
-    case 'A':  case 'B':  case 'C':  case 'D':  case 'E':  case 'F':  case 'G':
-    case 'H':  case 'I':  case 'J':  case 'K':  case 'L':  case 'M':  case 'N':
-    case 'O':  case 'P':  case 'Q':  case 'R':  case 'S':  case 'T':  case 'U':
-    case 'V':  case 'W':  case 'X':  case 'Y':  case 'Z':
-    case 'a':  case 'b':  case 'c':  case 'd':  case 'e':  case 'f':  case 'g':
-    case 'h':  case 'i':  case 'j':  case 'k':  case 'l':  case 'm':  case 'n':
-    case 'o':  case 'p':  case 'q':  case 'r':  case 's':  case 't':  case 'u':
-    case 'v':  case 'w':  case 'x':  case 'y':  case 'z':
-      return true;
-    default:
-      return false;
-    }
+  /*
+   * In case the C library's O_RDONLY, O_WRONLY, &/or O_RDWR values do not
+   * match up with MS-DOS's...
+   */
+  if (O_RDONLY != 0 && (mode & POSIX_O_ACCMODE) == O_RDONLY)
+    mode = (mode & ~(POSIX_O_ACCMODE | 3U)) | 0U;
+  else if (O_WRONLY != 1 && (mode & POSIX_O_ACCMODE) == O_WRONLY)
+    mode = (mode & ~(POSIX_O_ACCMODE | 3U)) | 1U;
+  else if (O_RDWR != 2 && (mode & POSIX_O_ACCMODE) == O_RDWR)
+    mode = (mode & ~(POSIX_O_ACCMODE | 3U)) | 2U;
+
+  if (mode >> 8 != 0)
+    return __libi86_ret_really_set_errno (DOS_BAD_ACCESS);
+
+  return __libi86_msdos_do_open (path, mode, handle);
 }
-
-static bool
-__libi86_msdos_path_sep_p (char c)
-{
-  switch (c)
-    {
-    case '/':
-    case '\\':
-      return true;
-    default:
-      return false;
-    }
-}
-
-extern void __libi86_msdos_set_dta (void *new_dta);
-extern unsigned __libi86_msdos_do_findfirst (const char *path, unsigned attr);
-extern unsigned __libi86_msdos_do_findnext (void);
-extern unsigned __libi86_msdos_do_open (const char *path, unsigned mode,
-					int *handle);
-
-#endif
