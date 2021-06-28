@@ -32,9 +32,9 @@
 
 #ifdef __MSDOS__
 	.define	_bdos
-	.define	_bdosptr
+	.define	___libi86_bdosptr
 _bdos:
-_bdosptr:
+___libi86_bdosptr:
 	mov	bx, sp
 	push	si
 	push	di

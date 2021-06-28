@@ -36,8 +36,10 @@
 	TEXT_ (bdos.S.LIBI86)
 #ifdef __MSDOS__
 	.global	bdos
-	.global	bdosptr
+	.global	__libi86_bdosptr
+	.weak	bdosptr
 bdos:
+__libi86_bdosptr:
 bdosptr:
 	ENTER_BX_(6)
 	pushw	%si

@@ -64,7 +64,7 @@ find_t
 
 extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
 #ifdef _BORLANDC_SOURCE
-extern int bdosptr (int __dos_func, void *__dx, unsigned __al);
+_LIBI86_REDIRECT_3 (int, bdosptr, int, void *, unsigned, __libi86_bdosptr)
 #endif
 _LIBI86_BC_REDIRECT_2 (int, intdos, const union REGS *, union REGS *)
 _LIBI86_BC_REDIRECT_3 (int, intdosx, const union REGS *, union REGS *,
