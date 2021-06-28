@@ -642,3 +642,45 @@ main (int argc, char **argv)
 11 OK
 ]])
 AT_CLEANUP
+
+AT_SETUP([[_dos_read]])
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+#ifdef __MSDOS__
+  int fd = -1;
+  unsigned buf, r = 0xf6f6;
+
+  if (_dos_open (argv[0], O_RDONLY | O_NOINHERIT, &fd) != 0)
+    abort ();
+  puts ("1 OK");
+
+  if (fd == -1)
+    abort ();
+  puts ("2 OK");
+
+  if (_dos_read (fd, _CV_FP (&buf), sizeof buf, &r) != 0
+      || r != sizeof buf)
+    abort ();
+  puts ("3 OK");
+
+  if (_dos_close (fd) != 0)
+    abort ();
+  puts ("4 OK");
+
+  return 0;
+#else
+# error
+#endif
+}]],[[1 OK
+2 OK
+3 OK
+4 OK
+]])
+AT_CLEANUP
