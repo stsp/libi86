@@ -121,6 +121,10 @@ OBJS		= bios/bios-disk.o \
 		  dos/libi86-msdos-set-dta.o \
 		  dos/libi86-ret-set-errno.o \
 		  dos/libi86-ret-really-set-errno.o \
+		  dos/peek.o \
+		  dos/peekb.o \
+		  dos/poke.o \
+		  dos/pokeb.o \
 		  i86/disable.o \
 		  i86/enable.o \
 		  i86/int86.o \
