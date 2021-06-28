@@ -170,6 +170,7 @@ OBJS		= bios/bios-disk.o \
 		  dpmi/dpmiallocatedosmemoryblock.o \
 		  dpmi/dpmifreedosmemoryblock.o \
 		  dpmi/dpmigetdescriptor.o \
+		  dpmi/dpmigetsegmentbaseaddress.o \
 		  dpmi/dpmisegmenttodescriptor.o \
 		  dpmi/dpmisimulaterealmodeint.o \
 		  graph/clearscreen.o \

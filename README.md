@@ -140,6 +140,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |  IW | `_DPMIAllocateDOSMemoryBlock (`_paras_`);` | `int 0x31` function `0x0100`.  Returns a structure giving the real mode segment and protected mode selector for the DOS memory block.  On failure, returns `{ 0, 0 }`.
 |  IW | `_DPMIFreeDOSMemoryBlock (`_sel_`);` | `int 0x31` function `0x0101`.  Returns 0 on success, -1 on error.
 |  IW | `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);` | `int 0x31` function `0x000b`.  Returns 0 on success, -1 on error.
+|  IW | `_DPMIGetSegmentBaseAddress (`_sel_`);` | `int 0x31` function `0x0006`.  Returns _sel_'s base address on success; return value is undefined on error.
 |  IW | `_DPMISegmentToDescriptor (`_seg-para_`);` | `int 0x31` function `0x0002`.  On success, returns a protected-mode selector value for the real-mode segment _seg-para_`:0`.  On failure, returns a negative value.
 |  IW | `_DPMISimulateRealModeInterrupt (`_inter-no_`,` _reset_`,` _words-to-copy_`,` \*_call-struct_`);` | `int 0x31` function `0x0300`.  Returns 0 on success, -1 on error.  _words-to-copy_ should probably be 0.
 |     |

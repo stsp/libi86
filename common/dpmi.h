@@ -177,6 +177,17 @@ _DPMIGetDescriptor (uint16_t __sel, __libi86_fpv_t __desc)
   return __res;
 }
 
+_LIBI86_ALT_INLINE uint32_t
+_DPMIGetSegmentBaseAddress (uint16_t __sel)
+{
+  uint16_t __xx, __hi, __lo;
+  __asm volatile ("int {$}0x31"
+		  : "=a" (__xx), "=c" (__hi), "=d" (__lo)
+		  : "0" (0x0006U), "b" (__sel), "1" (~0U), "2" (~0U)
+		  : "cc");
+  return (uint32_t) __hi << 16 | __lo;
+}
+
 _LIBI86_ALT_INLINE int32_t
 _DPMISegmentToDescriptor (uint16_t __para)
 {
