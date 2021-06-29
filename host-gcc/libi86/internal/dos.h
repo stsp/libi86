@@ -34,7 +34,9 @@
 # error "<libi86/internal/dos.h> should only be used when compiling libi86!"
 #endif
 
+#include <inttypes.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <dpmi.h>
 #include <i86.h>
 #include <libi86/internal/cdefs.h>
@@ -47,6 +49,8 @@ __libi86_ret_really_set_errno (unsigned);
 extern struct find_t __far *__libi86_dpmi_set_dta (void);
 extern dpmi_dos_block __libi86_dpmi_low_dup_str (const char *);
 extern void __libi86_dpmi_low_free_str (dpmi_dos_block);
+extern unsigned __libi86_dpmi_pm_to_rm_buf (const void __far *, size_t, bool,
+					    _LIBI86_SEG_SELECTOR *, size_t *);
 #endif
 
 static inline bool

@@ -44,47 +44,56 @@ _dos_read (int fd, void __far *buf, unsigned count, unsigned *bytes)
 #ifdef __IA16_FEATURE_PROTECTED_MODE
   if (__DPMI_hosted () == 1)
     {
+      _LIBI86_SEG_SELECTOR ds;
+      size_t dx;
       rm_call_struct rmc;
       unsigned ax, res;
-      uint32_t buf_base = _DPMIGetSegmentBaseAddress (FP_SEG (buf));
 
       rmc.ax = 0x3f00U;
       rmc.bx = fd;
       rmc.cx = count;
 
-      if (buf_base % 0x10 != 0
-	  || buf_base > 0xfffffUL - FP_OFF (buf) - count)
+      switch (__libi86_dpmi_pm_to_rm_buf (buf, count, true, &ds, &dx))
 	{
-	  dpmi_dos_block buf_blk
-	    = _DPMIAllocateDOSMemoryBlock ((count ? count - 1 : 0) / 0x10 + 1);
+	case 0:
+	  {
+	    rmc.ds = ds;
+	    rmc.dx = dx;
+	    res = _DPMISimulateRealModeInterrupt (0x21, 0, 0, &rmc);
 
-	  if (! buf_blk.pm)
-	    return __libi86_ret_really_set_errno (ENOMEM);
+	    if (res)
+	      res = EIO;
+	    else if ((rmc.flags & 1) != 0)
+	      res = rmc.ax;
+	  }
+	  break;
 
-	  rmc.ds = buf_blk.rm;
-	  rmc.dx = 0;
-	  res = _DPMISimulateRealModeInterrupt (0x21, 0, 0, &rmc);
+	case 1:
+	  {
+	    dpmi_dos_block buf_blk = _DPMIAllocateDOSMemoryBlock
+				       ((count ? count - 1 : 0) / 0x10 + 1);
 
-	  if (res)
-	    res = EIO;
-	  else if ((rmc.flags & 1) != 0)
-	    res = rmc.ax;
+	    if (! buf_blk.pm)
+	      return __libi86_ret_really_set_errno (ENOMEM);
 
-	  if (res)
-	    _DPMIFreeDOSMemoryBlock (buf_blk.pm);
-	  else
-	    _fmemcpy (buf, MK_FP (buf_blk.pm, 0), ax);
-	}
-      else
-	{
-	  rmc.ds = (uint16_t) (buf_base >> 4);
-	  rmc.dx = FP_OFF (buf);
-	  res = _DPMISimulateRealModeInterrupt (0x21, 0, 0, &rmc);
+	    rmc.ds = buf_blk.rm;
+	    rmc.dx = 0;
+	    res = _DPMISimulateRealModeInterrupt (0x21, 0, 0, &rmc);
 
-	  if (res)
-	    res = EIO;
-	  else if ((rmc.flags & 1) != 0)
-	    res = rmc.ax;
+	    if (res)
+	      res = EIO;
+	    else if ((rmc.flags & 1) != 0)
+	      res = rmc.ax;
+
+	    if (res)
+	      _DPMIFreeDOSMemoryBlock (buf_blk.pm);
+	    else
+	      _fmemcpy (buf, MK_FP (buf_blk.pm, 0), ax);
+	  }
+	  break;
+
+	default:
+	  abort ();
 	}
 
       if (res)

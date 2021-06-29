@@ -29,6 +29,7 @@
 
 #define _LIBI86_COMPILING_
 #include <errno.h>
+#include <string.h>
 #include "dpmi.h"
 #include "libi86/string.h"
 
