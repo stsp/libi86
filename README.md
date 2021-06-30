@@ -1,6 +1,6 @@
 # libi86
 
-[![(Travis CI build status)](https://travis-ci.org/tkchia/libi86.svg?branch=master)](https://travis-ci.org/tkchia/libi86) · [![(GitLab pipeline status)](https://gitlab.com/tkchia/libi86/badges/master/pipeline.svg)](https://gitlab.com/tkchia/libi86/-/commits/master)
+[![(GitLab pipeline status)](https://gitlab.com/tkchia/libi86/badges/master/pipeline.svg)](https://gitlab.com/tkchia/libi86/-/commits/master)
 
 This is a code library which attempts to reimplement non-standard C library facilities (e.g. `<conio.h>`) commonly used in classical MS-DOS programs.
 
