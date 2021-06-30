@@ -108,6 +108,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-getfileattr.o \
 		  dos/dos-getvect.o \
 		  dos/dos-open.o \
+		  dos/dos-read.o \
 		  dos/dos-setdrive.o \
 		  dos/dos-setfileattr.o \
 		  dos/getdrive.o \
