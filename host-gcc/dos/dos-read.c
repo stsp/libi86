@@ -85,10 +85,10 @@ _dos_read (int fd, void __far *buf, unsigned count, unsigned *bytes)
 	    else if ((rmc.flags & 1) != 0)
 	      res = rmc.ax;
 
-	    if (res)
-	      _DPMIFreeDOSMemoryBlock (buf_blk.pm);
-	    else
+	    if (! res)
 	      _fmemcpy (buf, MK_FP (buf_blk.pm, 0), ax);
+
+	    _DPMIFreeDOSMemoryBlock (buf_blk.pm);
 	  }
 	  break;
 
