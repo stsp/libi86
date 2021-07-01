@@ -88,6 +88,8 @@ extern unsigned _dos_read (int __handle, __libi86_fpv_t __buf,
 			   unsigned __count, unsigned *__bytes);
 extern void _dos_setdrive (unsigned __drive, unsigned *__total);
 extern unsigned _dos_setfileattr (const char *__path, unsigned __attributes);
+extern unsigned _dos_write (int __handle, __libi86_fpcv_t __buf,
+			    unsigned __count, unsigned *__bytes);
 /*
  * Note:  The Open Watcom C Library Reference has
  *	int _getdrive (void);

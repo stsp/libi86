@@ -130,6 +130,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |   W | `_dos_setdrive (`_drive_`,` \*_total_`);`
 |   W | `_dos_setfileattr (`\*_path_`,` _attributes_`);`
 |   W | `_dos_setvect (`_intr-no_`,` \*_handler_`);` | Some versions of `gcc-ia16` may not understand the `interrupt` function attribute.  In that case, this function will not be supported.
+|   W | `_dos_write (`_handle_`,` \*_buf_`,` _count_`,` \*_bytes_`);`
 |   W | `_getdrive ();`
 |   B | `peek (`_segment_`,` _offset_`);`
 |   B | `peekb (`_segment_`,` _offset_`);`

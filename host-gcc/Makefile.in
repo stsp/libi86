@@ -156,6 +156,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-setdrive.o \
 		  dos/dos-setfileattr.o \
 		  dos/dos-setvect.o \
+		  dos/dos-write.o \
 		  dos/getdrive.o \
 		  dos/intdos.o \
 		  dos/intdosx.o \
