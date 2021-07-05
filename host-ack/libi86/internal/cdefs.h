@@ -52,6 +52,7 @@ __libi86_fpcc_t;
  * including the `inline' keyboard.  However --- if optimization is enabled
  * --- it does know how to inline calls to local functions into their callers.
  */
+#define _LIBI86_STATIC_INLINE	static
 #define _LIBI86_ALT_INLINE	static
 /*
  * Define a local (and most likely inline) 0-, 1-, 2-, 3, or 4-argument

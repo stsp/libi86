@@ -38,6 +38,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <libi86/internal/cdefs.h>
+#include <libi86/internal/farptr.h>
 #include <graph.h>
 #include <i86.h>
 
@@ -80,24 +81,49 @@ struct __libi86_vid_rccoord_t
   unsigned char x, y;
 };
 
+union __libi86_vid_rccoord_union_t
+{
+  struct __libi86_vid_rccoord_t pxy;
+  uint16_t w;
+};
+
 extern struct __libi86_vid_state_t __libi86_vid_state;
 
+_LIBI86_STATIC_INLINE uint16_t
+__libi86_peek_bios_ds (unsigned off)
+{
+  return (uint16_t) __libi86_peek (__libi86_bios_ds, off);
+}
+
+_LIBI86_STATIC_INLINE uint8_t
+__libi86_peekb_bios_ds (unsigned off)
+{
+  return (uint8_t) __libi86_peekb (__libi86_bios_ds, off);
+}
+
+_LIBI86_STATIC_INLINE void
+__libi86_poke_bios_ds (unsigned off, uint16_t val)
+{
+  __libi86_poke (__libi86_bios_ds, off, (int) val);
+}
+
 /* Get the BIOS's idea of the current display page. */
-static inline unsigned char
+_LIBI86_STATIC_INLINE unsigned char
 __libi86_vid_get_curr_pg (void)
 {
-  return * (volatile unsigned char __far *) MK_FP (__libi86_bios_ds, 0x0062U);
+  return __libi86_peekb_bios_ds (0x0062U);
 }
 
 /*
  * Get the BIOS's idea of the current cursor position for the display page
  * PG_NO.
  */
-static inline struct __libi86_vid_rccoord_t
+_LIBI86_STATIC_INLINE struct __libi86_vid_rccoord_t
 __libi86_vid_get_rccoord (unsigned char pg_no)
 {
-  return * (volatile struct __libi86_vid_rccoord_t __far *)
-	   MK_FP (__libi86_bios_ds, 0x0050U + 2 * pg_no);
+  union __libi86_vid_rccoord_union_t u;
+  u.w = __libi86_peek_bios_ds (0x0050U + 2 * pg_no);
+  return u.pxy;
 }
 
 /*
@@ -128,25 +154,68 @@ __libi86_vid_get_and_adjust_rccoord (unsigned char pg_no)
  * Change the BIOS's idea of the current cursor position for the display
  * page PG_NO, without actually moving the displayed cursor.
  */
-static inline void
+_LIBI86_STATIC_INLINE void
 __libi86_vid_set_rccoord_only (unsigned char pg_no,
 			       struct __libi86_vid_rccoord_t pxy)
 {
-  * (volatile struct __libi86_vid_rccoord_t __far *)
-    MK_FP (__libi86_bios_ds, 0x0050U + 2 * pg_no) = pxy;
+  union __libi86_vid_rccoord_union_t u;
+  u.pxy = pxy;
+  __libi86_poke_bios_ds (0x0050U + 2 * pg_no, u.w);
 }
 
+#ifndef __GNUC__
+extern uint32_t __libi86_vid_int_0x10 (uint16_t, uint16_t, uint16_t, uint16_t);
+#endif
+
 /* Really set the cursor position for the display page PG_NO. */
-static inline void
+_LIBI86_STATIC_INLINE void
 __libi86_vid_go_rccoord (unsigned char pg_no,
 			 struct __libi86_vid_rccoord_t pxy)
 {
+#ifdef __GNUC__
   unsigned xx1, xx2, xx3;
   __asm volatile ("int {$}0x10" : "=a" (xx1), "=b" (xx2), "=d" (xx3)
 				: "Rah" ((uint8_t) 0x02),
 				  "1" ((uint16_t) pg_no << 8),
 				  "2" (pxy)
 				: "cc", "cx", "memory");
+#else
+  union __libi86_vid_rccoord_union_t u;
+  u.pxy = pxy;
+  __libi86_vid_int_0x10 (0x0200U, (uint16_t) pg_no << 8, 0, u.w);
+#endif
+}
+
+/* Beep. */
+_LIBI86_STATIC_INLINE void
+__libi86_vid_beep (unsigned char pg_no, unsigned char attr)
+{
+#ifdef __GNUC__
+  unsigned xx1, xx2;
+  __asm volatile ("pushw %%bp; int $0x10; popw %%bp"
+		  : "=a" (xx1), "=b" (xx2)
+		  : "0" (0x0e00U | '\a'), "1" ((uint16_t) pg_no << 8 | attr)
+		  : "cc", "cx", "dx", "memory");
+#else
+  __libi86_vid_int_0x10 (0x0e00U | '\a', (uint16_t) pg_no << 8 | attr, 0, 0);
+#endif
+}
+
+/* Plot a character & attribute at the current cursor position in a page. */
+_LIBI86_STATIC_INLINE void
+__libi86_vid_plot_char (unsigned char pg_no, unsigned char ch,
+			unsigned char attr)
+{
+#ifdef __GNUC__
+  unsigned xx1, xx2, xx3;
+  __asm volatile ("int $0x10" : "=a" (xx1), "=b" (xx2), "=c" (xx3)
+			      : "Rah" ((unsigned char) 0x09), "Ral" (ch),
+				"1" ((uint16_t) pg_no << 8 | attr),
+				"2" (1U)
+			      : "cc", "dx", "memory");
+#else
+  __libi86_vid_int_0x10 (0x0900U | ch, (uint16_t) pg_no << 8 | attr, 1U, 0);
+#endif
 }
 
 /*
@@ -195,7 +264,6 @@ __libi86_vid_outmem_do (const char __far *text, size_t length,
   /* Display the characters.  Scroll the window as necessary. */
   while (length-- != 0)
     {
-      unsigned xx1, xx2, xx3;
       char ch = *text++;
 
       if (handle_cr_lf_p)
@@ -221,11 +289,7 @@ __libi86_vid_outmem_do (const char __far *text, size_t length,
 	      /* Remember to move the physical cursor before beeping... */
 	      __libi86_vid_go_rccoord (pg_no, pxy);
 	      /* Beep. */
-	      __asm volatile ("pushw %%bp; int $0x10; popw %%bp"
-			      : "=a" (xx1), "=b" (xx2)
-			      : "0" (0x0e00U | '\a'),
-				"1" ((uint16_t) pg_no << 8 | attr)
-			      : "cc", "cx", "dx", "memory");
+	      __libi86_vid_beep (pg_no, attr);
 	      /*
 	       * If the '\a' is the last character, we can just return.
 	       * Otherwise carry on.
@@ -243,12 +307,8 @@ __libi86_vid_outmem_do (const char __far *text, size_t length,
 	}
 
       __libi86_vid_set_rccoord_only (pg_no, pxy);
+      __libi86_vid_plot_char (pg_no, ch, attr);
 
-      __asm volatile ("int $0x10" : "=a" (xx1), "=b" (xx2), "=c" (xx3)
-				  : "Rah" ((unsigned char) 0x09), "Ral" (ch),
-				    "1" ((uint16_t) pg_no << 8 | attr),
-				    "2" (1U)
-				  : "cc", "dx", "memory");
       if (pxy.x >= x2z)
 	pxy = __libi86_vid_next_line (pxy);
       else
@@ -268,14 +328,19 @@ __libi86_vid_scroll (unsigned char sx1z, unsigned char sy1z,
   unsigned char func = scroll_up_p ? 0x06 : 0x07;
   unsigned char attr
     = __libi86_vid_state.graph_p ? 0 : __libi86_vid_state.attribute;
+#ifdef __GNUC__
   unsigned xx1, xx2, xx3, xx4;
-
   __asm volatile ("pushw %%bp; int $0x10; popw %%bp"
 		  : "=a" (xx1), "=b" (xx2), "=c" (xx3), "=d" (xx4)
 		  : "Rah" (func), "Ral" (rows),
 		    "1" ((unsigned) attr << 8),
 		    "c" (sy1z), "Rcl" (sx1z),
 		    "Rdh" (sy2z), "Rdl" (sx2z));
+#else
+  __libi86_vid_int_0x10 ((unsigned) func << 8 | rows, (unsigned) attr << 8,
+			 (unsigned) sy1z << 8 | sx1z,
+			 (unsigned) sy2z << 8 | sx2z);
+#endif
 }
 
 extern void __libi86_vid_bc_insdelline (bool);
