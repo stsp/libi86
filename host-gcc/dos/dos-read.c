@@ -47,8 +47,9 @@ _dos_read (int fd, void __far *buf, unsigned count, unsigned *bytes)
       _LIBI86_SEG_SELECTOR ds;
       size_t dx;
       rm_call_struct rmc;
-      unsigned ax, res;
+      unsigned res;
 
+      memset (&rmc, 0, sizeof rmc);
       rmc.ax = 0x3f00U;
       rmc.bx = fd;
       rmc.cx = count;
@@ -86,7 +87,7 @@ _dos_read (int fd, void __far *buf, unsigned count, unsigned *bytes)
 	      res = rmc.ax;
 
 	    if (! res)
-	      _fmemcpy (buf, MK_FP (buf_blk.pm, 0), ax);
+	      _fmemcpy (buf, MK_FP (buf_blk.pm, 0), rmc.ax);
 
 	    _DPMIFreeDOSMemoryBlock (buf_blk.pm);
 	  }
