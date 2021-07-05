@@ -65,6 +65,7 @@ __libi86_dpmi_set_dta (void)
 	}
     }
 
+  rmc.ss = rmc.sp = rmc.flags = 0;
   rmc.ax = 0x1a00U;
   rmc.ds = dta_blk.rm;
   rmc.dx = 0;
@@ -96,6 +97,7 @@ _dos_findfirst (const char *path, unsigned attr, struct find_t *buf)
       if (! path_blk.pm)
 	return errno;
 
+      rmc.ss = rmc.sp = rmc.flags = 0;
       rmc.ax = 0x4e00U;
       rmc.cx = attr;
       rmc.ds = path_blk.rm;

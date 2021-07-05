@@ -49,7 +49,7 @@ _dos_read (int fd, void __far *buf, unsigned count, unsigned *bytes)
       rm_call_struct rmc;
       unsigned res;
 
-      memset (&rmc, 0, sizeof rmc);
+      rmc.ss = rmc.sp = rmc.flags = 0;
       rmc.ax = 0x3f00U;
       rmc.bx = fd;
       rmc.cx = count;

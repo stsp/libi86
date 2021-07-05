@@ -49,6 +49,7 @@ _dos_write (int fd, const void __far *buf, unsigned count, unsigned *bytes)
       rm_call_struct rmc;
       unsigned ax, res;
 
+      rmc.ss = rmc.sp = rmc.flags = 0;
       rmc.ax = 0x4000U;
       rmc.bx = fd;
       rmc.cx = count;

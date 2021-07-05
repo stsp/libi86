@@ -70,6 +70,7 @@ _dos_open (const char *path, unsigned mode, int *handle)
       if (! path_blk.pm)
 	return errno;
 
+      rmc.ss = rmc.sp = rmc.flags = 0;
       rmc.ax = 0x3d00U | mode;
       rmc.ds = path_blk.rm;
       rmc.dx = 0;

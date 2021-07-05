@@ -52,6 +52,7 @@ _dos_findnext (struct find_t *buf)
 
       *dta = *buf;
 
+      rmc.ss = rmc.sp = rmc.flags = 0;
       rmc.ax = 0x4f00U;
       res = _DPMISimulateRealModeInterrupt (0x21, 0, 0, &rmc);
 
