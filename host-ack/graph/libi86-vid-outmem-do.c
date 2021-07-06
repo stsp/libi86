@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,48 +27,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* Internal implementation of _setvideomode (_DEFAULTMODE). */
-
-#include "libi86/internal/call-cvt.h"
-#include "libi86/internal/arch.h"
+#define _LIBI86_COMPILING_
+#define _LIBI86_COMPILING_VID_OUTMEM_DO_
 #include "graph.h"
-
-	.arch	i8086, jumps
-	.code16
-	.att_syntax prefix
-
-	TEXT_ (libi86_setvideomode_default.S.LIBI86)
-
-.Lctor_setvideomode:
-	movw	__libi86_vid_state, %ax	/* Get the initial video mode */
-	testw	$~0x007f, %ax		/* If this is not a classical video */
-	jz	.good			/* mode, then to simplify things we */
-	movb	$_TEXTC80, %al		/* treat _TEXTC80 as the "default"
-					   mode to return to (in fact Open
-					   Watcom does not really handle
-					   this case!) */
-.good:					/* If a classical mode, just */
-	movb	%al,	.Ldef_mode	/* remember the actual mode */
-	RET_ (0)
-
-	.global	__libi86_setvideomode_default
-__libi86_setvideomode_default:
-	movb	.Ldef_mode, %al
-	cbtw
-#ifdef __IA16_CALLCVT_REGPARMCALL
-	JMP_ (__libi86_setvideomode_nonsvga)
-#else
-	pushw	%ax
-	CALL_ (__libi86_setvideomode_nonsvga)
-# ifndef __IA16_CALLCVT_STDCALL
-	popw	%dx
-# endif
-	RET_ (0)
-#endif
-
-	.section .ctors.65435
-
-	.balign	2
-	TEXT_PTR_ (.Lctor_setvideomode)
-
-	.lcomm	.Ldef_mode, 1
+#include "libi86/internal/graph.h"

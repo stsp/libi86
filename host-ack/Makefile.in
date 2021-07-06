@@ -67,6 +67,7 @@ INSTALL_HEADERS	= bios.h \
 		  share.h \
 		  libi86/internal/cdefs.h \
 		  libi86/internal/farptr.h \
+		  libi86/internal/graph.h \
 		  $(CLEAN_HEADERS) \
 		  $(DISTCLEAN_HEADERS)
 CLEAN_HEADERS	= libi86/config.h
@@ -89,6 +90,7 @@ OBJS		= bios/bios-disk.o \
 		  conio/libi86-con-name.o \
 		  conio/libi86-con-out-fd.o \
 		  conio/libi86-ungetch-buf.o \
+		  conio/normvideo.o \
 		  conio/outp.o \
 		  conio/outpw.o \
 		  conio/putch.o \
@@ -127,6 +129,12 @@ OBJS		= bios/bios-disk.o \
 		  dos/peekb.o \
 		  dos/poke.o \
 		  dos/pokeb.o \
+		  graph/getvideomode.o \
+		  graph/libi86-bios-ds.o \
+		  graph/libi86-vid-int-0x10.o \
+		  graph/libi86-vid-outmem-do.o \
+		  graph/libi86-vid-state.o \
+		  graph/setvideomode.o \
 		  i86/disable.o \
 		  i86/enable.o \
 		  i86/int86.o \

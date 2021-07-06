@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2020--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -40,22 +40,80 @@
 
 struct __libi86_vid_state_t __libi86_vid_state;
 
+#ifdef __GNUC__
 /*
- * If normvideo () is used, then this routine is overridden in normvideo.c,
- * to determine the colour attribute to use for normvideo () calls.
+ * Under GCC, if normvideo () is used, then this routine is overridden in
+ * normvideo.c, to determine the colour attribute to use for normvideo ()
+ * calls.
  */
-#if defined __MEDIUM__ && __ia16__ - 0 < 20201106L
+# if defined __MEDIUM__ && __ia16__ - 0 < 20201106L
 __attribute__ ((far_section))  /* bug workaround */
-#endif
+# endif
 __attribute__ ((weak, noinline)) void
 __libi86_vid_get_norm_attr (void)
 {
 }
 
-__attribute__ ((regparmcall)) unsigned
-__libi86_con_mode_changed (unsigned mode)
+static inline unsigned char
+__libi86_vid_get_overscan (void)
 {
   unsigned ax, bx;
+  __asm volatile ("int $0x10" : "=a" (ax), "=b" (bx)
+			      : "0" (0x1008U), "1" (0)
+			      : "cc", "cx", "dx");
+  return (unsigned char) (bx >> 8);
+}
+
+static inline unsigned
+__libi86_vid_get_mode (void)
+{
+  unsigned ax, mode;
+  /*
+   * Try to retrieve the current mode via VESA.  If VESA fails, use the
+   * classical BIOS interface to get the video mode.
+   */
+  __asm volatile ("int $0x10" : "=a" (ax), "=b" (mode)
+			      : "0" (0x4f03U)
+			      : "cc", "cx", "dx");
+  if (ax == 0x004fU)
+    mode &= 0x7fffU;
+  else
+    {
+      __asm volatile ("int $0x10" : "=a" (mode)
+				  : "Rah" ((unsigned char) 0x0f)
+				  : "cc", "bx", "cx", "dx");
+      mode &= 0x007fU;
+    }
+  return mode;
+}
+#else  /* ! __GNUC__ */
+extern void __libi86_vid_get_norm_attr (void);
+
+static unsigned char
+__libi86_vid_get_overscan (void)
+{
+  return (unsigned char) (__libi86_vid_int_0x10 (0x1008U, 0, 0, 0) >> 24);
+}
+
+static unsigned
+__libi86_vid_get_mode (void)
+{
+  unsigned long res = __libi86_vid_int_0x10 (0x4f03U, 0, 0, 0);
+  unsigned mode;
+  if ((unsigned) res == 0x004fU)
+    mode = (res >> 16) & 0x7fffU;
+  else
+    mode = __libi86_vid_int_0x10 (0x0f00U, 0, 0, 0) & 0x007fU;
+  return mode;
+}
+#endif  /* ! __GNUC__ */
+
+#ifdef __GNUC__
+__attribute__ ((regparmcall))
+#endif
+unsigned
+__libi86_con_mode_changed (unsigned mode)
+{
   unsigned char max_x, max_y, ch;
   uint8_t mode_ctl_reg;
 
@@ -63,11 +121,10 @@ __libi86_con_mode_changed (unsigned mode)
   __libi86_vid_state.mode_num = mode;
 
   /* Record the maximum (x, y) coordinates in character units. */
-  max_x = * (volatile unsigned char __far *) MK_FP (__libi86_bios_ds, 0x004aU)
-	  - 1;
+  max_x = __libi86_peekb_bios_ds (0x004aU) - 1;
   __libi86_vid_state.max_x = max_x;
 
-  max_y = * (volatile unsigned char __far *) MK_FP (__libi86_bios_ds, 0x0084U);
+  max_y = __libi86_peekb_bios_ds (0x0084U);
   if (! max_y)
     max_y = 24;
   __libi86_vid_state.max_y = max_y;
@@ -137,8 +194,7 @@ __libi86_con_mode_changed (unsigned mode)
       break;
 
     default:
-      mode_ctl_reg
-	= * (volatile uint8_t __far *) MK_FP (__libi86_bios_ds, 0x0065U);
+      mode_ctl_reg = __libi86_peekb_bios_ds (0x0065U);
       __libi86_vid_state.graph_p = ((mode_ctl_reg & 0x02) != 0);
     }
 
@@ -152,10 +208,7 @@ __libi86_con_mode_changed (unsigned mode)
   __libi86_vid_get_norm_attr ();
 
   /* Read the current screen border colour, if possible.  If not, assume 0. */
-  __asm volatile ("int $0x10" : "=a" (ax), "=b" (bx)
-			      : "0" (0x1008U), "1" (0)
-			      : "cc", "cx", "dx");
-  __libi86_vid_state.border = bx >> 8;
+  __libi86_vid_state.border = __libi86_vid_get_overscan ();
 
   /* Reset the text window. */
   __libi86_vid_state.x1z = __libi86_vid_state.y1z = 0;
@@ -169,28 +222,17 @@ __libi86_con_mode_changed (unsigned mode)
  * Note: this constructor must run before __libi86_setvideomode_default ()
  * is primed.
  */
-__attribute__ ((constructor (99))) static void
+#ifdef __GNUC__
+__attribute__ ((constructor (99))) static
+#endif
+void
 __libi86_vid_state_init (void)
 {
-  unsigned ax, mode;
-
-  /*
-   * Try to retrieve the current mode via VESA.  If VESA fails, use the
-   * classical BIOS interface to get the video mode.
-   */
-  __asm volatile ("int $0x10" : "=a" (ax), "=b" (mode)
-			      : "0" (0x4f03U)
-			      : "cc", "cx", "dx");
-  if (ax == 0x004f)
-    mode &= 0x7fffU;
-  else
-    {
-      __asm volatile ("int $0x10" : "=a" (mode)
-				  : "Rah" ((unsigned char) 0x0f)
-				  : "cc", "bx", "cx", "dx");
-      mode &= 0x007fU;
-    }
-
-  /* Update the mode cache. */
+  unsigned mode;
+#ifndef __GNUC__
+  if (__libi86_vid_state.max_y)
+    return;
+#endif
+  mode = __libi86_vid_get_mode ();
   __libi86_con_mode_changed (mode);
 }

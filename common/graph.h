@@ -109,16 +109,14 @@ extern short _settextcolor (short __pixval);
 extern void _settextwindow (short __row1, short __col1,
 			    short __row2, short __col2);
 
-/* Used by the inline version of _setvideomode (.) below.  */
+# if ! defined __GNUC__ || ! defined __OPTIMIZE__
+extern short _setvideomode (short);
+# else  /* __GNUC__ && __OPTIMIZE__ */
 extern short __libi86_setvideomode (short);
 extern short __libi86_setvideomode_default (void);
-extern short __libi86_setvideomode_mdpa_cga (short);
 extern short __libi86_setvideomode_nonsvga (short);
 extern short __libi86_setvideomode_svga (short);
 
-# ifndef __OPTIMIZE__
-extern short _setvideomode (short);
-# else  /* __OPTIMIZE__ */
 __attribute__ ((__always_inline__)) static short
 __libi86_setvideomode_inline_dispatch (short mode)
 {
@@ -148,7 +146,7 @@ _setvideomode (short mode)
     return __libi86_setvideomode (mode);
 }
 #   endif
-# endif  /* __OPTIMIZE__ */
+# endif  /* __GNUC__ && __OPTIMIZE__ */
 
 _LIBI86_END_EXTERN_C
 #endif  /* ! __ASSEMBLER__ */

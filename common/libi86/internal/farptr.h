@@ -116,6 +116,16 @@ extern int __libi86_peek (unsigned __s, unsigned __o);
 extern char __libi86_peekb (unsigned __s, unsigned __o);
 extern void __libi86_poke (unsigned __s, unsigned __o, int __v);
 extern void __libi86_pokeb (unsigned __s, unsigned __o, char __v);
+
+# ifdef _LIBI86_COMPILING_
+static char
+__libi86_peekfpbi (__libi86_fpcc_t *__pp)
+{
+  unsigned __s = __pp->__seg_;
+  unsigned __o = __pp->__off_++;
+  return __libi86_peekb (__s, __o);
+}
+# endif  /* _LIBI86_COMPILING_ */
 #endif  /* ! __FAR && ! __cplusplus */
 
 _LIBI86_END_EXTERN_C

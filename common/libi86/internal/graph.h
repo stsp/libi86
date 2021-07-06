@@ -131,7 +131,7 @@ __libi86_vid_get_rccoord (unsigned char pg_no)
  * PG_NO.  If this cursor position is outside the current text window, return
  * instead the position for the window's top left corner.
  */
-static inline struct __libi86_vid_rccoord_t
+_LIBI86_STATIC_INLINE struct __libi86_vid_rccoord_t
 __libi86_vid_get_and_adjust_rccoord (unsigned char pg_no)
 {
   unsigned char x1z = __libi86_vid_state.x1z;
@@ -222,7 +222,7 @@ __libi86_vid_plot_char (unsigned char pg_no, unsigned char ch,
  * Update the given cursor position to scroll to the next line in the text
  * window.  Scroll the window area up if necessary.
  */
-static inline struct __libi86_vid_rccoord_t
+_LIBI86_STATIC_INLINE struct __libi86_vid_rccoord_t
 __libi86_vid_next_line (struct __libi86_vid_rccoord_t pxy)
 {
   if (pxy.y < __libi86_vid_state.y2z)
@@ -236,9 +236,21 @@ __libi86_vid_next_line (struct __libi86_vid_rccoord_t pxy)
 /*
  * Common code for implementing _outmem (, ), _outtext (.), & Borland-like
  * putch (.), cputs (.), etc.
+ *
+ * Under GCC, this is an inline function which is transformed into
+ * specialized code for _outmem (, ) etc.
+ *
+ * Under ACK, this will be compiled as a normal out-of-line function, in a
+ * .c source file that defines the macro _LIBI86_COMPILING_VID_OUTMEM_DO_.
  */
-static inline void
-__libi86_vid_outmem_do (const char __far *text, size_t length,
+#if ! defined __GNUC__ && ! defined _LIBI86_COMPILING_VID_OUTMEM_DO_
+extern void __libi86_vid_outmem_do (__libi86_fpcc_t, size_t, bool, bool);
+#else  /* __GNUC__ || _LIBI86_COMPILING_VID_OUTMEM_DO_ */
+# ifdef __GNUC__
+static inline
+# endif
+void
+__libi86_vid_outmem_do (__libi86_fpcc_t text, size_t length,
 			bool handle_cr_lf_p, bool handle_bel_bs_p)
 {
   unsigned char pg_no;
@@ -264,7 +276,11 @@ __libi86_vid_outmem_do (const char __far *text, size_t length,
   /* Display the characters.  Scroll the window as necessary. */
   while (length-- != 0)
     {
+# ifdef __FAR
       char ch = *text++;
+# else
+      char ch = __libi86_peekfpbi (&text);
+# endif
 
       if (handle_cr_lf_p)
 	{
@@ -318,9 +334,10 @@ __libi86_vid_outmem_do (const char __far *text, size_t length,
   /* Move the cursor to where it should now be. */
   __libi86_vid_go_rccoord (pg_no, pxy);
 }
+#endif  /* __GNUC__ || _LIBI86_COMPILING_VID_OUTMEM_DO_ */
 
 /* Scroll or clear an area of text characters on the current screen page. */
-static inline void
+_LIBI86_STATIC_INLINE void
 __libi86_vid_scroll (unsigned char sx1z, unsigned char sy1z,
 		     unsigned char sx2z, unsigned char sy2z,
 		     unsigned char rows, bool scroll_up_p)
@@ -343,6 +360,9 @@ __libi86_vid_scroll (unsigned char sx1z, unsigned char sy1z,
 #endif
 }
 
+#ifndef __GNUC__
+extern void __libi86_vid_state_init (void);
+#endif
 extern void __libi86_vid_bc_insdelline (bool);
 extern void __libi86_vid_bc_outmem_do (const char *, size_t);
 

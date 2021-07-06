@@ -1,5 +1,6 @@
+#
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,12 +28,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define _LIBI86_COMPILING_
-#include <inttypes.h>
-#include "libi86/internal/graph.h"
+#include "libi86/internal/sect.h"
 
-short
-_getvideomode (void)
-{
-  return __libi86_vid_state.mode_num;
-}
+/*
+ * Call int 0x10 with the given values of ax, bx, cx, & dx.  Return the
+ * resulting value of bx:ax.
+ */
+
+	.define	___libi86_vid_int_0x10
+___libi86_vid_int_0x10:
+	mov	bx, sp
+	mov	ax, 2(bx)
+	mov	cx, 6(bx)
+	mov	dx, 8(bx)
+	mov	bx, 4(bx)
+	push	bp
+	int	0x10
+	pop	bp
+	mov	dx, bx
+	ret

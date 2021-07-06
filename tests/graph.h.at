@@ -32,7 +32,10 @@ AT_LIBI86_CHECK(dnl
 [[#include <stdio.h>
 #include <stdlib.h>
 #include <graph.h>
-__attribute__ ((noinline)) static void
+#ifdef __GNUC__
+__attribute__ ((noinline))
+#endif
+static void
 do_abort (unsigned line, short r)
 {
   _setvideomode (_DEFAULTMODE);

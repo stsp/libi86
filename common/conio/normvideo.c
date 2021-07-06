@@ -29,7 +29,7 @@
 
 #define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
-#include <inttypes.h>
+#include <stdint.h>
 #include "conio.h"
 #include "libi86/internal/graph.h"
 
@@ -57,10 +57,16 @@ __libi86_vid_get_norm_attr (void)
   if (__libi86_vid_state.graph_p)
     __libi86_vid_norm_attr = 0x07;
   else
+#ifdef __GNUC__
     __asm volatile ("int $0x10" : "=Rah" (__libi86_vid_norm_attr), "=Ral" (ch),
 				  "=b" (bx)
 				: "0" ((unsigned char) 0x08),
 				  "2" ((unsigned) __libi86_vid_get_curr_pg ()
 				       << 8)
 				: "cc", "cx", "dx");
+#else
+  __libi86_vid_norm_attr
+    = (uint8_t) __libi86_vid_int_0x10
+		  (0x0800U, (unsigned) __libi86_vid_get_curr_pg () << 8, 0, 0);
+#endif
 }
