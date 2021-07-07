@@ -33,12 +33,12 @@
 
 extern unsigned __libi86_con_mode_changed (unsigned);
 
-static unsigned char def_mode = ~(unsigned char) 0;
+static unsigned char def_mode = 0xffU;
 
 static void
 __libi86_vid_def_mode_init (void)
 {
-  if (def_mode == ~(unsigned char) 0)
+  if (def_mode == 0xffU)
     {
       unsigned mode = __libi86_vid_state.mode_num;
       if ((mode & ~0x007fU) != 0)
