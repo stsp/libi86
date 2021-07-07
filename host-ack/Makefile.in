@@ -129,6 +129,8 @@ OBJS		= bios/bios-disk.o \
 		  dos/peekb.o \
 		  dos/poke.o \
 		  dos/pokeb.o \
+		  graph/clearscreen.o \
+		  graph/gettextposition.o \
 		  graph/getvideomode.o \
 		  graph/libi86-bios-ds.o \
 		  graph/libi86-vid-int-0x10.o \
@@ -138,6 +140,9 @@ OBJS		= bios/bios-disk.o \
 		  graph/outmem.o \
 		  graph/outtext.o \
 		  graph/scrolltextwindow.o \
+		  graph/settextcolor.o \
+		  graph/settextposition.o \
+		  graph/settextwindow.o \
 		  graph/setvideomode.o \
 		  i86/disable.o \
 		  i86/enable.o \

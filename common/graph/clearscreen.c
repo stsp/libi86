@@ -28,32 +28,41 @@
  */
 
 #define _LIBI86_COMPILING_
-#include <inttypes.h>
+#include <stdint.h>
 #include "libi86/internal/graph.h"
 
-struct rccoord
-_gettextposition (void)
+void
+_clearscreen (short area)
 {
-  unsigned char x1z, x2z, y1z, y2z;
-  struct __libi86_vid_rccoord_t pxy;
-  struct rccoord coord;
-
-  pxy = __libi86_vid_get_rccoord (__libi86_vid_get_curr_pg ());
-
-  x1z = __libi86_vid_state.x1z;
-  y1z = __libi86_vid_state.y1z;
-  x2z = __libi86_vid_state.x2z;
-  y2z = __libi86_vid_state.y2z;
-
-  if (pxy.x < x1z || pxy.x > x2z || pxy.y < y1z || pxy.y > y2z)
+  switch (area)
     {
-      coord.row = coord.col = 1;
-    }
-  else
-    {
-      coord.row = (short) pxy.y - y1z + 1;
-      coord.col = (short) pxy.x - x1z + 1;
-    }
+    case _GWINDOW:
+      __libi86_vid_scroll (__libi86_vid_state.x1z, __libi86_vid_state.y1z,
+			   __libi86_vid_state.x2z, __libi86_vid_state.y2z,
+			   0, true);
+      _settextposition (1, 1);
+      break;
 
-  return coord;
+    case _GVIEWPORT:
+      /*
+       * libi86 does not really support specifying a graphics viewport yet,
+       * but we can kind of fake a default viewport.
+       *
+       * Text modes have no graphics viewport at all, so in text modes,
+       * _clearscreen (_GVIEWPORT) should do nothing.  In graphics modes,
+       * though, _clearscreen (_GVIEWPORT) should clear the whole screen,
+       * but not reset the cursor position.
+       */
+      if (__libi86_vid_state.graph_p)
+	__libi86_vid_scroll (0, 0,
+			   __libi86_vid_state.max_x, __libi86_vid_state.max_y,
+			   0, true);
+      return;
+
+    default:
+      __libi86_vid_scroll (0, 0,
+			   __libi86_vid_state.max_x, __libi86_vid_state.max_y,
+			   0, true);
+      _settextposition (1, 1);
+    }
 }

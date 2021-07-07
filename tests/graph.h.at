@@ -154,6 +154,7 @@ AT_CLEANUP
 AT_SETUP([[_clearscreen, _gettextposition, _settextwindow]])
 AT_LIBI86_CHECK_CONSOLE(dnl
 [[#include <graph.h>
+#include <i86.h>
 #include <stdlib.h>
 int
 main (void)
@@ -162,7 +163,7 @@ main (void)
   if (coord.row != 1 || coord.col != 1)
     abort ();
 
-  _outtext ("hello\n...");
+  _outtext (_CV_FP ("hello\n..."));
   coord = _gettextposition ();
   if (coord.row != 2 || coord.col != 4)
     abort ();
@@ -173,7 +174,7 @@ main (void)
   if (coord.row != 2 || coord.col != 4)
     abort ();
 
-  _outtext ("world!");
+  _outtext (_CV_FP ("world!"));
   coord = _gettextposition ();
   if (coord.row != 2 || coord.col != 10)
     abort ();
@@ -183,7 +184,7 @@ main (void)
   if (coord.row != 1 || coord.col != 1)
     abort ();
 
-  _outtext ("world?");
+  _outtext (_CV_FP ("world?"));
   coord = _gettextposition ();
   if (coord.row != 2 || coord.col != 2)
     abort ();
@@ -197,7 +198,7 @@ main (void)
   if (coord.row != 1 || coord.col != 1)
     abort ();
 
-  _outtext ("world-@");
+  _outtext (_CV_FP ("world-@"));
   coord = _gettextposition ();
   if (coord.row != 2 || coord.col != 3)
     abort ();

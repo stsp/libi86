@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2020--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -28,7 +28,7 @@
  */
 
 #define _LIBI86_COMPILING_
-#include <inttypes.h>
+#include <stdint.h>
 #include "libi86/internal/graph.h"
 
 struct rccoord
@@ -48,7 +48,9 @@ _settextposition (short row, short col)
       --col;
       if (row <= y2z - y1z && col <= x2z - x1z)
 	{
-	  struct __libi86_vid_rccoord_t npxy = { col + x1z, row + y1z };
+	  struct __libi86_vid_rccoord_t npxy;
+	  npxy.x = col + x1z;
+	  npxy.y = row + y1z;
 	  __libi86_vid_go_rccoord (__libi86_vid_get_curr_pg (), npxy);
 	}
     }

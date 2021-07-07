@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2020--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -34,6 +34,10 @@ void
 _settextwindow (short y1, short x1, short y2, short x2)
 {
   short x1z, y1z, x2z, y2z;
+
+#ifndef __GNUC__
+  __libi86_vid_state_init ();
+#endif
 
   if (x1 < 1 || y1 < 1 || x1 > x2 || y1 > y2)
     return;

@@ -285,6 +285,7 @@ AT_SETUP([[getpass]])
 AT_LIBI86_CHECK_CONSOLE(dnl
 [[#define _BORLANDC_SOURCE
 #include <conio.h>
+#include <stdlib.h>
 #include <string.h>
 int
 main (void)
