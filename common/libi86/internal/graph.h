@@ -126,29 +126,11 @@ __libi86_vid_get_rccoord (unsigned char pg_no)
   return u.pxy;
 }
 
-/*
- * Get the BIOS's idea of the current cursor position for the display page
- * PG_NO.  If this cursor position is outside the current text window, return
- * instead the position for the window's top left corner.
- */
-_LIBI86_STATIC_INLINE struct __libi86_vid_rccoord_t
-__libi86_vid_get_and_adjust_rccoord (unsigned char pg_no)
-{
-  unsigned char x1z = __libi86_vid_state.x1z;
-  unsigned char y1z = __libi86_vid_state.y1z;
-  unsigned char x2z = __libi86_vid_state.x2z;
-  unsigned char y2z = __libi86_vid_state.y2z;
-
-  struct __libi86_vid_rccoord_t pxy = __libi86_vid_get_rccoord (pg_no);
-
-  if (pxy.x < x1z || pxy.x > x2z || pxy.y < y1z || pxy.y > y2z)
-    {
-      pxy.x = x1z;
-      pxy.y = y1z;
-    }
-
-  return pxy;
-}
+extern struct __libi86_vid_rccoord_t __libi86_vid_get_and_adjust_rccoord
+				       (unsigned char pg_no);
+#ifndef __GNUC__
+extern void __libi86_vid_state_init (void);
+#endif
 
 /*
  * Change the BIOS's idea of the current cursor position for the display
@@ -261,6 +243,10 @@ __libi86_vid_outmem_do (__libi86_fpcc_t text, size_t length,
   if (! length)
     return;
 
+# ifndef __GNUC__
+  __libi86_vid_state_init ();
+# endif
+
   /* Get our current text window & output text colour attribute. */
   x1z = __libi86_vid_state.x1z;
   x2z = __libi86_vid_state.x2z;
@@ -354,15 +340,13 @@ __libi86_vid_scroll (unsigned char sx1z, unsigned char sy1z,
 		    "c" (sy1z), "Rcl" (sx1z),
 		    "Rdh" (sy2z), "Rdl" (sx2z));
 #else
+  __libi86_vid_state_init ();
   __libi86_vid_int_0x10 ((unsigned) func << 8 | rows, (unsigned) attr << 8,
 			 (unsigned) sy1z << 8 | sx1z,
 			 (unsigned) sy2z << 8 | sx2z);
 #endif
 }
 
-#ifndef __GNUC__
-extern void __libi86_vid_state_init (void);
-#endif
 extern void __libi86_vid_bc_insdelline (bool);
 extern void __libi86_vid_bc_outmem_do (const char *, size_t);
 
