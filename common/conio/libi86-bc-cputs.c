@@ -27,20 +27,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * Internal routine used by Borland-like cputs (.), putch (.), vcprintf (...),
- * etc.
- */
-
 #define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
-#include <stdlib.h>
 #include <string.h>
-#include "libi86/string.h"
+#include "conio.h"
+#include "i86.h"
 #include "libi86/internal/graph.h"
 
-void
-__libi86_vid_bc_outmem_do (const char *text, size_t length)
+int
+__libi86_bc_cputs (const char *text)
 {
-  __libi86_vid_outmem_do (text, length, true, true);
+  __libi86_vid_bc_outmem_do (text, strlen (text));
+  return 0;
 }

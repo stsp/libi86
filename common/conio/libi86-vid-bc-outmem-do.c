@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2020--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,15 +27,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+ * Internal routine used by Borland-like cputs (.), putch (.), vcprintf (...),
+ * etc.
+ */
+
 #define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
+#include <stdlib.h>
 #include <string.h>
-#include "conio.h"
+#include "libi86/string.h"
 #include "libi86/internal/graph.h"
 
-int
-cputs (const char *text)
+void
+__libi86_vid_bc_outmem_do (const char *text, size_t length)
 {
-  __libi86_vid_bc_outmem_do (text, strlen (text));
-  return 0;
+  __libi86_vid_outmem_do (_CV_FP (text), length, true, true);
 }

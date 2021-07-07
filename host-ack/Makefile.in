@@ -86,9 +86,13 @@ OBJS		= bios/bios-disk.o \
 		  conio/inp.o \
 		  conio/inpw.o \
 		  conio/kbhit.o \
+		  conio/libi86-bc-cprintf.o \
+		  conio/libi86-bc-cputs.o \
+		  conio/libi86-bc-vcprintf.o \
 		  conio/libi86-con-in-fd.o \
 		  conio/libi86-con-name.o \
 		  conio/libi86-con-out-fd.o \
+		  conio/libi86-vid-bc-outmem-do.o \
 		  conio/libi86-ungetch-buf.o \
 		  conio/normvideo.o \
 		  conio/outp.o \

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2020--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -35,11 +35,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "conio.h"
+#include "i86.h"
 #include "libi86/internal/graph.h"
 #include "libi86/internal/acconfig.h"
 
 int
-vcprintf (const char *fmt, va_list ap)
+__libi86_bc_vcprintf (const char *fmt, va_list ap)
 {
   va_list ap_2;
   int res;
@@ -48,7 +49,11 @@ vcprintf (const char *fmt, va_list ap)
    * Find out how many characters we will be writing, so that we can allocate
    * a large enough buffer.
    */
+#if __STDC_VERSION__ - 0 >= 199901L
   va_copy (ap_2, ap);
+#else
+  ap_2 = ap;
+#endif
   res = vsnprintf (NULL, (size_t) 0, fmt, ap_2);
   va_end (ap_2);
 
@@ -61,12 +66,22 @@ vcprintf (const char *fmt, va_list ap)
    */
   {
     size_t count = (size_t) res + 1;
+#if __STDC_VERSION__ - 0 >= 199901L
     char buf[count];
+#else
+    char *buf = malloc (count);
+    if (! buf)
+      return -1;
+#endif
 
     res = vsnprintf (buf, count, fmt, ap);
 
     if (res > 0)
       __libi86_vid_bc_outmem_do (buf, (size_t) res);
+
+#if __STDC_VERSION__ - 0 < 199901L
+    free (buf);
+#endif
   }
 
   return res;
