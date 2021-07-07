@@ -189,6 +189,7 @@ OBJS		= bios/bios-disk.o \
 		  graph/libi86-setvideomode-default.o \
 		  graph/libi86-setvideomode-nonsvga.o \
 		  graph/libi86-setvideomode-svga.o \
+		  graph/libi86-vid-get-and-adjust-rccoord.o \
 		  graph/libi86-vid-state.o \
 		  i86/delay.o \
 		  i86/disable.o \

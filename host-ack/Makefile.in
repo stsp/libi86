@@ -133,7 +133,11 @@ OBJS		= bios/bios-disk.o \
 		  graph/libi86-bios-ds.o \
 		  graph/libi86-vid-int-0x10.o \
 		  graph/libi86-vid-outmem-do.o \
+		  graph/libi86-vid-get-and-adjust-rccoord.o \
 		  graph/libi86-vid-state.o \
+		  graph/outmem.o \
+		  graph/outtext.o \
+		  graph/scrolltextwindow.o \
 		  graph/setvideomode.o \
 		  i86/disable.o \
 		  i86/enable.o \
@@ -233,6 +237,11 @@ $(BSP): $(OBJS)
 %.o: %.c $(HEADERS)
 	mkdir -p $(@D)
 	$(CC) $(CPPFLAGS) -U_BORLANDC_SOURCE $(CFLAGS) -c -o $@ $<
+
+# For debugging.
+%.s: %.c $(HEADERS)
+	mkdir -p $(@D)
+	$(CC) $(CPPFLAGS) -U_BORLANDC_SOURCE $(CFLAGS) -c.s -o $@ $<
 
 # We need this rule to override the next rule in case we do have a separate
 # conio/libi86-bc-*.c source file.

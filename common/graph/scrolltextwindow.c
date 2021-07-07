@@ -28,12 +28,39 @@
  */
 
 #define _LIBI86_COMPILING_
-#include <inttypes.h>
-#include "libi86/string.h"
+#include <stdint.h>
 #include "libi86/internal/graph.h"
 
 void
-_outtext (const char __far *text)
+_scrolltextwindow (short rows)
 {
-  __libi86_vid_outmem_do (text, _fstrlen (text), true, false);
+  unsigned char x1z, x2z, y1z, y2z;
+  short hm1;
+  bool scroll_up_p;
+
+  if (! rows)
+    return;
+
+  x1z = __libi86_vid_state.x1z;
+  y1z = __libi86_vid_state.y1z;
+  x2z = __libi86_vid_state.x2z;
+  y2z = __libi86_vid_state.y2z;
+
+  hm1 = y2z - y1z;  /* window height minus 1 */
+  if (rows > 0)
+    {
+      scroll_up_p = true;
+      if (rows > hm1)
+	rows = 0;
+    }
+  else
+    {
+      scroll_up_p = false;
+      if (rows < -hm1)
+	rows = 0;
+      else
+	rows = -rows;
+    }
+
+  __libi86_vid_scroll (x1z, y1z, x2z, y2z, rows, scroll_up_p);
 }

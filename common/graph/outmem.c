@@ -28,11 +28,11 @@
  */
 
 #define _LIBI86_COMPILING_
-#include <inttypes.h>
+#include <stdint.h>
 #include "libi86/internal/graph.h"
 
 void
-_outmem (const char __far *text, short length)
+_outmem (__libi86_fpcc_t text, short length)
 {
   __libi86_vid_outmem_do (text, (size_t) length, false, false);
 }

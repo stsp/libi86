@@ -124,12 +124,13 @@ AT_CLEANUP
 AT_SETUP([[_outmem, _scrolltextwindow]])
 AT_LIBI86_CHECK_CONSOLE(dnl
 [[#include <graph.h>
+#include <i86.h>
 int
 main (void)
 {
-  _outmem ("hello\a", 6);
+  _outmem (_CV_FP ("hello\a"), 6);
   _scrolltextwindow (_GSCROLLDOWN);
-  _outmem ("world \b!\n", 9);
+  _outmem (_CV_FP ("world \b!\n"), 9);
   return 0;
 }]],[[      world ~010!~012
 hello~007
@@ -139,10 +140,11 @@ AT_CLEANUP
 AT_SETUP([[_outtext]])
 AT_LIBI86_CHECK_CONSOLE(dnl
 [[#include <graph.h>
+#include <i86.h>
 int
 main (void)
 {
-  _outtext ("hello\a\nWorld?\b!\rw");
+  _outtext (_CV_FP ("hello\a\nWorld?\b!\rw"));
   return 0;
 }]],[[hello~007
 world?~010!
