@@ -98,6 +98,7 @@ OBJS		= bios/bios-disk.o \
 		  conio/outp.o \
 		  conio/outpw.o \
 		  conio/putch.o \
+		  conio/textmode.o \
 		  conio/ungetch.o \
 		  conio/vcprintf.o \
 		  dos/bdos.o \
