@@ -79,10 +79,13 @@ OBJS		= bios/bios-disk.o \
 		  bios/bios-keybrd.o \
 		  bios/bios-memsize.o \
 		  bios/bios-timeofday.o \
+		  conio/clreol.o \
+		  conio/clrscr.o \
 		  conio/cprintf.o \
 		  conio/cputs.o \
 		  conio/getch.o \
 		  conio/getche.o \
+		  conio/gotoxy.o \
 		  conio/inp.o \
 		  conio/inpw.o \
 		  conio/kbhit.o \
@@ -101,6 +104,7 @@ OBJS		= bios/bios-disk.o \
 		  conio/textmode.o \
 		  conio/ungetch.o \
 		  conio/vcprintf.o \
+		  conio/window.o \
 		  dos/bdos.o \
 		  dos/dos-allocmem.o \
 		  dos/dos-close.o \

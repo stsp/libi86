@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2020--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -29,15 +29,11 @@
 
 #define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
-#include <inttypes.h>
+#include "conio.h"
 #include "libi86/internal/graph.h"
 
 void
-clreol (void)
+window (int left, int top, int right, int bottom)
 {
-  unsigned char pg_no = __libi86_vid_get_curr_pg ();
-  struct __libi86_vid_rccoord_t pxy
-    = __libi86_vid_get_and_adjust_rccoord (pg_no);
-
-  __libi86_vid_scroll (pxy.x, pxy.y, __libi86_vid_state.x2z, pxy.y, 0, true);
+  _settextwindow (top, left, bottom, right);
 }

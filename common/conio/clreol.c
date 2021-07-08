@@ -29,11 +29,19 @@
 
 #define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
-#include "conio.h"
 #include "libi86/internal/graph.h"
 
-__attribute__ ((weak)) void
-window (int left, int top, int right, int bottom)
+void
+clreol (void)
 {
-  _settextwindow (top, left, bottom, right);
+  unsigned char pg_no = __libi86_vid_get_curr_pg ();
+  struct __libi86_vid_rccoord_t pxy;
+
+#ifndef __GNUC__
+  __libi86_vid_state_init ();
+#endif
+
+  pxy = __libi86_vid_get_and_adjust_rccoord (pg_no);
+
+  __libi86_vid_scroll (pxy.x, pxy.y, __libi86_vid_state.x2z, pxy.y, 0, true);
 }
