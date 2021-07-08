@@ -91,6 +91,7 @@ OBJS		= bios/bios-disk.o \
 		  conio/kbhit.o \
 		  conio/libi86-bc-cprintf.o \
 		  conio/libi86-bc-cputs.o \
+		  conio/libi86-bc-putch.o \
 		  conio/libi86-bc-vcprintf.o \
 		  conio/libi86-con-in-fd.o \
 		  conio/libi86-con-name.o \
@@ -104,6 +105,8 @@ OBJS		= bios/bios-disk.o \
 		  conio/textmode.o \
 		  conio/ungetch.o \
 		  conio/vcprintf.o \
+		  conio/wherex.o \
+		  conio/wherey.o \
 		  conio/window.o \
 		  dos/bdos.o \
 		  dos/dos-allocmem.o \

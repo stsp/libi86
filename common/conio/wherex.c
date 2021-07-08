@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2020--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,17 +27,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
-#include <string.h>
-#include "conio.h"
-#include "libi86/string.h"
 #include "libi86/internal/graph.h"
 
 int
-putch (int ch)
+wherex (void)
 {
-  char ch_2 = ch;
-  __libi86_vid_bc_outmem_do (&ch_2, 1);
-  return 0;
+  return _gettextposition ().col;
 }
