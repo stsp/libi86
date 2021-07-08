@@ -38,6 +38,10 @@ _scrolltextwindow (short rows)
   short hm1;
   bool scroll_up_p;
 
+#ifndef __GNUC__
+  __libi86_vid_state_init ();
+#endif
+
   if (! rows)
     return;
 

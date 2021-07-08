@@ -34,6 +34,10 @@
 void
 _clearscreen (short area)
 {
+#ifndef __GNUC__
+  __libi86_vid_state_init ();
+#endif
+
   switch (area)
     {
     case _GWINDOW:

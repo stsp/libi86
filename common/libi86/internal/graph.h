@@ -340,7 +340,6 @@ __libi86_vid_scroll (unsigned char sx1z, unsigned char sy1z,
 		    "c" (sy1z), "Rcl" (sx1z),
 		    "Rdh" (sy2z), "Rdl" (sx2z));
 #else
-  __libi86_vid_state_init ();
   __libi86_vid_int_0x10 ((unsigned) func << 8 | rows, (unsigned) attr << 8,
 			 (unsigned) sy1z << 8 | sx1z,
 			 (unsigned) sy2z << 8 | sx2z);
