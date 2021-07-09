@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2020--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,21 +27,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* Common code for Borland-like insline () & delline (). */
-
 #define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
-#include <inttypes.h>
 #include "libi86/internal/graph.h"
 
 void
-__libi86_vid_bc_insdelline (bool del_p)
+insline (void)
 {
-  unsigned char pg_no = __libi86_vid_get_curr_pg ();
-  struct __libi86_vid_rccoord_t pxy
-    = __libi86_vid_get_and_adjust_rccoord (pg_no);
-
-  __libi86_vid_scroll (__libi86_vid_state.x1z, pxy.y,
-		       __libi86_vid_state.x2z, __libi86_vid_state.y2z,
-		       1, del_p);
+  __libi86_vid_bc_insdelline (false);
 }
