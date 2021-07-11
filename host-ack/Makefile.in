@@ -86,6 +86,7 @@ OBJS		= bios/bios-disk.o \
 		  conio/delline.o \
 		  conio/getch.o \
 		  conio/getche.o \
+		  conio/getpass.o \
 		  conio/gotoxy.o \
 		  conio/inp.o \
 		  conio/inpw.o \
