@@ -87,6 +87,7 @@ OBJS		= bios/bios-disk.o \
 		  conio/getch.o \
 		  conio/getche.o \
 		  conio/getpass.o \
+		  conio/gettextinfo.o \
 		  conio/gotoxy.o \
 		  conio/inp.o \
 		  conio/inpw.o \
