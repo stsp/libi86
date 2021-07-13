@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2020--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -28,12 +28,14 @@
  */
 
 #define _LIBI86_COMPILING_
-#include <inttypes.h>
 #include "libi86/internal/graph.h"
 
 void
 lowvideo (void)
 {
+#ifndef __GNUC__
+  __libi86_vid_state_init ();
+#endif
   if (! __libi86_vid_state.graph_p)
     __libi86_vid_state.attribute &= ~0x08;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2020--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -38,6 +38,9 @@ unsigned char __libi86_vid_norm_attr = 0x07;
 void
 normvideo (void)
 {
+#ifndef __GNUC__
+  __libi86_vid_state_init ();
+#endif
   __libi86_vid_state.attribute = __libi86_vid_norm_attr;
 }
 
