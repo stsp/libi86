@@ -62,6 +62,14 @@ find_t
   char name[13];
 };
 
+struct dosdate_t
+{
+  unsigned char day;
+  unsigned char month;
+  unsigned short year;
+  unsigned char dayofweek;
+};
+
 extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
 #ifdef _BORLANDC_SOURCE
 _LIBI86_REDIRECT_3 (int, bdosptr, int, void *, unsigned, __libi86_bdosptr)
@@ -81,6 +89,7 @@ extern unsigned _dos_findfirst (const char *__path, unsigned __attr,
 extern unsigned _dos_findnext (struct find_t *__buf);
 extern unsigned _dos_findclose (struct find_t *__buf);
 extern unsigned _dos_freemem (unsigned __seg);
+extern void _dos_getdate (struct dosdate_t *__date);
 extern void _dos_getdrive (unsigned *__drive);
 extern unsigned _dos_getfileattr (const char *__path, unsigned *__attributes);
 extern unsigned _dos_open (const char *__path, unsigned __mode, int *__handle);

@@ -148,6 +148,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-findfirst.o \
 		  dos/dos-findnext.o \
 		  dos/dos-freemem.o \
+		  dos/dos-getdate.o \
 		  dos/dos-getdrive.o \
 		  dos/dos-getfileattr.o \
 		  dos/dos-getvect.o \

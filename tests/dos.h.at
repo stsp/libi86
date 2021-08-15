@@ -262,6 +262,28 @@ main (int argc, char **argv)
 }]],[[]])
 AT_CLEANUP
 
+AT_SETUP([[_dos_getdate]])
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+void abort (void);
+int
+main (void)
+{
+  struct dosdate_t date;
+  memset (&date, 0xf6, sizeof date);
+  _dos_getdate (&date);
+  if (date.day < 1 || date.day > 31)
+    abort ();
+  if (date.month < 1 || date.month > 12)
+    abort ();
+  if (date.year < 1980)
+    abort ();
+  if (date.dayofweek > 6)
+    abort ();
+  return 0;
+}]],[[]])
+AT_CLEANUP
+
 AT_SETUP([[_dos_getdrive, _getdrive, _dos_setdrive]])
 AT_LIBI86_CHECK(dnl
 [[#include <dos.h>
