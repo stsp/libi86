@@ -123,6 +123,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |   W | `_dos_findclose (`\*_buffer_`);`
 |  W+ | `_dos_freemem (`_segment_`);` | Also works under DPMI; accepts a starting protected-mode selector.
 |   W | `_dos_getdate (`\*_date_`);`
+|   W | `_dos_getdiskfree (`_drive_`,` \*_disk-space_`);`
 |   W | `_dos_getdrive (`\*_drive_`);`
 |   W | `_dos_getfileattr (`\*_path_`,` \*_attributes_`);`
 |   W | \*`_dos_getvect (`_intr-no_`);` | Some versions of `gcc-ia16` may not understand the `interrupt` function attribute.  In that case, this function will return a far data pointer.

@@ -48,6 +48,20 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
+struct dosdate_t
+{
+  unsigned char day;
+  unsigned char month;
+  unsigned short year;
+  unsigned char dayofweek;
+};
+
+struct diskfree_t
+{
+  unsigned total_clusters, avail_clusters, sectors_per_cluster,
+	   bytes_per_sector;
+};
+
 struct
 #ifdef __GNUC__
 __attribute__ ((__packed__))
@@ -60,14 +74,6 @@ find_t
   unsigned short wr_date;
   unsigned long size;
   char name[13];
-};
-
-struct dosdate_t
-{
-  unsigned char day;
-  unsigned char month;
-  unsigned short year;
-  unsigned char dayofweek;
 };
 
 extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
@@ -90,6 +96,8 @@ extern unsigned _dos_findnext (struct find_t *__buf);
 extern unsigned _dos_findclose (struct find_t *__buf);
 extern unsigned _dos_freemem (unsigned __seg);
 extern void _dos_getdate (struct dosdate_t *__date);
+extern unsigned _dos_getdiskfree (unsigned __drive,
+				  struct diskfree_t *__diskspace);
 extern void _dos_getdrive (unsigned *__drive);
 extern unsigned _dos_getfileattr (const char *__path, unsigned *__attributes);
 extern unsigned _dos_open (const char *__path, unsigned __mode, int *__handle);

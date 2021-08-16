@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 TK Chia
+ * Copyright (c) 2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,19 +27,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "libi86/internal/call-cvt.h"
+#define _LIBI86_COMPILING_
+#include <errno.h>
+#include "libi86/internal/cdefs.h"
 
-	.code16
-	.att_syntax prefix
+/*
+ * Set `errno' to EINVAL, & return a non-zero return value.  This is used
+ * by _dos_getdiskfree (, ).
+ */
 
-	TEXT_ (dos_getdate.S.LIBI86)
-	.global	_dos_getdate
-_dos_getdate:
-	ENTER_BX_ (2)
-	MOV_ARG0W_BX_ (%bx)
-	movb	$0x2a,	%ah
-	int	$0x21
-	movw	%dx,	(%bx)
-	movw	%cx,	2(%bx)
-	movb	%al,	4(%bx)
-	RET_ (2)
+long
+__libi86_ret_einval (void)
+{
+  errno = EINVAL;
+  return -1;
+}

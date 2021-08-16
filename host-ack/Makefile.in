@@ -126,6 +126,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-findnext.o \
 		  dos/dos-freemem.o \
 		  dos/dos-getdate.o \
+		  dos/dos-getdiskfree.o \
 		  dos/dos-getdrive.o \
 		  dos/dos-getfileattr.o \
 		  dos/dos-getvect.o \
@@ -143,8 +144,9 @@ OBJS		= bios/bios-disk.o \
 		  dos/libi86-msdos-do-findnext.o \
 		  dos/libi86-msdos-do-open.o \
 		  dos/libi86-msdos-set-dta.o \
-		  dos/libi86-ret-set-errno.o \
+		  dos/libi86-ret-einval.o \
 		  dos/libi86-ret-really-set-errno.o \
+		  dos/libi86-ret-set-errno.o \
 		  dos/peek.o \
 		  dos/peekb.o \
 		  dos/poke.o \

@@ -1,5 +1,6 @@
+#
 /*
- * Copyright (c) 2019 TK Chia
+ * Copyright (c) 2019--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,19 +28,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "libi86/internal/call-cvt.h"
+#include "libi86/internal/sect.h"
 
-	.code16
-	.att_syntax prefix
-
-	TEXT_ (dos_getdate.S.LIBI86)
-	.global	_dos_getdate
-_dos_getdate:
-	ENTER_BX_ (2)
-	MOV_ARG0W_BX_ (%bx)
-	movb	$0x2a,	%ah
-	int	$0x21
-	movw	%dx,	(%bx)
-	movw	%cx,	2(%bx)
-	movb	%al,	4(%bx)
-	RET_ (2)
+#ifdef __MSDOS__
+	.define	__dos_getdiskfree
+__dos_getdiskfree:
+	push	di
+	mov	di, sp
+	movb	dl, 4(di)
+	mov	di, 6(di)
+	movb	ah, 0x36
+	int	0x21
+	inc	ax
+	jz	.error
+	dec	ax
+	xchg	dx, ax
+	stosw
+	xchg	bx, ax
+	stosw
+	xchg	dx, ax
+	stosw
+	xchg	cx, ax
+	stosw
+	pop	di
+	xor	ax, ax
+	ret
+.error:
+	pop	di
+	jmp	___libi86_ret_einval
+#endif

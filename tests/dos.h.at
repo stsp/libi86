@@ -284,6 +284,38 @@ main (void)
 }]],[[]])
 AT_CLEANUP
 
+AT_SETUP([[_dos_getdiskfree]])
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+#include <errno.h>
+void abort (void);
+static int
+is_power_of_2 (unsigned x)
+{
+  return x != 0 && (x & (x - 1)) == 0;
+}
+int
+main (void)
+{
+  struct diskfree_t df;
+  memset (&df, 0xf6, sizeof df);
+  if (_dos_getdiskfree (0, &df) != 0)
+    abort ();
+  if (df.total_clusters < df.avail_clusters)
+    abort ();
+  if (! is_power_of_2 (df.sectors_per_cluster))
+    abort ();
+  if (! is_power_of_2 (df.bytes_per_sector))
+    abort ();
+  memset (&df, 0xf6, sizeof df);
+  if (_dos_getdiskfree (~0U, &df) == 0)
+    abort ();
+  if (errno != EINVAL)
+    abort ();
+  return 0;
+}]],[[]])
+AT_CLEANUP
+
 AT_SETUP([[_dos_getdrive, _getdrive, _dos_setdrive]])
 AT_LIBI86_CHECK(dnl
 [[#include <dos.h>
