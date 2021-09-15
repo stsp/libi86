@@ -46,6 +46,7 @@ __libi86_fpcc_t;
 #define _LIBI86_DEPRECATED(msg)
 #define _LIBI86_WARNING(msg)
 #define _LIBI86_ERROR(msg)
+#define _LIBI86_NORETURN
 
 /*
  * ACK lacks support post-C89 C language features and C extensions,

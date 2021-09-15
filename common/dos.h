@@ -100,6 +100,7 @@ extern unsigned _dos_getdiskfree (unsigned __drive,
 				  struct diskfree_t *__diskspace);
 extern void _dos_getdrive (unsigned *__drive);
 extern unsigned _dos_getfileattr (const char *__path, unsigned *__attributes);
+extern void _dos_keep (unsigned __status, unsigned __size) _LIBI86_NORETURN;
 extern unsigned _dos_open (const char *__path, unsigned __mode, int *__handle);
 extern unsigned _dos_read (int __handle, __libi86_fpv_t __buf,
 			   unsigned __count, unsigned *__bytes);

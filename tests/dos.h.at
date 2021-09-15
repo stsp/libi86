@@ -738,3 +738,21 @@ main (int argc, char **argv)
 4 OK
 ]])
 AT_CLEANUP
+
+AT_SETUP([[_dos_keep]])
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+#ifdef __MSDOS__
+  if (argc)
+    _dos_keep (0, 0x10);
+  abort ();
+  return 1;
+#else
+# error
+#endif
+}]],[])
+AT_CLEANUP

@@ -155,7 +155,9 @@ __libi86_fpcc_t;
 # define _LIBI86_WARNING(msg)	__attribute__ ((__warning__ (msg)))
 # define _LIBI86_ERROR(msg)	__attribute__ ((__error__ (msg)))
 #endif
+/* Various other useful function properties. */
 #define _LIBI86_STATIC_INLINE	static inline
+#define _LIBI86_NORETURN	__attribute__ ((__noreturn__))
 /*
  * Many of the header files have `extern inline' versions of functions which
  * can be used instead of the out-of-line versions, and they require this
