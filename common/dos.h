@@ -145,7 +145,18 @@ _LIBI86_REDIRECT_AND_INLINE_VOID_3 (poke, unsigned, unsigned, int,
 				    __libi86_poke)
 _LIBI86_REDIRECT_AND_INLINE_VOID_3 (pokeb, unsigned, unsigned, char,
 				    __libi86_pokeb)
-#endif
+/*
+ * Note:  Watcom's _dos_keep (, ) has an `unsigned' parameter for the exit
+ * code, but Borland's keep (, ) has an `unsigned char' parameter.
+ */
+# ifdef __GNUC__
+extern void _LIBI86_BC_REDIRECT_X (keep, (unsigned char, unsigned))
+	    _LIBI86_NORETURN;
+# else
+_LIBI86_REDIRECT_AND_INLINE_VOID_2 (keep, unsigned char, unsigned,
+				    __libi86_bc_keep)
+# endif
+#endif  /* _BORLANDC_SOURCE */
 
 _LIBI86_END_EXTERN_C
 

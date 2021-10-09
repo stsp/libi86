@@ -128,6 +128,7 @@ Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from [my `build-ia16` PPA
 |   W | `_dos_getfileattr (`\*_path_`,` \*_attributes_`);`
 |   W | \*`_dos_getvect (`_intr-no_`);` | Some versions of `gcc-ia16` may not understand the `interrupt` function attribute.  In that case, this function will return a far data pointer.
 |   W | `_dos_keep (`_status_`,` _keep-paras_`);`
+|   B | `keep (`_status_`,` _keep-paras_`);`
 |   W | `_dos_open (`\*_path_`,` _mode_`,` \*_handle_`);`
 |   W | `_dos_read (`_handle_`,` \*_buf_`,` _count_`,` \*_bytes_`);`
 |   W | `_dos_setdrive (`_drive_`,` \*_total_`);`

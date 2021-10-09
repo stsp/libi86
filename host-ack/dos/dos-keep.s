@@ -32,7 +32,9 @@
 
 #ifdef __MSDOS__
 	.define	__dos_keep
+	.define	___libi86_bc_keep
 __dos_keep:
+___libi86_bc_keep:
 	mov	bx, sp
 	movb	al, 2(bx)
 	mov	dx, 4(bx)

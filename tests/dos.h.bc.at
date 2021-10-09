@@ -184,6 +184,8 @@ volatile unsigned x = 0xb3ac;
 int
 main (void)
 {
+  if (x != 0xb3ac)
+    abort ();
   poke (__libi86_get_ss (), (unsigned) &x, 0x4ab8);
   if (x != 0x4ab8)
     abort ();
@@ -191,5 +193,24 @@ main (void)
   if (x != 0x4ad2)
     abort ();
   return 0;
+}]],[])
+AT_CLEANUP
+
+AT_SETUP([[keep]])
+AT_LIBI86_CHECK(dnl
+[[#define _BORLANDC_SOURCE
+#include <dos.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+#ifdef __MSDOS__
+  if (argc)
+    keep (0, 0x10);
+  abort ();
+  return 1;
+#else
+# error
+#endif
 }]],[])
 AT_CLEANUP

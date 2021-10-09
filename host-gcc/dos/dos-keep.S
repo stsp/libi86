@@ -34,7 +34,9 @@
 
 	TEXT_ (dos_keep.S.LIBI86)
 	.global	_dos_keep
+	.global	__libi86_bc_keep
 _dos_keep:
+__libi86_bc_keep:
 	ENTER_BX_ (2)
 	MOV_ARG0B_BX_ (%al)
 	MOV_ARG2W_BX_ (%dx)
