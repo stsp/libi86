@@ -697,19 +697,33 @@ main (int argc, char **argv)
 ]])
 AT_CLEANUP
 
-AT_SETUP([[_dos_read]])
+AT_SETUP([[_dos_read, _dos_getftime]])
 AT_LIBI86_CHECK(dnl
 [[#include <dos.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
+
 void abort (void);
+
+static unsigned
+MONTH (unsigned dt)
+{
+  return (dt >> 5) & 0xf;
+}
+
+static unsigned
+HOUR (unsigned tm)
+{
+  return tm >> 11;
+}
+
 int
 main (int argc, char **argv)
 {
 #ifdef __MSDOS__
   int fd = -1;
-  unsigned buf, r = 0xf6f6;
+  unsigned buf, r = 0xf6f6, dt = 0xf6f6, tm = 0xf6f6;
 
   if (_dos_open (argv[0], O_RDONLY | O_NOINHERIT, &fd) != 0)
     abort ();
@@ -724,9 +738,17 @@ main (int argc, char **argv)
     abort ();
   puts ("3 OK");
 
-  if (_dos_close (fd) != 0)
+  if (_dos_getftime (fd, &dt, &tm) != 0)
     abort ();
   puts ("4 OK");
+
+  if (HOUR (tm) > 24 || MONTH (dt) < 1 || MONTH (dt) > 12)
+    abort ();
+  puts ("5 OK");
+
+  if (_dos_close (fd) != 0)
+    abort ();
+  puts ("6 OK");
 
   return 0;
 #else
@@ -736,6 +758,8 @@ main (int argc, char **argv)
 2 OK
 3 OK
 4 OK
+5 OK
+6 OK
 ]])
 AT_CLEANUP
 
