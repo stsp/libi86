@@ -262,7 +262,7 @@ main (int argc, char **argv)
 }]],[[]])
 AT_CLEANUP
 
-AT_SETUP([[_dos_getdate]])
+AT_SETUP([[_dos_getdate, _dos_gettime]])
 AT_LIBI86_CHECK(dnl
 [[#include <dos.h>
 void abort (void);
@@ -270,6 +270,7 @@ int
 main (void)
 {
   struct dosdate_t date;
+  struct dostime_t tyme;
   memset (&date, 0xf6, sizeof date);
   _dos_getdate (&date);
   if (date.day < 1 || date.day > 31)
@@ -279,6 +280,16 @@ main (void)
   if (date.year < 1980)
     abort ();
   if (date.dayofweek > 6)
+    abort ();
+  memset (&tyme, 0xf6, sizeof tyme);
+  _dos_gettime (&tyme);
+  if (tyme.hour > 24)
+    abort ();
+  if (tyme.minute > 59)
+    abort ();
+  if (tyme.second > 59)
+    abort ();
+  if (tyme.hsecond > 99)
     abort ();
   return 0;
 }]],[[]])

@@ -130,6 +130,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-getdrive.o \
 		  dos/dos-getfileattr.o \
 		  dos/dos-getftime.o \
+		  dos/dos-gettime.o \
 		  dos/dos-getvect.o \
 		  dos/dos-keep.o \
 		  dos/dos-open.o \
