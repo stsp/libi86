@@ -28,6 +28,7 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 AT_BANNER([[<dpmi.h> tests]])
 
 AT_SETUP([[__DPMI_hosted]])
+AT_LIBI86_SKIP_IF_NO_DPMI
 AT_LIBI86_CHECK(dnl
 [[#include <stdlib.h>
 #include <dpmi.h>
@@ -46,6 +47,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_DPMISegmentToDescriptor]])
+AT_LIBI86_SKIP_IF_NO_DPMI
 AT_LIBI86_CHECK(dnl
 [[#include <stdint.h>
 #include <stdlib.h>
@@ -75,6 +77,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_DPMIGetSegmentBaseAddress]])
+AT_LIBI86_SKIP_IF_NO_DPMI
 AT_LIBI86_CHECK(dnl
 [[#include <stdint.h>
 #include <stdlib.h>
@@ -99,6 +102,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_DPMISimulateRealModeInterrupt]])
+AT_LIBI86_SKIP_IF_NO_DPMI
 AT_LIBI86_CHECK(dnl
 [[#include <stdint.h>
 #include <stdlib.h>

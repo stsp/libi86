@@ -40,15 +40,22 @@ then
 else
   at_libi86_cc_have_medium_model=no
 fi
+if test yes = $ac_compiler_gnu \
+   && $CC -mdpmiable -x c -E /dev/null -o /dev/null >/dev/null 2>/dev/null
+then
+  at_libi86_cc_have_dpmi=yes
+else
+  at_libi86_cc_have_dpmi=no
+fi
 
 : ${CXX='@CXX@'}
 (test yes = $ac_compiler_gnu \
  && $CXX -mmsdos -mregparmcall --version -v >/dev/null 2>/dev/null) \
   || CXX=false
+
+: ${CPPFLAGS='@CPPFLAGS@'}
 if "$at_arg_x_test_underlying"; then
-  CPPFLAGS=-D_LIBI86_INTERNAL_TEST_UNDERLYING
-else
-  CPPFLAGS=
+  CPPFLAGS="$CPPFLAGS -D_LIBI86_INTERNAL_TEST_UNDERLYING"
 fi
 
 : ${libi86_hostdir='@libi86_hostdir@'}

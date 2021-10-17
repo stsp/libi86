@@ -300,3 +300,7 @@ AT_LIBI86_CHECK(dnl
 [[#define TMP_FILE "temp.tmp"
 #line 1
 ]$1],[$2],,[$3])])
+
+dnl completely skip a test if C compiler does not support DPMI programs
+m4_define([AT_LIBI86_SKIP_IF_NO_DPMI],[dnl
+AT_SKIP_IF([test no = "$at_libi86_cc_have_dpmi"])])
