@@ -38,14 +38,17 @@
 
 	.global	_start
 _start:
-	xorw	%cx,	%cx		/* get number of rows on screen */
-	movw	%cx,	%ds		/* (assumes EGA video or above!) */
-	movb	0x484,	%cl
+	xorw	%ax,	%ax		/* get number of rows on screen */
+	movw	%ax,	%ds
+	movb	0x484,	%al
 	pushw	%ss
 	popw	%ds
-	incw	%cx
-	jcxz	.done
-	movb	%cl,	rows
+	testb	%al,	%al		/* if maximum row number is 0, */
+	jnz	.rows			/* assume 25 rows */
+	movb	$24,	%al
+.rows:
+	incw	%ax
+	movb	%al,	rows
 	movb	$0x0f,	%ah		/* get number of columns on screen, */
 	int	$0x10			/* and active display page */
 	movb	%bh,	page
@@ -88,7 +91,6 @@ _start:
 	jc	.error
 	cmpw	%cx,	%ax
 	jnz	.error
-.done:
 	movw	$0x4c00, %ax
 	int	$0x21
 .error:

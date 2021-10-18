@@ -38,14 +38,17 @@
 
 	.sect	.text
 
-	xor	cx, cx			/* get number of rows on screen */
-	mov	ds, cx			/* (assumes EGA video or above!) */
-	movb	cl, (0x484)
+	xor	ax, ax			/* get number of rows on screen */
+	mov	ds, ax
+	movb	al, (0x484)
 	push	ss
 	pop	ds
-	inc	cx
-	jcxz	.done
-	movb	(rows), cl
+	testb	al, al			/* if maximum row number is 0, */
+	jnz	.rows			/* assume 25 rows */
+	movb	al, 24
+.rows:
+	inc	ax
+	movb	(rows), al
 	movb	ah, 0x0f		/* get number of columns on screen, */
 	int	0x10			/* and active display page */
 	movb	(page), bh
@@ -88,7 +91,6 @@
 	jc	.error
 	cmp	ax, cx
 	jnz	.error
-.done:
 	mov	ax, 0x4c00
 	int	0x21
 .error:
