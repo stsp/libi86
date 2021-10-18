@@ -56,14 +56,16 @@ _LIBI86_BEGIN_EXTERN_C
 # else
 #   include <sys/syslimits.h>
 #   ifdef PATH_MAX
-#     warning "<libi86/stdlib.h> pollutes user namespace with PATH_MAX"
+#     pragma GCC warning \
+		 "<libi86/stdlib.h> pollutes user namespace with PATH_MAX"
 #   endif
 # endif
 # undef __need_PATH_MAX
 # define _MAX_PATH	_PATH_MAX
 #elif defined _LIBI86_INTERNAL_HAVE_PATH_MAX
 # include <limits.h>
-# warning "<libi86/stdlib.h> pollutes user namespace with <limits.h> stuff"
+# pragma GCC warning \
+	     "<libi86/stdlib.h> pollutes user namespace with <limits.h> stuff"
 # define _MAX_PATH	PATH_MAX
 #else
 # define _MAX_PATH	144
@@ -73,10 +75,28 @@ _LIBI86_BEGIN_EXTERN_C
 #define _MAX_FNAME	9
 #define _MAX_EXT	5
 
+#ifndef __ACK
 extern unsigned _psp;
 extern unsigned char _osmajor, _osminor;
+#else  /* __ACK */
+/*
+ * The Amsterdam Compiler Kit does not (yet) allow library modules to insert
+ * initialization functions that are to be invoked before main (...).  This is
+ * a rather inefficient workaround that computes _psp, _osmajor, & _osminor
+ * as needed at run time.  -- 20211018
+ */
+extern unsigned __libi86_get_psp (void), __libi86_get_osmajor_osminor (void);
 
+# define _psp		(__libi86_get_psp ())
+# define _osmajor	((unsigned char) __libi86_get_osmajor_osminor ())
+# define _osminor	((unsigned char) \
+			 (__libi86_get_osmajor_osminor () >> 8))
+#endif  /* __ACK */
+
+#ifdef _LIBI86_INTERNAL_HAVE_LONG_LONG_INT
 extern char *_lltoa (long long __value, char *__buffer, int __radix);
+extern char *_ulltoa (unsigned long long __value, char *__buffer, int __radix);
+#endif
 extern char *_ltoa (long __value, char *__buffer, int __radix);
 extern int _makepath (char __path[_MAX_PATH], const char *__drive,
 		      const char *__dir, const char *__fname,
@@ -84,13 +104,14 @@ extern int _makepath (char __path[_MAX_PATH], const char *__drive,
 extern void _splitpath (const char *__path, char __drive[_MAX_DRIVE],
 			char __dir[_MAX_DIR], char __fname[_MAX_FNAME],
 			char __ext[_MAX_EXT]);
-extern char *_ulltoa (unsigned long long __value, char *__buffer, int __radix);
 extern char *_ultoa (unsigned long __value, char *__buffer, int __radix);
 #ifndef _LIBI86_COMPILING_
 # ifndef __STRICT_ANSI__
+#   ifdef _LIBI86_INTERNAL_HAVE_LONG_LONG_INT
 _LIBI86_REDIRECT_3 (char *, lltoa, long long, char *, int, _lltoa)
-_LIBI86_REDIRECT_3 (char *, ltoa, long, char *, int, _ltoa)
 _LIBI86_REDIRECT_3 (char *, ulltoa, unsigned long long, char *, int, _ulltoa)
+#   endif
+_LIBI86_REDIRECT_3 (char *, ltoa, long, char *, int, _ltoa)
 _LIBI86_REDIRECT_3 (char *, ultoa, unsigned long, char *, int, _ultoa)
 # endif
 #endif

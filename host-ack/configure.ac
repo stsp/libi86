@@ -71,6 +71,8 @@ AC_PROG_AWK
 AC_CHECK_DECLS([__ACK],,dnl
 [AC_MSG_WARN([supposedly using Amsterdam Compiler Kit,])
 AC_MSG_WARN([but __ACK undefined])])
+AC_CHECK_TYPE([long long int],
+	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_LONG_LONG_INT],[1])])
 AC_CHECK_DECL([O_TEXT],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_O_TEXT],[1])],,
 	      [#include <fcntl.h>])

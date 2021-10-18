@@ -188,6 +188,8 @@ OBJS		= bios/bios-disk.o \
 		  i86/libi86-intr-dispatch.o \
 		  i86/libi86-intrf-do.o \
 		  i86/segread.o \
+		  stdlib/libi86-get-osmajor-osminor.o \
+		  stdlib/libi86-get-psp.o \
 		  string/fmemcpy.o \
 		  string/fmemmove.o \
 		  string/fstrlen.o \

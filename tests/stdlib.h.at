@@ -36,9 +36,14 @@ int
 main (void)
 {
 #ifdef __MSDOS__
-unsigned __far *psp_mem = MK_FP (_psp, 0);
+# ifdef __FAR
+  unsigned __far *psp_mem = MK_FP (_psp, 0);
   if (psp_mem[0] != 0x20cdu)
     abort ();
+# else
+  if (__libi86_peek (_psp, 0) != 0x20cdu)
+    abort ();
+# endif
   return 0;
 #else
 # error
