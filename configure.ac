@@ -52,8 +52,10 @@ AC_CANONICAL_HOST
 AC_PROG_CC
 AC_PROG_CXX
 AC_PATH_PROG(DOSEMU, dosemu, /bin/false)
+AC_TYPE_LONG_LONG_INT
 
 AC_SUBST(ac_compiler_gnu)
+AC_SUBST(ac_cv_type_long_long_int)
 _LIBI86_SET_AND_CONFIG_HOST_DIR
 
 AC_CONFIG_SUBDIRS([examples])

@@ -33,6 +33,7 @@ DOSEMU_IS_1=no
 
 : ${CC='@CC@'}
 : ${ac_compiler_gnu='@ac_compiler_gnu@'}
+: ${ac_cv_type_long_long_int='@ac_cv_type_long_long_int@'}
 if test yes = $ac_compiler_gnu \
    && $CC -mcmodel=medium -x c -E /dev/null -o /dev/null >/dev/null 2>/dev/null
 then
