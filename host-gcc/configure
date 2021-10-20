@@ -4208,6 +4208,12 @@ if test "x$ac_cv_have_decl_O_TEXT" = xyes; then :
 
 fi
 
+ac_fn_c_check_decl "$LINENO" "ENAMETOOLONG" "ac_cv_have_decl_ENAMETOOLONG" "$ac_includes_default"
+if test "x$ac_cv_have_decl_ENAMETOOLONG" = xyes; then :
+  $as_echo "#define _LIBI86_INTERNAL_HAVE_ENAMETOOLONG 1" >>confdefs.h
+
+fi
+
 
 host_makefile_frag_path=
 host_makefile_frag=

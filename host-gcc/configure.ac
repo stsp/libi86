@@ -97,6 +97,8 @@ AC_CHECK_DECL([PATH_MAX],
 AC_CHECK_DECL([O_TEXT],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_O_TEXT],[1])],,
 	      [#include <fcntl.h>])
+AC_CHECK_DECL([ENAMETOOLONG],
+	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_ENAMETOOLONG],[1])])
 
 host_makefile_frag_path=
 host_makefile_frag=

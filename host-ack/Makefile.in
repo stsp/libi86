@@ -192,6 +192,7 @@ OBJS		= bios/bios-disk.o \
 		  stdlib/libi86-get-psp.o \
 		  stdlib/libi86-ultoa-uldiv.o \
 		  stdlib/ltoa.o \
+		  stdlib/makepath.o \
 		  stdlib/ultoa.o \
 		  string/fmemcpy.o \
 		  string/fmemmove.o \

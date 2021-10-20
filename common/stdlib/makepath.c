@@ -142,9 +142,13 @@ bogus0:
 
 overflow:
   *e = 0;
+# ifdef _LIBI86_INTERNAL_HAVE_ENAMETOOLONG
   errno = ENAMETOOLONG;
+# else
+  errno = E2BIG;  /* FIXME */
+# endif
   return -1;
 }
 #else
-# warning "unknown host OS"
+# pragma GCC warning "unknown host OS"
 #endif

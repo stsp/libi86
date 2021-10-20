@@ -3809,6 +3809,12 @@ if test "x$ac_cv_have_decl_O_TEXT" = xyes; then :
 
 fi
 
+ac_fn_c_check_decl "$LINENO" "ENAMETOOLONG" "ac_cv_have_decl_ENAMETOOLONG" "$ac_includes_default"
+if test "x$ac_cv_have_decl_ENAMETOOLONG" = xyes; then :
+  $as_echo "#define _LIBI86_INTERNAL_HAVE_ENAMETOOLONG 1" >>confdefs.h
+
+fi
+
 ac_fn_c_check_func "$LINENO" "_sys_seterrno" "ac_cv_func__sys_seterrno"
 if test "x$ac_cv_func__sys_seterrno" = xyes; then :
   $as_echo "#define _LIBI86_INTERNAL_HAVE__SYS_SETERRNO 1" >>confdefs.h

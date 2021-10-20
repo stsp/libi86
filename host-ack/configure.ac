@@ -76,6 +76,8 @@ AC_CHECK_TYPE([long long int],
 AC_CHECK_DECL([O_TEXT],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_O_TEXT],[1])],,
 	      [#include <fcntl.h>])
+AC_CHECK_DECL([ENAMETOOLONG],
+	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_ENAMETOOLONG],[1])])
 AC_CHECK_FUNC([_sys_seterrno],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE__SYS_SETERRNO],[1])],,
 	      [long _sys_seterrno (unsigned);])

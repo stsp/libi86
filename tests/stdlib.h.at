@@ -2903,6 +2903,25 @@ AT_LIBI86_CHECK(dnl
 #include <stdlib.h>
 #include <libi86/stdlib.h>
 #include <string.h>
+#ifndef _POSIX_SOURCE
+# include <ctype.h>
+static int
+strcasecmp (const char *s1, const char *s2)
+{
+  char c1, c2;
+  int u1, u2;
+  while ((c1 = *s1++) != 0)
+    {
+      c2 = *s2++;
+      u1 = toupper ((unsigned char) c1);
+      u2 = toupper ((unsigned char) c2);
+      if (u1 != u2)
+	return u1 - u2;
+    }
+  c2 = *s2;
+  return - (int) (unsigned char) c2;
+}
+#endif
 static void
 check (unsigned test_num, bool should_error_p, const char *good_path,
        const char *drv, const char *dir, const char *fname, const char *ext)
@@ -2964,6 +2983,7 @@ main (void)
   check (26, true, NULL, NULL, NULL, badness, NULL);
   check (27, true, NULL, NULL, badness, NULL, NULL);
   check (28, true, NULL, badness, NULL, NULL, NULL);
+  return 0;
 #else
 # error
 #endif
@@ -3057,6 +3077,7 @@ main (void)
   check (30, "y:/foo\\bar/baz.qux\\quux*.q?uuux",
 	     "y:", "/foo\\bar/baz.qux\\", "quux*", ".q?u");
   check (31, "quuuuuuuuuux", "", "", "quuuuuuu", "");
+  return 0;
 #else
 # error
 #endif
