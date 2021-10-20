@@ -193,6 +193,7 @@ OBJS		= bios/bios-disk.o \
 		  stdlib/libi86-ultoa-uldiv.o \
 		  stdlib/ltoa.o \
 		  stdlib/makepath.o \
+		  stdlib/splitpath.o \
 		  stdlib/ultoa.o \
 		  string/fmemcpy.o \
 		  string/fmemmove.o \

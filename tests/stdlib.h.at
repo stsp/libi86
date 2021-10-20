@@ -2895,15 +2895,8 @@ OK
 ]])
 AT_CLEANUP
 
-AT_SETUP([[_makepath]])
-AT_LIBI86_CHECK(dnl
-[[#include <errno.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <libi86/stdlib.h>
-#include <string.h>
-#ifndef _POSIX_SOURCE
+m4_define([AT_LIBI86_SUPPLY_STRCASECMP],dnl
+[[#ifndef _POSIX_SOURCE
 # include <ctype.h>
 static int
 strcasecmp (const char *s1, const char *s2)
@@ -2921,8 +2914,18 @@ strcasecmp (const char *s1, const char *s2)
   c2 = *s2;
   return - (int) (unsigned char) c2;
 }
-#endif
-static void
+#endif]])
+
+AT_SETUP([[_makepath]])
+AT_LIBI86_CHECK(dnl
+[[#include <errno.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <libi86/stdlib.h>
+#include <string.h>]]
+AT_LIBI86_SUPPLY_STRCASECMP
+[[static void
 check (unsigned test_num, bool should_error_p, const char *good_path,
        const char *drv, const char *dir, const char *fname, const char *ext)
 {
@@ -3023,8 +3026,9 @@ AT_LIBI86_CHECK(dnl
 [[#include <stdio.h>
 #include <stdlib.h>
 #include <libi86/stdlib.h>
-#include <string.h>
-static void
+#include <string.h>]]
+AT_LIBI86_SUPPLY_STRCASECMP
+[[static void
 check (unsigned test_num, const char *path, const char *good_drv,
        const char *good_dir, const char *good_fname, const char *good_ext)
 {

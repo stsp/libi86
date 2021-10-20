@@ -93,5 +93,5 @@ _splitpath (const char *path, char drive[_MAX_DRIVE], char dir[_MAX_DIR],
     }
 }
 #else
-# warning "unknown host OS"
+# pragma GCC warning "unknown host OS"
 #endif
