@@ -190,6 +190,9 @@ OBJS		= bios/bios-disk.o \
 		  i86/segread.o \
 		  stdlib/libi86-get-osmajor-osminor.o \
 		  stdlib/libi86-get-psp.o \
+		  stdlib/libi86-ultoa-uldiv.o \
+		  stdlib/ltoa.o \
+		  stdlib/ultoa.o \
 		  string/fmemcpy.o \
 		  string/fmemmove.o \
 		  string/fstrlen.o \
