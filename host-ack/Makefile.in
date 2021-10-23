@@ -79,6 +79,7 @@ OBJS		= bios/bios-disk.o \
 		  bios/bios-keybrd.o \
 		  bios/bios-memsize.o \
 		  bios/bios-timeofday.o \
+		  conio/cgets.o \
 		  conio/clreol.o \
 		  conio/clrscr.o \
 		  conio/cprintf.o \
@@ -94,6 +95,7 @@ OBJS		= bios/bios-disk.o \
 		  conio/inpw.o \
 		  conio/insline.o \
 		  conio/kbhit.o \
+		  conio/libi86-bc-cgets.o \
 		  conio/libi86-bc-cprintf.o \
 		  conio/libi86-bc-cputs.o \
 		  conio/libi86-bc-putch.o \

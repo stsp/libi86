@@ -69,6 +69,25 @@ kbhit () = false
 ]],[[-input '\p200;\F5;!']])
 AT_CLEANUP
 
+AT_SETUP([cgets])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#include <conio.h>
+#include <string.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+  char buf[] = { 7, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6 };
+  static const char expect_buf[] = { 7, 5, 'f', 'o', 'b', 'a', 'z', 0 };
+  if (cgets (buf) != buf + 2)
+    abort ();
+  if (memcmp (buf, expect_buf, sizeof expect_buf) != 0)
+    abort ();
+  return 0;
+}]],[[fobaz
+]],[[-input '\p200;\bfoobarr\b\b\b\bbaz\r']])
+AT_CLEANUP
+
 AT_SETUP([[inp, outp]])
 AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
 [[#include <conio.h>

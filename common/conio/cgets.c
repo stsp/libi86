@@ -35,7 +35,11 @@
 
 #ifdef __MSDOS__
 char *
+# ifdef _BORLANDC_SOURCE
+__libi86_bc_cgets (char *buf)
+# else
 cgets (char *buf)
+# endif
 {
   /* Open Watcom implements cgets (.) using int $0x21, %ah == 0x0a, but it
      is hard to replicate this service's functionality if stdin and/or

@@ -117,6 +117,26 @@ main (int argc, char **argv)
 ]])
 AT_CLEANUP
 
+AT_SETUP([cgets (Borland)])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#define _BORLANDC_SOURCE
+#include <conio.h>
+#include <string.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+  char buf[] = { 7, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6 };
+  static const char expect_buf[] = { 7, 5, 'f', 'o', 'b', 'a', 'z', 0 };
+  if (cgets (buf) != buf + 2)
+    abort ();
+  if (memcmp (buf, expect_buf, sizeof expect_buf) != 0)
+    abort ();
+  return 0;
+}]],[[fobaz
+]],[[-input '\p200;\bfoobarr\b\b\b\bbaz\r']])
+AT_CLEANUP
+
 AT_SETUP([[textmode]])
 dnl FIXME...
 AT_SKIP_IF([test yes = "$DOSEMU_IS_1"])
