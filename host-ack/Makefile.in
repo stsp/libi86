@@ -84,6 +84,7 @@ OBJS		= bios/bios-disk.o \
 		  conio/clrscr.o \
 		  conio/cprintf.o \
 		  conio/cputs.o \
+		  conio/cscanf.o \
 		  conio/delline.o \
 		  conio/getch.o \
 		  conio/getche.o \
@@ -98,8 +99,10 @@ OBJS		= bios/bios-disk.o \
 		  conio/libi86-bc-cgets.o \
 		  conio/libi86-bc-cprintf.o \
 		  conio/libi86-bc-cputs.o \
+		  conio/libi86-bc-cscanf.o \
 		  conio/libi86-bc-putch.o \
 		  conio/libi86-bc-vcprintf.o \
+		  conio/libi86-bc-vcscanf.o \
 		  conio/libi86-con-in-fd.o \
 		  conio/libi86-con-name.o \
 		  conio/libi86-con-out-fd.o \
@@ -114,6 +117,7 @@ OBJS		= bios/bios-disk.o \
 		  conio/textmode.o \
 		  conio/ungetch.o \
 		  conio/vcprintf.o \
+		  conio/vcscanf.o \
 		  conio/wherex.o \
 		  conio/wherey.o \
 		  conio/window.o \

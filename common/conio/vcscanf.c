@@ -35,7 +35,11 @@
 #include "conio.h"
 
 int
+#ifdef _BORLANDC_SOURCE
+__libi86_bc_vcscanf (const char *fmt, va_list ap)
+#else
 vcscanf (const char *fmt, va_list ap)
+#endif
 {
   char buf[UCHAR_MAX + 2], *p;
 
