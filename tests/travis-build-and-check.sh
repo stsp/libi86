@@ -39,6 +39,6 @@ unset CC
 ../configure --host=ia16-elf --prefix="$inst_prefix" --disable-elks-libc \
   ${1+"$@"}
 make
-make check || \
+make check TESTSUITEFLAGS=-j2 || \
   (cat tests/testsuite.log && exit 1)
 exec make install
