@@ -34,7 +34,8 @@ int
 main (int argc, char **argv)
 {
   cputs ("hello ");
-  cprintf ("%s%c...\n\n...with argc == %#x\n", "world", (int) '!', argc);
+  cprintf ("%s%c...\n\n...with argc == %#x", "world", (int) '!', argc);
+  cputs ("\n");
   return 0;
 }]],[[hello world!...
 
@@ -69,7 +70,7 @@ kbhit () = false
 ]],[[-input '\p200;\F5;!']])
 AT_CLEANUP
 
-AT_SETUP([cgets])
+AT_SETUP([cgets, cscanf])
 AT_LIBI86_CHECK_CONSOLE(dnl
 [[#include <conio.h>
 #include <string.h>
@@ -79,13 +80,21 @@ main (int argc, char **argv)
 {
   char buf[] = { 7, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6 };
   static const char expect_buf[] = { 7, 5, 'f', 'o', 'b', 'a', 'z', 0 };
+  int a = (int) 0xf6f6;
+  long b = (long) 0xe5e5e5e5;
   if (cgets (buf) != buf + 2)
     abort ();
   if (memcmp (buf, expect_buf, sizeof expect_buf) != 0)
     abort ();
+  putch ('\n');
+  if (cscanf ("%d %ld", &a, &b) != 2)
+    abort ();
+  if (a != 12345 || b != -67890L)
+    abort ();
   return 0;
 }]],[[fobaz
-]],[[-input '\p200;\bfoobarr\b\b\b\bbaz\r']])
+12345 -67890
+]],[[-input '\p200;\bfoobarr\b\b\b\bbaz\r\b12345 -5\b678901\b\r']])
 AT_CLEANUP
 
 AT_SETUP([[inp, outp]])
