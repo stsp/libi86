@@ -44,6 +44,8 @@ libdir = @libdir@
 libi86_ackhost = @libi86_ackhost@
 tooldir = $(prefix)/share/ack/$(libi86_ackhost)
 
+ac_cv_func_vsscanf = @ac_cv_func_vsscanf@
+
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
@@ -205,6 +207,9 @@ OBJS		= bios/bios-disk.o \
 		  string/fmemmove.o \
 		  string/fstrlen.o \
 		  string/libi86-fmemmove-backward.o
+ifeq "no" "$(ac_cv_func_vsscanf)"
+  OBJS		+= conio/libi86-vsscanf.o
+endif
 OBJ_SUBDIRS	= $(sort $(dir $(OBJS)))
 CFLAGS		= -O6 -S
 ASFLAGS		=

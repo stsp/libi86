@@ -37,6 +37,11 @@
 #include <stdint.h>
 #include <libi86/internal/cdefs.h>
 #include <conio.h>
+#ifdef _LIBI86_INTERNAL_HAVE_VSSCANF
+# include <stdio.h>
+#else
+# include <stdarg.h>
+#endif
 
 _LIBI86_BEGIN_EXTERN_C
 
@@ -54,6 +59,12 @@ extern void __libi86_con_set_dev_info_word (int fd, unsigned dw);
 extern void __libi86_con_in_fd_init (void);
 extern void __libi86_con_out_fd_init (void);
 #endif  /* __MSDOS__ */
+
+#ifndef _LIBI86_INTERNAL_HAVE_VSSCANF
+# undef vsscanf
+_LIBI86_REDIRECT_3 (int, vsscanf, const char *, const char *, va_list,
+		    __libi86_vsscanf)
+#endif
 
 _LIBI86_END_EXTERN_C
 
