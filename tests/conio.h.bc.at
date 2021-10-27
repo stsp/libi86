@@ -335,7 +335,7 @@ world 4
 ]],[[-input '\p200;foo\r\p50;blurfl\r\p50;quux\r']])
 AT_CLEANUP
 
-AT_SETUP([[gettextinfo]])
+AT_SETUP([[gettextinfo, textattr]])
 AT_LIBI86_CHECK_CONSOLE(dnl
 [[#define _BORLANDC_SOURCE
 #include <conio.h>
@@ -343,14 +343,23 @@ AT_LIBI86_CHECK_CONSOLE(dnl
 int
 main (void)
 {
-  struct text_info ti;
+  struct text_info ti1, ti2;
   window (3, 5, 17, 19);
   gotoxy (2, 4);
-  gettextinfo (&ti);
-  if (ti.winleft != 3 || ti.wintop != 5
-      || ti.winright != 17 || ti.winbottom != 19)
+  memset (&ti1, 0xf6, sizeof (ti1));
+  gettextinfo (&ti1);
+  if (ti1.winleft != 3 || ti1.wintop != 5
+      || ti1.winright != 17 || ti1.winbottom != 19)
     abort ();
-  if (ti.curx != 2 || ti.cury != 4)
+  if (ti1.curx != 2 || ti1.cury != 4)
+    abort ();
+  textattr (0);
+  memset (&ti2, 0xf6, sizeof (ti2));
+  gettextinfo (&ti2);
+  if (ti2.attribute != 0)
+    abort ();
+  ti2.attribute = ti1.attribute;
+  if (memcmp (&ti1, &ti2, sizeof (ti1)) != 0)
     abort ();
   return 0;
 }]],[])
