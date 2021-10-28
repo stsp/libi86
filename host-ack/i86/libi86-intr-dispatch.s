@@ -100,15 +100,13 @@ ___libi86_intr_dispatch:
 .int25:
 	int	0x25
 	jc	.cy
+.nc:
 	popf
 	clc
 	ret
 .int26:
 	int	0x26
-	jc	.cy
-	popf
-	clc
-	ret
+	jnc	.nc
 .cy:
 	popf
 	stc
