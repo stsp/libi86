@@ -29,7 +29,6 @@
 
 #define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
-#include <inttypes.h>
 #include "conio.h"
 #include "libi86/internal/graph.h"
 
@@ -39,6 +38,9 @@
 void
 textbackground (int new_colour)
 {
+#ifndef __GNUC__
+  __libi86_vid_state_init ();
+#endif
   if (! __libi86_vid_state.graph_p)
     __libi86_vid_state.attribute = (__libi86_vid_state.attribute & FG_MASK)
 				   | (new_colour << BG_SHIFT & ~FG_MASK);

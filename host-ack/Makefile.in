@@ -117,6 +117,8 @@ OBJS		= bios/bios-disk.o \
 		  conio/outpw.o \
 		  conio/putch.o \
 		  conio/textattr.o \
+		  conio/textbackground.o \
+		  conio/textcolor.o \
 		  conio/textmode.o \
 		  conio/ungetch.o \
 		  conio/vcprintf.o \
