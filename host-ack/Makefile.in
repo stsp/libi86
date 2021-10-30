@@ -198,7 +198,9 @@ OBJS		= bios/bios-disk.o \
 		  i86/libi86-int86x-do.o \
 		  i86/libi86-intr-dispatch.o \
 		  i86/libi86-intrf-do.o \
+		  i86/nosound.o \
 		  i86/segread.o \
+		  i86/sound.o \
 		  stdlib/libi86-get-osmajor-osminor.o \
 		  stdlib/libi86-get-psp.o \
 		  stdlib/libi86-ultoa-uldiv.o \
