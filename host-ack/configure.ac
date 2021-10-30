@@ -26,7 +26,11 @@ dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 dnl Derived from libgloss/cr16/configure.in in Newlib.
+
 set -x
+m4_include([../aclocal.m4])
+_LIBI86_ACK_FIX
+
 AC_PREREQ(2.69)
 AC_INIT([libi86],m4_esyscmd_s([
   if git diff --quiet HEAD; then
@@ -37,9 +41,6 @@ AC_INIT([libi86],m4_esyscmd_s([
   fi]),,[libi86])
 AC_CONFIG_SRCDIR(bios/bios-memsize.S)
 AC_CONFIG_SRCDIR(make-config.sh)
-
-m4_include([../aclocal.m4])
-_LIBI86_ACK_FIX
 
 if test "${enable_shared}" = "yes" ; then
   echo "Shared libraries not supported for cross compiling, ignored"

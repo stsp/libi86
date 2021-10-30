@@ -34,6 +34,8 @@ dnl For tests, however, this script _does_ do the actual work of setting up
 dnl the test suite runs, using the GNU Autotools' experimental Autotest
 dnl feature.	-- tkchia 20210519
 
+_LIBI86_ACK_FIX
+
 AC_PREREQ(2.69)
 AC_INIT([libi86],m4_esyscmd_s([
   if git diff --quiet HEAD 2>/dev/null; then
@@ -44,11 +46,17 @@ AC_INIT([libi86],m4_esyscmd_s([
   fi]),,[libi86])
 
 _LIBI86_DEFAULT_OPTIONS
-_LIBI86_ACK_FIX
 
 AC_DISABLE_OPTION_CHECKING
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
+case "$host_alias" in
+  ia16-*-msdosack)
+    if test -z "$CC"; then
+      AC_CHECK_PROG(CC, ack-cc, ack-cc -mmsdos86, ack -mmsdos86)
+      export CC
+    fi ;;
+esac
 AC_PROG_CC
 AC_PROG_CXX
 AC_PATH_PROG(DOSEMU, dosemu, /bin/false)

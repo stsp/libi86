@@ -33,11 +33,19 @@ set x --host=ia16-elf --disable-elks-libc \
 shift
 m4_divert_pop([DEFAULTS])])
 
-dnl Patch autoconf so that it works with the Amsterdam Compiler Kit's
-dnl non-standard default output file names.  (This is for future use ---
-dnl support for ACK is still work in progress.)  -- tkchia 20210409
+dnl Patch autoconf so that it recognizes an --ack option, & also works with
+dnl the Amsterdam Compiler Kit's non-standard default output file names.
+dnl	-- tkchia 20211030
 AC_DEFUN([_LIBI86_ACK_FIX],dnl
-[m4_define([_LIBI86_SAVE_AC_COMPILER_EXEEXT_DEFAULT],dnl
+[m4_define([_LIBI86_SAVE_AC_INIT_PARSE_ARGS],dnl
+m4_defn([_AC_INIT_PARSE_ARGS]))dnl
+m4_define([_AC_INIT_PARSE_ARGS],dnl
+[m4_bpatsubst(m4_defn([_LIBI86_SAVE_AC_INIT_PARSE_ARGS]),dnl
+[--x)],dnl
+[-ack | --ack)
+    host_alias=ia16-pc-msdosack ;;
+ --x)])])dnl
+m4_define([_LIBI86_SAVE_AC_COMPILER_EXEEXT_DEFAULT],dnl
 m4_defn([_AC_COMPILER_EXEEXT_DEFAULT]))dnl
 m4_define([_AC_COMPILER_EXEEXT_DEFAULT],dnl
 [m4_bpatsubst(m4_defn([_LIBI86_SAVE_AC_COMPILER_EXEEXT_DEFAULT]),dnl

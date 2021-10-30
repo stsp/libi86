@@ -26,6 +26,9 @@ dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 set -x
+m4_include([../aclocal.m4])
+_LIBI86_ACK_FIX
+
 AC_PREREQ(2.69)
 AC_INIT([libi86],m4_esyscmd_s([
   if git diff --quiet HEAD; then
@@ -35,9 +38,6 @@ AC_INIT([libi86],m4_esyscmd_s([
     TZ=UTC0 date +%Y%m%d
   fi]),,[libi86])
 AC_CONFIG_SRCDIR(drivei86.c)
-
-m4_include([../aclocal.m4])
-_LIBI86_ACK_FIX
 
 if test "${enable_shared}" = "yes" ; then
   echo "Shared libraries not supported for cross compiling, ignored"
