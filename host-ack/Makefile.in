@@ -180,6 +180,7 @@ OBJS		= bios/bios-disk.o \
 		  graph/settextposition.o \
 		  graph/settextwindow.o \
 		  graph/setvideomode.o \
+		  i86/delay.o \
 		  i86/disable.o \
 		  i86/enable.o \
 		  i86/int86.o \

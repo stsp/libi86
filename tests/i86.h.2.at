@@ -359,3 +359,24 @@ main (void)
 }
 ]],[])
 AT_CLEANUP
+
+AT_SETUP([[delay]])
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+[[#include <i86.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+int main (void)
+{
+  time_t tm1, tm2;
+  tm1 = time (NULL);
+  delay (2200);
+  tm2 = time (NULL);
+  if (tm2 - tm1 < 2)
+    {
+      fprintf (stderr, "tm1 = %ld, tm2 = %ld\n", (long) tm1, (long) tm2);
+      abort ();
+    }
+  return 0;
+}]],[])
+AT_CLEANUP
