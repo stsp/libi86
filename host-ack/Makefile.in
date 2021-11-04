@@ -102,6 +102,7 @@ OBJS		= bios/bios-disk.o \
 		  conio/libi86-bc-cprintf.o \
 		  conio/libi86-bc-cputs.o \
 		  conio/libi86-bc-cscanf.o \
+		  conio/libi86-bc-getche.o \
 		  conio/libi86-bc-putch.o \
 		  conio/libi86-bc-vcprintf.o \
 		  conio/libi86-bc-vcscanf.o \
