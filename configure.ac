@@ -44,6 +44,7 @@ AC_INIT([libi86],m4_esyscmd_s([
   else
     TZ=UTC0 date +%Y%m%d
   fi]),,[libi86])
+AC_CONFIG_SRCDIR([LICENSE])
 
 _LIBI86_DEFAULT_OPTIONS
 
@@ -55,6 +56,10 @@ case "$host_alias" in
     if test -z "$CC"; then
       AC_CHECK_PROG(CC, ack-cc, ack-cc -mmsdos86, ack -mmsdos86)
       export CC
+    fi
+    if test -z "$CPP"; then
+      CPP="${ac_abs_confdir}/host-ack/wrap-cpp.sh"
+      export CPP
     fi ;;
 esac
 AC_PROG_CC

@@ -581,6 +581,7 @@ PACKAGE_STRING='libi86 20211105'
 PACKAGE_BUGREPORT=''
 PACKAGE_URL=''
 
+ac_unique_file="LICENSE"
 set x --host=ia16-elf --disable-elks-libc \
   --exec-prefix='${prefix}'/ia16-elf ${1+"$@"}
 shift
@@ -1899,6 +1900,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+
 ac_aux_dir=
 for ac_dir in "$srcdir" "$srcdir/.." "$srcdir/../.."; do
   if test -f "$ac_dir/install-sh"; then
@@ -2041,6 +2043,10 @@ fi
 
 
       export CC
+    fi
+    if test -z "$CPP"; then
+      CPP="${ac_abs_confdir}/host-ack/wrap-cpp.sh"
+      export CPP
     fi ;;
 esac
 ac_ext=c
