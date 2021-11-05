@@ -28,15 +28,29 @@
 # Configuration file for GitLab (https://gitlab.com/) Continuous Integration.
 
 image: ubuntu:bionic
-before_script:
-  - apt-get update -y
-  - apt-get install -y software-properties-common
-  # add-apt-repository may sometimes time out trying to download the PPA's
-  # public key.
-  - >
-      add-apt-repository -y ppa:tkchia/build-ia16 ||
-      apt-key add tests/ppa-pub-key.gpg.bin
-  - apt-get update -y
-  - apt-get install -y gcc-ia16-elf dosemu dos2unix autoconf make bsdutils
-test:
+stages:
+  - test
+test_gcc:
+  stage: test
+  before_script:
+    - apt-get update -y
+    - apt-get install -y software-properties-common
+    # add-apt-repository may sometimes time out trying to download the PPA's
+    # public key.
+    - >
+        add-apt-repository -y ppa:tkchia/build-ia16 ||
+        apt-key add tests/ppa-pub-key.gpg.bin
+    - apt-get update -y
+    - apt-get install -y gcc-ia16-elf dosemu dos2unix autoconf make bsdutils
   script: ./tests/travis-build-and-check.sh
+test_ack:
+  stage: test
+  before_script:
+    - apt-get update -y
+    - apt-get install -y software-properties-common
+    - >
+        add-apt-repository -y ppa:tkchia/de-rebus ||
+        apt-key add tests/ppa-pub-key.gpg.bin
+    - apt-get update -y
+    - apt-get install -y ack-compiler dosemu dos2unix autoconf make bsdutils
+  script: ./tests/travis-build-and-check.sh --ack

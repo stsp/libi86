@@ -33,11 +33,12 @@ set -e -v
 mkdir build-$$ install-$$
 inst_prefix="`pwd`"/install-$$
 cd build-$$
-# Travis CI sets $CC to `gcc'.  This interferes with the `configure' script's
-# detection of the C compiler, which should really be `ia16-elf-gcc'.  (!)
+# Travis CI & GitLab CI set $CC to `gcc'.  This interferes with the
+# `configure' script's detection of the C compiler, which should really be
+# either `ia16-elf-gcc' or `ack-cc'. (!)
 unset CC
-../configure --host=ia16-elf --prefix="$inst_prefix" --disable-elks-libc \
-  ${1+"$@"}
+../configure --prefix="$inst_prefix" ${1+"$@"} || \
+  (cat config.log */config.log && exit 1)
 make
 make check TESTSUITEFLAGS=-j2 || \
   (cat tests/testsuite.log && exit 1)
