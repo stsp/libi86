@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2018--2019 TK Chia
+# Copyright (c) 2018--2021 TK Chia
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -26,15 +26,15 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Script to do automated testing under Travis CI (https://travis-ci.org/),
-# invoked by .travis.yml .
+# Script to do automated testing under GitLab CI (https://docs.gitlab.com/ee/
+# ci/), invoked by .gitlab-ci.yml .
 
 set -e -v
 mkdir build-$$ install-$$
 inst_prefix="`pwd`"/install-$$
 cd build-$$
-# Travis CI & GitLab CI set $CC to `gcc'.  This interferes with the
-# `configure' script's detection of the C compiler, which should really be
+# Some CI platforms, e.g. Travis CI, set $CC to `gcc'.  This interferes with
+# the `configure' script's detection of the C compiler, which should really be
 # either `ia16-elf-gcc' or `ack-cc'. (!)
 unset CC
 ../configure --prefix="$inst_prefix" ${1+"$@"} || \

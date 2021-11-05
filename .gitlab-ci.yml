@@ -1,4 +1,4 @@
-# Copyright (c) 2020 TK Chia
+# Copyright (c) 2020--2021 TK Chia
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -42,7 +42,7 @@ test_gcc:
         apt-key add tests/ppa-pub-key.gpg.bin
     - apt-get update -y
     - apt-get install -y gcc-ia16-elf dosemu dos2unix autoconf make bsdutils
-  script: ./tests/travis-build-and-check.sh
+  script: ./tests/ci-build-and-check.sh
 test_ack:
   stage: test
   before_script:
@@ -53,4 +53,4 @@ test_ack:
         apt-key add tests/ppa-pub-key.gpg.bin
     - apt-get update -y
     - apt-get install -y ack-compiler dosemu dos2unix autoconf make bsdutils
-  script: ./tests/travis-build-and-check.sh --ack
+  script: ./tests/ci-build-and-check.sh --ack
