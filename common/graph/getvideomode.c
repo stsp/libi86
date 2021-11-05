@@ -34,5 +34,8 @@
 short
 _getvideomode (void)
 {
+#ifndef __GNUC__
+  __libi86_vid_state_init ();
+#endif
   return __libi86_vid_state.mode_num;
 }
