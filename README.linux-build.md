@@ -1,4 +1,4 @@
-### Building and installing `libi86` from sources, on Linux
+### Building and installing `libi86` from sources, on Linux, for IA-16 GCC
 
  1. &nbsp;`git clone https://gitlab.com/tkchia/libi86.git`
 
@@ -6,19 +6,37 @@
     * If using Ubuntu, you can get `gcc-ia16-elf` from [my `build-ia16` PPA](https://launchpad.net/~tkchia/+archive/ubuntu/build-ia16/).
     * Alternatively, you can build the compiler [from sources too](https://github.com/tkchia/build-ia16).
 
- 3. &nbsp;`(cd libi86 && ./autogen.sh)`
+ 3. &nbsp;`mkdir build-libi86`
 
- 4. &nbsp;`mkdir build-libi86`
+ 4. &nbsp;`cd build-libi86`
 
- 5. &nbsp;`cd build-libi86`
+ 5. &nbsp;`../libi86/configure --prefix=`_install-path_
 
- 6. &nbsp;`../libi86/configure --prefix=`_install-path_
+ 6. &nbsp;`make`
 
- 7. &nbsp;`make`
+ 7. &nbsp;`make check`
 
- 8. &nbsp;`make check`
+ 8. &nbsp;`make install`
 
- 9. &nbsp;`make install`
+### Building and installing `libi86` from sources, on Linux, for the Amsterdam Compiler Kit
+
+ 1. &nbsp;`git clone https://gitlab.com/tkchia/libi86.git`
+
+ 2. &nbsp;Install the ACK.
+    * If using Ubuntu, you can get a _very unofficial_ `ack-compiler` package from [my `de-rebus` PPA](https://launchpad.net/~tkchia/+archive/ubuntu/de-rebus/).
+    * Alternatively, you can build the compiler [from sources too](https://github.com/davidgiven/ack).
+
+ 3. &nbsp;`mkdir build-libi86`
+
+ 4. &nbsp;`cd build-libi86`
+
+ 5. &nbsp;`../libi86/configure --ack --prefix=`_install-path_
+
+ 6. &nbsp;`make`
+
+ 7. &nbsp;`make check`
+
+ 8. &nbsp;`make install`
 
 ### Customizing the test suite run
 
