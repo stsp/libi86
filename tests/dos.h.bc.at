@@ -214,3 +214,77 @@ main (int argc, char **argv)
 #endif
 }]],[])
 AT_CLEANUP
+
+AT_SETUP([[inportb, outportb]])
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+[[#define _BORLANDC_SOURCE
+#include <dos.h>
+#include <stdlib.h>
+#ifndef __FAR
+# include <bios.h>
+#endif
+
+static unsigned char s_ocw1;
+
+static void do_abort (void)
+{
+  outportb (0x21, s_ocw1);
+  abort ();
+}
+
+static unsigned ticks (void)
+{
+#ifdef __FAR
+  return *(unsigned volatile __far *) 0x0040006cul;
+#else
+  long tv;
+  if (_bios_timeofday (_TIME_GETCLOCK, &tv) < 0)
+    do_abort ();
+  return (unsigned) tv;
+#endif
+}
+
+static void hlt (void)
+{
+#ifdef __GNUC__
+  __asm volatile ("hlt");
+#endif
+}
+
+int
+main (void)
+{
+  unsigned from, c1, c2;
+
+  s_ocw1 = inportb (0x21);
+
+  if ((s_ocw1 & 0x03) != 0x00)
+    abort ();
+
+  srand (ticks ());
+  c1 = 5000;
+  while (c1-- != 0)
+    {
+      outportb (0x21, 0xff);
+      from = ticks ();
+      c2 = rand() / (RAND_MAX / 100) + 1;
+      while (c2-- != 0)
+	{
+	  if (ticks () != from)
+	    do_abort ();
+        }
+      if (inportb (0x21) != 0xff)
+	do_abort ();
+
+      outportb (0x21, s_ocw1);
+      if (c1 % 200 == 0)
+	while (ticks () == from)
+	  hlt ();
+      if (inportb (0x21) != s_ocw1)
+	do_abort ();
+    }
+
+  return 0;
+}
+]],[])
+AT_CLEANUP

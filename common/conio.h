@@ -32,6 +32,7 @@
 
 #include <libi86/internal/cdefs.h>
 #include <libi86/internal/portio.h>
+#include <libi86/internal/bc-portio.h>
 
 _LIBI86_BEGIN_EXTERN_C
 
@@ -110,15 +111,7 @@ _LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outpw, unsigned, unsigned,
 			       __libi86_outpw)
 _LIBI86_REDIRECT_AND_INLINE_2 (unsigned, _outpw, unsigned, unsigned,
 			       __libi86_outpw)
-# ifdef _BORLANDC_SOURCE
-_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, inportb, unsigned, __libi86_inp)
-_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, inportw, unsigned, __libi86_inpw)
-_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outportb, unsigned, unsigned,
-			       __libi86_outp)
-_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outportw, unsigned, unsigned,
-			       __libi86_outpw)
-# endif /* _BORLANDC_SOURCE */
-#endif /* _LIBI86_COMPILING */
+#endif /* ! _LIBI86_COMPILING */
 
 /* These functions & constants are from Borland C++, & are not in Watcom. */
 #ifdef _BORLANDC_SOURCE

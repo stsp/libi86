@@ -68,6 +68,12 @@ unsigned __libi86_inpw (unsigned __port)
 }
 
 _LIBI86_ALT_INLINE
+int __libi86_inpw_signed (unsigned __port)
+{
+  return (int) __libi86_inpw (__port);
+}
+
+_LIBI86_ALT_INLINE
 unsigned __libi86_outp (unsigned __port, unsigned __val)
 {
   __asm volatile ("{outb %1, %0|out %0, %1}"
@@ -84,6 +90,12 @@ unsigned __libi86_outpw (unsigned __port, unsigned __val)
 		  : /* no outputs */
 		  : _LIBI86_IO_PORT_CONSTRAINT (__port), "a" (__val));
   return __val;
+}
+
+_LIBI86_ALT_INLINE
+void __libi86_outpw_signed (unsigned __port, int __val)
+{
+  __libi86_outpw (__port, (unsigned) __val);
 }
 
 _LIBI86_END_EXTERN_C

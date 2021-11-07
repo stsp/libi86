@@ -31,6 +31,7 @@
 #define _LIBI86_DOS_H_
 
 #include <libi86/internal/cdefs.h>
+#include <libi86/internal/bc-portio.h>
 
 /* <dos.h> should contain everything that <i86.h> has (at least for the IA-16
    platform...).  */

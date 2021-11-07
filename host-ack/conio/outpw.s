@@ -31,8 +31,10 @@
 #include "libi86/internal/sect.h"
 
 	.define	___libi86_outpw
+	.define	___libi86_outpw_signed
 	.define	__outpw
 ___libi86_outpw:
+___libi86_outpw_signed:
 __outpw:
 	pop	bx
 	pop	dx

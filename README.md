@@ -117,13 +117,15 @@ When using ACK, you currently need to build `libi86` from sources.
 |   B | = | `inportb (`_port_`);`
 |   W | = | `inpw (`_port_`);`
 |   W | = | `_inpw (`_port_`);`
-|   B | = | `inportw (`_port_`);`
+|   B | = | `inport (`_port`);` | Returns a signed value.
+|   B | = | `inportw (`_port_`);` | Returns an unsigned value.
 |   W | = | `outp (`_port_`,` _value_`);`
 |   W | = | `_outp (`_port_`,` _value_`);`
 |   B | = | `outportb (`_port_`,` _value_`);`
 |   W | = | `outpw (`_port_`,` _value_`);`
 |   W | = | `_outpw (`_port_`,` _value_`);`
-|   B | = | `outportw (`_port_`,` _value_`);`
+|   B | = | `outport (`_port_`,` _value_`);` | Accepts a signed value to write.
+|   B | = | `outportw (`_port_`,` _value_`);` | Accepts an unsigned value to write.
 |     |   |
 |     |   | **`▗▚▚▚▚ <dos.h> ▞▞▞▞▖`** | **`<dos.h>` also includes `<i86.h>`, described below.  If `_BORLANDC_SOURCE` is defined, the `union REGS` type gets an additional `.x.flags` field, and `<dos.h>` switches accordingly to a different version of the `intdos` and `intdosx` routines.**
 |   W | = | `bdos (`_dos-func_`,` _dx_`,` _al_`);`
@@ -156,10 +158,17 @@ When using ACK, you currently need to build `libi86` from sources.
 |   W | = | `_dos_setvect (`_intr-no_`,` \*_handler_`);` | Some versions of `gcc-ia16` and ACK may not understand the `interrupt` function attribute.  In that case, this function will not be supported.
 |   W | = | `_dos_write (`_handle_`,` \*_buf_`,` _count_`,` \*_bytes_`);`
 |   W | = | `_getdrive ();`
+|     |   |
 |   B | = | `peek (`_segment_`,` _offset_`);`
 |   B | = | `peekb (`_segment_`,` _offset_`);`
 |   B | = | `poke (`_segment_`,` _offset_`,` _word-value_`);`
 |   B | = | `pokeb (`_segment_`,` _offset_`,` _byte-value_`);`
+|   B | = | `inportb (`_port_`);`
+|   B | = | `inport (`_port`);` | Returns a signed value.
+|   B | = | `inportw (`_port_`);` | Returns an unsigned value.
+|   B | = | `outportb (`_port_`,` _value_`);`
+|   B | = | `outport (`_port_`,` _value_`);` | Accepts a signed value to write.
+|   B | = | `outportw (`_port_`,` _value_`);` | Accepts an unsigned value to write.
 |     |   |
 |     |   | **`▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖`** | **Except for `__DPMI_hosted ()`, functions in `<dpmi.h>` should only be called when the caller knows it is running in DPMI mode.  `<dpmi.h>` is not supported for ACK.**
 |  IW | G | `__DPMI_hosted ();` | Returns 1 if running in protected mode under DPMI, -1 otherwise.  If the underlying C library has an implementation of this function, `libi86` will use that instead.

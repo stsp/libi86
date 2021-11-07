@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018--2020 TK Chia
+ * Copyright (c) 2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,29 +27,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "libi86/internal/call-cvt.h"
+#ifndef _LIBI86_LIBI86_INTERNAL_BC_PORTIO_H_
+#define _LIBI86_LIBI86_INTERNAL_BC_PORTIO_H_
 
-	.arch	i8086, jumps
-	.code16
-	.att_syntax prefix
+#include <libi86/internal/portio.h>
 
-	TEXT_ (outpw.S.LIBI86)
-	.global	__libi86_outpw
-	.global	__libi86_outpw_signed
-	.weak	outpw
-	.weak	_outpw
-	.weak	outportw
-__libi86_outpw:
-__libi86_outpw_signed:
-outpw:
-_outpw:
-outportw:
-	ENTER_BX_(4)
-#ifndef __IA16_CALLCVT_REGPARMCALL
-	MOV_ARG0W_BX_(%dx)
-	MOV_ARG2W_BX_(%ax)
-#else
-	xchgw	%ax,	%dx
+#if ! defined _LIBI86_COMPILING && defined _BORLANDC_SOURCE
+_LIBI86_BEGIN_EXTERN_C
+
+_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, inportb, unsigned, __libi86_inp)
+_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, inportw, unsigned, __libi86_inpw)
+_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outportb, unsigned, unsigned,
+                               __libi86_outp)
+_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outportw, unsigned, unsigned,
+                               __libi86_outpw)
+/*
+ * In the Borland toolchain, inport (.) & outport (, ) are older versions
+ * of the inportw (.) & outportw (, ) functions that deal with signed values
+ * rather than unsigned ones.
+ */
+_LIBI86_REDIRECT_AND_INLINE_1 (int, inport, unsigned,
+			       __libi86_inpw_signed)
+_LIBI86_REDIRECT_AND_INLINE_VOID_2 (outport, unsigned, int,
+				    __libi86_outpw_signed)
+
+_LIBI86_END_EXTERN_C
+#endif /* ! _LIBI86_COMPILING && _BORLANDC_SOURCE */
+
 #endif
-	outw	%ax,	%dx
-	RET_(4)

@@ -35,10 +35,12 @@
 
 	TEXT_ (inpw.S.LIBI86)
 	.global	__libi86_inpw
+	.global	__libi86_inpw_signed
 	.weak	inpw
 	.weak	_inpw
 	.weak	inportw
 __libi86_inpw:
+__libi86_inpw_signed:
 inpw:
 _inpw:
 inportw:

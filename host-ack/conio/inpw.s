@@ -31,8 +31,10 @@
 #include "libi86/internal/sect.h"
 
 	.define	___libi86_inpw
+	.define	___libi86_inpw_signed
 	.define	__inpw
 ___libi86_inpw:
+___libi86_inpw_signed:
 __inpw:
 	pop	bx
 	pop	dx
