@@ -150,6 +150,7 @@ When using ACK, you currently need to build `libi86` from sources.
 |   B | = | `keep (`_status_`,` _keep-paras_`);`
 |   W | = | `_dos_open (`\*_path_`,` _mode_`,` \*_handle_`);`
 |   W | = | `_dos_read (`_handle_`,` \*_buf_`,` _count_`,` \*_bytes_`);`
+|   W | = | `_dos_setblock (`_size_`,` _seg_`,` \*_max-size_`);`
 |   W | = | `_dos_setdrive (`_drive_`,` \*_total_`);`
 |   W | = | `_dos_setfileattr (`\*_path_`,` _attributes_`);`
 |   W | = | `_dos_setvect (`_intr-no_`,` \*_handler_`);` | Some versions of `gcc-ia16` and ACK may not understand the `interrupt` function attribute.  In that case, this function will not be supported.

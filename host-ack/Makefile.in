@@ -147,6 +147,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-keep.o \
 		  dos/dos-open.o \
 		  dos/dos-read.o \
+		  dos/dos-setblock.o \
 		  dos/dos-setdrive.o \
 		  dos/dos-setfileattr.o \
 		  dos/dos-write.o \
