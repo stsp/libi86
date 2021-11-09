@@ -78,6 +78,10 @@ extern unsigned short _bios_memsize (void);
 extern unsigned short _bios_disk (unsigned __service,
 				  struct diskinfo_t *__diskinfo);
 extern unsigned short _bios_keybrd (unsigned __service);
+extern unsigned short _bios_printer (unsigned __cmd, unsigned __port,
+				     unsigned __data);
+extern unsigned short _bios_serialcom (unsigned __cmd, unsigned __port,
+				       unsigned __data);
 /* Note:  The Open Watcom C Library Reference gives the prototype
 	int _bios_timeofday (int service, long *__timeval);
    with different argument and return types.  I follow the actual Open Watcom
