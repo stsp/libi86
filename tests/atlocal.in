@@ -30,6 +30,37 @@ DOSEMU_IS_1=no
 "$DOSEMU" $DOSEMU_OPTS --version >/dev/null 2>/dev/null \
    && "$DOSEMU" $DOSEMU_OPTS -dumb -quiet exit >/dev/null 2>/dev/null \
    && DOSEMU_IS_1=yes
+if test yes = $DOSEMU_IS_1; then
+  at_libi86_dosemu_com4_avail=no
+  if "$DOSEMU" $DOSEMU_OPTS -dumb -quiet \
+	       -I 'if ($_lpt3 ne "") abort ""' \
+	       -I 'printer { lpt 3 file "/proc/self/fd/1" }' \
+	       exit >/dev/null 2>/dev/null
+  then
+    at_libi86_dosemu_lpt3_avail=yes
+  else
+    at_libi86_dosemu_lpt3_avail=no
+  fi
+else
+  if "$DOSEMU" $DOSEMU_OPTS -tde \
+	       -I 'if ($_com4 ne "") abort ""' \
+	       -I 'serial { com 4 device "/proc/self/fd/1" }' \
+	       -E exit >/dev/null 2>/dev/null
+  then
+    at_libi86_dosemu_com4_avail=yes
+  else
+    at_libi86_dosemu_com4_avail=no
+  fi
+  if "$DOSEMU" $DOSEMU_OPTS -tde \
+	       -I 'if ($_lpt3 ne "") abort ""' \
+	       -I 'printer { lpt 3 file "/proc/self/fd/1" }' \
+	       -E exit >/dev/null 2>/dev/null
+  then
+    at_libi86_dosemu_lpt3_avail=yes
+  else
+    at_libi86_dosemu_lpt3_avail=no
+  fi
+fi
 
 : ${CC='@CC@'}
 : ${ac_compiler_gnu='@ac_compiler_gnu@'}

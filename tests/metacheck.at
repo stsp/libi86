@@ -100,3 +100,47 @@ w0000t
 ]])
 
 AT_CLEANUP
+
+AT_SETUP([[Serial port output testing]])
+
+AT_LIBI86_SKIP_IF_NO_COM4
+AT_LIBI86_CHECK_COM4(dnl
+[[#include <stdio.h>
+int main (void)
+{
+  FILE *fp = fopen ("com4", "w");
+  if (! fp)
+    return 1;
+  if (fputs ("lol\nwut\n", fp) < 0)
+    return 1;
+  if (fclose (fp) != 0)
+    return 1;
+  return 0;
+}]],[[lol
+wut
+]])
+
+AT_CLEANUP
+
+AT_SETUP([[Parallel port output testing]])
+
+AT_LIBI86_SKIP_IF_NO_LPT3
+AT_LIBI86_CHECK_LPT3(dnl
+[[#include <stdio.h>
+int main (void)
+{
+  FILE *fp = fopen ("lpt3", "w");
+  if (! fp)
+    return 1;
+  if (fputs ("hello\nthere\n!\n", fp) < 0)
+    return 1;
+  if (fclose (fp) != 0)
+    return 1;
+  return 0;
+}]],[[hello
+there
+!
+]])
+
+AT_CLEANUP
+

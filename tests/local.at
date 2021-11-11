@@ -67,6 +67,7 @@ dnl $2 = Unix path which $1 resides in (defaults to current directory)
 dnl $3 = options to pass to dosemu (default -dumb [-tde] >a.log)
 dnl $4 = Unix program to run to postprocess dosemu output (default
 dnl	 postproc-stdout.sh in this file's source directory)
+dnl $5 = command to prepare a.log before running dosemu (default rm -f)
 dnl Note: GitLab sets $TERM to `dumb'.  This causes video memory (0xb800:0)
 dnl	  reads within dosemu to return all zeroes, which is not good for
 dnl	  tests that need to capture "screen contents".  Set $TERM to
@@ -75,7 +76,7 @@ m4_define([AT_LIBI86_RUN],[[( \
   if test x = x"$TERM" -o xdumb = x"$TERM"; then \
     TERM=vt220 && LINES=25 && COLUMNS=80 && export TERM LINES COLUMNS; \
   fi && \
-  rm -f a.log && \
+  ]m4_default($5,rm -f)[ a.log && \
   ulimit -t 60 && \
   if test yes = "$DOSEMU_IS_1"; then \
     "$DOSEMU" $DOSEMU_OPTS ]m4_default($3,-dumb >a.log)[ \
@@ -91,11 +92,11 @@ m4_define([AT_LIBI86_RUN],[[( \
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_A],[dnl
 AT_LIBI86_COMPILE($2,$3,$1)
-AT_CHECK([AT_LIBI86_RUN($4,,$5,$6)],,[[expout]],[[ignore]])])
+AT_CHECK([AT_LIBI86_RUN($4,,$5,$6,$7)],,[[expout]],[[ignore]])])
 
 m4_define([_AT_LIBI86_DO_CHECK_CXX_EXPOUT_A],[dnl
 AT_LIBI86_COMPILE_CXX($2,$3,$1)
-AT_CHECK([AT_LIBI86_RUN($4,,$5,$6)],,[[expout]],[[ignore]])])
+AT_CHECK([AT_LIBI86_RUN($4,,$5,$6,$7)],,[[expout]],[[ignore]])])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_B],[dnl
 if test yes = "$ac_compiler_gnu"; then
@@ -151,6 +152,7 @@ dnl $4 = program to run on dosemu (default a.exe)
 dnl $5 = options to pass to dosemu (default -dumb [-tde] >a.log)
 dnl $6 = Unix program to run to postprocess dosemu output (default
 dnl	 postproc-stdout.sh in this file's source directory)
+dnl $7 = command to prepare a.log before running dosemu (default rm -f)
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_F],[dnl
 _AT_LIBI86_DO_CHECK_EXPOUT_E($@)
 if test yes = "$ac_compiler_gnu"; then
@@ -205,6 +207,7 @@ dnl $3 = program to run on dosemu (default a.exe)
 dnl $4 = options to pass to dosemu (default -dumb [-tde] >a.log)
 dnl $5 = Unix program to run to postprocess dosemu output (default
 dnl	 postproc-stdout.sh in this file's source directory)
+dnl $6 = command to prepare a.log before running dosemu (default rm -f)
 m4_define([AT_LIBI86_CHECK],[dnl
 AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL($@)])
 
@@ -214,6 +217,7 @@ dnl $3 = program to run on dosemu (default a.exe)
 dnl $4 = options to pass to dosemu (default -dumb [-tde] >a.log)
 dnl $5 = Unix program to run to postprocess dosemu output (default
 dnl	 postproc-stdout.sh in this file's source directory)
+dnl $6 = command to prepare a.log before running dosemu (default rm -f)
 m4_define([AT_LIBI86_CHECK_CXX],[dnl
 AT_LIBI86_CHECK_CXX_FOR_NEAR_DATA_MODEL($@)])
 
@@ -290,6 +294,20 @@ unix2dos x.bat
 AT_LIBI86_CHECK_FOR_NONDPMIABLE([$1],[$2],[[x.bat]],[$3 [-t >/dev/null]],dnl
 [["$abs_srcdir"/postproc-console.sh]])])
 
+dnl $1 = text of program to test
+dnl $2 = expected program output on serial port com4
+dnl $3 = additional options to pass to dosemu
+m4_define([AT_LIBI86_CHECK_COM4],[dnl
+AT_LIBI86_CHECK([$1],[$2],,dnl
+[$3 [-t -I 'serial { com 4 device "a.log" }' >/dev/null]],,touch)])
+
+dnl $1 = text of program to test
+dnl $2 = expected program output on parallel port lpt3
+dnl $3 = additional options to pass to dosemu
+m4_define([AT_LIBI86_CHECK_LPT3],[dnl
+AT_LIBI86_CHECK([$1],[$2],,dnl
+[$3 [-t -I 'printer { lpt 3 file "a.log" }' >/dev/null]],,touch)])
+
 dnl run a program with an additional temporary file as input
 dnl $1 = text of program to test
 dnl $2 = expected program output
@@ -304,3 +322,11 @@ AT_LIBI86_CHECK(dnl
 dnl completely skip a test if C compiler does not support DPMI programs
 m4_define([AT_LIBI86_SKIP_IF_NO_DPMI],[dnl
 AT_SKIP_IF([test no = "$at_libi86_cc_have_dpmi"])])
+
+dnl completely skip a test if the dosemu setup does not allow capturing com4
+m4_define([AT_LIBI86_SKIP_IF_NO_COM4],[dnl
+AT_SKIP_IF([test no = "$at_libi86_dosemu_com4_avail"])])
+
+dnl completely skip a test if the dosemu setup does not allow capturing lpt3
+m4_define([AT_LIBI86_SKIP_IF_NO_LPT3],[dnl
+AT_SKIP_IF([test no = "$at_libi86_dosemu_lpt3_avail"])])
