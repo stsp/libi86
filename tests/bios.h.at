@@ -275,3 +275,27 @@ main (void)
   return 0;
 }]],[])
 AT_CLEANUP
+
+AT_SETUP([[_bios_printer]])
+AT_LIBI86_SKIP_IF_NO_LPT3
+AT_LIBI86_CHECK_LPT3(dnl
+[[#include <stdlib.h>
+#include <bios.h>
+static void
+check (unsigned status)
+{
+  if ((status & 0x19) != 0x10)  /* want: selected, no I/O error, no timeout */
+    abort ();
+}
+int
+main (void)
+{
+  check (_bios_printer (_PRINTER_INIT, 2, 'x'));
+  check (_bios_printer (_PRINTER_WRITE, 2, '?'));
+  check (_bios_printer (_PRINTER_WRITE, 2, '\r'));
+  check (_bios_printer (_PRINTER_WRITE, 2, '\n'));
+  check (_bios_printer (_PRINTER_STATUS, 2, 'y'));
+  return 0;
+}]],[[?
+]])
+AT_CLEANUP

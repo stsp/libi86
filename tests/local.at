@@ -304,9 +304,11 @@ AT_LIBI86_CHECK([$1],[$2],,dnl
 dnl $1 = text of program to test
 dnl $2 = expected program output on parallel port lpt3
 dnl $3 = additional options to pass to dosemu
+dnl NOTE: `{ lpt 3 file "a.log" }' does not really work here, as int 0x17 will
+dnl seek back to the beginning of a.log with each byte written
 m4_define([AT_LIBI86_CHECK_LPT3],[dnl
 AT_LIBI86_CHECK([$1],[$2],,dnl
-[$3 [-t -I 'printer { lpt 3 file "a.log" }' >/dev/null]],,touch)])
+[$3 [-t -I 'printer { lpt 3 command "cat >>a.log" }' >/dev/null]])])
 
 dnl run a program with an additional temporary file as input
 dnl $1 = text of program to test

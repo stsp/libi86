@@ -74,6 +74,7 @@ When using ACK, you currently need to build `libi86` from sources.
 |   B | = | `biosmemory ();`
 |   W | = | `_bios_keybrd (`_service_`);`
 |   B | = | `bioskey (`_service_`);`
+|   W | = | `_bios_printer (`_service_`,` _port_`,` _data_`);`
 |   W | = | `_bios_timeofday (`_service_`,` \*_timeval_`);`
 |   X | = | `_bios_joystick (`_service_`,` \*_joyinfo_`);` | Reads joystick status via `int 0x15` function `0x84`.
 |     |   |
@@ -117,7 +118,7 @@ When using ACK, you currently need to build `libi86` from sources.
 |   B | = | `inportb (`_port_`);`
 |   W | = | `inpw (`_port_`);`
 |   W | = | `_inpw (`_port_`);`
-|   B | = | `inport (`_port`);` | Returns a signed value.
+|   B | = | `inport (`_port_`);` | Returns a signed value.
 |   B | = | `inportw (`_port_`);` | Returns an unsigned value.
 |   W | = | `outp (`_port_`,` _value_`);`
 |   W | = | `_outp (`_port_`,` _value_`);`
@@ -164,7 +165,7 @@ When using ACK, you currently need to build `libi86` from sources.
 |   B | = | `poke (`_segment_`,` _offset_`,` _word-value_`);`
 |   B | = | `pokeb (`_segment_`,` _offset_`,` _byte-value_`);`
 |   B | = | `inportb (`_port_`);`
-|   B | = | `inport (`_port`);` | Returns a signed value.
+|   B | = | `inport (`_port_`);` | Returns a signed value.
 |   B | = | `inportw (`_port_`);` | Returns an unsigned value.
 |   B | = | `outportb (`_port_`,` _value_`);`
 |   B | = | `outport (`_port_`,` _value_`);` | Accepts a signed value to write.
