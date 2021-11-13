@@ -67,9 +67,11 @@ INSTALL_HEADERS	= bios.h \
 		  conio.h \
 		  i86.h \
 		  share.h \
+		  libi86/internal/bc-portio.h \
 		  libi86/internal/cdefs.h \
 		  libi86/internal/farptr.h \
 		  libi86/internal/graph.h \
+		  libi86/internal/portio.h \
 		  $(CLEAN_HEADERS) \
 		  $(DISTCLEAN_HEADERS)
 CLEAN_HEADERS	= libi86/config.h

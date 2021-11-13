@@ -77,6 +77,7 @@ INSTALL_HEADERS	= bios.h \
 		  share.h \
 		  libi86/stdlib.h \
 		  libi86/string.h \
+		  libi86/internal/bc-portio.h \
 		  libi86/internal/cdefs.h \
 		  libi86/internal/far-cxx.h \
 		  libi86/internal/farptr.h \
