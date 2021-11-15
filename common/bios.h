@@ -105,6 +105,26 @@ extern unsigned short _bios_joystick (unsigned __service,
 #define _COM_RECEIVE		2
 #define _COM_STATUS		3
 
+#define _COM_110		0x00u
+#define _COM_150		0x20u
+#define _COM_300		0x40u
+#define _COM_600		0x60u
+#define _COM_1200		0x80u
+#define _COM_2400		0xa0u
+#define _COM_4800		0xc0u
+#define _COM_9600		0xe0u
+
+#define _COM_NOPARITY		0x00u
+#define _COM_ODDPARITY		0x08u
+#define _COM_SPACEPARITY	0x10u
+#define _COM_EVENPARITY		0x18u
+
+#define _COM_STOP1		0x00u
+#define _COM_STOP2		0x04u
+
+#define _COM_CHR7		0x02u
+#define _COM_CHR8		0x03u
+
 #define _KEYBRD_READ		0x00u
 #define _KEYBRD_READY		0x01u
 #define _KEYBRD_SHIFTSTATUS	0x02u
