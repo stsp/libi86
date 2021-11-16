@@ -75,6 +75,7 @@ When using ACK, you currently need to build `libi86` from sources.
 |   W | = | `_bios_keybrd (`_service_`);`
 |   B | = | `bioskey (`_service_`);`
 |   W | = | `_bios_printer (`_service_`,` _port_`,` _data_`);`
+|   W | = | `_bios_serialcom (`_service_`,` _port_`,` _data_`);`
 |   W | = | `_bios_timeofday (`_service_`,` \*_timeval_`);`
 |   X | = | `_bios_joystick (`_service_`,` \*_joyinfo_`);` | Reads joystick status via `int 0x15` function `0x84`.
 |     |   |

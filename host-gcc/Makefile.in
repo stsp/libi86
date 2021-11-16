@@ -93,6 +93,7 @@ OBJS		= bios/bios-disk.o \
 		  bios/bios-keybrd.o \
 		  bios/bios-memsize.o \
 		  bios/bios-printer.o \
+		  bios/bios-serialcom.o \
 		  bios/bios-timeofday.o \
 		  conio/cgets.o \
 		  conio/clreol.o \

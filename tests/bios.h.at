@@ -299,3 +299,28 @@ main (void)
 }]],[[?
 ]])
 AT_CLEANUP
+
+AT_SETUP([[_bios_serialcom]])
+AT_LIBI86_SKIP_IF_NO_COM4
+AT_LIBI86_CHECK_COM4(dnl
+[[#include <stdlib.h>
+#include <bios.h>
+static void
+check (unsigned status)
+{
+  /* want: no timeout, no framing error, no parity error, no overrun error */
+  if ((status & 0x8e00) != 0)
+    abort ();
+}
+int
+main (void)
+{
+  check (_bios_serialcom (_COM_INIT, 3,
+			  _COM_9600 | _COM_NOPARITY | _COM_STOP1 | _COM_CHR8));
+  check (_bios_serialcom (_COM_SEND, 3, '!'));
+  check (_bios_serialcom (_COM_SEND, 3, '\r'));
+  check (_bios_serialcom (_COM_SEND, 3, '\n'));
+  return 0;
+}]],[[!
+]])
+AT_CLEANUP
