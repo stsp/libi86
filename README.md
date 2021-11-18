@@ -223,8 +223,8 @@ When using ACK, you currently need to build `libi86` from sources.
 |   W | = | \*`_ltoa (`_value_`,` \*_buffer_`,` _radix_`);`
 |  W+ | = | `_makepath (`\*_path_`,` \*_drive_`,` \*_dir_`,` \*_fname_`,` \*_ext_`);` | As extensions, this function (1) checks for buffer overflow, and (2) gives a return value.  Upon an error, the return value is non-zero, `errno` is set, and _path_`[]` holds either an empty string or a truncated path.  Network _drive_`[]` values starting with two backslashes (`\\`) are not supported.
 |   W | = | `_splitpath (`\*_path_`,` \*_drive_`,` \*_dir_`,` \*_fname_`,` \*_ext_`);` | Long filenames, and network paths starting with two backslashes (`\\`), are not supported.
-|   W | = | \*`ulltoa (`_value_`,` \*_buffer_`,` _radix_`);`
-|   W | = | \*`_ulltoa (`_value_`,` \*_buffer_`,` _radix_`);`
+|   W | G | \*`ulltoa (`_value_`,` \*_buffer_`,` _radix_`);` | Not yet supported on ACK &mdash; it lacks `long long` support for IA-16.
+|   W | G | \*`_ulltoa (`_value_`,` \*_buffer_`,` _radix_`);` | Not yet supported on ACK &mdash; it lacks `long long` support for IA-16.
 |   W | = | \*`ultoa (`_value_`,` \*_buffer_`,` _radix_`);`
 |   W | = | \*`_ultoa (`_value_`,` \*_buffer_`,` _radix_`);`
 |     |   |
