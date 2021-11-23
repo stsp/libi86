@@ -150,13 +150,36 @@ _DPMIAllocateDOSMemoryBlock (uint16_t __paras)
   return __blk;
 }
 
+_LIBI86_ALT_INLINE int32_t
+_DPMIAllocateLDTDescriptors (uint16_t __count)
+{
+  uint16_t __sel;
+  int __res;
+  __asm volatile ("int {$}0x31; sbb{w} %1, %1"
+		  : "=a" (__sel), "=cr" (__res)
+		  : "0" (0x0000U), "c" (__count)
+		  : "cc", "memory");
+  return (int32_t) __res << 16 | __sel;
+}
+
 _LIBI86_ALT_INLINE int
 _DPMIFreeDOSMemoryBlock (uint16_t __sel)
 {
   int __res;
   __asm volatile ("int {$}0x31; sbb{w} %0, %0"
-		  : "=a" (__res)
-		  : "0" (0x0101U), "d" (__sel)
+		  : "=adr" (__res)
+		  : "a" (0x0101U), "d" (__sel)
+		  : "cc", "memory");
+  return __res;
+}
+
+_LIBI86_ALT_INLINE int
+_DPMIFreeLDTDescriptor (uint16_t __sel)
+{
+  int __res;
+  __asm volatile ("int {$}0x31; sbb{w} %0, %0"
+		  : "=abr" (__res)
+		  : "a" (0x0001U), "b" (__sel)
 		  : "cc", "memory");
   return __res;
 }
@@ -170,8 +193,8 @@ _DPMIGetDescriptor (uint16_t __sel, __libi86_fpv_t __desc)
 {
   int __res;
   __asm volatile ("int {$}0x31; sbb{w} %0, %0"
-		  : "=a" (__res)
-		  : "0" (0x000bU), "b" (__sel),
+		  : "=abr" (__res)
+		  : "a" (0x000bU), "b" (__sel),
 		    "e" (FP_SEG (__desc)), "D" (FP_OFF (__desc))
 		  : "cc", "memory");
   return __res;
@@ -194,12 +217,28 @@ _DPMISegmentToDescriptor (uint16_t __para)
   uint16_t __sel;
   int __res;
  __asm volatile ("int {$}0x31; sbb{w} %1, %1"
-		 : "=a" (__sel), "=r" (__res)
+		 : "=a" (__sel), "=br" (__res)
 		 : "0" (0x0002U), "b" (__para)
 		 : "cc", "memory");
   if (__res < 0)
     return -1L;
   return (int32_t) __sel;
+}
+
+_LIBI86_ALT_INLINE int
+#ifdef __FAR
+_DPMISetDescriptor (uint16_t __sel, const descriptor __far *__desc)
+#else
+_DPMISetDescriptor (uint16_t __sel, __libi86_fpcv_t __desc)
+#endif
+{
+  int __res;
+  __asm volatile ("int {$}0x31; sbb{w} %0, %0"
+		  : "=abr" (__res)
+		  : "a" (0x000cU), "b" (__sel),
+		    "e" (FP_SEG (__desc)), "D" (FP_OFF (__desc))
+		  : "cc", "memory");
+  return __res;
 }
 
 _LIBI86_ALT_INLINE int
@@ -209,8 +248,8 @@ _DPMISimulateRealModeInterrupt (uint8_t __intr_no, uint8_t __flags,
 {
   int __res;
   __asm volatile ("int {$}0x31; sbb{w} %0, %0"
-		  : "=a" (__res)
-		  : "0" (0x0300U),
+		  : "=abcr" (__res)
+		  : "a" (0x0300U),
 		    "b" ((uint16_t) __flags << 8 | __intr_no),
 		    "c" (__words_to_copy),
 		    "e" (FP_SEG (__call_st)), "D" (FP_OFF (__call_st))

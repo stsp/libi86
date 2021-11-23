@@ -179,10 +179,13 @@ OBJS		= bios/bios-disk.o \
 		  dos/pokeb.o \
 		  dpmi/dpmi-hosted.o \
 		  dpmi/dpmiallocatedosmemoryblock.o \
+		  dpmi/dpmiallocateldtdescriptors.o \
 		  dpmi/dpmifreedosmemoryblock.o \
+		  dpmi/dpmifreeldtdescriptor.o \
 		  dpmi/dpmigetdescriptor.o \
 		  dpmi/dpmigetsegmentbaseaddress.o \
 		  dpmi/dpmisegmenttodescriptor.o \
+		  dpmi/dpmisetdescriptor.o \
 		  dpmi/dpmisimulaterealmodeint.o \
 		  graph/clearscreen.o \
 		  graph/gettextposition.o \
