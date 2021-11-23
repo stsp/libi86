@@ -276,7 +276,7 @@ int main (void)
 AT_CLEANUP
 
 AT_SETUP([[_disable, _enable]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
 [[#include <bios.h>
 #include <i86.h>
 #include <stdlib.h>
@@ -304,10 +304,8 @@ main (void)
 {
   unsigned from, c1, c2;
 
-#ifndef __IA16_FEATURE_PROTECTED_MODE
   if (! (__libi86_get_flags () & 0x0200u))
     abort ();
-#endif
 
   srand (ticks ());
   c1 = 5000;
@@ -318,10 +316,8 @@ main (void)
       /* Check that the handler for the timer interrupt (IRQ 0) cannot
 	 update the tick count, when all IRQs are disabled.  */
       from = ticks ();
-#ifndef __IA16_FEATURE_PROTECTED_MODE
       if (__libi86_get_flags () & 0x0200u)
 	do_abort ();
-#endif
       c2 = rand() / (RAND_MAX / 100) + 1;
       while (c2-- != 0)
 	{
@@ -329,10 +325,8 @@ main (void)
 	    do_abort ();
         }
 
-#ifndef __IA16_FEATURE_PROTECTED_MODE
       if (__libi86_get_flags () & 0x0200u)
 	do_abort ();
-#endif
 
       /* Allow interrupts for a while.  Every now and then, also wait for
 	 the timer tick count to get updated.  */
@@ -341,18 +335,11 @@ main (void)
 	while (ticks () == from)
 	  {
 #ifdef __GNUC__
-# ifndef __IA16_FEATURE_PROTECTED_MODE
 	    __asm volatile ("hlt");
-# else
-	    unsigned ax;
-	    __asm volatile ("int {$}0x2f" : "=a" (ax) : "0" (0x1680u) : "cc");
-# endif
 #endif
 	  }
-#ifndef __IA16_FEATURE_PROTECTED_MODE
       if (! (__libi86_get_flags () & 0x0200u))
 	do_abort ();
-#endif
     }
 
   return 0;

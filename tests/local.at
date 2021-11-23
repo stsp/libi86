@@ -236,7 +236,7 @@ AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
 _AT_LIBI86_DO_CHECK_EXPOUT_F([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
-_AT_LIBI86_DO_CHECK_EXPOUT_F([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))
 fi])
 
 m4_define([AT_LIBI86_CHECK_FOR_NONDPMIABLE],[dnl
@@ -276,6 +276,23 @@ if errorlevel 1 del a.log
 unix2dos x.bat
 AT_LIBI86_CHECK([$1],[$2],[[x.bat]],[$3 [-t >/dev/null]],dnl
 [["$abs_srcdir"/postproc-console.sh]])])
+
+m4_define([AT_LIBI86_CHECK_CONSOLE_FOR_SMALL_MODEL_OR_ABOVE],[dnl
+AT_LIBI86_COMPILE_CONSOLE_CAPTURE_PROG
+AT_DATA([[x.bat]],dnl
+[[@echo off
+cls
+a.exe
+if not errorlevel 1 goto ok
+goto done
+:ok
+capture.exe >a.log
+if errorlevel 1 del a.log
+:done
+]])
+unix2dos x.bat
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE([$1],[$2],[[x.bat]],dnl
+[$3 [-t >/dev/null]],[["$abs_srcdir"/postproc-console.sh]])])
 
 m4_define([AT_LIBI86_CHECK_CONSOLE_FOR_NONDPMIABLE],[dnl
 AT_LIBI86_COMPILE_CONSOLE_CAPTURE_PROG
