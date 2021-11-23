@@ -102,7 +102,9 @@ extern unsigned _dos_creatnew (const char *__path, unsigned __attr,
 extern unsigned _dos_findfirst (const char *__path, unsigned __attr,
 				struct find_t *__buf);
 extern unsigned _dos_findnext (struct find_t *__buf);
+#ifndef __ACK
 extern unsigned _dos_findclose (struct find_t *__buf);
+#endif
 extern unsigned _dos_freemem (unsigned __seg);
 extern void _dos_getdate (struct dosdate_t *__date);
 extern unsigned _dos_getdiskfree (unsigned __drive,
@@ -144,13 +146,11 @@ extern void _dos_setvect (unsigned __intr_no, __libi86_isr_t __isr)
 			   "__interrupt unrecognized");
 #endif
 
-#ifdef __GNUC__
 _LIBI86_ALT_INLINE unsigned
 _dos_findclose (struct find_t *__buf)
 {
   return 0;
 }
-#endif
 
 #ifdef _BORLANDC_SOURCE
 _LIBI86_REDIRECT_AND_INLINE_2 (int, peek, unsigned, unsigned, __libi86_peek)
