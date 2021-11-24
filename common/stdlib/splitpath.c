@@ -31,6 +31,7 @@
 #include <string.h>
 #include "libi86/stdlib.h"
 #include "libi86/internal/dos.h"
+#include "libi86/internal/dos-dbcs.h"
 
 #ifdef __MSDOS__
 static const char *
@@ -58,7 +59,8 @@ void
 _splitpath (const char *path, char drive[_MAX_DRIVE], char dir[_MAX_DIR],
 	    char fname[_MAX_FNAME], char ext[_MAX_EXT])
 {
-  const char *p = path, *q, *dir_end = NULL;
+  _dos_dbcs_lead_table_t dbcs = _dos_get_dbcs_lead_table ();
+  const char *p = path, *q, *dir_end = NULL, *name_end = NULL;
   char c;
 
   /* If there is a drive letter, extract it. */
@@ -73,6 +75,8 @@ _splitpath (const char *path, char drive[_MAX_DRIVE], char dir[_MAX_DIR],
     {
       if (__libi86_msdos_path_sep_p (c))
 	dir_end = q;
+      else if (__libi86_msdos_dbcs_lead_p (c, dbcs) && *q)
+	++q;
     }
   if (dir_end)
     p = copy_component (p, dir_end - p, dir, _MAX_DIR);
@@ -80,10 +84,17 @@ _splitpath (const char *path, char drive[_MAX_DRIVE], char dir[_MAX_DIR],
     skip_component (dir);
 
   /* Extract the file name & extension. */
-  q = strrchr (p, '.');
-  if (q)
+  q = p;
+  while ((c = *q++) != 0)
     {
-      p = copy_component (p, q - p, fname, _MAX_FNAME);
+      if (c == '.')
+	name_end = q - 1;
+      else if (__libi86_msdos_dbcs_lead_p (c, dbcs) && *q)
+	++q;
+    }
+  if (name_end)
+    {
+      p = copy_component (p, name_end - p, fname, _MAX_FNAME);
       copy_component (p, strlen (p), ext, _MAX_EXT);
     }
   else

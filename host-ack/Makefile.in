@@ -171,6 +171,8 @@ OBJS		= bios/bios-disk.o \
 		  dos/peekb.o \
 		  dos/poke.o \
 		  dos/pokeb.o \
+		  dos-dbcs/dos-get-dbcs-lead-table.o \
+		  dos-dbcs/libi86-msdos-dbcs-lead-p.o \
 		  graph/clearscreen.o \
 		  graph/gettextposition.o \
 		  graph/getvideomode.o \

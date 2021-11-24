@@ -33,6 +33,7 @@
 #include <string.h>
 #include "libi86/stdlib.h"
 #include "libi86/internal/dos.h"
+#include "libi86/internal/dos-dbcs.h"
 
 #ifdef __MSDOS__
 # define ADD_CHAR(x) \
@@ -51,10 +52,16 @@
 		    if (__comp && *__comp) \
 		      { \
 			char __c; \
+			if (last_c_was_lead_p) \
+			  goto bogus; \
 			while ((__c = *__comp++) != 0) \
 			  { \
 			    ADD_CHAR (__c); \
-			    if (__add_path_sep_p) \
+			    if (last_c_was_lead_p) \
+			      last_c_was_lead_p = false; \
+			    else if (__libi86_msdos_dbcs_lead_p (__c, dbcs)) \
+			      last_c_was_lead_p = true; \
+			    else if (__add_path_sep_p) \
 			      { \
 				if (__libi86_msdos_path_sep_p (__c)) \
 				  { \
@@ -75,8 +82,9 @@ int
 _makepath (char path[_MAX_PATH], const char *drive, const char *dir,
 	   const char *fname, const char *ext)
 {
+  _dos_dbcs_lead_table_t dbcs;
   char *p = path, *e;
-  bool last_c_was_path_sep_p = false;
+  bool last_c_was_lead_p = false, last_c_was_path_sep_p = false;
   /*
    * Open Watcom C tries to use the same path separator character as used in
    * the original path.  This code tries to do something similar, but a bit
@@ -88,6 +96,7 @@ _makepath (char path[_MAX_PATH], const char *drive, const char *dir,
   if (! path)
     goto bogus0;
 
+  dbcs = _dos_get_dbcs_lead_table ();
   e = &path[_MAX_PATH - 1];
 
   /*
@@ -135,12 +144,14 @@ _makepath (char path[_MAX_PATH], const char *drive, const char *dir,
   return 0;
 
 bogus:
+  _dos_free_dbcs_lead_table (dbcs);
   path[0] = 0;
 bogus0:
   errno = EINVAL;
   return -1;
 
 overflow:
+  _dos_free_dbcs_lead_table (dbcs);
   *e = 0;
 # ifdef _LIBI86_INTERNAL_HAVE_ENAMETOOLONG
   errno = ENAMETOOLONG;

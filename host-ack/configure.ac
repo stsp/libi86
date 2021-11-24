@@ -84,6 +84,10 @@ AC_CHECK_FUNC([vsscanf],
 AC_CHECK_FUNC([_sys_seterrno],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE__SYS_SETERRNO],[1])],,
 	      [long _sys_seterrno (unsigned);])
+AC_CHECK_FUNC([_dos_get_dbcs_lead_table],
+  [AC_DEFINE([_LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE],[1])])
+AC_CHECK_FUNC([_dos_free_dbcs_lead_table],
+  [AC_DEFINE([_LIBI86_INTERNAL_HAVE__DOS_FREE_DBCS_LEAD_TABLE],[1])])
 
 AC_CHECK_DECLS([__MSDOS__],[libi86_ackhost=msdos86],[libi86_ackhost=pc86])
 AC_SUBST(libi86_ackhost)

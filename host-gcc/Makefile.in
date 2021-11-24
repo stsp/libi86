@@ -177,6 +177,9 @@ OBJS		= bios/bios-disk.o \
 		  dos/peekb.o \
 		  dos/poke.o \
 		  dos/pokeb.o \
+		  dos-dbcs/dos-get-dbcs-lead-table.o \
+		  dos-dbcs/dos-free-dbcs-lead-table.o \
+		  dos-dbcs/libi86-msdos-dbcs-lead-p.o \
 		  dpmi/dpmi-hosted.o \
 		  dpmi/dpmiallocatedosmemoryblock.o \
 		  dpmi/dpmiallocateldtdescriptors.o \
