@@ -3817,6 +3817,18 @@ if test "x$ac_cv_func__sys_seterrno" = xyes; then :
 
 fi
 
+ac_fn_c_check_func "$LINENO" "_dos_get_dbcs_lead_table" "ac_cv_func__dos_get_dbcs_lead_table"
+if test "x$ac_cv_func__dos_get_dbcs_lead_table" = xyes; then :
+  $as_echo "#define _LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE 1" >>confdefs.h
+
+fi
+
+ac_fn_c_check_func "$LINENO" "_dos_free_dbcs_lead_table" "ac_cv_func__dos_free_dbcs_lead_table"
+if test "x$ac_cv_func__dos_free_dbcs_lead_table" = xyes; then :
+  $as_echo "#define _LIBI86_INTERNAL_HAVE__DOS_FREE_DBCS_LEAD_TABLE 1" >>confdefs.h
+
+fi
+
 
 ac_fn_c_check_decl "$LINENO" "__MSDOS__" "ac_cv_have_decl___MSDOS__" "$ac_includes_default"
 if test "x$ac_cv_have_decl___MSDOS__" = xyes; then :

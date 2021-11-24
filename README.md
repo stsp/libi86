@@ -175,10 +175,13 @@ When using ACK, you currently need to build `libi86` from sources.
 |     |   | **`▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖`** | **Except for `__DPMI_hosted ()`, functions in `<dpmi.h>` should only be called when the caller knows it is running in DPMI mode.  `<dpmi.h>` is not supported for ACK.**
 |  IW | G | `__DPMI_hosted ();` | Returns 1 if running in protected mode under DPMI, -1 otherwise.  If the underlying C library has an implementation of this function, `libi86` will use that instead.
 |  IW | G | `_DPMIAllocateDOSMemoryBlock (`_paras_`);` | `int 0x31` function `0x0100`.  Returns a structure giving the real mode segment and protected mode selector for the DOS memory block.  On failure, returns `{ 0, 0 }`.
+|  IW | G | `_DPMIAllocateLDTDescriptors (`_count_`);` | `int 0x31` function `0x0000`.  Returns a starting protected-mode selector, case to an `int32_t`.  On failure, returns a negative value.
 |  IW | G | `_DPMIFreeDOSMemoryBlock (`_sel_`);` | `int 0x31` function `0x0101`.  Returns 0 on success, -1 on error.
+|  IW | G | `_DPMIFreeLDTDescriptor (`_sel_`);` | `int 0x31` function `0x0001`.  Returns 0 on success, -1 on error.
 |  IW | G | `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);` | `int 0x31` function `0x000b`.  Returns 0 on success, -1 on error.
 |  IW | G | `_DPMIGetSegmentBaseAddress (`_sel_`);` | `int 0x31` function `0x0006`.  Returns _sel_'s base address on success; return value is undefined on error.
 |  IW | G | `_DPMISegmentToDescriptor (`_seg-para_`);` | `int 0x31` function `0x0002`.  On success, returns a protected-mode selector value for the real-mode segment _seg-para_`:0`.  On failure, returns a negative value.
+|  IW | G | `_DPMISetDescriptor (`_sel_`,` \*_desc_`);` | `int 0x31` function `0x000c`.  Returns 0 on success, -1 on error.
 |  IW | G | `_DPMISimulateRealModeInterrupt (`_inter-no_`,` _reset_`,` _words-to-copy_`,` \*_call-struct_`);` | `int 0x31` function `0x0300`.  Returns 0 on success, -1 on error.  _words-to-copy_ should probably be 0.
 |     |   |
 |     |   | **`▗▚▚▚▚ <graph.h> ▞▞▞▞▖`** | **Unlike in Open Watcom, where all functions in `<graph.h>` are far, in `libi86` the far-ness of functions follows the chosen memory model.  Thus, in a small-memory-model program, `_setvideomode` is a near function.  However, pointers to data are still far.**
