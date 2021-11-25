@@ -36,6 +36,7 @@
 #ifdef __IA16_FEATURE_PROTECTED_MODE
 # include "dpmi.h"
 #endif
+#include <stdio.h>
 
 _dos_dbcs_lead_table_t
 __libi86_msdos_get_dbcs_lead_table (void)
@@ -51,7 +52,7 @@ __libi86_msdos_get_dbcs_lead_table (void)
       uint32_t seg_linear;
       _dos_dbcs_lead_table_t lt;
 
-      rmc.ss = rmc.sp;
+      memset (&rmc, 0, sizeof (rmc));  /* also set rmc.ss = rmc.sp := 0 */
       rmc.flags = 1;  /* pre-set carry flag */
       rmc.ax = 0x6300U;
       rmc.si = 0xffffU;
@@ -111,6 +112,7 @@ __libi86_msdos_get_dbcs_lead_table (void)
       unsigned short off, seg;
       _dos_dbcs_lead_table_t lt;
 
+      memset (&r, 0, sizeof (r));
       r.w.cflag = 1;  /* pre-set carry flag */
       r.w.ax = 0x6300U;
       r.w.si = 0xffffU;

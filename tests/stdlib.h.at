@@ -2916,6 +2916,72 @@ strcasecmp (const char *s1, const char *s2)
 }
 #endif]])
 
+AT_SETUP([[(internal) _dos_{get, free}_dbcs_lead_table]])
+AT_LIBI86_SKIP_IF_NO_DPMI
+AT_LIBI86_CHECK(dnl
+[[#include <stdint.h>
+#include <stdlib.h>
+typedef const unsigned short __attribute__ ((__aligned__ (1)))
+	__far *_dos_dbcs_lead_table_t;
+#define _null_dbcs_lt	((_dos_dbcs_lead_table_t) 0)
+extern _dos_dbcs_lead_table_t __libi86_msdos_get_dbcs_lead_table (void);
+extern _dos_dbcs_lead_table_t _dos_get_dbcs_lead_table (void);
+#ifdef __IA16_FEATURE_PROTECTED_MODE
+extern void __libi86_msdos_free_dbcs_lead_table (_dos_dbcs_lead_table_t);
+extern void _dos_free_dbcs_lead_table (_dos_dbcs_lead_table_t);
+#endif
+static void
+check_dbcs (_dos_dbcs_lead_table_t dbcs)
+{
+  unsigned short range;
+  uint8_t start, end;
+  if (! dbcs)
+    return;
+  while ((range = *dbcs++) != 0)
+    {
+      start = (uint8_t) range;
+      end = (uint8_t) (range >> 8);
+      if (! start || ! end)
+	abort ();
+      if (start > end)
+	abort ();
+    }
+}
+static void
+compare_dbcs (_dos_dbcs_lead_table_t dbcs1, _dos_dbcs_lead_table_t dbcs2)
+{
+  unsigned short range;
+  if (dbcs1 == dbcs2)
+    return;
+  if (! dbcs1 && *dbcs2 != 0)
+    abort ();
+  if (! dbcs2 && *dbcs1 != 0)
+    abort ();
+  do
+    {
+      range = *dbcs1++;
+      if (*dbcs2++ != range)
+	abort ();
+    }
+  while (range != 0);
+}
+int
+main (void)
+{
+  _dos_dbcs_lead_table_t our_dbcs, libc_dbcs;
+  our_dbcs = __libi86_msdos_get_dbcs_lead_table ();
+  libc_dbcs = _dos_get_dbcs_lead_table ();
+  check_dbcs (our_dbcs);
+  check_dbcs (libc_dbcs);
+  compare_dbcs (our_dbcs, libc_dbcs);
+#ifdef __IA16_FEATURE_PROTECTED_MODE
+  __libi86_msdos_free_dbcs_lead_table (our_dbcs);
+  _dos_free_dbcs_lead_table (libc_dbcs);
+#endif
+  return 0;
+}]],[])
+AT_CLEANUP
+
 AT_SETUP([[_makepath]])
 AT_LIBI86_CHECK(dnl
 [[#include <errno.h>
