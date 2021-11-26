@@ -35,12 +35,28 @@
 #endif
 
 #include <stdbool.h>
+#include <stdlib.h>
 #include <i86.h>
 #include <libi86/internal/cdefs.h>
+#ifdef __IA16_FEATURE_PROTECTED_MODE
+# include <dpmi.h>
+#endif
 
 _LIBI86_BEGIN_EXTERN_C
 
-static bool
+#ifdef __GNUC__
+extern __attribute__ ((regparmcall)) unsigned
+__libi86_ret_really_set_errno (unsigned);
+# if defined __IA16_FEATURE_PROTECTED_MODE
+extern struct find_t __far *__libi86_dpmi_set_dta (void);
+extern dpmi_dos_block __libi86_dpmi_low_dup_str (const char *);
+extern void __libi86_dpmi_low_free_str (dpmi_dos_block);
+extern unsigned __libi86_dpmi_pm_to_rm_buf (const void __far *, size_t, bool,
+					    _LIBI86_SEG_SELECTOR *, size_t *);
+# endif
+#endif
+
+_LIBI86_STATIC_INLINE bool
 __libi86_msdos_drive_letter_p (char c)
 {
   switch (c)
@@ -59,7 +75,7 @@ __libi86_msdos_drive_letter_p (char c)
     }
 }
 
-static bool
+_LIBI86_STATIC_INLINE bool
 __libi86_msdos_path_sep_p (char c)
 {
   switch (c)
@@ -72,10 +88,30 @@ __libi86_msdos_path_sep_p (char c)
     }
 }
 
+_LIBI86_STATIC_INLINE bool
+__libi86_msdos_has_drive_spec_p (const char *path)
+{
+  char c0 = path[0];
+  return c0 != 0 && path[1] == ':' && __libi86_msdos_drive_letter_p (c0);
+}
+
+#ifdef __GNUC__
+_LIBI86_STATIC_INLINE void
+__libi86_msdos_set_dta (void __far *new_dta)
+{
+  unsigned xx1, xx2;
+  __asm volatile ("int $0x21"
+		  : "=a" (xx1), "=d" (xx2)
+		  : "Rah" ((unsigned char) 0x1a),
+		    "Rds" (FP_SEG (new_dta)), "1" (FP_OFF (new_dta))
+		  : "cc", "bx", "cx", "memory");
+}
+#else  /* ! __GNUC__ */
 extern void __libi86_msdos_set_dta (void *new_dta);
 extern unsigned __libi86_msdos_do_findfirst (const char *path, unsigned attr);
 extern unsigned __libi86_msdos_do_findnext (void);
 extern unsigned __libi86_msdos_do_open (const char *path, unsigned mode,
 					int *handle);
+#endif  /* ! __GNUC__ */
 
 #endif

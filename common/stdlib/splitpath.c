@@ -64,7 +64,7 @@ _splitpath (const char *path, char drive[_MAX_DRIVE], char dir[_MAX_DIR],
   char c;
 
   /* If there is a drive letter, extract it. */
-  if (__libi86_msdos_drive_letter_p (p[0]) && p[1] == ':')
+  if (__libi86_msdos_has_drive_spec_p (p))
     p = copy_component (p, 2, drive, _MAX_DRIVE);
   else
     skip_component (drive);
