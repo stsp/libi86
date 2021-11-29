@@ -37,7 +37,9 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <i86.h>
+#include <libi86/stdlib.h>
 #include <libi86/internal/cdefs.h>
+#include <libi86/internal/dos-dbcs.h>
 #ifdef __IA16_FEATURE_PROTECTED_MODE
 # include <dpmi.h>
 #endif
@@ -113,5 +115,35 @@ extern unsigned __libi86_msdos_do_findnext (void);
 extern unsigned __libi86_msdos_do_open (const char *path, unsigned mode,
 					int *handle);
 #endif  /* ! __GNUC__ */
+
+/*
+ * Iterate through the directories in %PATH%.  At each iteration, set
+ * PATHNAME to point to a file path comprising the directory path & the file
+ * name component NAME.  DBCS should point to a DBCS lead byte table.  ITR
+ * should be a __libi86_msdos_path_itr_t object.
+ *
+ * If an error occurred while trying to set PATHNAME, the loop will
+ * terminate prematurely & set errno to an error code (e.g. ENAMETOOLONG). 
+ * Otherwise, after the loop terminates, errno will be set to (!) ENOENT. 
+ * This caters to the common case where we need to find a particular file
+ * along the %PATH% search path.
+ */
+#define _LIBI86_FOR_EACH_PATHED_PATHNAME(pathname, name, dbcs, itr) \
+	for ((pathname) = __libi86_msdos_pathed_first ((name), (dbcs), \
+						       &(itr)); \
+	     (pathname); \
+	     (pathname) = __libi86_msdos_pathed_next (&(itr)))
+
+typedef struct
+{
+  char __pathname_[_MAX_PATH];
+  const char *__name_, *__next_path_;
+  _dos_dbcs_lead_table_t __dbcs_;
+} __libi86_msdos_path_itr_t;
+
+extern char *__libi86_msdos_pathed_first (const char *,
+					  _dos_dbcs_lead_table_t,
+					  __libi86_msdos_path_itr_t *);
+extern char *__libi86_msdos_pathed_next (__libi86_msdos_path_itr_t *);
 
 #endif
