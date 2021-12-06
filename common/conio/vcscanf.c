@@ -33,6 +33,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include "conio.h"
+#include "libi86/stdio.h"
 #include "libi86/internal/conio.h"
 
 int

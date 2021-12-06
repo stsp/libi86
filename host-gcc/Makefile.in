@@ -76,6 +76,7 @@ INSTALL_HEADERS	= bios.h \
 		  graph.h \
 		  i86.h \
 		  share.h \
+		  libi86/stdio.h \
 		  libi86/stdlib.h \
 		  libi86/string.h \
 		  libi86/internal/bc-portio.h \

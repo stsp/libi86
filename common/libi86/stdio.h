@@ -1,6 +1,5 @@
-#
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2019--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -28,54 +27,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "libi86/internal/sect.h"
+#ifndef _LIBI86_LIBI86_STDIO_H_
+#define _LIBI86_LIBI86_STDIO_H_
 
-/*
- * As of Oct 2021, ACK's C runtime library lacks a vsscanf (...) function,
- * though it does have sscanf (...).
- *
- * I try to implement vsscanf (...) in terms of sscanf (...): first (over-)
- * estimate the size of the va_list'd argument list passed to vsscanf (...),
- * then copy these variadic arguments & pass them to sscanf (...).  This is
- * relatively easy to do for ...scanf (...), since the argument list will
- * comprise only pointers.
- *
- * (We could alternatively implement vsscanf (...) in terms of ACK's
- * internal code & data structures, but this may break more easily.)
- */
+#include <stdio.h>
 
-	.define	___libi86_vsscanf
-___libi86_vsscanf:
-	push	si
-	push	di
-	push	bp
-	mov	bp, sp
-	mov	si, 10(bp)		! get format string
-	xor	cx, cx			! cx := no. of variadic arguments
-.loop:					! scan format string for `%' characters
-	lodsb
-	cmpb	al, '%'
-	ja	.loop
-	jnz	.next
-	inc	cx			! if we see a `%', first assume we have
-	lodsb				! one more argument; but if next char.
-	cmpb	al, '%'			! is also `%', then we do not
-	jnz	.next
-	dec	cx
-.next:
-	testb	al, al
-	jnz	.loop
-	mov	si, 12(bp)		! we scanned the format string; now
-	mov	di, sp			! copy arguments
-	sub	di, cx
-	sub	di, cx
-	mov	sp, di
-	rep movsw
-	push	10(bp)			! push the remaining arguments that
-	push	8(bp)			! sscanf (...) needs
-	call	_sscanf			! ...& call
-	mov	sp, bp			! we are done
-	pop	bp
-	pop	di
-	pop	si
-	ret
+#ifdef __ACK
+# include <libi86/internal/acconfig.h>
+# ifndef _LIBI86_INTERNAL_HAVE_VSSCANF
+#   include <libi86/internal/cdefs.h>
+_LIBI86_BEGIN_EXTERN_C
+extern int vsscanf (const char *__str, const char *__fmt,
+		    _LIBI86_VA_LIST __ap);
+_LIBI86_END_EXTERN_C
+# endif
+#endif
+
+#endif

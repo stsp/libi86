@@ -1,3 +1,4 @@
+#
 /*
  * Copyright (c) 2021 TK Chia
  *
@@ -27,39 +28,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_LIBI86_INTERNAL_CONIO_H_
-#define _LIBI86_LIBI86_INTERNAL_CONIO_H_
+#include "libi86/internal/sect.h"
 
-#ifndef _LIBI86_COMPILING_
-# error "<libi86/internal/conio.h> should only be used when compiling libi86!"
-#endif
+/*
+ * As of Oct 2021, ACK's C runtime library lacks a vsscanf (...) function,
+ * though it does have sscanf (...).
+ *
+ * I try to implement vsscanf (...) in terms of sscanf (...): first (over-)
+ * estimate the size of the va_list'd argument list passed to vsscanf (...),
+ * then copy these variadic arguments & pass them to sscanf (...).  This is
+ * relatively easy to do for ...scanf (...), since the argument list will
+ * comprise only pointers.
+ *
+ * (We could alternatively implement vsscanf (...) in terms of ACK's
+ * internal code & data structures, but this may break more easily.)
+ */
 
-#include <stdint.h>
-#include <libi86/internal/cdefs.h>
-#include <conio.h>
-#ifdef _LIBI86_INTERNAL_HAVE_VSSCANF
-# include <stdio.h>
-#else
-# include <stdarg.h>
-#endif
-
-_LIBI86_BEGIN_EXTERN_C
-
-/* Various internal variables & functions used by <conio.h> routines. */
-
-extern unsigned __libi86_ungetch_buf;
-extern unsigned char __libi86_vid_norm_attr;
-
-#ifdef __MSDOS__
-extern int __libi86_con_in_fd, __libi86_con_out_fd;
-extern const char __libi86_con_name[];
-
-extern int __libi86_con_get_dev_info_word (int fd, unsigned *pdw);
-extern void __libi86_con_set_dev_info_word (int fd, unsigned dw);
-extern void __libi86_con_in_fd_init (void);
-extern void __libi86_con_out_fd_init (void);
-#endif  /* __MSDOS__ */
-
-_LIBI86_END_EXTERN_C
-
-#endif
+	.define	_vsscanf
+_vsscanf:
+	push	si
+	push	di
+	push	bp
+	mov	bp, sp
+	mov	si, 10(bp)		! get format string
+	xor	cx, cx			! cx := no. of variadic arguments
+.loop:					! scan format string for `%' characters
+	lodsb
+	cmpb	al, '%'
+	ja	.loop
+	jnz	.next
+	inc	cx			! if we see a `%', first assume we have
+	lodsb				! one more argument; but if next char.
+	cmpb	al, '%'			! is also `%', then we do not
+	jnz	.next
+	dec	cx
+.next:
+	testb	al, al
+	jnz	.loop
+	mov	si, 12(bp)		! we scanned the format string; now
+	mov	di, sp			! copy arguments
+	sub	di, cx
+	sub	di, cx
+	mov	sp, di
+	rep movsw
+	push	10(bp)			! push the remaining arguments that
+	push	8(bp)			! sscanf (...) needs
+	call	_sscanf			! ...& call
+	mov	sp, bp			! we are done
+	pop	bp
+	pop	di
+	pop	si
+	ret

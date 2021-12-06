@@ -67,6 +67,9 @@ INSTALL_HEADERS	= bios.h \
 		  conio.h \
 		  i86.h \
 		  share.h \
+		  libi86/stdio.h \
+		  libi86/stdlib.h \
+		  libi86/string.h \
 		  libi86/internal/bc-portio.h \
 		  libi86/internal/cdefs.h \
 		  libi86/internal/farptr.h \
@@ -222,7 +225,7 @@ OBJS		= bios/bios-disk.o \
 		  string/fstrlen.o \
 		  string/libi86-fmemmove-backward.o
 ifeq "no" "$(ac_cv_func_vsscanf)"
-  OBJS		+= conio/libi86-vsscanf.o
+  OBJS		+= stdio/vsscanf.o
 endif
 OBJ_SUBDIRS	= $(sort $(dir $(OBJS)))
 CFLAGS		= -O6 -S
