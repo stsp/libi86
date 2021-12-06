@@ -32,15 +32,13 @@
 
 #include <stdio.h>
 
-#ifdef __ACK
-# include <libi86/internal/acconfig.h>
-# ifndef _LIBI86_INTERNAL_HAVE_VSSCANF
-#   include <libi86/internal/cdefs.h>
+#include <libi86/internal/acconfig.h>
+#ifndef _LIBI86_INTERNAL_HAVE_VSSCANF
+# include <libi86/internal/cdefs.h>
 _LIBI86_BEGIN_EXTERN_C
 extern int vsscanf (const char *__str, const char *__fmt,
 		    _LIBI86_VA_LIST __ap);
 _LIBI86_END_EXTERN_C
-# endif
 #endif
 
 #endif

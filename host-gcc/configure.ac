@@ -71,8 +71,6 @@ dnl make-config.sh uses nm and awk.
 AC_CHECK_TOOL(NM, nm, false)
 AC_PROG_AWK
 
-AC_CHECK_TYPE([long long int],
-	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_LONG_LONG_INT],[1])])
 dnl See <libi86/port-io.h>.
 AC_MSG_CHECKING([if $CC understands the "N" asm constraint])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
@@ -84,25 +82,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 dnl ...
 AC_CHECK_FUNC([__DPMI_hosted],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE___DPMI_HOSTED],[1])])
-AC_CHECK_FUNC([_dos_get_dbcs_lead_table],
-  [AC_DEFINE([_LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE],[1])])
-AC_CHECK_FUNC([_dos_free_dbcs_lead_table],
-  [AC_DEFINE([_LIBI86_INTERNAL_HAVE__DOS_FREE_DBCS_LEAD_TABLE],[1])])
-AC_CHECK_HEADER([sys/syslimits.h],
-		[AC_DEFINE([_LIBI86_INTERNAL_HAVE_SYS_SYSLIMITS_H],[1])])
-if test yes = "$ac_cv_header_sys_syslimits_h"; then
-  AC_CHECK_DECL([_PATH_MAX],
-		[AC_DEFINE([_LIBI86_INTERNAL_HAVE__PATH_MAX],[1])],,
-		[#include <sys/syslimits.h>])
-fi
-AC_CHECK_DECL([PATH_MAX],
-	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_PATH_MAX],[1])],,
-	      [#include <limits.h>])
-AC_CHECK_DECL([O_TEXT],
-	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_O_TEXT],[1])],,
-	      [#include <fcntl.h>])
-AC_CHECK_DECL([ENAMETOOLONG],
-	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_ENAMETOOLONG],[1])])
+m4_include([../check-common.m4])
 
 host_makefile_frag_path=
 host_makefile_frag=

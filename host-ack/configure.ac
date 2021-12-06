@@ -72,22 +72,10 @@ AC_PROG_AWK
 AC_CHECK_DECLS([__ACK],,dnl
 [AC_MSG_WARN([supposedly using Amsterdam Compiler Kit,])
 AC_MSG_WARN([but __ACK undefined])])
-AC_CHECK_TYPE([long long int],
-	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_LONG_LONG_INT],[1])])
-AC_CHECK_DECL([O_TEXT],
-	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_O_TEXT],[1])],,
-	      [#include <fcntl.h>])
-AC_CHECK_DECL([ENAMETOOLONG],
-	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_ENAMETOOLONG],[1])])
-AC_CHECK_FUNC([vsscanf],
-	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_VSSCANF],[1])])
 AC_CHECK_FUNC([_sys_seterrno],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE__SYS_SETERRNO],[1])],,
 	      [long _sys_seterrno (unsigned);])
-AC_CHECK_FUNC([_dos_get_dbcs_lead_table],
-  [AC_DEFINE([_LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE],[1])])
-AC_CHECK_FUNC([_dos_free_dbcs_lead_table],
-  [AC_DEFINE([_LIBI86_INTERNAL_HAVE__DOS_FREE_DBCS_LEAD_TABLE],[1])])
+m4_include([../check-common.m4])
 
 AC_CHECK_DECLS([__MSDOS__],[libi86_ackhost=msdos86],[libi86_ackhost=pc86])
 AC_SUBST(libi86_ackhost)
