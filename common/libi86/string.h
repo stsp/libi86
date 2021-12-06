@@ -30,6 +30,8 @@
 #ifndef _LIBI86_LIBI86_STRING_H_
 #define _LIBI86_LIBI86_STRING_H_
 
+#include <string.h>
+
 #include <libi86/internal/cdefs.h>
 
 _LIBI86_BEGIN_EXTERN_C

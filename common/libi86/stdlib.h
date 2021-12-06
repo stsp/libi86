@@ -30,6 +30,8 @@
 #ifndef _LIBI86_LIBI86_STDLIB_H_
 #define _LIBI86_LIBI86_STDLIB_H_
 
+#include <stdlib.h>
+
 #include <libi86/internal/cdefs.h>
 #include <libi86/internal/acconfig.h>
 

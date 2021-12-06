@@ -223,7 +223,7 @@ When using ACK, you currently need to build `libi86` from sources.
 |   X | = | \*`_CV_FP (`\*_ptr_`);` | Convert a default-sized pointer to a far pointer.  This is mainly useful for ACK, which lacks built-in far pointer support.
 |   X | = | \*`_FP_EQ (`\*_ptr1_`,` _ptr2_`);` | Test whether two far pointers are exactly equal.  This is mainly useful for ACK, which lacks built-in far pointer support.
 |     |   |
-|     |   | **`▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖`**
+|     |   | **`▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖`** | **`<libi86/stdlib.h>` also includes the underlying C library's `<stdlib.h>`.**
 |   W | G | \*`lltoa (`_value_`,` \*_buffer_`,` _radix_`);` | Not yet supported on ACK &mdash; it lacks `long long` support for IA-16.
 |   W | G | \*`_lltoa (`_value_`,` \*_buffer_`,` _radix_`);` | Not yet supported on ACK &mdash; it lacks `long long` support for IA-16.
 |   W | = | \*`ltoa (`_value_`,` \*_buffer_`,` _radix_`);`
@@ -235,7 +235,7 @@ When using ACK, you currently need to build `libi86` from sources.
 |   W | = | \*`ultoa (`_value_`,` \*_buffer_`,` _radix_`);`
 |   W | = | \*`_ultoa (`_value_`,` \*_buffer_`,` _radix_`);`
 |     |   |
-|     |   | **`▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖`**
+|     |   | **`▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖`** | **`<libi86/string.h>` also includes the underlying C library's `<string.h>`.**
 |   W | = | \*`_fmemcpy (`\*_dest_`,` \*_src_`,` _n_`);`
 |   W | = | \*`_fmemmove (`\*_dest_`,` \*_src_`,` _n_`);`
 |   W | = | `_fstrlen (`\*_s_`);`
