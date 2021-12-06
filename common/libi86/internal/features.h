@@ -1,5 +1,6 @@
-#
 /*
+ * Decide which newer C standard features to expose to the user program. 
+ *
  * Copyright (c) 2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,54 +29,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "libi86/internal/sect.h"
+#ifndef _LIBI86_LIBI86_INTERNAL_FEATURES_H_
+#define _LIBI86_LIBI86_INTERNAL_FEATURES_H_
 
-/*
- * As of Oct 2021, ACK's C runtime library lacks a vsscanf (...) function,
- * though it does have sscanf (...).
- *
- * I try to implement vsscanf (...) in terms of sscanf (...): first (over-)
- * estimate the size of the va_list'd argument list passed to vsscanf (...),
- * then copy these variadic arguments & pass them to sscanf (...).  This is
- * relatively easy to do for ...scanf (...), since the argument list will
- * comprise only pointers.
- *
- * (We could alternatively implement vsscanf (...) in terms of ACK's
- * internal code & data structures, but this may break more easily.)
- */
+/* This logic is largely cribbed from Newlib's <sys/features.h>. */
+#if defined _GNU_SOURCE || defined _ISOC11_SOURCE \
+    || __STDC_VERSION - 0 >= 201112L || __cplusplus - 0 >= 201103L
+# define _LIBI86_ISO_C_VISIBLE	2011
+#elif defined _ISOC99_SOURCE || _POSIX_C_SOURCE - 0 >= 200112L \
+      || _XOPEN_SOURCE - 0 >= 600 || __STDC_VERSION__ - 0 >= 199901L \
+      || defined __cplusplus
+# define _LIBI86_ISO_C_VISIBLE	1999
+#else
+# define _LIBI86_ISO_C_VISIBLE	1990
+#endif
 
-	.define	__vsscanf
-__vsscanf:
-	push	si
-	push	di
-	push	bp
-	mov	bp, sp
-	mov	si, 10(bp)		! get format string
-	xor	cx, cx			! cx := no. of variadic arguments
-.loop:					! scan format string for `%' characters
-	lodsb
-	cmpb	al, '%'
-	ja	.loop
-	jnz	.next
-	inc	cx			! if we see a `%', first assume we have
-	lodsb				! one more argument; but if next char.
-	cmpb	al, '%'			! is also `%', then we do not
-	jnz	.next
-	dec	cx
-.next:
-	testb	al, al
-	jnz	.loop
-	mov	si, 12(bp)		! we scanned the format string; now
-	mov	di, sp			! copy arguments
-	sub	di, cx
-	sub	di, cx
-	mov	sp, di
-	rep movsw
-	push	10(bp)			! push the remaining arguments that
-	push	8(bp)			! sscanf (...) needs
-	call	_sscanf			! ...& call
-	mov	sp, bp			! we are done
-	pop	bp
-	pop	di
-	pop	si
-	ret
+#endif

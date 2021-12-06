@@ -33,12 +33,30 @@
 #include <stdio.h>
 
 #include <libi86/internal/acconfig.h>
-#ifndef _LIBI86_INTERNAL_HAVE_VSSCANF
-# include <libi86/internal/cdefs.h>
+#include <libi86/internal/cdefs.h>
+#include <libi86/internal/features.h>
+
 _LIBI86_BEGIN_EXTERN_C
-extern int vsscanf (const char *__str, const char *__fmt,
+
+/*
+ * If the C library has vsscanf (...), then define _vsscanf (...) as an
+ * alias of vsscanf (...).
+ *
+ * If not, but if the necessary feature test macros are present, then do the
+ * opposite: define vsscanf (...) as an alias of _vsscanf (...).
+ */
+#ifdef _LIBI86_INTERNAL_HAVE_VSSCANF
+_LIBI86_REDIRECT_AND_INLINE_3 (int, _vsscanf, const char *, const char *,
+			       _LIBI86_VA_LIST, vsscanf)
+#else
+extern int _vsscanf (const char *__str, const char *__fmt,
 		    _LIBI86_VA_LIST __ap);
-_LIBI86_END_EXTERN_C
+# if _LIBI86_ISO_C_VISIBLE >= 1999
+_LIBI86_REDIRECT_AND_INLINE_3 (int, vsscanf, const char *, const char *,
+			       _LIBI86_VA_LIST, _vsscanf)
+# endif
 #endif
+
+_LIBI86_END_EXTERN_C
 
 #endif

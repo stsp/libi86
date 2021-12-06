@@ -50,5 +50,5 @@ vcscanf (const char *fmt, va_list ap)
   if (! p)
     return EOF;
 
-  return vsscanf (p, fmt, ap);
+  return _vsscanf (p, fmt, ap);
 }

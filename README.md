@@ -49,13 +49,13 @@ When using ACK, you currently need to build `libi86` from sources.
 
 | Compat. | Meaning
 | ------: | :------
-| C99 | Part of the [C99](https://www.iso.org/standard/29237.html) standard.  (A final draft of C99 is [available](http://www.open-std.org/jtc1/sc22/WG14/www/wg14_document_log) as N1256.)
+| C99 | Part of the [C99](https://www.iso.org/standard/29237.html) standard (final draft: [N1256](http://www.open-std.org/jtc1/sc22/WG14/www/docs/n1256.pdf)) — enable with a macro `_ISOC99_SOURCE` if necessary.
 |   W | Behaves like the corresponding function in Open Watcom.
 |  W+ | Behaves like the corresponding function in Open Watcom, but with some extended behaviours.
 |   B | From Borland Turbo C++ — enable with `_BORLANDC_SOURCE`.
 | W/B | By default, behaves as in Open Watcom; if `_BORLANDC_SOURCE` is defined, behaves as in Borland C++.
 |  IW | From internal interfaces in Open Watcom's library code.
-|   X | `libi86`-specific extension; not in Open Watcom or Borland C++.
+|   X | `libi86`-specific extension; not in Open Watcom or Borland C++.  Enabled even if the macros `_BORLANDC_SOURCE` and `_ISOC99_SOURCE` are not defined.
 |  XB | `libi86`-specific extension.  Behaves slightly differently if `_BORLANDC_SOURCE` is defined.
 
 | Avail. | Meaning
@@ -227,6 +227,7 @@ When using ACK, you currently need to build `libi86` from sources.
 |     |     |
 |     |     | **`▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖`** | **`<libi86/stdio.h>` also includes the underlying C library's `<stdio.h>`.**
 | C99 | (=) | `vsscanf (`\*_s_`,` \*_fmt_`,` _ap_`);`
+|   X | (=) | `_vsscanf (`\*_s_`,` \*_fmt_`,` _ap_`);`
 |     |     |
 |     |     | **`▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖`** | **`<libi86/stdlib.h>` also includes the underlying C library's `<stdlib.h>`.**
 |   W |   G | \*`lltoa (`_value_`,` \*_buffer_`,` _radix_`);` | Not yet supported on ACK &mdash; it lacks `long long` support for IA-16.
