@@ -79,7 +79,7 @@ m4_include([../check-common.m4])
 
 AC_CHECK_DECLS([__MSDOS__],[libi86_ackhost=msdos86],[libi86_ackhost=pc86])
 AC_SUBST(libi86_ackhost)
-AC_SUBST(ac_cv_func_vsscanf)
+AC_SUBST(ac_cv_have_decl_vsscanf)
 
 host_makefile_frag_path=
 host_makefile_frag=

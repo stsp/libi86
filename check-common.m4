@@ -35,7 +35,13 @@ AC_CHECK_DECL([O_TEXT],
 	      [#include <fcntl.h>])
 AC_CHECK_DECL([ENAMETOOLONG],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_ENAMETOOLONG],[1])])
-AC_CHECK_FUNC([vsscanf],
+dnl For vsscanf (...), use AC_CHECK_DECL rather than AC_CHECK_FUNC.  We want
+dnl autoconf to include the appropriate headers --- especially <stdio.h> ---
+dnl so that the detection can happen properly.  In particular, if
+dnl -mnewlib-autofloat-stdio is in effect, we want to arrange to link vsscanf
+dnl (...) without the bulky floating-point support, lest it causes the text
+dnl segment to overflow...  -- tkchia 20211207
+AC_CHECK_DECL([vsscanf],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_VSSCANF],[1])])
 AC_CHECK_FUNC([_dos_get_dbcs_lead_table],
   [AC_DEFINE([_LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE],[1])])

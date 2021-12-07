@@ -45,7 +45,7 @@ main (int argc, char **argv)
 AT_CLEANUP
 
 AT_SETUP([cgets, cscanf (Borland)])
-AT_LIBI86_CHECK_CONSOLE_FOR_SMALL_MODEL_OR_ABOVE(dnl
+AT_LIBI86_CHECK_CONSOLE(dnl
 [[#define _BORLANDC_SOURCE
 #include <conio.h>
 #include <string.h>

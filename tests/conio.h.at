@@ -71,10 +71,7 @@ kbhit () = false
 AT_CLEANUP
 
 AT_SETUP([cgets, cscanf])
-dnl Now (Nov 2021) that Newlib is built with multi-byte character support,
-dnl programs with cscanf (...) are a bit hard to fit into the 64 KiB tiny
-dnl memory model.  FIXME?
-AT_LIBI86_CHECK_CONSOLE_FOR_SMALL_MODEL_OR_ABOVE(dnl
+AT_LIBI86_CHECK_CONSOLE(dnl
 [[#include <conio.h>
 #include <string.h>
 void abort (void);
