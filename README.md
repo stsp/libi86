@@ -135,6 +135,9 @@ When using ACK, you currently need to build `libi86` from sources.
 |   B |   G | `searchpath (`_file_`);` | Currently only available for `gcc-ia16`.
 |   X |   G | `_searchpath (`_file_`);` | Currently only available for `gcc-ia16`.
 |     |     |
+|     |     | **`▗▚▚▚▚ <direct.h> ▞▞▞▞▖`**
+|   W |   = | `_getdcwd (`_drive_`,` \*_buffer_`,` _max-len_`);`
+|     |     |
 |     |     | **`▗▚▚▚▚ <dos.h> ▞▞▞▞▖`** | **`<dos.h>` also includes `<i86.h>`, described below.  If `_BORLANDC_SOURCE` is defined, the `union REGS` type gets an additional `.x.flags` field, and `<dos.h>` switches accordingly to a different version of the `intdos` and `intdosx` routines.**
 |   W |   = | `bdos (`_dos-func_`,` _dx_`,` _al_`);`
 |   B |   = | `bdosptr (`_dos-func_`,` \*_dx_`,` _al_`);`
