@@ -42,20 +42,24 @@
 #include <libi86/internal/dos-dbcs.h>
 #ifdef __IA16_FEATURE_PROTECTED_MODE
 # include <dpmi.h>
+#else
+# include <errno.h>
 #endif
 
 _LIBI86_BEGIN_EXTERN_C
 
 #ifdef __GNUC__
 extern __attribute__ ((regparmcall)) unsigned
+#else
+extern unsigned
+#endif
 __libi86_ret_really_set_errno (unsigned);
-# if defined __IA16_FEATURE_PROTECTED_MODE
+#if defined __GNUC__ && defined __IA16_FEATURE_PROTECTED_MODE
 extern struct find_t __far *__libi86_dpmi_set_dta (void);
 extern dpmi_dos_block __libi86_dpmi_low_dup_str (const char *);
 extern void __libi86_dpmi_low_free_str (dpmi_dos_block);
 extern unsigned __libi86_dpmi_pm_to_rm_buf (const void __far *, size_t, bool,
 					    _LIBI86_SEG_SELECTOR *, size_t *);
-# endif
 #endif
 
 _LIBI86_STATIC_INLINE bool
@@ -115,6 +119,25 @@ extern unsigned __libi86_msdos_do_findnext (void);
 extern unsigned __libi86_msdos_do_open (const char *path, unsigned mode,
 					int *handle);
 #endif  /* ! __GNUC__ */
+
+#if defined __GNUC__ && ! defined __IA16_FEATURE_PROTECTED_MODE
+_LIBI86_STATIC_INLINE int
+__libi86_msdos_do_getdcwd (char buf[_MAX_PATH - 3], unsigned char drive)
+{
+  int err, carry, xx1, xx2;
+  __asm volatile ("int $0x21; sbbw %1, %1"
+		  : "=a" (err), "=r" (carry)
+		  : "Rah" ((unsigned char) 0x47), "Rdl" (drive),
+		    "Rds" (FP_SEG (buf)), "S" (FP_OFF (buf))
+		  : "cc", "memory");
+  if (carry)
+    errno = err;
+  return carry;
+}
+#else  /* ! __GNUC__ || __IA16_FEATURE_PROTECTED_MODE */
+extern int __libi86_msdos_do_getdcwd (char buf[_MAX_PATH - 3],
+				      unsigned char drive);
+#endif  /* ! __GNUC__ || __IA16_FEATURE_PROTECTED_MODE */
 
 /*
  * Iterate through the directories in %PATH%.  At each iteration, set

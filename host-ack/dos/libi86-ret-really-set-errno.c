@@ -33,14 +33,14 @@
 
 /* Convert a system error code to an `errno' value. */
 
-long
+unsigned
 __libi86_ret_really_set_errno (unsigned sys_err)
 {
 #ifndef _LIBI86_INTERNAL_HAVE__SYS_SETERRNO
   extern long _sys_seterrno (unsigned);
-  return _sys_seterrno (sys_err);
+  _sys_seterrno (sys_err);
 #else
   errno = EIO;  /* a bogus default */
-  return -1;
 #endif
+  return sys_err;
 }
