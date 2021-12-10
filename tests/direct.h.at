@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018--2021 TK Chia
+dnl Copyright (c) 2021 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -25,27 +25,53 @@ dnl LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AT_INIT(libi86)
-AT_COLOR_TESTS
+AT_BANNER([[<direct.h> tests]])
 
-dnl Process options.
-m4_include([option.at])
-
-dnl Test that the test harness works.  Naturally, this should come first.
-m4_include([metacheck.at])
-
-dnl Then do the actual tests...
-m4_include([i86.h.1.at])
-m4_include([bios.h.at])
-m4_include([bios.h.bc.at])
-m4_include([conio.h.at])
-m4_include([conio.h.bc.at])
-m4_include([direct.h.at])
-m4_include([dos.h.at])
-m4_include([dos.h.bc.at])
-m4_include([dpmi.h.at])
-m4_include([graph.h.at])
-m4_include([i86.h.2.at])
-m4_include([i86.h.2-bc.at])
-m4_include([stdlib.h.at])
-m4_include([string.h.at])
+AT_SETUP([[_getcwd, _getdcwd]])
+AT_LIBI86_CHECK(dnl
+[[#include <direct.h>
+#include <stdio.h>
+#include <string.h>
+#include <libi86/stdlib.h>
+int
+main (void)
+{
+  char cwd1[_MAX_PATH], *cwd2, cwd3[_MAX_PATH], *cwd4, cwd5[3];
+  if (_getcwd (cwd1, sizeof cwd1) != cwd1)
+    abort ();
+  puts ("1 OK");
+  cwd2 = _getcwd (NULL, _MAX_PATH);
+  if (! cwd2)
+    abort ();
+  puts ("2 OK");
+  if (strcmp (cwd1, cwd2) != 0)
+    abort ();
+  puts ("3 OK");
+  if (_getdcwd (0, cwd3, sizeof cwd3) != cwd3)
+    abort ();
+  puts ("4 OK");
+  if (strcmp (cwd1, cwd3) != 0)
+    abort ();
+  puts ("5 OK");
+  cwd4 = _getdcwd (0, NULL, _MAX_PATH);
+  if (! cwd4)
+    abort ();
+  puts ("6 OK");
+  if (strcmp (cwd1, cwd4) != 0)
+    abort ();
+  puts ("7 OK");
+  if (_getdcwd (0, cwd5, sizeof cwd5) != NULL)
+    abort ();
+  puts ("8 OK");
+  return 0;
+}]],dnl
+[[1 OK
+2 OK
+3 OK
+4 OK
+5 OK
+6 OK
+7 OK
+8 OK
+]])
+AT_CLEANUP

@@ -50,6 +50,7 @@ When using ACK, you currently need to build `libi86` from sources.
 | Compat. | Meaning
 | ------: | :------
 | C99 | Part of the [C99](https://www.iso.org/standard/29237.html) standard (final draft: [N1256](http://www.open-std.org/jtc1/sc22/WG14/www/docs/n1256.pdf)) — enable with a macro `_ISOC99_SOURCE` if necessary.
+| P01 | Part of the [POSIX.1-2001](https://pubs.opengroup.org/onlinepubs/009695399/) standard.
 |   W | Behaves like the corresponding function in Open Watcom.
 |  W+ | Behaves like the corresponding function in Open Watcom, but with some extended behaviours.
 |   B | From Borland Turbo C++ — enable with `_BORLANDC_SOURCE`.
@@ -136,6 +137,8 @@ When using ACK, you currently need to build `libi86` from sources.
 |   X |   G | `_searchpath (`_file_`);` | Currently only available for `gcc-ia16`.
 |     |     |
 |     |     | **`▗▚▚▚▚ <direct.h> ▞▞▞▞▖`**
+| P01, W | (=) | `getcwd (`\*_buffer_`,` _max-len_`);` | (POSIX places this function in `<unistd.h>`.)
+|   W | (=) | `_getcwd (`\*_buffer_`,` _max-len_`);`
 |   W |   = | `_getdcwd (`_drive_`,` \*_buffer_`,` _max-len_`);`
 |     |     |
 |     |     | **`▗▚▚▚▚ <dos.h> ▞▞▞▞▖`** | **`<dos.h>` also includes `<i86.h>`, described below.  If `_BORLANDC_SOURCE` is defined, the `union REGS` type gets an additional `.x.flags` field, and `<dos.h>` switches accordingly to a different version of the `intdos` and `intdosx` routines.**
@@ -229,18 +232,18 @@ When using ACK, you currently need to build `libi86` from sources.
 |   X |   = | \*`_FP_EQ (`\*_ptr1_`,` _ptr2_`);` | Test whether two far pointers are exactly equal.  This is mainly useful for ACK, which lacks built-in far pointer support.
 |     |     |
 |     |     | **`▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖`** | **`<libi86/stdio.h>` also includes the underlying C library's `<stdio.h>`.**
-| C99 | (=) | `vsscanf (`\*_s_`,` \*_fmt_`,` _ap_`);`
+| C99 | (=) | `vsscanf (`\*_s_`,` \*_fmt_`,` _ap_`);` | (C99 places this function in `<stdio.h>`.)
 |   X | (=) | `_vsscanf (`\*_s_`,` \*_fmt_`,` _ap_`);`
 |     |     |
 |     |     | **`▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖`** | **`<libi86/stdlib.h>` also includes the underlying C library's `<stdlib.h>`.**
-|   W |   G | \*`lltoa (`_value_`,` \*_buffer_`,` _radix_`);` | Not yet supported on ACK &mdash; it lacks `long long` support for IA-16.
-|   W |   G | \*`_lltoa (`_value_`,` \*_buffer_`,` _radix_`);` | Not yet supported on ACK &mdash; it lacks `long long` support for IA-16.
+|   W |   G | \*`lltoa (`_value_`,` \*_buffer_`,` _radix_`);` | Not yet supported on ACK — it lacks `long long` support for IA-16.
+|   W |   G | \*`_lltoa (`_value_`,` \*_buffer_`,` _radix_`);` | Not yet supported on ACK — it lacks `long long` support for IA-16.
 |   W |   = | \*`ltoa (`_value_`,` \*_buffer_`,` _radix_`);`
 |   W |   = | \*`_ltoa (`_value_`,` \*_buffer_`,` _radix_`);`
 |  W+ |   = | `_makepath (`\*_path_`,` \*_drive_`,` \*_dir_`,` \*_fname_`,` \*_ext_`);` | As extensions, this function (1) checks for buffer overflow, and (2) gives a return value.  Upon an error, the return value is non-zero, `errno` is set, and _path_`[]` holds either an empty string or a truncated path.  Network _drive_`[]` values starting with two backslashes (`\\`) are not supported.
 |   W |   = | `_splitpath (`\*_path_`,` \*_drive_`,` \*_dir_`,` \*_fname_`,` \*_ext_`);` | Long filenames, and network paths starting with two backslashes (`\\`), are not supported.
-|   W |   G | \*`ulltoa (`_value_`,` \*_buffer_`,` _radix_`);` | Not yet supported on ACK &mdash; it lacks `long long` support for IA-16.
-|   W |   G | \*`_ulltoa (`_value_`,` \*_buffer_`,` _radix_`);` | Not yet supported on ACK &mdash; it lacks `long long` support for IA-16.
+|   W |   G | \*`ulltoa (`_value_`,` \*_buffer_`,` _radix_`);` | Not yet supported on ACK — it lacks `long long` support for IA-16.
+|   W |   G | \*`_ulltoa (`_value_`,` \*_buffer_`,` _radix_`);` | Not yet supported on ACK — it lacks `long long` support for IA-16.
 |   W |   = | \*`ultoa (`_value_`,` \*_buffer_`,` _radix_`);`
 |   W |   = | \*`_ultoa (`_value_`,` \*_buffer_`,` _radix_`);`
 |     |     |

@@ -43,6 +43,7 @@ dnl (...) without the bulky floating-point support, lest it causes the text
 dnl segment to overflow...  -- tkchia 20211207
 AC_CHECK_DECL([vsscanf],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_VSSCANF],[1])])
+AC_CHECK_FUNC([getcwd],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_GETCWD],[1])])
 AC_CHECK_FUNC([_dos_get_dbcs_lead_table],
   [AC_DEFINE([_LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE],[1])])
 AC_CHECK_FUNC([_dos_free_dbcs_lead_table],
