@@ -241,6 +241,7 @@ OBJS		= bios/bios-disk.o \
 		  string/fmemmove.o \
 		  string/fstrlen.o \
 		  string/libi86-fmemmove-backward.o \
+		  stdlib/fullpath.o \
 		  stdlib/lltoa.o \
 		  stdlib/ltoa.o \
 		  stdlib/makepath.o \

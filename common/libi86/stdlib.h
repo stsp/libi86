@@ -99,6 +99,8 @@ extern unsigned __libi86_get_psp (void), __libi86_get_osmajor_osminor (void);
 extern char *_lltoa (long long __value, char *__buffer, int __radix);
 extern char *_ulltoa (unsigned long long __value, char *__buffer, int __radix);
 #endif
+extern char *_fullpath (char *__buffer, const char *__path,
+			_LIBI86_SIZE_T __size);
 extern char *_ltoa (long __value, char *__buffer, int __radix);
 extern int _makepath (char __path[_MAX_PATH], const char *__drive,
 		      const char *__dir, const char *__fname,

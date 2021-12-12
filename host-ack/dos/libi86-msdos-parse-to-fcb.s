@@ -1,3 +1,4 @@
+#
 /*
  * Copyright (c) 2021 TK Chia
  *
@@ -27,23 +28,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_DIRECT_H_
-#define _LIBI86_DIRECT_H_
+#include "libi86/internal/sect.h"
 
-#include <libi86/internal/acconfig.h>
-#include <libi86/internal/cdefs.h>
-
-_LIBI86_BEGIN_EXTERN_C
-
-#ifdef _LIBI86_INTERNAL_HAVE_GETCWD
-extern char *getcwd (char *__buf, _LIBI86_SIZE_T __size);
-_LIBI86_REDIRECT_2 (char *, _getcwd, char *, _LIBI86_SIZE_T, getcwd)
-#else
-extern char *_getcwd (char *__buf, _LIBI86_SIZE_T __size);
-_LIBI86_REDIRECT_2 (char *, getcwd, char *, _LIBI86_SIZE_T, _getcwd)
-#endif
-extern char *_getdcwd (int __drive, char *__buf, _LIBI86_SIZE_T __size);
-
-_LIBI86_END_EXTERN_C
-
+#ifdef __MSDOS__
+	.define	___libi86_msdos_parse_to_fcb
+___libi86_msdos_parse_to_fcb:
+	mov	bx, sp
+	push	si
+	push	di
+	mov	si, 2(bx)
+	mov	di, 4(bx)
+	movb	ah, 0x29
+	int	0x21
+	pop	di
+	pop	si
+	cmpb	al, 1
+	xchg	si, ax
+	jna	.ok
+	xor	ax, ax
+.ok:
+	ret
 #endif

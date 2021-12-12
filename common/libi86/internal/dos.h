@@ -35,6 +35,7 @@
 #endif
 
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <i86.h>
 #include <libi86/stdlib.h>
@@ -47,6 +48,11 @@
 #endif
 
 _LIBI86_BEGIN_EXTERN_C
+
+typedef struct
+{
+  uint8_t drive, name[8], ext[3], unused[25];
+} __libi86_msdos_fcb_t;
 
 #ifdef __GNUC__
 extern __attribute__ ((regparmcall)) unsigned
@@ -138,6 +144,10 @@ __libi86_msdos_do_getdcwd (char buf[_MAX_PATH - 3], unsigned char drive)
 extern int __libi86_msdos_do_getdcwd (char buf[_MAX_PATH - 3],
 				      unsigned char drive);
 #endif  /* ! __GNUC__ || __IA16_FEATURE_PROTECTED_MODE */
+
+extern unsigned __libi86_msdos_do_truename (const char *path, char *out_path);
+extern const char *__libi86_msdos_parse_to_fcb (const char *name,
+						__libi86_msdos_fcb_t *fcb);
 
 /*
  * Iterate through the directories in %PATH%.  At each iteration, set

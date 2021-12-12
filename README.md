@@ -137,9 +137,9 @@ When using ACK, you currently need to build `libi86` from sources.
 |   X |   G | `_searchpath (`_file_`);` | Currently only available for `gcc-ia16`.
 |     |     |
 |     |     | **`▗▚▚▚▚ <direct.h> ▞▞▞▞▖`**
-| P01, W | (=) | `getcwd (`\*_buffer_`,` _max-len_`);` | (POSIX places this function in `<unistd.h>`.)
-|   W | (=) | `_getcwd (`\*_buffer_`,` _max-len_`);`
-|   W |   = | `_getdcwd (`_drive_`,` \*_buffer_`,` _max-len_`);`
+| P01, W | (=) | `getcwd (`\*_buffer_`,` _size_`);` | (POSIX places this function in `<unistd.h>`.)
+|   W | (=) | `_getcwd (`\*_buffer_`,` _size_`);`
+|   W |   = | `_getdcwd (`_drive_`,` \*_buffer_`,` _size_`);`
 |     |     |
 |     |     | **`▗▚▚▚▚ <dos.h> ▞▞▞▞▖`** | **`<dos.h>` also includes `<i86.h>`, described below.  If `_BORLANDC_SOURCE` is defined, the `union REGS` type gets an additional `.x.flags` field, and `<dos.h>` switches accordingly to a different version of the `intdos` and `intdosx` routines.**
 |   W |   = | `bdos (`_dos-func_`,` _dx_`,` _al_`);`
@@ -236,6 +236,7 @@ When using ACK, you currently need to build `libi86` from sources.
 |   X | (=) | `_vsscanf (`\*_s_`,` \*_fmt_`,` _ap_`);`
 |     |     |
 |     |     | **`▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖`** | **`<libi86/stdlib.h>` also includes the underlying C library's `<stdlib.h>`.**
+|   W |   = | \*`_fullpath (`\*_out-path_`,` \*_path_`,` _size_`);`
 |   W |   G | \*`lltoa (`_value_`,` \*_buffer_`,` _radix_`);` | Not yet supported on ACK — it lacks `long long` support for IA-16.
 |   W |   G | \*`_lltoa (`_value_`,` \*_buffer_`,` _radix_`);` | Not yet supported on ACK — it lacks `long long` support for IA-16.
 |   W |   = | \*`ltoa (`_value_`,` \*_buffer_`,` _radix_`);`

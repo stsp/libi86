@@ -3184,3 +3184,50 @@ main (void)
 31 OK
 ]])
 AT_CLEANUP
+
+AT_SETUP([[_fullpath]])
+AT_LIBI86_CHECK_WITH_TMP_FILE(dnl
+[[#include <dos.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
+#include <libi86/stdlib.h>
+int
+main (void)
+{
+  char out_path_1[_MAX_PATH], out_path_2[_MAX_PATH];
+  int fd;
+
+  memset (out_path_1, 0xf6, _MAX_PATH);
+  memset (out_path_2, 0xf6, _MAX_PATH);
+
+  if (_fullpath (out_path_1, TMP_FILE, _MAX_PATH) != out_path_1)
+    abort ();
+  puts ("1 OK");
+
+  if (_dos_open (out_path_1, O_RDONLY | O_NOINHERIT, &fd) != 0)
+    abort ();
+  puts ("2 OK");
+  _dos_close (fd);
+
+  if (_fullpath (out_path_2, out_path_1, strlen (out_path_1)) != NULL)
+    abort ();
+  puts ("3 OK");
+
+#if 0  /* FIXME: fails under dosemu 1? */
+  if (_fullpath (out_path_2, out_path_1, strlen (out_path_1) + 1)
+      != out_path_2)
+    abort ();
+  puts ("4 OK");
+
+  if (strcmp (out_path_2, out_path_1) != 0)
+    abort ();
+  puts ("5 OK");
+#endif
+
+  return 0;
+}]],[[1 OK
+2 OK
+3 OK
+]])
+AT_CLEANUP

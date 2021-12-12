@@ -27,23 +27,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_DIRECT_H_
-#define _LIBI86_DIRECT_H_
+#define _LIBI86_COMPILING_
+#include <errno.h>
+#include <unistd.h>
+#include "libi86/stdlib.h"
+#include "libi86/internal/acconfig.h"
+#include "libi86/internal/dos.h"
+#include "libi86/internal/dos-dbcs.h"
 
-#include <libi86/internal/acconfig.h>
-#include <libi86/internal/cdefs.h>
-
-_LIBI86_BEGIN_EXTERN_C
-
-#ifdef _LIBI86_INTERNAL_HAVE_GETCWD
-extern char *getcwd (char *__buf, _LIBI86_SIZE_T __size);
-_LIBI86_REDIRECT_2 (char *, _getcwd, char *, _LIBI86_SIZE_T, getcwd)
-#else
-extern char *_getcwd (char *__buf, _LIBI86_SIZE_T __size);
-_LIBI86_REDIRECT_2 (char *, getcwd, char *, _LIBI86_SIZE_T, _getcwd)
+#ifndef _LIBI86_INTERNAL_HAVE_ENAMETOOLONG
+# define ENAMETOOLONG	E2BIG
 #endif
-extern char *_getdcwd (int __drive, char *__buf, _LIBI86_SIZE_T __size);
 
-_LIBI86_END_EXTERN_C
+char *
+_fullpath (char *out_path, const char *path, size_t size)
+{
+  if (! path || ! path[0])
+    path = ".";
 
-#endif
+  if (! out_path || size >= _MAX_PATH)
+    return realpath (path, out_path);
+  else
+    {
+      char buf[_MAX_PATH];
+      char *res = realpath (path, buf);
+      size_t len;
+
+      if (! res)
+	return NULL;
+
+      len = strlen (res);
+      if (len >= size)
+	{
+	  errno = ENAMETOOLONG;
+	  return NULL;
+	}
+
+      memcpy (out_path, res, len + 1);
+      return out_path;
+    }
+}
