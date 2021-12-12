@@ -29,7 +29,7 @@
 
 #define _LIBI86_COMPILING_
 #include <stdlib.h>
-#include <sys/stat.h>
+#include "dos.h"
 #include "libi86/stdlib.h"
 #include "libi86/internal/dos.h"
 
@@ -41,19 +41,19 @@ _searchpath (const char *name)
   const char *pathname;
   _dos_dbcs_lead_table_t dbcs;
   __libi86_msdos_path_itr_t itr;
-  struct stat sb;
+  unsigned attrs;
 
-  if (stat (name, &sb) == 0)
-    return realpath (name, full_pathname);
+  if (_dos_getfileattr (name, &attrs) == 0)
+    return _fullpath (full_pathname, name, sizeof full_pathname);
 
   dbcs = _dos_get_dbcs_lead_table ();
 
   _LIBI86_FOR_EACH_PATHED_PATHNAME (pathname, name, dbcs, itr)
     {
-      if (stat (pathname, &sb) == 0)
+      if (_dos_getfileattr (pathname, &attrs) == 0)
 	{
 	  _dos_free_dbcs_lead_table (dbcs);
-	  return realpath (pathname, full_pathname);
+	  return _fullpath (full_pathname, pathname, sizeof full_pathname);
 	}
     }
 
@@ -61,5 +61,7 @@ _searchpath (const char *name)
   return NULL;
 }
 
+#ifdef __GNUC__
 _LIBI86_WEAK_ALIAS (_searchpath) char *
 searchpath (const char *);
+#endif

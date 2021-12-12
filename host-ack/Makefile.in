@@ -137,6 +137,7 @@ OBJS		= bios/bios-disk.o \
 		  conio/wherex.o \
 		  conio/wherey.o \
 		  conio/window.o \
+		  dir/searchpath.o \
 		  direct/getcwd.o \
 		  direct/getdcwd.o \
 		  direct/libi86-msdos-do-getdcwd.o \

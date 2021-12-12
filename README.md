@@ -133,8 +133,8 @@ When using ACK, you currently need to build `libi86` from sources.
 |   B |   = | `outportw (`_port_`,` _value_`);` | Accepts an unsigned value to write.
 |     |     |
 |     |     | **`▗▚▚▚▚ <dir.h> ▞▞▞▞▖`**
-|   B |   G | `searchpath (`_file_`);` | Currently only available for `gcc-ia16`.
-|   X |   G | `_searchpath (`_file_`);` | Currently only available for `gcc-ia16`.
+|   B |   = | `searchpath (`_file_`);`
+|   X |   = | `_searchpath (`_file_`);`
 |     |     |
 |     |     | **`▗▚▚▚▚ <direct.h> ▞▞▞▞▖`**
 | P01, W | (=) | `getcwd (`\*_buffer_`,` _size_`);` | (POSIX places this function in `<unistd.h>`.)
