@@ -27,33 +27,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define _LIBI86_COMPILING_
-#include <errno.h>
-#include "dos.h"
-#include "libi86/internal/dos.h"
+#include "libi86/internal/call-cvt.h"
 
-extern long __libi86_ret_einval (void);
+	.code16
+	.att_syntax prefix
 
-unsigned
-_dos_getdiskfree (unsigned drive, struct diskfree_t *diskspace)
-{
-  int res;
-  unsigned tot, avail, spc, bps;
-
-  if (drive > 0xff)
-    return (unsigned) __libi86_ret_einval ();
-
-  __asm volatile ("int $0x21"
-		  : "=a" (spc), "=b" (avail), "=c" (bps), "=d" (tot)
-		  : "Rah" ((unsigned char) 0x36), "Rdl" ((unsigned char) drive)
-		  : "cc");
-
-  if (spc == 0xffff)
-    return (unsigned) __libi86_ret_einval ();
-
-  diskspace->total_clusters = tot;
-  diskspace->avail_clusters = avail;
-  diskspace->sectors_per_cluster = spc;
-  diskspace->bytes_per_sector = bps;
-  return 0;
-}
+	TEXT_ (dos_setdate.S.LIBI86)
+	.global	_dos_setdate
+_dos_setdate:
+	ENTER_BX_ (2)
+	MOV_ARG0W_BX_ (%bx)
+	movb	$0x2b,	%ah
+	movw	(%bx),	%dx
+	movw	2(%bx),	%cx
+	int	$0x21
+	testb	%al,	%al
+	jnz	.error
+	cbtw
+	RET_ (2)
+.error:
+	TAIL_CALL_ (__libi86_ret_einval, 2)

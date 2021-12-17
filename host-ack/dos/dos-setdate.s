@@ -1,3 +1,4 @@
+#
 /*
  * Copyright (c) 2021 TK Chia
  *
@@ -27,33 +28,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define _LIBI86_COMPILING_
-#include <errno.h>
-#include "dos.h"
-#include "libi86/internal/dos.h"
+#include "libi86/internal/sect.h"
 
-extern long __libi86_ret_einval (void);
-
-unsigned
-_dos_getdiskfree (unsigned drive, struct diskfree_t *diskspace)
-{
-  int res;
-  unsigned tot, avail, spc, bps;
-
-  if (drive > 0xff)
-    return (unsigned) __libi86_ret_einval ();
-
-  __asm volatile ("int $0x21"
-		  : "=a" (spc), "=b" (avail), "=c" (bps), "=d" (tot)
-		  : "Rah" ((unsigned char) 0x36), "Rdl" ((unsigned char) drive)
-		  : "cc");
-
-  if (spc == 0xffff)
-    return (unsigned) __libi86_ret_einval ();
-
-  diskspace->total_clusters = tot;
-  diskspace->avail_clusters = avail;
-  diskspace->sectors_per_cluster = spc;
-  diskspace->bytes_per_sector = bps;
-  return 0;
-}
+#ifdef __MSDOS__
+	.define	__dos_setdate
+__dos_setdate:
+	mov	bx, sp
+	mov	bx, 2(bx)
+	movb	ah, 0x2b
+	mov	dx, (bx)
+	mov	cx, 2(bx)
+	int	0x21
+	testb	al, al
+	jnz	.error
+	cbw
+	ret
+.error:
+	jmp	___libi86_ret_einval
+#endif

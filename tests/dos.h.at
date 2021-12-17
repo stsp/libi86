@@ -295,6 +295,51 @@ main (void)
 }]],[[]])
 AT_CLEANUP
 
+AT_SETUP([[_dos_setdate]])
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+void abort (void);
+int
+main (void)
+{
+  struct dosdate_t date1, date2, date3;
+  struct dostime_t tyme;
+  do
+    {
+      memset (&tyme, 0xf6, sizeof tyme);
+      _dos_gettime (&tyme);
+    } while (tyme.second > 56);
+  memset (&date1, 0xf6, sizeof date1);
+  memset (&date2, 0xf6, sizeof date2);
+  memset (&date3, 0xf6, sizeof date3);
+  _dos_getdate (&date1);
+  date2.year = 1980;
+  date2.month = 1;
+  date2.day = 1;
+  if (_dos_setdate (&date2) != 0)
+    abort ();
+  _dos_getdate (&date3);
+  if (_dos_setdate (&date1) != 0)
+    abort ();
+  if (date3.year != 1980 || date3.month != 1 || date3.day != 1)
+    abort ();
+  _dos_getdate (&date3);
+  if (date3.year != date1.year || date3.month != date1.month
+    || date3.day != date1.day)
+    abort ();
+  date2.year = 1980;
+  date2.month = 0;
+  date2.day = 0;
+  if (_dos_setdate (&date2) == 0)
+    abort ();
+  _dos_getdate (&date3);
+  if (date3.year != date1.year || date3.month != date1.month
+    || date3.day != date1.day)
+    abort ();
+  return 0;
+}]],[[]])
+AT_CLEANUP
+
 AT_SETUP([[_dos_getdiskfree]])
 AT_LIBI86_CHECK(dnl
 [[#include <dos.h>

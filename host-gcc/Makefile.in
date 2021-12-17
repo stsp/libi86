@@ -169,6 +169,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-open.o \
 		  dos/dos-read.o \
 		  dos/dos-setblock.o \
+		  dos/dos-setdate.o \
 		  dos/dos-setdrive.o \
 		  dos/dos-setfileattr.o \
 		  dos/dos-setvect.o \
@@ -179,6 +180,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/libi86-bc-intdos.o \
 		  dos/libi86-bc-intdosx.o \
 		  dos/libi86-msdos-pathed.o \
+		  dos/libi86-ret-einval.o \
 		  dos/libi86-ret-really-set-errno.o \
 		  dos/libi86-ret-set-errno.o \
 		  dos/peek.o \
