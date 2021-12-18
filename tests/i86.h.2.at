@@ -54,7 +54,7 @@ int main (void)
 AT_CLEANUP
 
 AT_SETUP([[int86]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
 [[#include <i86.h>
 #include <string.h>
 int main (void)

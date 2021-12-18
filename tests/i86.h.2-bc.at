@@ -28,9 +28,11 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 AT_BANNER([[<i86.h> tests (part 2, Borland compatibility)]])
 
 AT_SETUP([[int86 (Borland)]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
 [[#define _BORLANDC_SOURCE
 #include <i86.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 int main (void)
 {
@@ -46,13 +48,57 @@ int main (void)
    * should be set, while DF & TF should be clear.
    */
   if ((regs.x.flags & 0x0700) != 0x0200)
-    abort ();
+    {
+      fprintf (stderr, "bogus flags: %#x\n", regs.x.flags);
+      abort ();
+    }
 #else
 # error
 #endif
   return 0;
 }]],[[Hello from int86!
 ]])
+AT_LIBI86_CHECK(dnl
+[[#define _BORLANDC_SOURCE
+#include <bios.h>
+#include <i86.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+int main (void)
+{
+  union REGS regs;
+  unsigned rv;
+  memset (&regs, 0xf6, sizeof (regs));
+  rv = (unsigned) int86 (0x12, &regs, &regs);
+  if (rv != regs.w.ax)
+    abort ();
+  if (rv != _bios_memsize ())
+    {
+      fprintf (stderr, "bogus int 0x12 result: %#x\n", rv);
+      abort ();
+    }
+  if ((regs.x.flags & 0x0700) != 0x0200)
+    {
+      fprintf (stderr, "bogus flags: %#x\n", regs.x.flags);
+      abort ();
+    }
+  memset (&regs, 0xf6, sizeof (regs));
+  rv = (unsigned) int86 (0x11, &regs, &regs);
+  if (rv != regs.w.ax)
+    abort ();
+  if (rv != _bios_equiplist ())
+    {
+      fprintf (stderr, "bogus int 0x11 result: %#x\n", rv);
+      abort ();
+    }
+  if ((regs.x.flags & 0x0700) != 0x0200)
+    {
+      fprintf (stderr, "bogus flags: %#x\n", regs.x.flags);
+      abort ();
+    }
+  return 0;
+}]],[])
 AT_CLEANUP
 
 AT_SETUP([[int86x (Borland)]])
