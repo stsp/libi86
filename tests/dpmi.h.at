@@ -128,7 +128,7 @@ main (void)
 }]],[])
 AT_CLEANUP
 
-AT_SETUP([[_DPMIIdle]])
+AT_SETUP([[_DPMIIdle, _DPMIGetVirtualInterruptState]])
 AT_LIBI86_SKIP_IF_NO_DPMI
 AT_LIBI86_CHECK(dnl
 [[#include <stdbool.h>
@@ -145,6 +145,11 @@ main (void)
   uint8_t res, old_res = 0xff;
   do
     {
+      if (dpmi_p && ! _DPMIGetVirtualInterruptState ())
+	{
+	  fprintf (stderr, "virtual interrupts disabled?!\n");
+	  abort ();
+	}
       res = _DPMIIdle ();
       if (old_res == 0xff)
 	old_res = res;

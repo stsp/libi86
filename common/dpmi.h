@@ -31,6 +31,7 @@
 #define _LIBI86_DPMI_H_
 
 #include <libi86/internal/cdefs.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include "i86.h"
 
@@ -209,6 +210,14 @@ _DPMIGetSegmentBaseAddress (uint16_t __sel)
 		  : "0" (0x0006U), "b" (__sel), "1" (~0U), "2" (~0U)
 		  : "cc");
   return (uint32_t) __hi << 16 | __lo;
+}
+
+_LIBI86_ALT_INLINE bool
+_DPMIGetVirtualInterruptState (void)
+{
+  uint8_t __res;
+  __asm volatile ("int {$}0x31" : "=Ral" (__res) : "a" (0x0902U) : "cc");
+  return __res != 0;
 }
 
 _LIBI86_ALT_INLINE uint8_t
