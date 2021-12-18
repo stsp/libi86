@@ -276,27 +276,101 @@ int main (void)
 AT_CLEANUP
 
 AT_SETUP([[_disable, _enable]])
-AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+AT_LIBI86_CHECK(dnl
 [[#include <bios.h>
 #include <i86.h>
+#include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
+#ifdef __IA16_FEATURE_PROTECTED_MODE
+# include <dpmi.h>
+#endif
 
-static void do_abort (void)
+static void do_abort (const char *msg)
 {
   _enable ();
+  fputs (msg, stderr);
   abort ();
 }
 
 static unsigned ticks (void)
 {
-#ifdef __FAR
+#if defined __FAR && ! defined __IA16_FEATURE_PROTECTED_MODE
   return *(unsigned volatile __far *) 0x0040006cul;
 #else
   long tv;
   if (_bios_timeofday (_TIME_GETCLOCK, &tv) < 0)
-    do_abort ();
+    do_abort ("_bios_timeofday (, ) failed");
   return (unsigned) tv;
 #endif
+}
+
+#ifdef __IA16_FEATURE_PROTECTED_MODE
+static void
+check_real_if (const char *msg)
+{
+  bool real_if = ((__libi86_get_flags () & 0x0200U) != 0);
+  if (! real_if)
+    do_abort (msg);
+}
+#endif
+
+static bool
+virt_if (void)
+{
+#ifdef __IA16_FEATURE_PROTECTED_MODE
+  if (__DPMI_hosted () == 1)
+    {
+      unsigned cpl = __libi86_get_cs () & 3;
+      unsigned short flags = __libi86_get_flags ();
+      unsigned iopl = (flags >> 12) & 3;
+      if (cpl > iopl)
+	{
+	  /*
+	   * Besides returning the virtual interrupt state, also take a
+	   * moment to test the _real_ interrupt state.
+	   *
+	   * If CPL = 3 > IOPL, then we assume that real interrupts are
+	   * supposed to be always enabled, & test for that.
+	   *
+	   * If CPL > IOPL, & real interrupts are enabled, test that real
+	   * interrupts remain enabled even if we do a `popfw' or `iretw'
+	   * that tries to change this.
+	   */
+	  unsigned scratch;
+	  bool expect_real_if_p = false;
+	  if (cpl == 3)
+	    {
+	      check_real_if ("IF = 0 when CPL = 3 > IOPL");
+	      expect_real_if_p = true;
+	    }
+	  else
+	    expect_real_if_p = ((flags & 0x0200U) != 0);
+	  if (expect_real_if_p)
+	    {
+	      __asm volatile ("push{w} %0; "
+			      "popfw"
+			      : /* no outputs */
+			      : "rm" (flags & ~0x0200U)
+			      : "cc", "memory");
+	      check_real_if ("IF = 0 after popfw, CPL > IOPL");
+	      __asm volatile ("push{w} %1; "
+			      "push{w} {%%}cs; "
+			      "mov{w} {$0f, %0|%0, offset 0f}; "
+			      "push{w} %0; "
+			      "iretw; "
+			      "0:"
+			      : "=r" (scratch)
+			      : "rm" (flags & ~0x0200U)
+			      : "cc", "memory");
+	      check_real_if ("IF = 0 after iretw, CPL > IOPL");
+	    }
+	}
+      return _DPMIGetVirtualInterruptState ();
+    }
+  else
+#endif
+    return (__libi86_get_flags () & 0x0200U) != 0;
 }
 
 int
@@ -304,8 +378,8 @@ main (void)
 {
   unsigned from, c1, c2;
 
-  if (! (__libi86_get_flags () & 0x0200u))
-    abort ();
+  if (! virt_if ())
+    do_abort ("IF = 0 on startup");
 
   srand (ticks ());
   c1 = 5000;
@@ -316,17 +390,17 @@ main (void)
       /* Check that the handler for the timer interrupt (IRQ 0) cannot
 	 update the tick count, when all IRQs are disabled.  */
       from = ticks ();
-      if (__libi86_get_flags () & 0x0200u)
-	do_abort ();
+      if (virt_if ())
+	do_abort ("IF = 1 after _disable () #1");
       c2 = rand() / (RAND_MAX / 100) + 1;
       while (c2-- != 0)
 	{
 	  if (ticks () != from)
-	    do_abort ();
+	    do_abort ("IRQ 0 after _disable ()");
         }
 
-      if (__libi86_get_flags () & 0x0200u)
-	do_abort ();
+      if (virt_if ())
+	do_abort ("IF = 1 after _disable () #2");
 
       /* Allow interrupts for a while.  Every now and then, also wait for
 	 the timer tick count to get updated.  */
@@ -335,11 +409,15 @@ main (void)
 	while (ticks () == from)
 	  {
 #ifdef __GNUC__
+# ifdef __IA16_FEATURE_PROTECTED_MODE
+	    _DPMIIdle ();
+# else
 	    __asm volatile ("hlt");
+# endif
 #endif
 	  }
-      if (! (__libi86_get_flags () & 0x0200u))
-	do_abort ();
+      if (! virt_if ())
+	do_abort ("IF = 0 after _enable ()");
     }
 
   return 0;
