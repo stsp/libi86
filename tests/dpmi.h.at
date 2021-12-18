@@ -1,4 +1,4 @@
-dnl Copyright (c) 2020 TK Chia
+dnl Copyright (c) 2020--2021 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -124,6 +124,59 @@ main (void)
     abort ();
   if (rmc.es != 0xf6f6u || rmc.ds != 0xf6f6u || (uint16_t) rmc.ebp != 0xf6f6u)
     abort ();
+  return 0;
+}]],[])
+AT_CLEANUP
+
+AT_SETUP([[_DPMIIdle]])
+AT_LIBI86_SKIP_IF_NO_DPMI
+AT_LIBI86_CHECK(dnl
+[[#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <dpmi.h>
+int
+main (void)
+{
+  time_t tyme = time (NULL);
+  bool dpmi_p = (__DPMI_hosted () == 1);
+  uint8_t res, old_res = 0xff;
+  do
+    {
+      res = _DPMIIdle ();
+      if (old_res == 0xff)
+	old_res = res;
+      else if (res != old_res)
+	{
+	  fprintf (stderr, "inconsistent int 0x2f/0x1680 return values?!\n");
+	  abort ();
+	}
+      switch (res)
+	{
+	case 0x00:
+	  /* Cool, int 0x2f says that %ax = 0x1680 call is supported. */
+	  break;
+	case 0x80:
+	  /*
+	   * int 0x2f says %ax = 0x1680 is unsupported.  If we are running
+	   * in DPMI mode, then %ax = 0x1680 _should_ be supported, so this
+	   * means something bogus is happening.
+	   */
+	  if (dpmi_p)
+	    {
+	      fprintf (stderr, "int 0x2f/0x1680 unsupported in DPMI?!\n");
+	      abort ();
+	    }
+	  break;
+	default:
+	  /* Any other return value is extremely suspicious. */
+	  fprintf (stderr, "lolwut?!?  %%al = %#x\n", (unsigned) res);
+	  abort ();
+	}
+    }
+  while (time (NULL) - tyme < 2);
   return 0;
 }]],[])
 AT_CLEANUP

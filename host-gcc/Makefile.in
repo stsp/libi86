@@ -197,6 +197,7 @@ OBJS		= bios/bios-disk.o \
 		  dpmi/dpmifreeldtdescriptor.o \
 		  dpmi/dpmigetdescriptor.o \
 		  dpmi/dpmigetsegmentbaseaddress.o \
+		  dpmi/dpmiidle.o \
 		  dpmi/dpmisegmenttodescriptor.o \
 		  dpmi/dpmisetdescriptor.o \
 		  dpmi/dpmisimulaterealmodeint.o \
