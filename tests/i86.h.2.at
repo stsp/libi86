@@ -307,20 +307,29 @@ static unsigned ticks (void)
 
 #ifdef __IA16_FEATURE_PROTECTED_MODE
 static void
-check_real_if (const char *msg)
+check_real_if (bool expect_real_if, const char *msg)
 {
   bool real_if = ((__libi86_get_flags () & 0x0200U) != 0);
-  if (! real_if)
+  if (real_if != expect_real_if)
     do_abort (msg);
 }
-#endif
+
+static void
+check_virt_if (bool expect_virt_if, const char *msg)
+{
+  bool virt_if = _DPMIGetVirtualInterruptState ();
+  if (virt_if != expect_virt_if)
+    do_abort (msg);
+}
+#endif  /* __IA16_FEATURE_PROTECTED_MODE */
 
 static bool
-virt_if (void)
+get_virt_if (void)
 {
 #ifdef __IA16_FEATURE_PROTECTED_MODE
   if (__DPMI_hosted () == 1)
     {
+      bool virt_if = _DPMIGetVirtualInterruptState ();
       unsigned cpl = __libi86_get_cs () & 3;
       unsigned short flags = __libi86_get_flags ();
       unsigned iopl = (flags >> 12) & 3;
@@ -335,38 +344,76 @@ virt_if (void)
 	   *
 	   * If CPL > IOPL, & real interrupts are enabled, test that real
 	   * interrupts remain enabled even if we do a `popfw' or `iretw'
-	   * that tries to change this.
+	   * that tries to change this.  If CPL > IOPL, & real interrupts
+	   * are disabled (?!?), test that they remain disabled after a
+	   * `popfw' or `iretw'.
+	   *
+	   * Also check that `popfw' & `iretw' do not disturb the virtual
+	   * interrupt state.
 	   */
 	  unsigned scratch;
-	  bool expect_real_if_p = false;
+	  bool real_if;
 	  if (cpl == 3)
 	    {
-	      check_real_if ("IF = 0 when CPL = 3 > IOPL");
-	      expect_real_if_p = true;
+	      check_real_if (true, "IF = 0 when CPL = 3 > IOPL");
+	      real_if = true;
 	    }
 	  else
-	    expect_real_if_p = ((flags & 0x0200U) != 0);
-	  if (expect_real_if_p)
-	    {
-	      __asm volatile ("push{w} %0; "
-			      "popfw"
-			      : /* no outputs */
-			      : "rm" (flags & ~0x0200U)
-			      : "cc", "memory");
-	      check_real_if ("IF = 0 after popfw, CPL > IOPL");
-	      __asm volatile ("push{w} %1; "
-			      "push{w} {%%}cs; "
-			      "mov{w} {$0f, %0|%0, offset 0f}; "
-			      "push{w} %0; "
-			      "iretw; "
-			      "0:"
-			      : "=r" (scratch)
-			      : "rm" (flags & ~0x0200U)
-			      : "cc", "memory");
-	      check_real_if ("IF = 0 after iretw, CPL > IOPL");
-	    }
+	    real_if = ((flags & 0x0200U) != 0);
+	  __asm volatile ("push{w} %0; "
+			  "popfw"
+			  : /* no outputs */
+			  : "rm" (flags ^ 0x0200U)
+			  : "cc", "memory");
+	  check_real_if (real_if,
+			 real_if ? "IF 1 ~> 0 after popfw #1, CPL > IOPL"
+				 : "IF 0 ~> 1 after popfw #1, CPL > IOPL");
+	  check_virt_if (virt_if,
+			 virt_if ? "VIF 1 ~> 0 after popfw #1, CPL > IOPL"
+				 : "VIF 0 ~> 1 after popfw #1, CPL > IOPL");
+	  __asm volatile ("push{w} %0; "
+			  "popfw"
+			  : /* no outputs */
+			  : "rm" (flags)
+			  : "cc", "memory");
+	  check_real_if (real_if,
+			 real_if ? "IF 1 ~> 0 after popfw #2, CPL > IOPL"
+				 : "IF 0 ~> 1 after popfw #2, CPL > IOPL");
+	  check_virt_if (virt_if,
+			 virt_if ? "VIF 1 ~> 0 after popfw #2, CPL > IOPL"
+				 : "VIF 0 ~> 1 after popfw #2, CPL > IOPL");
+	  __asm volatile ("push{w} %1; "
+			  "push{w} {%%}cs; "
+			  "mov{w} {$0f, %0|%0, offset 0f}; "
+			  "push{w} %0; "
+			  "iretw; "
+			  "0:"
+			  : "=r" (scratch)
+			  : "rm" (flags ^ 0x0200U)
+			  : "cc", "memory");
+	  check_real_if (real_if,
+			 real_if ? "IF 1 ~> 0 after iretw #1, CPL > IOPL"
+				 : "IF 0 ~> 1 after iretw #1, CPL > IOPL");
+	  check_virt_if (virt_if,
+			 virt_if ? "VIF 1 ~> 0 after iretw #1, CPL > IOPL"
+				 : "VIF 0 ~> 1 after iretw #1, CPL > IOPL");
+	  __asm volatile ("push{w} %1; "
+			  "push{w} {%%}cs; "
+			  "mov{w} {$0f, %0|%0, offset 0f}; "
+			  "push{w} %0; "
+			  "iretw; "
+			  "0:"
+			  : "=r" (scratch)
+			  : "rm" (flags)
+			  : "cc", "memory");
+	  check_real_if (real_if,
+			 real_if ? "IF 1 ~> 0 after iretw #2, CPL > IOPL"
+				 : "IF 0 ~> 1 after iretw #2, CPL > IOPL");
+	  check_virt_if (virt_if,
+			 virt_if ? "VIF 1 ~> 0 after iretw #2, CPL > IOPL"
+				 : "VIF 0 ~> 1 after iretw #2, CPL > IOPL");
 	}
-      return _DPMIGetVirtualInterruptState ();
+      return virt_if;
     }
   else
 #endif
@@ -378,8 +425,8 @@ main (void)
 {
   unsigned from, c1, c2;
 
-  if (! virt_if ())
-    do_abort ("IF = 0 on startup");
+  if (! get_virt_if ())
+    do_abort ("(V)IF = 0 on startup");
 
   srand (ticks ());
   c1 = 5000;
@@ -390,8 +437,8 @@ main (void)
       /* Check that the handler for the timer interrupt (IRQ 0) cannot
 	 update the tick count, when all IRQs are disabled.  */
       from = ticks ();
-      if (virt_if ())
-	do_abort ("IF = 1 after _disable () #1");
+      if (get_virt_if ())
+	do_abort ("(V)IF = 1 after _disable () #1");
       c2 = rand() / (RAND_MAX / 100) + 1;
       while (c2-- != 0)
 	{
@@ -399,8 +446,8 @@ main (void)
 	    do_abort ("IRQ 0 after _disable ()");
         }
 
-      if (virt_if ())
-	do_abort ("IF = 1 after _disable () #2");
+      if (get_virt_if ())
+	do_abort ("(V)IF = 1 after _disable () #2");
 
       /* Allow interrupts for a while.  Every now and then, also wait for
 	 the timer tick count to get updated.  */
@@ -416,8 +463,8 @@ main (void)
 # endif
 #endif
 	  }
-      if (! virt_if ())
-	do_abort ("IF = 0 after _enable ()");
+      if (! get_virt_if ())
+	do_abort ("(V)IF = 0 after _enable ()");
     }
 
   return 0;
