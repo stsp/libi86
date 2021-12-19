@@ -252,6 +252,7 @@ When using ACK, you currently need to build `libi86` from sources.
 |   W |   = | \*`_ultoa (`_value_`,` \*_buffer_`,` _radix_`);`
 |     |     |
 |     |     | **`▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖`** | **`<libi86/string.h>` also includes the underlying C library's `<string.h>`.**
+|   W |   = | `_fmemcmp (`\*_s1_`,` \*_s2_`,` _n_`);`
 |   W |   = | \*`_fmemcpy (`\*_dest_`,` \*_src_`,` _n_`);`
 |   W |   = | \*`_fmemmove (`\*_dest_`,` \*_src_`,` _n_`);`
 |   W |   = | `_fstrlen (`\*_s_`);`

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,23 +27,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_LIBI86_STRING_H_
-#define _LIBI86_LIBI86_STRING_H_
+#include "libi86/internal/call-cvt.h"
 
-#include <string.h>
+	.arch	i8086, jumps
+	.code16
+	.att_syntax prefix
 
-#include <libi86/internal/cdefs.h>
-
-_LIBI86_BEGIN_EXTERN_C
-
-extern int _fmemcmp (__libi86_fpcv_t __s1, __libi86_fpcv_t __s2,
-		     _LIBI86_SIZE_T __n);
-extern __libi86_fpv_t _fmemcpy (__libi86_fpv_t __dest, __libi86_fpcv_t __src,
-				_LIBI86_SIZE_T __n);
-extern __libi86_fpv_t _fmemmove (__libi86_fpv_t __dest, __libi86_fpcv_t __src,
-				_LIBI86_SIZE_T __n);
-extern _LIBI86_SIZE_T _fstrlen (__libi86_fpcc_t __s);
-
-_LIBI86_END_EXTERN_C
-
-#endif
+	TEXT_ (fmemcmp.S.LIBI86)
+	.global	_fmemcmp
+_fmemcmp:
+	ENTER2_BX_ (10)
+	pushw	%ds
+	pushw	%es
+	pushw	%si
+	pushw	%di
+	MOV_ARG8W2_BX_ (%cx)
+	LES_ARG4W2_BX_ (%di)
+	LDS_ARG0W_BX_ (%si)
+	shrw	%cx
+	sbbw	%ax,	%ax
+	jcxz	.done_words
+	repz cmpsw
+	jnz	.unequal_word
+.done_words:
+	xchgw	%ax,	%cx
+	jcxz	.munge_flags
+.final_byte:
+	cmpsb
+.munge_flags:
+	lahf	/* SZ-A-P-C */
+	rorb	%ah
+	andw	$0b1010000000000000, %ax  /* CF set => ret. < 0 */
+		/* CSZ-A-P- */		  /* CF clear, ZF set => ret. == 0 */
+	xorw	$0b0010000000000000, %ax  /* CF, ZF clear => ret > 0 */
+	popw	%di
+	popw	%si
+	popw	%es
+	popw	%ds
+	RET2_ (10)
+.unequal_word:
+	decw	%si
+	decw	%si
+	decw	%di
+	decw	%di
+	cmpsb
+	jnz	.munge_flags
+	jmp	.final_byte

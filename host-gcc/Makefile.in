@@ -241,6 +241,7 @@ OBJS		= bios/bios-disk.o \
 		  i86/nosound.o \
 		  i86/segread.o \
 		  i86/sound.o \
+		  string/fmemcmp.o \
 		  string/fmemcpy.o \
 		  string/fmemmove.o \
 		  string/fstrlen.o \

@@ -1,5 +1,6 @@
+#
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,23 +28,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_LIBI86_STRING_H_
-#define _LIBI86_LIBI86_STRING_H_
+#include "libi86/internal/sect.h"
 
-#include <string.h>
-
-#include <libi86/internal/cdefs.h>
-
-_LIBI86_BEGIN_EXTERN_C
-
-extern int _fmemcmp (__libi86_fpcv_t __s1, __libi86_fpcv_t __s2,
-		     _LIBI86_SIZE_T __n);
-extern __libi86_fpv_t _fmemcpy (__libi86_fpv_t __dest, __libi86_fpcv_t __src,
-				_LIBI86_SIZE_T __n);
-extern __libi86_fpv_t _fmemmove (__libi86_fpv_t __dest, __libi86_fpcv_t __src,
-				_LIBI86_SIZE_T __n);
-extern _LIBI86_SIZE_T _fstrlen (__libi86_fpcc_t __s);
-
-_LIBI86_END_EXTERN_C
-
-#endif
+	.define	__fmemcmp
+__fmemcmp:
+	mov	bx, sp
+	push	ds
+	push	es
+	push	si
+	push	di
+	mov	cx, 10(bx)		/* n */
+	les	di, 6(bx)		/* s2 */
+	lds	si, 2(bx)		/* s1 */
+	shr	cx, 1
+	sbb	ax, ax
+	jcxz	.done_words
+	repz cmpsw
+	jnz	.unequal_word
+.done_words:
+	xchg	cx, ax
+	jcxz	.munge_flags
+.final_byte:
+	cmpsb
+.munge_flags:
+	lahf	   /* SZ-A-P-C */
+	rorb	ah, 1
+	and	ax, 0b1010000000000000	/* CF set => ret. < 0 */
+		   /* CSZ-A-P- */	/* CF clear, ZF set => ret. == 0 */
+	xor	ax, 0b0010000000000000	/* CF, ZF clear => ret > 0 */
+	pop	di
+	pop	si
+	pop	es
+	pop	ds
+	ret
+.unequal_word:
+	dec	si
+	dec	si
+	dec	di
+	dec	di
+	cmpsb
+	jnz	.munge_flags
+	jmp	.final_byte
