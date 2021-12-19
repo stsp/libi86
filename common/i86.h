@@ -144,13 +144,13 @@ extern void sound (unsigned);
 _LIBI86_ALT_INLINE void
 _disable (void)
 {
-  __asm volatile ("cli");
+  __asm volatile ("cli" : : : "memory");
 }
 
 _LIBI86_ALT_INLINE void
 _enable (void)
 {
-  __asm volatile ("sti");
+  __asm volatile ("sti" : : : "memory");
 }
 
 _LIBI86_ALT_INLINE int
