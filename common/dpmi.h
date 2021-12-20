@@ -135,6 +135,13 @@ typedef struct
   }
 dpmi_dos_block;
 
+typedef struct
+  {
+    uint8_t ver_major, ver_minor;
+    char vendor[126];
+  }
+dpmi_host_info;
+
 _LIBI86_ALT_INLINE dpmi_dos_block
 _DPMIAllocateDOSMemoryBlock (uint16_t __paras)
 {
@@ -198,6 +205,30 @@ _DPMIGetDescriptor (uint16_t __sel, __libi86_fpv_t __desc)
 		  : "a" (0x000bU), "b" (__sel),
 		    "e" (FP_SEG (__desc)), "D" (FP_OFF (__desc))
 		  : "cc", "memory");
+  return __res;
+}
+
+_LIBI86_ALT_INLINE int
+#ifdef __FAR
+_DPMIGetCapabilities (uint16_t *__caps1, uint16_t *__caps2,
+		      uint16_t *__caps3, dpmi_host_info __far *__host)
+#else
+_DPMIGetCapabilities (uint16_t *__caps1, uint16_t *__caps2,
+		      uint16_t *__caps3, __libi86_fpv_t __host)
+#endif
+{
+  int __res;
+  uint16_t __c1, __c2, __c3;
+  __asm volatile ("int {$}0x31; sbb{w} %0, %0"
+		  : "=br" (__res), "=a" (__c1), "=c" (__c2), "=d" (__c3)
+		  : "a" (0x0401U), "e" (FP_SEG (__host)), "D" (FP_OFF (__host))
+		  : "cc", "memory");
+  if (! __res)
+    {
+      *__caps1 = __c1;
+      *__caps2 = __c2;
+      *__caps3 = __c3;
+    }
   return __res;
 }
 

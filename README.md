@@ -191,6 +191,7 @@ When using ACK, you currently need to build `libi86` from sources.
 |  IW |   G | `_DPMIAllocateLDTDescriptors (`_count_`);` | `int 0x31` function `0x0000`.  Returns a starting protected-mode selector, case to an `int32_t`.  On failure, returns a negative value.
 |  IW |   G | `_DPMIFreeDOSMemoryBlock (`_sel_`);` | `int 0x31` function `0x0101`.  Returns 0 on success, -1 on error.
 |  IW |   G | `_DPMIFreeLDTDescriptor (`_sel_`);` | `int 0x31` function `0x0001`.  Returns 0 on success, -1 on error.
+|   X |   G | `_DPMIGetCapabilities (`\*_capabilities-1_`,` \*_reserved-2_`,` \*_reserved-3_`,` \*_host-info_`);` | `int 0x31` function `0x0401`.  Returns 0 on success, -1 on error.
 |  IW |   G | `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);` | `int 0x31` function `0x000b`.  Returns 0 on success, -1 on error.
 |  IW |   G | `_DPMIGetSegmentBaseAddress (`_sel_`);` | `int 0x31` function `0x0006`.  Returns _sel_'s base address on success; return value is undefined on error.
 |   X |   G | `_DPMIGetVirtualInterruptState ();` | `int 0x31` function `0x0902`.  Returns `true` if virtual interrupts enabled, `false` otherwise.

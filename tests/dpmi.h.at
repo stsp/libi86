@@ -185,3 +185,33 @@ main (void)
   return 0;
 }]],[])
 AT_CLEANUP
+
+AT_SETUP([[_DPMIGetCapabilities]])
+AT_LIBI86_SKIP_IF_NO_DPMI
+AT_LIBI86_CHECK(dnl
+[[#include <dpmi.h>
+#include <stddef.h>
+#include <string.h>
+extern void abort (void);
+int
+main (void)
+{
+  uint16_t caps1 = 0xf6f6, caps2 = 0xf6f6, caps3 = 0xf6f6;
+  dpmi_host_info host;
+  size_t i;
+  if (__DPMI_hosted () != 1)
+    return 0;
+  memset (&host, 0xf6, sizeof host);
+  if (_DPMIGetCapabilities (&caps1, &caps2, &caps3, &host) != 0)
+    return 0;
+  /*
+   * If the "get DPMI capabilities" function is supported, then
+   * host.vendor[] must be an ASCIIZ string.
+   */
+  for (i = 0; i < sizeof host.vendor; ++i)
+    if (host.vendor[i] == 0)
+      return 0;
+  abort ();
+  return 1;
+}]],[])
+AT_CLEANUP

@@ -195,6 +195,7 @@ OBJS		= bios/bios-disk.o \
 		  dpmi/dpmiallocateldtdescriptors.o \
 		  dpmi/dpmifreedosmemoryblock.o \
 		  dpmi/dpmifreeldtdescriptor.o \
+		  dpmi/dpmigetcapabilities.o \
 		  dpmi/dpmigetdescriptor.o \
 		  dpmi/dpmigetsegmentbaseaddress.o \
 		  dpmi/dpmigetvirtualintstate.o \
