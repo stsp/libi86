@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2020--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -103,7 +103,8 @@ dump_sel_info (uint16_t sel)
 int
 main (void)
 {
-  uint16_t sel;
+  uint16_t sel, caps1, caps2, caps3;
+  dpmi_host_info host;
 
   if (__DPMI_hosted () != 1)
     {
@@ -135,4 +136,22 @@ main (void)
       dump_sel_info (sel);
     }
   while (sel != 4);
+
+  if (_DPMIGetCapabilities (&caps1, &caps2, &caps3, &host) != 0)
+    printf ("\n"
+	    "Cannot get DPMI 1.0 capabilities (if any)\n");
+  else
+    {
+      size_t len = strlen (host.vendor);
+      printf ("\n"
+	      "DPMI 1.0 capabilities: 0x%04x 0x%04x 0x%04x\n"
+	      "  host version: %u.%u\n"
+	      "  vendor: %.64s\n",
+	      caps1, caps2, caps3,
+	      host.ver_major, host.ver_minor, host.vendor);
+      if (len > 64)
+	printf ("          %s\n", host.vendor + 64);
+    }
+
+  return 0;
 }
