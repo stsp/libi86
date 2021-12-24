@@ -198,6 +198,7 @@ OBJS		= bios/bios-disk.o \
 		  dpmi/dpmigetcapabilities.o \
 		  dpmi/dpmigetdescriptor.o \
 		  dpmi/dpmigetsegmentbaseaddress.o \
+		  dpmi/dpmigetvendorspecificapi.o \
 		  dpmi/dpmigetvirtualintstate.o \
 		  dpmi/dpmiidle.o \
 		  dpmi/dpmisegmenttodescriptor.o \

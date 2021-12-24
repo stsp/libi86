@@ -243,6 +243,29 @@ _DPMIGetSegmentBaseAddress (uint16_t __sel)
   return (uint32_t) __hi << 16 | __lo;
 }
 
+_LIBI86_ALT_INLINE __libi86_fpcv_t
+_DPMIGetVendorSpecificAPI (__libi86_fpcc_t __vendor)
+{
+  _LIBI86_SEG_SELECTOR __segm;
+  unsigned __offs;
+  uint8_t __res;
+  /*
+   * "DPMI 1.0 clients should use this function [int 0x2f, ax = 0x168a] in
+   *  preference to Int 31H Function 0A00H. ...  Note that although this
+   *  function was not documented for DPMI 0.9, it will work under any DPMI
+   *  0.9 host."	-- DPMI Specification 1.0
+   */
+  __asm volatile ("int {$}0x2f"
+		  : "=Ral" (__res), "=e" (__segm), "=D" (__offs)
+		  : "a" (0x168aU),
+		    "Rds" (FP_SEG (__vendor)), "S" (FP_OFF (__vendor)),
+		    "1" (__builtin_ia16_selector (0U)), "2" (0U)
+		  : "cc");
+  if (__res)
+    return MK_FP (0, 0);
+  return MK_FP (__segm, __offs);
+}
+
 _LIBI86_ALT_INLINE bool
 _DPMIGetVirtualInterruptState (void)
 {

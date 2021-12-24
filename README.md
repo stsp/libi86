@@ -194,6 +194,7 @@ When using ACK, you currently need to build `libi86` from sources.
 |   X |   G | `_DPMIGetCapabilities (`\*_capabilities-1_`,` \*_reserved-2_`,` \*_reserved-3_`,` \*_host-info_`);` | `int 0x31` function `0x0401`.  Returns 0 on success, -1 on error.
 |  IW |   G | `_DPMIGetDescriptor (`_sel_`,` \*_desc_`);` | `int 0x31` function `0x000b`.  Returns 0 on success, -1 on error.
 |  IW |   G | `_DPMIGetSegmentBaseAddress (`_sel_`);` | `int 0x31` function `0x0006`.  Returns _sel_'s base address on success; return value is undefined on error.
+|  IW |   G | \*`_DPMIGetVendorSpecificAPI (`\*_vendor_`);` | `int 0x2f` function `0x168a`.  Returns a far null pointer on error.
 |   X |   G | `_DPMIGetVirtualInterruptState ();` | `int 0x31` function `0x0902`.  Returns `true` if virtual interrupts enabled, `false` otherwise.
 |  IW |   G | `_DPMIIdle ();` | `int 0x2f` function `0x1680`.  This implementation also returns a byte value saying whether this function call is actually supported (`0x00`), or not (`0x80`).  It is OK to ignore this value.
 |  IW |   G | `_DPMISegmentToDescriptor (`_seg-para_`);` | `int 0x31` function `0x0002`.  On success, returns a protected-mode selector value for the real-mode segment _seg-para_`:0`.  On failure, returns a negative value.

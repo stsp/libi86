@@ -100,11 +100,68 @@ dump_sel_info (uint16_t sel)
   putchar ('\n');
 }
 
+static void
+dump_caps (void)
+{
+  uint16_t caps1, caps2, caps3;
+  dpmi_host_info host;
+
+  if (_DPMIGetCapabilities (&caps1, &caps2, &caps3, &host) != 0)
+    printf ("\n"
+	  "Cannot get DPMI 1.0 capabilities (if any)\n");
+  else
+    {
+      size_t len = strlen (host.vendor);
+      printf ("\n"
+	      "DPMI 1.0 capabilities: 0x%04x 0x%04x 0x%04x\n"
+	      "  host version: %u.%u\n"
+	      "  vendor: %.64s\n",
+	      caps1, caps2, caps3,
+	      host.ver_major, host.ver_minor, host.vendor);
+      if (len > 64)
+	printf ("          %s\n", host.vendor + 64);
+    }
+}
+
+static void
+dump_vendor_apis (void)
+{
+  static const char * const vendors[] = {
+    "386MAX",
+    "DPMIONE",
+    "HELIX_DPMI",
+    "LDT_MONITOR",
+    "MS-DOS",
+    "Phar Lap",
+    "PHARLAP.16",
+    "PHARLAP.CE_SUPPORT",
+    "PHARLAP.HWINT_SUPPORT",
+    "RATIONAL DOS/4G",
+    "THUNK_16_32",
+    "VIRTUAL SUPPORT",
+  };
+  const size_t num_vendors = sizeof (vendors) / sizeof (vendors[0]);
+  size_t i;
+  bool got_api_p = false;
+
+  printf ("\n"
+	  "Known DPMI vendor-specific APIs:\n"
+	  "     seg:off    vendor/API id.\n");
+
+  for (i = 0; i < num_vendors; ++i)
+    {
+      const char *vendor = vendors[i];
+      const void __far *entry = _DPMIGetVendorSpecificAPI (vendor);
+      if (entry)
+	printf ("  0x%04x:0x%04x %s\n",
+		FP_SEG (entry), FP_OFF (entry), vendor);
+    }
+}
+
 int
 main (void)
 {
-  uint16_t sel, caps1, caps2, caps3;
-  dpmi_host_info host;
+  uint16_t sel;
 
   if (__DPMI_hosted () != 1)
     {
@@ -137,21 +194,8 @@ main (void)
     }
   while (sel != 4);
 
-  if (_DPMIGetCapabilities (&caps1, &caps2, &caps3, &host) != 0)
-    printf ("\n"
-	    "Cannot get DPMI 1.0 capabilities (if any)\n");
-  else
-    {
-      size_t len = strlen (host.vendor);
-      printf ("\n"
-	      "DPMI 1.0 capabilities: 0x%04x 0x%04x 0x%04x\n"
-	      "  host version: %u.%u\n"
-	      "  vendor: %.64s\n",
-	      caps1, caps2, caps3,
-	      host.ver_major, host.ver_minor, host.vendor);
-      if (len > 64)
-	printf ("          %s\n", host.vendor + 64);
-    }
+  dump_caps ();
+  dump_vendor_apis ();
 
   return 0;
 }
