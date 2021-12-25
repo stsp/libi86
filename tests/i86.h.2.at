@@ -276,6 +276,7 @@ int main (void)
 AT_CLEANUP
 
 AT_SETUP([[_disable, _enable]])
+
 AT_LIBI86_CHECK(dnl
 [[#include <bios.h>
 #include <i86.h>
@@ -468,8 +469,90 @@ main (void)
     }
 
   return 0;
+}]],[])
+
+if "$at_arg_x_test_underlying" -a yes = "$at_libi86_cc_have_dpmi"; then
+AT_LIBI86_CHECK(dnl
+[[#include <i86.h>
+#include <dpmi.h>
+
+extern void abort (void);
+
+static unsigned
+flags(void)
+{
+  unsigned f;
+  __asm volatile ("pushfw; popw %0" : "=rm" (f));
+  if (_DPMIGetVirtualInterruptState ())
+    f |= 0x0200U;
+  else
+    f &= ~0x0200U;
+  return f;
 }
-]],[])
+
+static unsigned
+virt_if(void)
+{
+  return (unsigned) _DPMIGetVirtualInterruptState ();
+}
+
+int
+main (void)
+{
+  unsigned f, v, tm, bda;
+
+  if (__DPMI_hosted () != 1)
+    return 0;
+  /*
+   * This is more of a regression test for a bug in some versions of dosemu2
+   * (https://github.com/dosemu2/dosemu2/issues/1568).
+   *
+   * Namely, accessing a BIOS data area variable via 0x40:0x6c in DPMI mode
+   * --- where the protected mode selector 0x40 "magically" maps to real/V86
+   * mode 0x40:0 --- with virtual interrupts disabled, then virtual interrupts
+   * might suddenly become enabled on their own.
+   *
+   * Try to only run this test under versions of dosemu2 which are known to
+   * magically handle selector value 0x40.  This can be done (?) by looking
+   * for a particular vendor-specific DPMI API.  Directly accessing selector
+   * 0x40 in other DPMI environments might well crash the program...
+   */
+  if (! _DPMIGetVendorSpecificAPI ("LDT_MONITOR"))
+    return 0;
+
+  _disable ();
+  f = flags ();
+  v = virt_if ();
+  _enable ();
+
+  if ((f & 0x0200) != 0 || v)
+    abort ();
+
+  _disable ();
+  tm = * (unsigned __far *) 0x0040006cUL;
+  f = flags ();
+  v = virt_if ();
+  _enable ();
+
+  if ((f & 0x0200) != 0 || v)
+    abort ();
+  __asm volatile ("" : : "g" (tm));
+
+  _disable ();
+  bda = _DPMISegmentToDescriptor (0x40);
+  tm = * (unsigned __far *) MK_FP (bda, 0x6c);
+  f = flags ();
+  v = virt_if ();
+  _enable ();
+
+  if ((f & 0x0200) != 0 || v)
+    abort ();
+  __asm volatile ("" : : "g" (tm));
+
+  return 0;
+}]],[])
+fi
+
 AT_CLEANUP
 
 AT_SETUP([[delay]])
