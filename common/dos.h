@@ -123,6 +123,7 @@ extern unsigned _dos_setblock (unsigned __size, unsigned __seg,
 extern unsigned _dos_setdate (const struct dosdate_t *__date);
 extern void _dos_setdrive (unsigned __drive, unsigned *__total);
 extern unsigned _dos_setfileattr (const char *__path, unsigned __attributes);
+extern unsigned _dos_setftime (int __handle, unsigned __date, unsigned __time);
 extern unsigned _dos_write (int __handle, __libi86_fpcv_t __buf,
 			    unsigned __count, unsigned *__bytes);
 /*

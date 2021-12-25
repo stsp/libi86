@@ -170,6 +170,7 @@ When using ACK, you currently need to build `libi86` from sources.
 |   W |   = | `_dos_setdate (`\*_date_`);`
 |   W |   = | `_dos_setdrive (`_drive_`,` \*_total_`);`
 |   W |   = | `_dos_setfileattr (`\*_path_`,` _attributes_`);`
+|   W |   = | `_dos_setftime (`_handle_`,` _date_`,` _time_`);`
 |   W |   = | `_dos_setvect (`_intr-no_`,` \*_handler_`);` | Some versions of `gcc-ia16` and ACK may not understand the `interrupt` function attribute.  In that case, this function will not be supported.
 |   W |   = | `_dos_write (`_handle_`,` \*_buf_`,` _count_`,` \*_bytes_`);`
 |   W |   = | `_getdrive ();`

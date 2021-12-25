@@ -165,6 +165,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-setdate.o \
 		  dos/dos-setdrive.o \
 		  dos/dos-setfileattr.o \
+		  dos/dos-setftime.o \
 		  dos/dos-write.o \
 		  dos/getdrive.o \
 		  dos/intdos.o \

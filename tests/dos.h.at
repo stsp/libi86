@@ -766,7 +766,7 @@ main (int argc, char **argv)
 ]])
 AT_CLEANUP
 
-AT_SETUP([[_dos_read, _dos_getftime]])
+AT_SETUP([[_dos_read, _dos_getftime, _dos_setftime]])
 AT_LIBI86_CHECK(dnl
 [[#include <dos.h>
 #include <fcntl.h>
@@ -792,9 +792,12 @@ main (int argc, char **argv)
 {
 #ifdef __MSDOS__
   int fd = -1;
-  unsigned buf, r = 0xf6f6, dt = 0xf6f6, tm = 0xf6f6;
+  const unsigned NEW_DATE = 48U << 9 | 8U << 5 | 8U,
+		 NEW_TIME = 12U << 11 | 12U << 5 | 12U;
+  unsigned buf, r = 0xf6f6, dt = 0xf6f6, tm = 0xf6f6,
+			    dt2 = 0xf6f6, tm2 = 0xf6f6;
 
-  if (_dos_open (argv[0], O_RDONLY | O_NOINHERIT, &fd) != 0)
+  if (_dos_open (argv[0], O_RDWR | O_NOINHERIT, &fd) != 0)
     abort ();
   puts ("1 OK");
 
@@ -815,9 +818,21 @@ main (int argc, char **argv)
     abort ();
   puts ("5 OK");
 
-  if (_dos_close (fd) != 0)
+  if (_dos_setftime (fd, NEW_DATE, NEW_TIME) != 0)
     abort ();
   puts ("6 OK");
+
+  if (_dos_getftime (fd, &dt2, &tm2) != 0)
+    abort ();
+  puts ("7 OK");
+
+  if (dt2 != NEW_DATE || tm2 != NEW_TIME)
+    abort ();
+  puts ("8 OK");
+
+  if (_dos_close (fd) != 0)
+    abort ();
+  puts ("9 OK");
 
   return 0;
 #else
@@ -829,6 +844,9 @@ main (int argc, char **argv)
 4 OK
 5 OK
 6 OK
+7 OK
+8 OK
+9 OK
 ]])
 AT_CLEANUP
 
