@@ -37,12 +37,12 @@
 _LIBI86_BEGIN_EXTERN_C
 
 extern int _fmemcmp (__libi86_fpcv_t __s1, __libi86_fpcv_t __s2,
-		     _LIBI86_SIZE_T __n);
+		     __libi86_size_t __n);
 extern __libi86_fpv_t _fmemcpy (__libi86_fpv_t __dest, __libi86_fpcv_t __src,
-				_LIBI86_SIZE_T __n);
+				__libi86_size_t __n);
 extern __libi86_fpv_t _fmemmove (__libi86_fpv_t __dest, __libi86_fpcv_t __src,
-				_LIBI86_SIZE_T __n);
-extern _LIBI86_SIZE_T _fstrlen (__libi86_fpcc_t __s);
+				 __libi86_size_t __n);
+extern __libi86_size_t _fstrlen (__libi86_fpcc_t __s);
 
 _LIBI86_END_EXTERN_C
 

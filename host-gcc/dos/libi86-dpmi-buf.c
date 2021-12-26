@@ -46,7 +46,7 @@
 
 unsigned
 __libi86_dpmi_pm_to_rm_buf (const void __far *buf, size_t count,
-			    bool need_write, _LIBI86_SEG_SELECTOR *rm_seg,
+			    bool need_write, __libi86_segment_t *rm_seg,
 			    size_t *rm_off)
 {
   uint8_t szapc;
@@ -54,7 +54,7 @@ __libi86_dpmi_pm_to_rm_buf (const void __far *buf, size_t count,
   uint32_t base, lim, linear;
   uint16_t lwr_lim, upr_lim;
 
-  _LIBI86_SEG_SELECTOR pm_sel = FP_SEG (buf);
+  __libi86_segment_t pm_sel = FP_SEG (buf);
   size_t pm_off = FP_OFF (buf);
 
   /*
@@ -118,7 +118,7 @@ __libi86_dpmi_pm_to_rm_buf (const void __far *buf, size_t count,
    * normalized real mode address.
    */
   linear = base + pm_off;
-  *rm_seg = (_LIBI86_SEG_SELECTOR) (linear >> 4);
+  *rm_seg = (__libi86_segment_t) (linear >> 4);
   *rm_off = (size_t) (linear & 0xf);
 
   return 0;

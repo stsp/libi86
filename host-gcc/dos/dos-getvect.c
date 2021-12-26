@@ -37,7 +37,7 @@
 __libi86_isr_t
 _dos_getvect (unsigned intr_no)
 {
-  _LIBI86_SEG_SELECTOR seg;
+  __libi86_segment_t seg;
   unsigned off;
 #ifdef __IA16_FEATURE_PROTECTED_MODE
   if (__DPMI_hosted () == 1)

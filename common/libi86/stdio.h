@@ -47,13 +47,13 @@ _LIBI86_BEGIN_EXTERN_C
  */
 #ifdef _LIBI86_INTERNAL_HAVE_VSSCANF
 _LIBI86_REDIRECT_AND_INLINE_3 (int, _vsscanf, const char *, const char *,
-			       _LIBI86_VA_LIST, vsscanf)
+			       __libi86_va_list_t, vsscanf)
 #else
 extern int _vsscanf (const char *__str, const char *__fmt,
-		    _LIBI86_VA_LIST __ap);
+		    __libi86_va_list_t __ap);
 # if _LIBI86_ISO_C_VISIBLE >= 1999
 _LIBI86_REDIRECT_AND_INLINE_3 (int, vsscanf, const char *, const char *,
-			       _LIBI86_VA_LIST, _vsscanf)
+			       __libi86_va_list_t, _vsscanf)
 # endif
 #endif
 

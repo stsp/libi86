@@ -36,13 +36,13 @@
 _LIBI86_BEGIN_EXTERN_C
 
 #ifdef _LIBI86_INTERNAL_HAVE_GETCWD
-extern char *getcwd (char *__buf, _LIBI86_SIZE_T __size);
-_LIBI86_REDIRECT_2 (char *, _getcwd, char *, _LIBI86_SIZE_T, getcwd)
+extern char *getcwd (char *__buf, __libi86_size_t __size);
+_LIBI86_REDIRECT_2 (char *, _getcwd, char *, __libi86_size_t, getcwd)
 #else
-extern char *_getcwd (char *__buf, _LIBI86_SIZE_T __size);
-_LIBI86_REDIRECT_2 (char *, getcwd, char *, _LIBI86_SIZE_T, _getcwd)
+extern char *_getcwd (char *__buf, __libi86_size_t __size);
+_LIBI86_REDIRECT_2 (char *, getcwd, char *, __libi86_size_t, _getcwd)
 #endif
-extern char *_getdcwd (int __drive, char *__buf, _LIBI86_SIZE_T __size);
+extern char *_getdcwd (int __drive, char *__buf, __libi86_size_t __size);
 
 _LIBI86_END_EXTERN_C
 

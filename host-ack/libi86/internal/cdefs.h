@@ -179,8 +179,8 @@ __libi86_fpcc_t;
 #define _LIBI86_BC_REDIRECT_4	_LIBI86_BC_REDIRECT_AND_INLINE_4
 
 /* Yep, `va_list' is a pointer-to-char on ACK for the i86 target. */
-typedef char *_LIBI86_VA_LIST;
+typedef char *__libi86_va_list_t;
 /* And... */
-typedef unsigned short _LIBI86_SIZE_T;
+typedef unsigned short __libi86_size_t;
 
 #endif

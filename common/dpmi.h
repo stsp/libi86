@@ -246,7 +246,7 @@ _DPMIGetSegmentBaseAddress (uint16_t __sel)
 _LIBI86_ALT_INLINE __libi86_fpcv_t
 _DPMIGetVendorSpecificAPI (__libi86_fpcc_t __vendor)
 {
-  _LIBI86_SEG_SELECTOR __segm;
+  __libi86_segment_t __segm;
   unsigned __offs;
   uint8_t __res;
   /*

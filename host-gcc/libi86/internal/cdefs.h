@@ -243,8 +243,12 @@ __libi86_fpcc_t;
 #endif
 
 /* And... */
-typedef __builtin_va_list _LIBI86_VA_LIST;
-typedef __SIZE_TYPE__ _LIBI86_SIZE_T;
-typedef __typeof__ (__builtin_ia16_selector (0u)) _LIBI86_SEG_SELECTOR;
+typedef __builtin_va_list __libi86_va_list_t;
+typedef __SIZE_TYPE__ __libi86_size_t;
+#ifdef __SEGMENT
+typedef __segment __libi86_segment_t;
+#else
+typedef __typeof__ (__builtin_ia16_selector (0u)) __libi86_segment_t;
+#endif
 
 #endif

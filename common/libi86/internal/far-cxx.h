@@ -30,8 +30,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_INTERNAL_FAR_CXX_H_
-#define _LIBI86_INTERNAL_FAR_CXX_H_
+#ifndef _LIBI86_LIBI86_INTERNAL_FAR_CXX_H_
+#define _LIBI86_LIBI86_INTERNAL_FAR_CXX_H_
 
 
 extern "C++"  /* avoid G++'s "template with C linkage" error... */

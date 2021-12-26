@@ -44,7 +44,7 @@ __libi86_msdos_do_getdcwd (char buf[_MAX_PATH - 3], unsigned char drive)
 {
   if (__DPMI_hosted () == 1)
     {
-      _LIBI86_SEG_SELECTOR ds;
+      __libi86_segment_t ds;
       size_t si;
       rm_call_struct rmc;
       unsigned res;

@@ -37,7 +37,7 @@ unsigned short
 _bios_disk (unsigned service, struct diskinfo_t *diskinfo)
 {
   unsigned short ax, di;
-  _LIBI86_SEG_SELECTOR es;
+  __libi86_segment_t es;
   uint8_t ch, cl, dh, dl;
 
   switch (service)

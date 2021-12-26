@@ -44,7 +44,7 @@ _dos_read (int fd, void __far *buf, unsigned count, unsigned *bytes)
 #ifdef __IA16_FEATURE_PROTECTED_MODE
   if (__DPMI_hosted () == 1)
     {
-      _LIBI86_SEG_SELECTOR ds;
+      __libi86_segment_t ds;
       size_t dx;
       rm_call_struct rmc;
       unsigned res;

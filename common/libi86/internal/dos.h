@@ -65,7 +65,7 @@ extern struct find_t __far *__libi86_dpmi_set_dta (void);
 extern dpmi_dos_block __libi86_dpmi_low_dup_str (const char *);
 extern void __libi86_dpmi_low_free_str (dpmi_dos_block);
 extern unsigned __libi86_dpmi_pm_to_rm_buf (const void __far *, size_t, bool,
-					    _LIBI86_SEG_SELECTOR *, size_t *);
+					    __libi86_segment_t *, size_t *);
 #endif
 
 _LIBI86_STATIC_INLINE bool
