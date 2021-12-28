@@ -37,6 +37,9 @@
 #include "dos.h"
 #include "i86.h"
 #include "libi86/internal/graph.h"
+#ifdef __IA16_FEATURE_PROTECTED_MODE
+# include "dpmi.h"
+#endif
 
 struct __libi86_vid_state_t __libi86_vid_state;
 
@@ -86,6 +89,7 @@ __libi86_vid_get_mode (void)
     }
   return mode;
 }
+
 #else  /* ! __GNUC__ */
 extern void __libi86_vid_get_norm_attr (void);
 
@@ -108,13 +112,23 @@ __libi86_vid_get_mode (void)
 }
 #endif  /* ! __GNUC__ */
 
+/*
+ * For the time being, all supported video modes have character cells that are
+ * 8 pixels wide...  -- tkchia 20211228
+ */
+static unsigned char
+__libi86_vid_get_char_cell_width (unsigned mode)
+{
+  return (unsigned char) 8;
+}
+
 #ifdef __GNUC__
 __attribute__ ((regparmcall))
 #endif
 unsigned
 __libi86_con_mode_changed (unsigned mode)
 {
-  unsigned char max_x, max_y, ch;
+  unsigned char max_x, max_y, ch, cell_ht;
   uint8_t mode_ctl_reg;
 
   /* Record the mode number. */
@@ -136,6 +150,9 @@ __libi86_con_mode_changed (unsigned mode)
    *
    * Otherwise, try to guess using the stored "mode control register" value
    * in the BIOS data area (FIXME?).
+   *
+   * If we are in a graphics mode, also try to figure out the width & height
+   * of each character cell in pixels.
    */
   switch (mode)
     {
@@ -191,11 +208,23 @@ __libi86_con_mode_changed (unsigned mode)
     case _ZRES64KCOLOR:
     case _ZRESTRUECOLOR:
       __libi86_vid_state.graph_p = 1;
+      __libi86_vid_state.cell_wd = 8;
+      cell_ht = __libi86_peekb_bios_ds (0x0085U);
+      if (! cell_ht)
+	cell_ht = 8;
+      __libi86_vid_state.cell_ht = cell_ht;
       break;
 
     default:
       mode_ctl_reg = __libi86_peekb_bios_ds (0x0065U);
-      __libi86_vid_state.graph_p = ((mode_ctl_reg & 0x02) != 0);
+      if ((mode_ctl_reg & 0x02) == 0)
+	__libi86_vid_state.graph_p = 0;
+      else
+	{
+	  __libi86_vid_state.graph_p = 1;
+	  __libi86_vid_state.cell_wd = __libi86_vid_get_char_cell_width (mode);
+	  __libi86_vid_state.cell_ht = __libi86_peekb_bios_ds (0x0085U);
+	}
     }
 
   /* Reset the colour attribute to use for text output. */

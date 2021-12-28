@@ -128,11 +128,8 @@ __libi86_setvideomode_inline_dispatch (short mode)
     case (short) 0x0000 ... (short) 0x007f:
       return __libi86_setvideomode_nonsvga (mode);
 
-    case (short) 0x0080 ... (short) 0x01ff:
-      return __libi86_setvideomode_svga (mode);
-
     default:
-      return 0;
+      return __libi86_setvideomode_svga (mode);
     }
 }
 

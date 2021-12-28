@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2020--2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -29,27 +29,63 @@
 
 /* Internal implementation of _setvideomode (.) for SuperVGA video modes. */
 
-#include "libi86/internal/call-cvt.h"
-#include "libi86/internal/arch.h"
+#define _LIBI86_COMPILING_
+#include <stdint.h>
+#include <stdlib.h>
+#include "dos.h"
+#include "i86.h"
+#include "libi86/internal/graph.h"
+#ifdef __IA16_FEATURE_PROTECTED_MODE
+# include "dpmi.h"
+#endif
 
-	.arch	i8086, jumps
-	.code16
-	.att_syntax prefix
+short
+__libi86_setvideomode_svga (short mode)
+{
+  unsigned ax;
 
-	TEXT_ (libi86_setvideomode_svga.S.LIBI86)
+  switch (mode)
+    {
+    case _URES256COLOR:
+    case _VRES256COLOR:
+    case _SVRES16COLOR:
+    case _SVRES256COLOR:
+    case _XRES16COLOR:
+    case _XRES256COLOR:
+    case _YRES16COLOR:
+    case _YRES256COLOR:
+    case _SVTEXTC80X60:
+    case _SVTEXTC132X25:
+    case _SVTEXTC132X43:
+    case _SVTEXTC132X50:
+    case _SVTEXTC132X60:
+    case _MRES32KCOLOR:
+    case _MRES64KCOLOR:
+    case _MRESTRUECOLOR:
+    case _VRES32KCOLOR:
+    case _VRES64KCOLOR:
+    case _VRESTRUECOLOR:
+    case _SVRES32KCOLOR:
+    case _SVRES64KCOLOR:
+    case _SVRESTRUECOLOR:
+    case _XRES32KCOLOR:
+    case _XRES64KCOLOR:
+    case _XRESTRUECOLOR:
+    case _YRES32KCOLOR:
+    case _YRES64KCOLOR:
+    case _YRESTRUECOLOR:
+    case _ZRES256COLOR:
+    case _ZRES32KCOLOR:
+    case _ZRES64KCOLOR:
+    case _ZRESTRUECOLOR:
+      __asm volatile ("int $0x10" : "=a" (ax), "=b" (mode)
+				  : "0" (0x4f02U)
+				  : "cc", "cx", "dx");
+      if (ax != 0x004fU)
+	return 0;
+      return __libi86_con_mode_changed (mode);
 
-	.global	__libi86_setvideomode_svga
-__libi86_setvideomode_svga:
-	ENTER_BX_ (2)
-	MOV_ARG0W_BX_ (%bx)
-	pushw	%bx
-	movw	$0x4f02, %ax		/* Set the video mode */
-	int	$0x10
-	cmpw	$0x004f, %ax		/* Check for any error */
-	popw	%ax
-	jnz	.error
-					/* Reset the text window */
-	TAIL_CALL_ (__libi86_con_mode_changed, 2)
-.error:
-	xorw	%ax,	%ax
-	RET_ (2)
+    default:
+      return 0;
+    }
+}

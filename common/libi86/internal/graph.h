@@ -69,6 +69,8 @@ struct __libi86_vid_state_t
   unsigned char border;
   /* Whether we are in a graphics mode. */
   unsigned graph_p : 1;
+  /* Width & height of each character cell, in pixels. */
+  unsigned char cell_wd, cell_ht;
 };
 
 /*

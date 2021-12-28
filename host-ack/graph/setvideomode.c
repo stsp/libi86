@@ -83,9 +83,47 @@ __libi86_setvideomode_nonsvga (short mode)
 static short
 __libi86_setvideomode_svga (short mode)
 {
-  if ((uint16_t) __libi86_vid_int_0x10 (0x4f02U, mode, 0, 0) != 0x004fU)
-    return 0;
-  return __libi86_con_mode_changed ((unsigned) mode);
+  switch (mode)
+    {
+    case _URES256COLOR:
+    case _VRES256COLOR:
+    case _SVRES16COLOR:
+    case _SVRES256COLOR:
+    case _XRES16COLOR:
+    case _XRES256COLOR:
+    case _YRES16COLOR:
+    case _YRES256COLOR:
+    case _SVTEXTC80X60:
+    case _SVTEXTC132X25:
+    case _SVTEXTC132X43:
+    case _SVTEXTC132X50:
+    case _SVTEXTC132X60:
+    case _MRES32KCOLOR:
+    case _MRES64KCOLOR:
+    case _MRESTRUECOLOR:
+    case _VRES32KCOLOR:
+    case _VRES64KCOLOR:
+    case _VRESTRUECOLOR:
+    case _SVRES32KCOLOR:
+    case _SVRES64KCOLOR:
+    case _SVRESTRUECOLOR:
+    case _XRES32KCOLOR:
+    case _XRES64KCOLOR:
+    case _XRESTRUECOLOR:
+    case _YRES32KCOLOR:
+    case _YRES64KCOLOR:
+    case _YRESTRUECOLOR:
+    case _ZRES256COLOR:
+    case _ZRES32KCOLOR:
+    case _ZRES64KCOLOR:
+    case _ZRESTRUECOLOR:
+      if ((uint16_t) __libi86_vid_int_0x10 (0x4f02U, mode, 0, 0) != 0x004fU)
+	return 0;
+      return __libi86_con_mode_changed ((unsigned) mode);
+
+    default:
+      return 0;
+    }
 }
 
 static short
@@ -106,7 +144,7 @@ _setvideomode (short mode)
       else if (mode == _DEFAULTMODE)
 	return __libi86_setvideomode_default ();
     }
-  else if (mode <= (short) 0x01ff)
+  else
     return __libi86_setvideomode_svga (mode);
 
   return 0;
