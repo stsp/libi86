@@ -90,6 +90,11 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
+enum
+{
+  _GCURSOROFF, _GCURSORON
+};
+
 #define _GSCROLLUP	((short) 1)
 #define _GSCROLLDOWN	((short) -1)
 
@@ -99,6 +104,7 @@ struct rccoord
 };
 
 extern void _clearscreen (short __area);
+extern short _displaycursor (short __curs_mode);
 extern struct rccoord _gettextposition (void);
 extern short _getvideomode (void);
 extern void _outmem (__libi86_fpcc_t __text, short __length);
