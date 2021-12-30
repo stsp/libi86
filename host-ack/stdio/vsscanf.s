@@ -57,11 +57,8 @@ __vsscanf:
 	cmpb	al, '%'
 	ja	.loop
 	jnz	.next
-	inc	cx			! if we see a `%', first assume we have
-	lodsb				! one more argument; but if next char.
-	cmpb	al, '%'			! is also `%', then we do not
-	jnz	.next
-	dec	cx
+	inc	cx			! if we see a `%', assume we have
+	lodsb				! one more argument
 .next:
 	testb	al, al
 	jnz	.loop
