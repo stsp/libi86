@@ -105,45 +105,10 @@ extern void _outmem (__libi86_fpcc_t __text, short __length);
 extern void _outtext (__libi86_fpcc_t __text);
 extern void _scrolltextwindow (short __rows);
 extern struct rccoord _settextposition (short __row, short __col);
+extern short _setvideomode (short __mode);
 extern short _settextcolor (short __pixval);
 extern void _settextwindow (short __row1, short __col1,
 			    short __row2, short __col2);
-
-# if ! defined __GNUC__ || ! defined __OPTIMIZE__
-extern short _setvideomode (short);
-# else  /* __GNUC__ && __OPTIMIZE__ */
-extern short __libi86_setvideomode (short);
-extern short __libi86_setvideomode_default (void);
-extern short __libi86_setvideomode_nonsvga (short);
-extern short __libi86_setvideomode_svga (short);
-
-__attribute__ ((__always_inline__)) static short
-__libi86_setvideomode_inline_dispatch (short mode)
-{
-  switch (mode)
-    {
-    case _DEFAULTMODE:
-      return __libi86_setvideomode_default ();
-
-    case (short) 0x0000 ... (short) 0x007f:
-      return __libi86_setvideomode_nonsvga (mode);
-
-    default:
-      return __libi86_setvideomode_svga (mode);
-    }
-}
-
-#   ifndef _LIBI86_COMPILING_
-_LIBI86_ALT_INLINE short
-_setvideomode (short mode)
-{
-  if (__builtin_constant_p (mode))
-    return __libi86_setvideomode_inline_dispatch (mode);
-  else
-    return __libi86_setvideomode (mode);
-}
-#   endif
-# endif  /* __GNUC__ && __OPTIMIZE__ */
 
 _LIBI86_END_EXTERN_C
 #endif  /* ! __ASSEMBLER__ */

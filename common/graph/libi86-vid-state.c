@@ -117,14 +117,17 @@ __libi86_vid_get_mode (void)
  * 8 pixels wide...  -- tkchia 20211228
  */
 static unsigned char
-__libi86_vid_get_char_cell_width (unsigned mode)
+__libi86_vid_get_cell_width (unsigned mode)
 {
   return (unsigned char) 8;
 }
 
-#ifdef __GNUC__
-__attribute__ ((regparmcall))
-#endif
+static unsigned char
+__libi86_vid_get_cell_height (unsigned mode)
+{
+  return __libi86_vid_state.cell_ht;
+}
+
 unsigned
 __libi86_con_mode_changed (unsigned mode)
 {
@@ -146,85 +149,21 @@ __libi86_con_mode_changed (unsigned mode)
   /*
    * Decide if we are now in a text mode or a graphics mode.
    *
-   * If we already know about the mode number, then this is easy.
-   *
-   * Otherwise, try to guess using the stored "mode control register" value
-   * in the BIOS data area (FIXME?).
-   *
    * If we are in a graphics mode, also try to figure out the width & height
    * of each character cell in pixels.
    */
   switch (mode)
     {
-    case _TEXTBW40:
-    case _TEXTC40:
-    case _TEXTBW80:
-    case _TEXTC80:
-    case _TEXTMONO:
-    case _SVTEXTC80X60:
-    case _SVTEXTC132X25:
-    case _SVTEXTC132X43:
-    case _SVTEXTC132X50:
-    case _SVTEXTC132X60:
+    _LIBI86_CASE_SUPPORTED_TEXT_MODES
       __libi86_vid_state.graph_p = 0;
       break;
 
-    case _MRES4COLOR:
-    case _MRESNOCOLOR:
-    case _HRESBW:
-    case _HERCMONO:
-    case _MRES16COLOR:
-    case _HRES16COLOR:
-    case _ERESNOCOLOR:
-    case _ERESCOLOR:
-    case _VRES2COLOR:
-    case _VRES16COLOR:
-    case _MRES256COLOR:
-    case _URES256COLOR:
-    case _VRES256COLOR:
-    case _SVRES16COLOR:
-    case _SVRES256COLOR:
-    case _XRES16COLOR:
-    case _XRES256COLOR:
-    case _YRES16COLOR:
-    case _YRES256COLOR:
-    case _MRES32KCOLOR:
-    case _MRES64KCOLOR:
-    case _MRESTRUECOLOR:
-    case _VRES32KCOLOR:
-    case _VRES64KCOLOR:
-    case _VRESTRUECOLOR:
-    case _SVRES32KCOLOR:
-    case _SVRES64KCOLOR:
-    case _SVRESTRUECOLOR:
-    case _XRES32KCOLOR:
-    case _XRES64KCOLOR:
-    case _XRESTRUECOLOR:
-    case _YRES32KCOLOR:
-    case _YRES64KCOLOR:
-    case _YRESTRUECOLOR:
-    case _ZRES256COLOR:
-    case _ZRES32KCOLOR:
-    case _ZRES64KCOLOR:
-    case _ZRESTRUECOLOR:
+    default:
       __libi86_vid_state.graph_p = 1;
-      __libi86_vid_state.cell_wd = 8;
       cell_ht = __libi86_peekb_bios_ds (0x0085U);
       if (! cell_ht)
 	cell_ht = 8;
       __libi86_vid_state.cell_ht = cell_ht;
-      break;
-
-    default:
-      mode_ctl_reg = __libi86_peekb_bios_ds (0x0065U);
-      if ((mode_ctl_reg & 0x02) == 0)
-	__libi86_vid_state.graph_p = 0;
-      else
-	{
-	  __libi86_vid_state.graph_p = 1;
-	  __libi86_vid_state.cell_wd = __libi86_vid_get_char_cell_width (mode);
-	  __libi86_vid_state.cell_ht = __libi86_peekb_bios_ds (0x0085U);
-	}
     }
 
   /* Reset the colour attribute to use for text output. */
@@ -248,6 +187,9 @@ __libi86_con_mode_changed (unsigned mode)
 }
 
 /*
+ * Obtain information about the active video mode at startup.  If the video
+ * mode is not a supported mode, then switch to one that is. :-)
+ *
  * Note: this constructor must run before __libi86_setvideomode_default ()
  * is primed.
  */
@@ -258,10 +200,22 @@ void
 __libi86_vid_state_init (void)
 {
   unsigned mode;
+
 #ifndef __GNUC__
   if (__libi86_vid_state.max_y)
     return;
 #endif
   mode = __libi86_vid_get_mode ();
-  __libi86_con_mode_changed (mode);
+  switch (mode)
+    {
+    _LIBI86_CASE_SUPPORTED_MODES
+      __libi86_con_mode_changed (mode);
+      break;
+
+    default:
+      if (! _setvideomode (_TEXTC80))
+	_setvideomode (_TEXTMONO);
+    }
+
+  __libi86_vid_state.startup_mode_num = __libi86_vid_state.mode_num;
 }

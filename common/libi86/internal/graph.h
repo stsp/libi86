@@ -44,7 +44,9 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
-/* Various internal functions and variables used by <graph.h> routines. */
+/*
+ * Various internal functions, variables, & macros used by <graph.h> routines.
+ */
 
 extern uint16_t __libi86_bios_ds;
 
@@ -52,6 +54,8 @@ struct __libi86_vid_state_t
 {
   /* Current video mode number. */
   unsigned mode_num;
+  /* Video mode at program startup. */
+  unsigned startup_mode_num;
   /*
    * Maximum possible extent of text window, i.e. the actual display
    * dimensions, minus 1.  The <graph.h> interface uses 16-bit shortwords,
@@ -69,8 +73,8 @@ struct __libi86_vid_state_t
   unsigned char border;
   /* Whether we are in a graphics mode. */
   unsigned graph_p : 1;
-  /* Width & height of each character cell, in pixels. */
-  unsigned char cell_wd, cell_ht;
+  /* Height of each character cell, in pixels. */
+  unsigned char cell_ht;
 };
 
 /*
@@ -350,7 +354,76 @@ __libi86_vid_scroll (unsigned char sx1z, unsigned char sy1z,
 
 extern void __libi86_vid_bc_insdelline (bool);
 extern void __libi86_vid_bc_outmem_do (const char *, size_t);
+extern unsigned __libi86_con_mode_changed (unsigned);
 
 _LIBI86_END_EXTERN_C
+
+#define _LIBI86_CASE_SUPPORTED_NONSVGA_TEXT_MODES \
+	case _TEXTBW40:		\
+	case _TEXTC40:		\
+	case _TEXTBW80:		\
+	case _TEXTC80:		\
+	case _TEXTMONO:
+#define _LIBI86_CASE_SUPPORTED_NONSVGA_GRAPHICS_MODES \
+	case _MRES4COLOR:	\
+	case _MRESNOCOLOR:	\
+	case _HRESBW:		\
+	case _HERCMONO:		\
+	case _MRES16COLOR:	\
+	case _HRES16COLOR:	\
+	case _ERESNOCOLOR:	\
+	case _ERESCOLOR:	\
+	case _VRES2COLOR:	\
+	case _VRES16COLOR:	\
+	case _MRES256COLOR:
+#define _LIBI86_CASE_SUPPORTED_SVGA_TEXT_MODES \
+	case _SVTEXTC80X60:	\
+	case _SVTEXTC132X25:	\
+	case _SVTEXTC132X43:	\
+	case _SVTEXTC132X50:	\
+	case _SVTEXTC132X60:
+#define _LIBI86_CASE_SUPPORTED_SVGA_GRAPHICS_MODES \
+	case _URES256COLOR:	\
+	case _VRES256COLOR:	\
+	case _SVRES16COLOR:	\
+	case _SVRES256COLOR:	\
+	case _XRES16COLOR:	\
+	case _XRES256COLOR:	\
+	case _YRES16COLOR:	\
+	case _YRES256COLOR:	\
+	case _MRES32KCOLOR:	\
+	case _MRES64KCOLOR:	\
+	case _MRESTRUECOLOR:	\
+	case _VRES32KCOLOR:	\
+	case _VRES64KCOLOR:	\
+	case _VRESTRUECOLOR:	\
+	case _SVRES32KCOLOR:	\
+	case _SVRES64KCOLOR:	\
+	case _SVRESTRUECOLOR:	\
+	case _XRES32KCOLOR:	\
+	case _XRES64KCOLOR:	\
+	case _XRESTRUECOLOR:	\
+	case _YRES32KCOLOR:	\
+	case _YRES64KCOLOR:	\
+	case _YRESTRUECOLOR:	\
+	case _ZRES256COLOR:	\
+	case _ZRES32KCOLOR:	\
+	case _ZRES64KCOLOR:	\
+	case _ZRESTRUECOLOR:
+#define _LIBI86_CASE_SUPPORTED_NONSVGA_MODES \
+	_LIBI86_CASE_SUPPORTED_NONSVGA_TEXT_MODES \
+	_LIBI86_CASE_SUPPORTED_NONSVGA_GRAPHICS_MODES
+#define _LIBI86_CASE_SUPPORTED_SVGA_MODES \
+	_LIBI86_CASE_SUPPORTED_SVGA_TEXT_MODES \
+	_LIBI86_CASE_SUPPORTED_SVGA_GRAPHICS_MODES
+#define _LIBI86_CASE_SUPPORTED_TEXT_MODES \
+	_LIBI86_CASE_SUPPORTED_NONSVGA_TEXT_MODES \
+	_LIBI86_CASE_SUPPORTED_SVGA_TEXT_MODES
+#define _LIBI86_CASE_SUPPORTED_GRAPHICS_MODES \
+	_LIBI86_CASE_SUPPORTED_NONSVGA_GRAPHICS_MODES \
+	_LIBI86_CASE_SUPPORTED_SVGA_GRAPHICS_MODES
+#define _LIBI86_CASE_SUPPORTED_MODES \
+	_LIBI86_CASE_SUPPORTED_NONSVGA_MODES \
+	_LIBI86_CASE_SUPPORTED_SVGA_MODES
 
 #endif

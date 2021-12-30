@@ -35,13 +35,55 @@
 #define _LIBI86_COMPILING_
 #include <inttypes.h>
 #include "graph.h"
+#include "libi86/internal/graph.h"
 
 short
-__libi86_setvideomode (short mode)
+_setvideomode (short mode)
 {
-  return __libi86_setvideomode_inline_dispatch (mode);
-}
+  unsigned ax, bx, new_mode;
 
-_LIBI86_ALIAS (__libi86_setvideomode)
-__far __attribute__ ((far_section)) short
-_setvideomode (short mode);
+  switch (mode)
+    {
+    case _DEFAULTMODE:
+      return _setvideomode (__libi86_vid_state.startup_mode_num);
+
+    _LIBI86_CASE_SUPPORTED_NONSVGA_MODES
+      /* Set the video mode. */
+      __asm volatile ("int $0x10" : "=a" (ax)
+				  : "0" (mode)
+				  : "cc", "bx", "cx", "dx");
+      /* Try to retrieve the new video mode via VESA, & check it. */
+      __asm volatile ("int $0x10" : "=a" (ax), "=b" (new_mode)
+				  : "0" (0x4f03U)
+				  : "cc", "cx", "dx");
+      /*
+       * If using VESA fails, try to retrieve the new video mode via the
+       * traditional interface.
+       */
+      if (ax != 0x004fU)
+	{
+	  __asm volatile ("int $0x10" : "=a" (ax)
+				      : "Rah" ((uint8_t) 0x0f)
+				      : "cc", "bx", "cx", "dx");
+	  new_mode = (uint8_t) ax;
+	}
+      /*
+       * If we successfully set the video mode, reset the text window &
+       * return the text row count, else return 0.
+       */
+      if (new_mode != mode)
+	return 0;
+      return __libi86_con_mode_changed (mode);
+
+    _LIBI86_CASE_SUPPORTED_SVGA_MODES
+      __asm volatile ("int $0x10" : "=a" (ax), "=b" (bx)
+				  : "0" (0x4f02U), "1" (mode)
+				  : "cc", "cx", "dx");
+      if (ax != 0x004fU)
+	return 0;
+      return __libi86_con_mode_changed (mode);
+
+    default:
+      return 0;
+    }
+}
