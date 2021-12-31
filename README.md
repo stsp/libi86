@@ -204,6 +204,7 @@ When using ACK, you currently need to build `libi86` from sources.
 |     |     |
 |     |     | **`▗▚▚▚▚ <graph.h> ▞▞▞▞▖`** | **Unlike in Open Watcom, where all functions in `<graph.h>` are far, in `libi86` the far-ness of functions follows the chosen memory model.  Thus, in a small-memory-model program, `_setvideomode` is a near function.  However, pointers to data are still far.**
 |   W |   = | `_clearscreen (`_area_`);`
+|   W |   = | `_displaycursor (`_curs-mode_`);`
 |   W |   = | `_gettextposition ();`
 |   X |   = | `_getvideomode ();`
 |   W |   = | `_outmem (`\*_text_`,` _length_`);`

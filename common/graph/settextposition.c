@@ -51,7 +51,9 @@ _settextposition (short row, short col)
 	  struct __libi86_vid_rccoord_t npxy;
 	  npxy.x = col + x1z;
 	  npxy.y = row + y1z;
+	  __libi86_vid_stop_sw_cursor ();
 	  __libi86_vid_go_rccoord (__libi86_vid_get_curr_pg (), npxy);
+	  __libi86_vid_resume_sw_cursor ();
 	}
     }
 

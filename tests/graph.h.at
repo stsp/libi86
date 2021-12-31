@@ -209,3 +209,42 @@ main (void)
    -@
 ]])
 AT_CLEANUP
+
+AT_SETUP([[_displaycursor]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#include <graph.h>
+#include <i86.h>
+int
+main (void)
+{
+  _setvideomode (_MRES4COLOR);
+  _displaycursor (_GCURSOROFF);
+  _outtext (_CV_FP ("hola!"));
+  return 0;
+}]],[[hola!
+]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#include <graph.h>
+#include <i86.h>
+int
+main (int argc, char **argv)
+{
+  _setvideomode (_MRES4COLOR);
+  _displaycursor (_GCURSORON);
+  _outtext (_CV_FP ("hola!!"));
+  return 0;
+}]],[[hola!!
+]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#include <graph.h>
+#include <i86.h>
+int
+main (int argc, char **argv)
+{
+  _setvideomode (_MRES4COLOR);
+  _displaycursor (argc > 1 ? _GCURSORON : _GCURSOROFF);
+  _outtext (_CV_FP ("hola!!!"));
+  return 0;
+}]],[[hola!!!
+]])
+AT_CLEANUP

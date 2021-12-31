@@ -89,7 +89,6 @@ __libi86_vid_get_mode (void)
     }
   return mode;
 }
-
 #else  /* ! __GNUC__ */
 extern void __libi86_vid_get_norm_attr (void);
 
@@ -112,26 +111,10 @@ __libi86_vid_get_mode (void)
 }
 #endif  /* ! __GNUC__ */
 
-/*
- * For the time being, all supported video modes have character cells that are
- * 8 pixels wide...  -- tkchia 20211228
- */
-static unsigned char
-__libi86_vid_get_cell_width (unsigned mode)
-{
-  return (unsigned char) 8;
-}
-
-static unsigned char
-__libi86_vid_get_cell_height (unsigned mode)
-{
-  return __libi86_vid_state.cell_ht;
-}
-
 unsigned
 __libi86_con_mode_changed (unsigned mode)
 {
-  unsigned char max_x, max_y, ch, cell_ht;
+  unsigned char max_x, max_y, ch;
   uint8_t mode_ctl_reg;
 
   /* Record the mode number. */
@@ -147,23 +130,20 @@ __libi86_con_mode_changed (unsigned mode)
   __libi86_vid_state.max_y = max_y;
 
   /*
-   * Decide if we are now in a text mode or a graphics mode.
-   *
-   * If we are in a graphics mode, also try to figure out the width & height
-   * of each character cell in pixels.
+   * Decide if we are now in a text mode or a graphics mode, & whether the
+   * cursor is (or should be) displayed.
    */
   switch (mode)
     {
     _LIBI86_CASE_SUPPORTED_TEXT_MODES
       __libi86_vid_state.graph_p = 0;
+      __libi86_vid_state.curs_p
+	= ((__libi86_vid_get_curs_shape () & 0x2000) == 0);
       break;
 
     default:
       __libi86_vid_state.graph_p = 1;
-      cell_ht = __libi86_peekb_bios_ds (0x0085U);
-      if (! cell_ht)
-	cell_ht = 8;
-      __libi86_vid_state.cell_ht = cell_ht;
+      __libi86_vid_state.curs_p = 0;
     }
 
   /* Reset the colour attribute to use for text output. */
@@ -194,6 +174,8 @@ __libi86_con_mode_changed (unsigned mode)
  * is primed.
  */
 #ifdef __GNUC__
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wprio-ctor-dtor"
 __attribute__ ((constructor (99))) static
 #endif
 void
@@ -219,3 +201,6 @@ __libi86_vid_state_init (void)
 
   __libi86_vid_state.startup_mode_num = __libi86_vid_state.mode_num;
 }
+#ifdef __GNUC__
+# pragma GCC diagnostic pop
+#endif

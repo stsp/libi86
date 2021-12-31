@@ -188,9 +188,13 @@ OBJS		= bios/bios-disk.o \
 		  dos-dbcs/dos-get-dbcs-lead-table.o \
 		  dos-dbcs/libi86-msdos-dbcs-lead-p.o \
 		  graph/clearscreen.o \
+		  graph/displaycursor.o \
 		  graph/gettextposition.o \
 		  graph/getvideomode.o \
 		  graph/libi86-bios-ds.o \
+		  graph/libi86-displaycursor-off.o \
+		  graph/libi86-displaycursor-on.o \
+		  graph/libi86-vid-get-curs-shape.o \
 		  graph/libi86-vid-int-0x10.o \
 		  graph/libi86-vid-outmem-do.o \
 		  graph/libi86-vid-get-and-adjust-rccoord.o \

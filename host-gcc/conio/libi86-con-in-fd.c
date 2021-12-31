@@ -47,6 +47,8 @@
 int __libi86_con_in_fd = 0;
 static unsigned __libi86_con_in_info_word = 0;
 
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wprio-ctor-dtor"
 __attribute__ ((constructor (100))) static void
 __libi86_con_in_fd_init (void)
 {
@@ -94,4 +96,5 @@ __libi86_con_in_fd_fini (void)
     __libi86_con_set_dev_info_word (__libi86_con_in_fd,
 				    __libi86_con_in_info_word);
 }
+# pragma GCC diagnostic pop
 #endif /* __MSDOS__ */

@@ -1,5 +1,6 @@
+#
 /*
- * Copyright (c) 2020--2021 TK Chia
+ * Copyright (c) 2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,16 +28,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define _BORLANDC_SOURCE
-#define _LIBI86_COMPILING_
-#include <stdint.h>
-#include "conio.h"
-#include "graph.h"
+#include "libi86/internal/sect.h"
 
-void
-textmode (int mode)
-{
-  if (_getvideomode () != mode)
-    _setvideomode (mode);
-  normvideo ();
-}
+/* Get the current cursor shape (& size) via int 0x10. */
+
+	.define	___libi86_vid_get_curs_shape
+___libi86_vid_get_curs_shape:
+	movb	ah, 0x03
+	xorb	bh, bh
+	int	0x10
+	xchg	cx, ax
+	ret

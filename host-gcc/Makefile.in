@@ -206,6 +206,7 @@ OBJS		= bios/bios-disk.o \
 		  dpmi/dpmisetdescriptor.o \
 		  dpmi/dpmisimulaterealmodeint.o \
 		  graph/clearscreen.o \
+		  graph/displaycursor.o \
 		  graph/gettextposition.o \
 		  graph/getvideomode.o \
 		  graph/outmem.o \
@@ -216,6 +217,8 @@ OBJS		= bios/bios-disk.o \
 		  graph/settextwindow.o \
 		  graph/setvideomode.o \
 		  graph/libi86-bios-ds.o \
+		  graph/libi86-displaycursor-off.o \
+		  graph/libi86-displaycursor-on.o \
 		  graph/libi86-vid-get-and-adjust-rccoord.o \
 		  graph/libi86-vid-state.o \
 		  i86/delay.o \
@@ -256,7 +259,7 @@ OBJS		= bios/bios-disk.o \
 		  stdlib/ulltoa.o \
 		  stdlib/ultoa.o
 OBJ_SUBDIRS	= $(sort $(dir $(OBJS)))
-CFLAGS		= -mseparate-code-segment
+CFLAGS		= @CFLAGS@ -mseparate-code-segment -Wall -Werror
 ifeq "" "$(filter -O%,$(CC) $(CFLAGS) $(MULTILIB))"
   CFLAGS	+= -Os
 endif

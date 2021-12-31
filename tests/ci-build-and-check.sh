@@ -40,6 +40,6 @@ unset CC
 ../configure --prefix="$inst_prefix" ${1+"$@"} || \
   (cat config.log */config.log && exit 1)
 make
-make check TESTSUITEFLAGS=-j2 || \
+make check TESTSUITEFLAGS=-j3 || \
   (cat tests/testsuite.log && exit 1)
 exec make install

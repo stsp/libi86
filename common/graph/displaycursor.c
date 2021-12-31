@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020--2021 TK Chia
+ * Copyright (c) 2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,16 +27,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
-#include <stdint.h>
-#include "conio.h"
 #include "graph.h"
+#include "libi86/internal/graph.h"
 
-void
-textmode (int mode)
+#ifdef __GNUC__
+_LIBI86_ALIAS (__libi86_displaycursor) short
+_displaycursor (short);
+
+short
+__libi86_displaycursor (short curs_mode)
+#else
+short
+_displaycursor (short curs_mode)
+#endif
 {
-  if (_getvideomode () != mode)
-    _setvideomode (mode);
-  normvideo ();
+  if (curs_mode == _GCURSOROFF)
+    return __libi86_displaycursor_off (curs_mode);
+  else
+    return __libi86_displaycursor_on (curs_mode);
 }

@@ -116,6 +116,27 @@ extern short _settextcolor (short __pixval);
 extern void _settextwindow (short __row1, short __col1,
 			    short __row2, short __col2);
 
+extern short __libi86_displaycursor_off (short __curs_mode);
+extern short __libi86_displaycursor_on (short __curs_mode);
+# if ! defined __GNUC__ || ! defined __OPTIMIZE__
+extern short _displaycursor (short __curs_mode);
+# else  /* __GNUC__ && __OPTIMIZE__ */
+extern short __libi86_displaycursor (short __curs_mode);
+
+#   ifndef _LIBI86_COMPILING_
+_LIBI86_ALT_INLINE short
+_displaycursor (short __curs_mode)
+{
+  if (! __builtin_constant_p (__curs_mode))
+    return __libi86_displaycursor (__curs_mode);
+  else if (__curs_mode == _GCURSOROFF)
+    return __libi86_displaycursor_off (__curs_mode);
+  else
+    return __libi86_displaycursor_on (__curs_mode);
+}
+#   endif  /* ! _LIBI86_COMPILING_ */
+# endif  /* __GNUC__ && __OPTIMIZE__ */
+
 _LIBI86_END_EXTERN_C
 #endif  /* ! __ASSEMBLER__ */
 

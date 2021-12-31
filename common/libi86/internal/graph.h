@@ -73,8 +73,11 @@ struct __libi86_vid_state_t
   unsigned char border;
   /* Whether we are in a graphics mode. */
   unsigned graph_p : 1;
-  /* Height of each character cell, in pixels. */
-  unsigned char cell_ht;
+  /*
+   * Whether the cursor is supposed to be displayed.  This will be a hardware
+   * cursor in a text mode, & a software cursor in a graphics mode.
+   */
+  unsigned curs_p : 1;
 };
 
 /*
@@ -174,6 +177,35 @@ __libi86_vid_go_rccoord (unsigned char pg_no,
 #endif
 }
 
+/* Get the current hardware cursor shape. */
+#ifndef __GNUC__
+extern unsigned __libi86_vid_get_curs_shape (void);
+#else
+_LIBI86_STATIC_INLINE unsigned
+__libi86_vid_get_curs_shape (void)
+{
+  unsigned ax, bx, shape;
+  __asm volatile ("int {$}0x10" : "=a" (ax), "=b" (bx), "=c" (shape)
+				: "Rah" ((uint8_t) 0x03), "b" (0U)
+				: "cc", "dx", "memory");
+  return shape;
+}
+#endif
+
+/* Set the hardware cursor shape. */
+_LIBI86_STATIC_INLINE void
+__libi86_vid_set_curs_shape (unsigned shape)
+{
+#ifdef __GNUC__
+  unsigned ax, cx;
+  __asm volatile ("int {$}0x10" : "=a" (ax), "=c" (cx)
+				: "Rah" ((uint8_t) 0x01), "1" (shape)
+				: "cc", "bx", "dx", "memory");
+#else
+  __libi86_vid_int_0x10 (0x0100U, 0, shape, 0);
+#endif
+}
+
 /* Beep. */
 _LIBI86_STATIC_INLINE void
 __libi86_vid_beep (unsigned char pg_no, unsigned char attr)
@@ -221,6 +253,20 @@ __libi86_vid_next_line (struct __libi86_vid_rccoord_t pxy)
   return pxy;
 }
 
+extern void __libi86_vid_xor_sw_cursor (void);
+
+_LIBI86_STATIC_INLINE void
+__libi86_vid_stop_sw_cursor (void)
+{
+  __libi86_vid_xor_sw_cursor ();
+}
+
+_LIBI86_STATIC_INLINE void
+__libi86_vid_resume_sw_cursor (void)
+{
+  __libi86_vid_xor_sw_cursor ();
+}
+
 /*
  * Common code for implementing _outmem (, ), _outtext (.), & Borland-like
  * putch (.), cputs (.), etc.
@@ -244,7 +290,6 @@ __libi86_vid_outmem_do (__libi86_fpcc_t text, size_t length,
   unsigned char pg_no;
   unsigned char x1z, x2z, attr;
   struct __libi86_vid_rccoord_t pxy;
-  struct rccoord coord;
 
   if (! length)
     return;
@@ -252,6 +297,8 @@ __libi86_vid_outmem_do (__libi86_fpcc_t text, size_t length,
 # ifndef __GNUC__
   __libi86_vid_state_init ();
 # endif
+
+  __libi86_vid_stop_sw_cursor ();
 
   /* Get our current text window & output text colour attribute. */
   x1z = __libi86_vid_state.x1z;
@@ -296,6 +343,7 @@ __libi86_vid_outmem_do (__libi86_fpcc_t text, size_t length,
 	    case '\a':
 	      /* Remember to move the physical cursor before beeping... */
 	      __libi86_vid_go_rccoord (pg_no, pxy);
+	      __libi86_vid_resume_sw_cursor ();
 	      /* Beep. */
 	      __libi86_vid_beep (pg_no, attr);
 	      /*
@@ -304,11 +352,12 @@ __libi86_vid_outmem_do (__libi86_fpcc_t text, size_t length,
 	       */
 	      if (! length)
 		return;
+	      __libi86_vid_stop_sw_cursor ();
 	      continue;
 	    case '\b':
 	      if (pxy.x > x1z)
 		--pxy.x;
-		continue;
+	      continue;
 	    default:
 	      ;
 	    }
@@ -325,6 +374,7 @@ __libi86_vid_outmem_do (__libi86_fpcc_t text, size_t length,
 
   /* Move the cursor to where it should now be. */
   __libi86_vid_go_rccoord (pg_no, pxy);
+  __libi86_vid_resume_sw_cursor ();
 }
 #endif  /* __GNUC__ || _LIBI86_COMPILING_VID_OUTMEM_DO_ */
 
@@ -352,10 +402,60 @@ __libi86_vid_scroll (unsigned char sx1z, unsigned char sy1z,
 #endif
 }
 
+
+/*
+ * For the time being, all supported video modes have character cells that are
+ * 8 pixels wide...  -- tkchia 20211228
+ */
+_LIBI86_STATIC_INLINE unsigned char
+__libi86_vid_get_cell_width (void)
+{
+  return (unsigned char) 8;
+}
+
+_LIBI86_STATIC_INLINE unsigned char
+__libi86_vid_get_cell_height (void)
+{
+  unsigned char cell_ht = __libi86_peekb_bios_ds (0x0085U);
+  if (! cell_ht)
+    cell_ht = 8;
+  return cell_ht;
+}
+
+_LIBI86_STATIC_INLINE void
+__libi86_vid_plot_pixel (unsigned gx, unsigned gy, unsigned char colour,
+			 unsigned char pg_no)
+{
+#ifdef __GNUC__
+  unsigned xx1, xx2, xx3, xx4;
+  __asm volatile ("int {$}0x10"
+		  : "=a" (xx1), "=b" (xx2), "=c" (xx3), "=d" (xx4)
+		  : "Rah" ((uint8_t) 0xc), "Ral" (colour),
+		    "1" ((uint16_t) pg_no << 8), "2" (gx), "3" (gy));
+#else
+  __libi86_vid_int_0x10 (0x0c00U | colour, (uint16_t) pg_no << 8, gx, gy);
+#endif
+}
+
+_LIBI86_STATIC_INLINE uint8_t
+__libi86_vid_get_pixel (unsigned gx, unsigned gy, unsigned char pg_no)
+{
+#ifdef __GNUC__
+  unsigned ax, xx2, xx3, xx4;
+  __asm volatile ("int {$}0x10"
+		  : "=a" (ax), "=b" (xx2), "=c" (xx3), "=d" (xx4)
+		  : "Rah" ((uint8_t) 0xd),
+		    "1" ((uint16_t) pg_no << 8), "2" (gx), "3" (gy));
+  return (uint8_t) ax;
+#else
+  return (uint8_t) __libi86_vid_int_0x10 (0x0d00U, (uint16_t) pg_no << 8,
+					  gx, gy);
+#endif
+}
+
 extern void __libi86_vid_bc_insdelline (bool);
 extern void __libi86_vid_bc_outmem_do (const char *, size_t);
 extern unsigned __libi86_con_mode_changed (unsigned);
-
 _LIBI86_END_EXTERN_C
 
 #define _LIBI86_CASE_SUPPORTED_NONSVGA_TEXT_MODES \
@@ -364,7 +464,7 @@ _LIBI86_END_EXTERN_C
 	case _TEXTBW80:		\
 	case _TEXTC80:		\
 	case _TEXTMONO:
-#define _LIBI86_CASE_SUPPORTED_NONSVGA_GRAPHICS_MODES \
+#define _LIBI86_CASE_SUPPORTED_NONSVGA_SUB256COLOR_GRAPHICS_MODES \
 	case _MRES4COLOR:	\
 	case _MRESNOCOLOR:	\
 	case _HRESBW:		\
@@ -374,23 +474,32 @@ _LIBI86_END_EXTERN_C
 	case _ERESNOCOLOR:	\
 	case _ERESCOLOR:	\
 	case _VRES2COLOR:	\
-	case _VRES16COLOR:	\
+	case _VRES16COLOR:
+#define _LIBI86_CASE_SUPPORTED_NONSVGA_256COLOR_GRAPHICS_MODES \
 	case _MRES256COLOR:
+#define _LIBI86_CASE_SUPPORTED_NONSVGA_GRAPHICS_MODES \
+	_LIBI86_CASE_SUPPORTED_NONSVGA_SUB256COLOR_GRAPHICS_MODES \
+	_LIBI86_CASE_SUPPORTED_NONSVGA_256COLOR_GRAPHICS_MODES
 #define _LIBI86_CASE_SUPPORTED_SVGA_TEXT_MODES \
 	case _SVTEXTC80X60:	\
 	case _SVTEXTC132X25:	\
 	case _SVTEXTC132X43:	\
 	case _SVTEXTC132X50:	\
 	case _SVTEXTC132X60:
-#define _LIBI86_CASE_SUPPORTED_SVGA_GRAPHICS_MODES \
+#define _LIBI86_CASE_SUPPORTED_SVGA_SUB256COLOR_GRAPHICS_MODES \
+	case _SVRES16COLOR:	\
+	case _XRES16COLOR:	\
+	case _YRES16COLOR:
+#define _LIBI86_CASE_SUPPORTED_SVGA_256COLOR_GRAPHICS_MODES \
 	case _URES256COLOR:	\
 	case _VRES256COLOR:	\
-	case _SVRES16COLOR:	\
 	case _SVRES256COLOR:	\
-	case _XRES16COLOR:	\
 	case _XRES256COLOR:	\
-	case _YRES16COLOR:	\
 	case _YRES256COLOR:	\
+	case _ZRES256COLOR:
+#define _LIBI86_CASE_SUPPORTED_SVGA_GRAPHICS_MODES \
+	_LIBI86_CASE_SUPPORTED_SVGA_SUB256COLOR_GRAPHICS_MODES \
+	_LIBI86_CASE_SUPPORTED_SVGA_256COLOR_GRAPHICS_MODES \
 	case _MRES32KCOLOR:	\
 	case _MRES64KCOLOR:	\
 	case _MRESTRUECOLOR:	\
@@ -406,7 +515,6 @@ _LIBI86_END_EXTERN_C
 	case _YRES32KCOLOR:	\
 	case _YRES64KCOLOR:	\
 	case _YRESTRUECOLOR:	\
-	case _ZRES256COLOR:	\
 	case _ZRES32KCOLOR:	\
 	case _ZRES64KCOLOR:	\
 	case _ZRESTRUECOLOR:
@@ -419,6 +527,12 @@ _LIBI86_END_EXTERN_C
 #define _LIBI86_CASE_SUPPORTED_TEXT_MODES \
 	_LIBI86_CASE_SUPPORTED_NONSVGA_TEXT_MODES \
 	_LIBI86_CASE_SUPPORTED_SVGA_TEXT_MODES
+#define _LIBI86_CASE_SUPPORTED_SUB256COLOR_GRAPHICS_MODES \
+	_LIBI86_CASE_SUPPORTED_NONSVGA_SUB256COLOR_GRAPHICS_MODES \
+	_LIBI86_CASE_SUPPORTED_SVGA_SUB256COLOR_GRAPHICS_MODES
+#define _LIBI86_CASE_SUPPORTED_256COLOR_GRAPHICS_MODES \
+	_LIBI86_CASE_SUPPORTED_NONSVGA_256COLOR_GRAPHICS_MODES \
+	_LIBI86_CASE_SUPPORTED_SVGA_256COLOR_GRAPHICS_MODES
 #define _LIBI86_CASE_SUPPORTED_GRAPHICS_MODES \
 	_LIBI86_CASE_SUPPORTED_NONSVGA_GRAPHICS_MODES \
 	_LIBI86_CASE_SUPPORTED_SVGA_GRAPHICS_MODES
