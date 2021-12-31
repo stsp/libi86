@@ -135,7 +135,10 @@ extern unsigned _dos_write (int __handle, __libi86_fpcv_t __buf,
 extern unsigned _getdrive (void);
 
 #ifdef __INTERRUPT
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wstrict-prototypes"
 typedef void __interrupt __far (*__libi86_isr_t) (/* ... */);
+# pragma GCC diagnostic pop
 extern __libi86_isr_t _dos_getvect (unsigned __intr_no);
 extern void _dos_setvect (unsigned __intr_no, __libi86_isr_t __isr);
 #else

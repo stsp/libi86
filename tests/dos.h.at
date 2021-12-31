@@ -61,7 +61,6 @@ int
 main (void)
 {
   union REGS regs;
-  int rv;
 #ifdef __MSDOS__
   memset (&regs, 0xf6, sizeof (regs));
   regs.h.ah = 0x02;

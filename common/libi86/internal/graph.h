@@ -393,7 +393,7 @@ __libi86_vid_scroll (unsigned char sx1z, unsigned char sy1z,
 		  : "=a" (xx1), "=b" (xx2), "=c" (xx3), "=d" (xx4)
 		  : "Rah" (func), "Ral" (rows),
 		    "1" ((unsigned) attr << 8),
-		    "c" (sy1z), "Rcl" (sx1z),
+		    "2" ((unsigned) sy1z << 8 | sx1z),
 		    "Rdh" (sy2z), "Rdl" (sx2z));
 #else
   __libi86_vid_int_0x10 ((unsigned) func << 8 | rows, (unsigned) attr << 8,
@@ -456,6 +456,7 @@ __libi86_vid_get_pixel (unsigned gx, unsigned gy, unsigned char pg_no)
 extern void __libi86_vid_bc_insdelline (bool);
 extern void __libi86_vid_bc_outmem_do (const char *, size_t);
 extern unsigned __libi86_con_mode_changed (unsigned);
+extern void __libi86_vid_get_norm_attr (void);
 _LIBI86_END_EXTERN_C
 
 #define _LIBI86_CASE_SUPPORTED_NONSVGA_TEXT_MODES \

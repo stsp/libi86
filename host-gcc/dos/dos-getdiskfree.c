@@ -32,12 +32,9 @@
 #include "dos.h"
 #include "libi86/internal/dos.h"
 
-extern long __libi86_ret_einval (void);
-
 unsigned
 _dos_getdiskfree (unsigned drive, struct diskfree_t *diskspace)
 {
-  int res;
   unsigned tot, avail, spc, bps;
 
   if (drive > 0xff)

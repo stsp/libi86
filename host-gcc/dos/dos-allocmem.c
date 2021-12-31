@@ -29,6 +29,7 @@
 
 #define _LIBI86_COMPILING_
 #include <stdint.h>
+#include "dos.h"
 #include "libi86/internal/dos.h"
 #ifdef __IA16_FEATURE_PROTECTED_MODE
 # include "dpmi.h"

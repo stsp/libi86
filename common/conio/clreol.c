@@ -29,6 +29,7 @@
 
 #define _BORLANDC_SOURCE
 #define _LIBI86_COMPILING_
+#include "conio.h"
 #include "libi86/internal/graph.h"
 
 void

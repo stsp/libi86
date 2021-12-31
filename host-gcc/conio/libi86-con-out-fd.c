@@ -38,8 +38,6 @@
 #ifdef __MSDOS__
 int __libi86_con_out_fd = 1;
 
-# pragma GCC diagnostic push
-# pragma GCC diagnostic ignored "-Wprio-ctor-dtor"
 __attribute__ ((constructor (100))) static void
 __libi86_con_out_fd_init (void)
 {
@@ -55,5 +53,4 @@ __libi86_con_out_fd_init (void)
 	__libi86_con_out_fd = fd;
     }
 }
-# pragma GCC diagnostic pop
 #endif /* __MSDOS__ */

@@ -90,8 +90,6 @@ __libi86_vid_get_mode (void)
   return mode;
 }
 #else  /* ! __GNUC__ */
-extern void __libi86_vid_get_norm_attr (void);
-
 static unsigned char
 __libi86_vid_get_overscan (void)
 {
@@ -114,8 +112,7 @@ __libi86_vid_get_mode (void)
 unsigned
 __libi86_con_mode_changed (unsigned mode)
 {
-  unsigned char max_x, max_y, ch;
-  uint8_t mode_ctl_reg;
+  unsigned char max_x, max_y;
 
   /* Record the mode number. */
   __libi86_vid_state.mode_num = mode;
@@ -174,8 +171,6 @@ __libi86_con_mode_changed (unsigned mode)
  * is primed.
  */
 #ifdef __GNUC__
-# pragma GCC diagnostic push
-# pragma GCC diagnostic ignored "-Wprio-ctor-dtor"
 __attribute__ ((constructor (99))) static
 #endif
 void
@@ -201,6 +196,3 @@ __libi86_vid_state_init (void)
 
   __libi86_vid_state.startup_mode_num = __libi86_vid_state.mode_num;
 }
-#ifdef __GNUC__
-# pragma GCC diagnostic pop
-#endif

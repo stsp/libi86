@@ -31,6 +31,8 @@
 #include <stdio.h>
 #include "conio.h"
 
+int __libi86_bc_getche (void);
+
 int
 #ifdef _BORLANDC_SOURCE
 __libi86_bc_getche (void)

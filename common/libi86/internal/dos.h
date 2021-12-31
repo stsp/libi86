@@ -130,12 +130,12 @@ extern unsigned __libi86_msdos_do_open (const char *path, unsigned mode,
 _LIBI86_STATIC_INLINE int
 __libi86_msdos_do_getdcwd (char buf[_MAX_PATH - 3], unsigned char drive)
 {
-  int err, carry, xx1, xx2;
+  int err, carry;
   __asm volatile ("int $0x21; sbbw %1, %1"
-		  : "=a" (err), "=r" (carry)
+		  : "=a" (err), "=dr" (carry)
 		  : "Rah" ((unsigned char) 0x47), "Rdl" (drive),
 		    "Rds" (FP_SEG (buf)), "S" (FP_OFF (buf))
-		  : "cc", "memory");
+		  : "cc", "bx", "cx", "memory");
   if (carry)
     errno = err;
   return carry;
@@ -145,6 +145,13 @@ extern int __libi86_msdos_do_getdcwd (char buf[_MAX_PATH - 3],
 				      unsigned char drive);
 #endif  /* ! __GNUC__ || __IA16_FEATURE_PROTECTED_MODE */
 
+extern long __libi86_ret_einval (void);
+#ifdef __GNUC__
+extern __attribute__ ((regparmcall)) unsigned
+       __libi86_ret_really_set_errno (unsigned);
+#else
+extern unsigned __libi86_ret_really_set_errno (unsigned);
+#endif
 extern unsigned __libi86_msdos_do_truename (const char *path, char *out_path);
 extern const char *__libi86_msdos_parse_to_fcb (const char *name,
 						__libi86_msdos_fcb_t *fcb);

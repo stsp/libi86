@@ -29,6 +29,7 @@
 
 #define _LIBI86_COMPILING_
 #include <stdlib.h>
+#include "dir.h"
 #include "dos.h"
 #include "libi86/stdlib.h"
 #include "libi86/internal/dos.h"

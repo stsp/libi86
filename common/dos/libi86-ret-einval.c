@@ -30,6 +30,7 @@
 #define _LIBI86_COMPILING_
 #include <errno.h>
 #include "libi86/internal/cdefs.h"
+#include "libi86/internal/dos.h"
 
 /*
  * Set `errno' to EINVAL, & return a non-zero return value.  This is used

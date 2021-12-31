@@ -68,17 +68,22 @@ __libi86_fpcc_t;
  * glibc <sys/cdefs.h>.
  */
 #define _LIBI86_REDIRECT_0(ret_type, name, alias_to) \
+	extern ret_type alias_to (void); \
 	extern ret_type name (void) __asm (_LIBI86_ASM_NAME (alias_to));
 #define _LIBI86_REDIRECT_1(ret_type, name, type1, alias_to) \
+	extern ret_type alias_to (type1); \
 	extern ret_type name (type1) __asm (_LIBI86_ASM_NAME (alias_to));
 #define _LIBI86_REDIRECT_2(ret_type, name, type1, type2, alias_to) \
+	extern ret_type alias_to (type1, type2); \
 	extern ret_type name (type1, type2) \
 			__asm (_LIBI86_ASM_NAME (alias_to));
 #define _LIBI86_REDIRECT_3(ret_type, name, type1, type2, type3, alias_to) \
+	extern ret_type alias_to (type1, type2, type3); \
 	extern ret_type name (type1, type2, type3) \
 			__asm (_LIBI86_ASM_NAME (alias_to));
 #define _LIBI86_REDIRECT_4(ret_type, name, type1, type2, type3, type4, \
 			   alias_to) \
+	extern ret_type alias_to (type1, type2, type3, type4); \
 	extern ret_type name (type1, type2, type3, type4) \
 			__asm (_LIBI86_ASM_NAME (alias_to));
 #define _LIBI86_ASM_NAME(c_name) \

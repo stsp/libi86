@@ -30,6 +30,7 @@
 #define _LIBI86_COMPILING_
 #include <stdlib.h>
 #include "i86.h"
+#include "libi86/string.h"
 
 #ifndef __GNUC__
 # define __builtin_expect(__thang, __expect) (__thang)

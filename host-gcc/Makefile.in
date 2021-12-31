@@ -259,7 +259,12 @@ OBJS		= bios/bios-disk.o \
 		  stdlib/ulltoa.o \
 		  stdlib/ultoa.o
 OBJ_SUBDIRS	= $(sort $(dir $(OBJS)))
-CFLAGS		= @CFLAGS@ -mseparate-code-segment -Wall -Werror
+CFLAGS		= @CFLAGS@ \
+		  -mseparate-code-segment \
+		  -Wall \
+		  -Werror=strict-prototypes \
+		  -Werror=missing-prototypes \
+		  -Werror=unused
 ifeq "" "$(filter -O%,$(CC) $(CFLAGS) $(MULTILIB))"
   CFLAGS	+= -Os
 endif

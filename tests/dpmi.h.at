@@ -112,7 +112,6 @@ AT_LIBI86_CHECK(dnl
 int
 main (void)
 {
-  int res;
   rm_call_struct rmc;
   if (__DPMI_hosted () != 1)
     return 0;

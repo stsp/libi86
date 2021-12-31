@@ -41,6 +41,7 @@
 
 #define _LIBI86_COMPILING_
 #include <errno.h>
+#include "libi86/internal/dos.h"
 
 #ifdef __MSDOS__
 /* Do some basic sanity checking of errno values at compile time.  */

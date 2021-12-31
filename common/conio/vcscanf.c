@@ -36,6 +36,8 @@
 #include "libi86/stdio.h"
 #include "libi86/internal/conio.h"
 
+int __libi86_bc_vcscanf (const char *, va_list);
+
 int
 #ifdef _BORLANDC_SOURCE
 __libi86_bc_vcscanf (const char *fmt, va_list ap)

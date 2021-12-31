@@ -35,7 +35,8 @@ AT_CHECK([[$CC -o ]m4_default($2,a.exe)[ $CPPFLAGS ]]dnl
 [[-isystem "$abs_top_builddir"/"$libi86_hostdir" ]]dnl
 [[-isystem "$abs_top_srcdir"/"$libi86_hostdir" ]]dnl
 [[-isystem "$abs_top_srcdir"/common ]]dnl
-[[-Wall -Werror=strict-prototypes -Werror=missing-prototypes ]][$3] [$1] dnl
+[[-Wall -Werror=strict-prototypes -Werror=missing-prototypes ]]dnl
+[[-Werror=unused ]][$3] [$1] dnl
 [["$abs_top_builddir"/"$at_libi86_multilib"/"$libi86_hostdir"/libi86.a]] dnl
 [[-Wl,-Map=a.map]],,[[ignore]],[[ignore]])
 else

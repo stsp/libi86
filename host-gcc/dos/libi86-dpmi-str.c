@@ -32,6 +32,7 @@
 #include <string.h>
 #include "dpmi.h"
 #include "libi86/string.h"
+#include "libi86/internal/dos.h"
 
 dpmi_dos_block
 __libi86_dpmi_low_dup_str (const char *str)

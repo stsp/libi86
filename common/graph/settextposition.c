@@ -34,7 +34,7 @@
 struct rccoord
 _settextposition (short row, short col)
 {
-  unsigned char x1z, x2z, y1z, y2z, x, y;
+  unsigned char x1z, x2z, y1z, y2z;
   struct rccoord coord = _gettextposition ();
 
   x1z = __libi86_vid_state.x1z;

@@ -29,6 +29,7 @@
 
 #define _LIBI86_COMPILING_
 #include <stdint.h>
+#include "dos.h"
 #include "libi86/internal/dos.h"
 #ifdef __IA16_FEATURE_PROTECTED_MODE
 # include "dpmi.h"
@@ -37,16 +38,16 @@
 unsigned
 _dos_freemem (unsigned seg)
 {
-  unsigned err, xx;
+  unsigned err;
 #ifdef __IA16_FEATURE_PROTECTED_MODE
   if (__DPMI_hosted () == 1)
     __asm volatile ("int $0x31; "
 		    "jc 0f; "
 		    "xorw %0, %0; "
 		    "0:"
-		    : "=a" (err), "=d" (xx)
-		    : "0" (0x0101u), "1" (seg)
-		    : "cc", "bx", "cx", "memory");
+		    : "=r" (err)
+		    : "a" (0x0101u), "d" (seg)
+		    : "cc", "memory");
   else
 #endif
     __asm volatile ("int $0x21; "
