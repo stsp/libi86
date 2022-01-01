@@ -58,6 +58,13 @@ ifeq "yes" "$(ac_compiler_gnu)"
   ifeq "" "$(filter -O%,$(CC) $(CFLAGS))"
     CFLAGS	+= -O2
   endif
+  # If the C compiler supports the `-mhandle-non-i286' option, then use it
+  # when compiling dpmii86.c .
+  CFLAGS_DPMII86 = $(CFLAGS) -mdpmiable \
+		   $(shell $(CC) $(CFLAGS) -march=i286 -mhandle-non-i286 \
+				 -x c -E /dev/null -o /dev/null \
+				 >/dev/null 2>/dev/null \
+			   && echo '' -march=i286 -mhandle-non-i286)
   LDFLAGS	= -L$(objroot)/$(shell $(CC) $(CFLAGS) \
 				     -print-multi-directory)/$(libi86_hostdir)
   LDLIBS	= -li86
@@ -106,7 +113,7 @@ distclean maintainer-clean realclean: clean
 %.exe: %.o $(HEADERS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ $< $(LDLIBS)
 
-dpmii86.exe : CFLAGS += -mdpmiable
+dpmii86.exe dpmii86.o : CFLAGS := $(CFLAGS_DPMII86)
 
 Makefile: Makefile.in config.status @host_makefile_frag_path@
 	$(SHELL) config.status
