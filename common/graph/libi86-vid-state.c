@@ -57,16 +57,6 @@ __libi86_vid_get_norm_attr (void)
 {
 }
 
-static inline unsigned char
-__libi86_vid_get_overscan (void)
-{
-  unsigned ax, bx;
-  __asm volatile ("int $0x10" : "=a" (ax), "=b" (bx)
-			      : "0" (0x1008U), "1" (0)
-			      : "cc", "cx", "dx");
-  return (unsigned char) (bx >> 8);
-}
-
 static inline unsigned
 __libi86_vid_get_mode (void)
 {
@@ -90,12 +80,6 @@ __libi86_vid_get_mode (void)
   return mode;
 }
 #else  /* ! __GNUC__ */
-static unsigned char
-__libi86_vid_get_overscan (void)
-{
-  return (unsigned char) (__libi86_vid_int_0x10 (0x1008U, 0, 0, 0) >> 24);
-}
-
 static unsigned
 __libi86_vid_get_mode (void)
 {
@@ -151,9 +135,6 @@ __libi86_con_mode_changed (unsigned mode)
    * but only if we need to.
    */
   __libi86_vid_get_norm_attr ();
-
-  /* Read the current screen border colour, if possible.  If not, assume 0. */
-  __libi86_vid_state.border = __libi86_vid_get_overscan ();
 
   /* Reset the text window. */
   __libi86_vid_state.x1z = __libi86_vid_state.y1z = 0;

@@ -50,6 +50,7 @@ _LIBI86_BEGIN_EXTERN_C
 
 extern uint16_t __libi86_bios_ds;
 
+/* State variables used for both text & graphics output. */
 struct __libi86_vid_state_t
 {
   /* Current video mode number. */
@@ -69,8 +70,6 @@ struct __libi86_vid_state_t
   unsigned char x1z, y1z, x2z, y2z;
   /* Current colour attribute for text output. */
   unsigned char attribute;
-  /* Current screen border colour (& background colour, if graphics mode). */
-  unsigned char border;
   /* Whether we are in a graphics mode. */
   unsigned graph_p : 1;
   /*
@@ -78,6 +77,13 @@ struct __libi86_vid_state_t
    * cursor in a text mode, & a software cursor in a graphics mode.
    */
   unsigned curs_p : 1;
+};
+
+/* State variables used only for graphics output. */
+struct __libi86_graph_state_t
+{
+  /* Current drawing colour. */
+  unsigned char draw_col;
 };
 
 /*
@@ -97,6 +103,7 @@ union __libi86_vid_rccoord_union_t
 };
 
 extern struct __libi86_vid_state_t __libi86_vid_state;
+extern struct __libi86_graph_state_t __libi86_graph_state;
 
 _LIBI86_STATIC_INLINE uint16_t
 __libi86_peek_bios_ds (unsigned off)
