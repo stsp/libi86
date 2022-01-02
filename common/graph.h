@@ -90,6 +90,8 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
+typedef short grcolor;
+
 enum
 {
   _GCURSOROFF, _GCURSORON
@@ -110,9 +112,10 @@ extern short _getvideomode (void);
 extern void _outmem (__libi86_fpcc_t __text, short __length);
 extern void _outtext (__libi86_fpcc_t __text);
 extern void _scrolltextwindow (short __rows);
+extern grcolor _setcolor (grcolor __pixval);
 extern struct rccoord _settextposition (short __row, short __col);
 extern short _setvideomode (short __mode);
-extern short _settextcolor (short __pixval);
+extern grcolor _settextcolor (grcolor __pixval);
 extern void _settextwindow (short __row1, short __col1,
 			    short __row2, short __col2);
 

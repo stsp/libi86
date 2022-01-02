@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020--2021 TK Chia
+ * Copyright (c) 2021 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,42 +27,68 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+ * Variable for the current state of graphics output, & routines to update
+ * the state.
+ */
+
 #define _LIBI86_COMPILING_
 #include <stdint.h>
-#include "graph.h"
+#include "dos.h"
+#include "i86.h"
 #include "libi86/internal/graph.h"
-
-#define BLINK		0x80
-#define W_BLINK		0x10
-#define FG_MASK		(BLINK | 0x0f)
-
-grcolor
-_settextcolor (grcolor pixval)
-{
-  unsigned char prev_val;
-
-#ifndef __GNUC__
-  __libi86_vid_state_init ();
+#ifdef __IA16_FEATURE_PROTECTED_MODE
+# include "dpmi.h"
 #endif
 
-  if (__libi86_vid_state.graph_p)
+struct __libi86_graph_state_t __libi86_graph_state;
+
+void
+__libi86_graph_mode_changed (unsigned mode)
+{
+  unsigned char max_colr;
+
+  switch (mode)
     {
-      prev_val = __libi86_vid_state.attribute;
-      __libi86_vid_state.attribute = pixval;
+    _LIBI86_CASE_SUPPORTED_2COLOR_GRAPHICS_MODES
+      max_colr = 0x01;
+      break;
+
+    _LIBI86_CASE_SUPPORTED_4COLOR_GRAPHICS_MODES
+      max_colr = 0x03;
+      break;
+
+    _LIBI86_CASE_SUPPORTED_16COLOR_GRAPHICS_MODES
+      max_colr = 0x0f;
+      break;
+
+      /*
+       * Video mode 0x10 is a special case.  Apparently, this is a 4-colour
+       * mode for EGA with 64 KiB of graphics memory, & a 16-colour mode for
+       * EGA or VGA with 256 KiB of graphics memory.
+       */
+    case _ERESCOLOR:
+	{
+	  uint8_t mem;
+#ifdef __GNUC__
+	  uint16_t ax, bx;
+	  __asm volatile ("int $0x10" : "=a" (ax), "=b" (bx)
+				      : "Rah" ((uint8_t) 0x12), "1" (0x0010U)
+				      : "cc", "cx", "dx", "memory");
+	  mem = (uint8_t) bx;
+#else
+	  mem = __libi86_vid_int_0x10 (0x1200U, 0x0010U, 0, 0) >> 24;
+#endif
+	  if (! mem)
+	    max_colr = 0x03;
+	  else
+	    max_colr = 0x0f;
+	}
+      break;
+
+    default:
+      max_colr = 0xff;
     }
-  else
-    {
-      unsigned char val = pixval & 0x0f;
-      if ((pixval & W_BLINK) != 0)
-	val |= BLINK;
 
-      prev_val = __libi86_vid_state.attribute & 0x0f;
-      if ((__libi86_vid_state.attribute & BLINK) != 0)
-	prev_val |= W_BLINK;
-
-      __libi86_vid_state.attribute = (__libi86_vid_state.attribute & ~FG_MASK)
-				     | (val & FG_MASK);
-    }
-
-  return (short) prev_val;
+  __libi86_graph_state.max_colr = __libi86_graph_state.draw_colr = max_colr;
 }

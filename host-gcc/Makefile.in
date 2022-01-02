@@ -209,18 +209,20 @@ OBJS		= bios/bios-disk.o \
 		  graph/displaycursor.o \
 		  graph/gettextposition.o \
 		  graph/getvideomode.o \
-		  graph/outmem.o \
-		  graph/outtext.o \
-		  graph/scrolltextwindow.o \
-		  graph/settextcolor.o \
-		  graph/settextposition.o \
-		  graph/settextwindow.o \
-		  graph/setvideomode.o \
 		  graph/libi86-bios-ds.o \
+		  graph/libi86-graph-state.o \
 		  graph/libi86-displaycursor-off.o \
 		  graph/libi86-displaycursor-on.o \
 		  graph/libi86-vid-get-and-adjust-rccoord.o \
 		  graph/libi86-vid-state.o \
+		  graph/outmem.o \
+		  graph/outtext.o \
+		  graph/scrolltextwindow.o \
+		  graph/setcolor.o \
+		  graph/settextcolor.o \
+		  graph/settextposition.o \
+		  graph/settextwindow.o \
+		  graph/setvideomode.o \
 		  i86/delay.o \
 		  i86/disable.o \
 		  i86/enable.o \

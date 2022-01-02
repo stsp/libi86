@@ -57,6 +57,18 @@ __libi86_vid_get_norm_attr (void)
 {
 }
 
+/*
+ * Again under GCC: if graphics output routines are used, then this routine
+ * is overriden in libi86-graph-state.c .
+ */
+# if defined __MEDIUM__ && __ia16__ - 0 < 20201106L
+__attribute__ ((far_section))  /* bug workaround */
+# endif
+__attribute__ ((weak, noinline)) void
+__libi86_graph_mode_changed (unsigned mode)
+{
+}
+
 static inline unsigned
 __libi86_vid_get_mode (void)
 {
@@ -125,6 +137,7 @@ __libi86_con_mode_changed (unsigned mode)
     default:
       __libi86_vid_state.graph_p = 1;
       __libi86_vid_state.curs_p = 0;
+      __libi86_graph_mode_changed (mode);
     }
 
   /* Reset the colour attribute to use for text output. */

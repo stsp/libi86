@@ -32,37 +32,20 @@
 #include "graph.h"
 #include "libi86/internal/graph.h"
 
-#define BLINK		0x80
-#define W_BLINK		0x10
-#define FG_MASK		(BLINK | 0x0f)
-
 grcolor
-_settextcolor (grcolor pixval)
+_setcolor (grcolor pixval)
 {
-  unsigned char prev_val;
+  grcolor prev_val;
 
 #ifndef __GNUC__
   __libi86_vid_state_init ();
 #endif
 
-  if (__libi86_vid_state.graph_p)
-    {
-      prev_val = __libi86_vid_state.attribute;
-      __libi86_vid_state.attribute = pixval;
-    }
-  else
-    {
-      unsigned char val = pixval & 0x0f;
-      if ((pixval & W_BLINK) != 0)
-	val |= BLINK;
+  if (! __libi86_vid_state.graph_p)
+    return -1;
 
-      prev_val = __libi86_vid_state.attribute & 0x0f;
-      if ((__libi86_vid_state.attribute & BLINK) != 0)
-	prev_val |= W_BLINK;
-
-      __libi86_vid_state.attribute = (__libi86_vid_state.attribute & ~FG_MASK)
-				     | (val & FG_MASK);
-    }
-
-  return (short) prev_val;
+  prev_val = __libi86_graph_state.draw_colr;
+  __libi86_graph_state.draw_colr = (unsigned char) pixval
+				   & __libi86_graph_state.max_colr;
+  return prev_val;
 }
