@@ -74,6 +74,7 @@ dnl	  reads within dosemu to return all zeroes, which is not good for
 dnl	  tests that need to capture "screen contents".  Set $TERM to
 dnl	  something more reasonable in this case.
 m4_define([AT_LIBI86_RUN],[[( \
+  set +e; \
   if test x = x"$TERM" -o xdumb = x"$TERM"; then \
     TERM=vt220 && LINES=25 && COLUMNS=80 && export TERM LINES COLUMNS; \
   fi && \
@@ -85,10 +86,17 @@ m4_define([AT_LIBI86_RUN],[[( \
   else \
     "$DOSEMU" $DOSEMU_OPTS ]m4_default($3,-dumb -tde >a.log)[ \
       -K ]m4_default($2,.)[ -E ]m4_default($1,a.exe)[; \
-  fi </dev/null && \
+  fi </dev/null; \
+  res=$?; \
   test -f a.log && \
-  ]m4_default($4,"$abs_srcdir"/postproc-stdout.sh)[ <a.log && \
-  rm a.log
+    ]m4_default($4,"$abs_srcdir"/postproc-stdout.sh)[ <a.log && \
+    rm a.log; \
+  test 0 -ne $res && \
+    DOSEMULOG="$HOME"/.dosemu/boot.log && \
+    test -f "$DOSEMULOG" && \
+    echo === "$DOSEMULOG" === >&2 && \
+    cat "$DOSEMULOG" >&2; \
+  exit $res \
 )]])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_A],[dnl
