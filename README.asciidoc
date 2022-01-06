@@ -1,0 +1,313 @@
+= libi86
+
+https://gitlab.com/tkchia/libi86/-/commits/master[image:https://gitlab.com/tkchia/libi86/badges/master/pipeline.svg["Gitlab pipeline status"]]
+
+This is a code library which attempts to reimplement non-standard C library facilities (e.g. `<conio.h>`) commonly used in classical MS-DOS programs.  The library also implements a few standard facilities which are part of newer C language standards, where the underlying C library lacks them.
+
+:fn-tkchia-22: footnote:tkchia-22[https://github.com/tkchia/build-ia16/.]
+:fn-given-21: footnote:given-21[https://github.com/davidgiven/ack.]
+
+For now, the library is meant to be used with the following compilers and targets:
+
+  * either a GCC toolchain for 16-bit x86;{fn-tkchia-22}
+  * or the Amsterdam Compiler Toolkit{fn-given-21} with the `msdos86` target platform.
+
+It may be ported to other compilers and targets in the future.
+
+:fn-ow: footnote:ow[https://github.com/open-watcom/open-watcom-v2/.]
+:fn-ow-22: footnote:ow-2022[Open Watcom Contributors, et al.  Open Watcom C Library Reference, 2022.  https://github.com/open-watcom/open-watcom-v2-wikidocs/blob/master/docs/clib.pdf.  Retrieved on 6 Jan 2022.]
+
+The current aim is to be compatible enough with the Open Watcom{fn-ow} runtime — as described in the __Open Watcom C Library Reference__{fn-ow-22} — to be useful for building existing MS-DOS code.
+
+// Macros to work around AsciiDoc lossage. :-|
+:plus: +
+
+:fn-borland: footnote:borland[http://cc.embarcadero.com/Item/25636.]
+:fn-borland-91: footnote:borland-91[Borland International.  Borland C{plus}{plus} 2.0 Library Reference, 1991.  https://archive.org/details/bitsavers_borlandborn2.0LibraryReference1991_17218611.]
+
+Defining the macro `_BORLANDC_SOURCE` will also enable some degree of compatibility with the Borland Turbo C{plus}{plus}{fn-borland} compiler's C library, which is described in the __Borland C{plus}{plus} 2.0 Library Reference__.{fn-borland-91}
+
+== Synopsis
+
+=== Use
+
+When using IA-16 GCC:
+
+  * `ia16-elf-gcc` [..._gcc-options_...] `-li86` [...]
+  * On a MS-DOS host: `i16gcc` [..._gcc-options_...] `-li86` [...]
+
+When using ACK:
+
+  * `ack-cc -mmsdos86` [..._ack-options_...] `-li86.a` [...]
+  * Or (if compiler is installed as `ack`): `ack -mmsdos86` [..._ack-options_...] `-li86.a` [...]
+
+=== Installing from pre-compiled Ubuntu Linux packages, for cross development
+
+When using IA-16 GCC:
+
+:fn-tkchia-22b: footnote:tkchia-22b[https://launchpad.net/~tkchia/+archive/ubuntu/build-ia16/.]
+
+  * Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from https://launchpad.net/~tkchia/+archive/ubuntu/build-ia16/[my `build-ia16` PPA].{fn-tkchia-22b}
+
+When using ACK, you currently need to build `libi86` from sources.
+
+=== Building from sources, installing, and testing, on Linux
+
+link:README.linux-build.md[Detailed instructions] for doing so are available.
+
+== License
+
+`libi86` as a whole is now distributed under the link:LICENSE[3-clause BSD License].
+
+(A few files are distributed under other licenses, but in ways that are ultimately compatible with the BSD License.)
+
+== Implemented facilities
+
+=== Legend
+
+:fn-iso-iec-99: footnote:iso-iec-99[International Organization for Standardization, and International Electrotechnical Commission.  ISO/IEC 9899:1999: Programming Languages: C, 1999.]
+:fn-iso-iec-07: footnote:iso-iec-07[International Organization for Standardization, and International Electrotechnical Commission.  ISO/IEC 9899:TC3: Committee Draft — September 7, 2007.  WG14/N1256, 2007.  http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf.]
+:fn-ieee-04: footnote:ieee-04[Institute of Electrical and Electronics Engineers, and The Open Group.  IEEE Std 1003.1, 2004 Edition, 2004.  https://pubs.opengroup.org/onlinepubs/009695399/.]
+
+[cols=">1,9"]
+|===
+| Compat. | Meaning
+
+| C99 | Part of the C99 standard{fn-iso-iec-99}{fn-iso-iec-07} — enable with a macro `_ISOC99_SOURCE` if necessary.
+| P01 | Part of the POSIX.1-2001{fn-ieee-04} standard.
+|   W | Behaves like the corresponding function in Open Watcom.
+|  W+ | Behaves like the corresponding function in Open Watcom, but with some extended behaviours.
+|   B | From Borland Turbo C{plus}{plus} — enable with `_BORLANDC_SOURCE`.
+| W/B | By default, behaves as in Open Watcom; if `_BORLANDC_SOURCE` is defined, behaves as in Borland C{plus}{plus}.
+|  IW | From internal interfaces in Open Watcom's library code.
+|   X | `libi86`-specific extension; not in Open Watcom or Borland C{plus}{plus}.  Enabled even if the macros `_BORLANDC_SOURCE` and `_ISOC99_SOURCE` are not defined.
+|  XB | `libi86`-specific extension.  Behaves slightly differently if `_BORLANDC_SOURCE` is defined.
+|===
+
+[cols=">1,9"]
+|===
+| Avail. | Meaning
+
+|   = | Available for all compilers and platforms that `libi86` targets.
+| (=) | Available for all compilers and platforms that do not already define this facility themselves.
+|   G | Available (only) under IA-16 GCC.
+|===
+
+=== Functions
+
+[cols=">1,>1,4,4"]
+|===
+| Compat. | Avail. | Function | Notes
+
+|         |      2+| **``▗▚▚▚▚ <bios.h> ▞▞▞▞▖``**
+|      W+ |    =   | ``_bios_disk (``__service__``,`` *__diskinfo__``);`` | As an extension, also accepts _service_ = ``_DISK_DRIVEPARAMS``, which returns drive parameters in *__diskinfo__.
+|       W |    =   | ``_bios_equiplist ();`` |
+|       B |    =   | ``biosequip ();`` |
+|       W |    =   | ``_bios_memsize ();`` |
+|       B |    =   | ``biosmemory ();`` |
+|       W |    =   | ``_bios_keybrd (``__service__``);`` |
+|       B |    =   | ``bioskey (``__service__``);`` |
+|       W |    =   | ``_bios_printer (``__service__``,`` __port__``,`` __data__``);`` |
+|       W |    =   | ``_bios_serialcom (``__service__``,`` __port__``,`` __data__``);`` |
+|       W |    =   | ``_bios_timeofday (``__service__``,`` *__timeval__``);`` |
+|       X |    =   | ``_bios_joystick (``__service__``,`` *__joyinfo__``);`` | Reads joystick status via ``int 0x15`` function ``0x84``.
+|         |        | |
+|         |      2+| **``▗▚▚▚▚ <conio.h> ▞▞▞▞▖``**
+|         |      2+| **If `_BORLANDC_SOURCE` is defined, ``<conio.h>`` switches to an alternate implementation of the console output routines which is based on ``<graph.h>`` facilities.**
+|     W/B |    =   | *``cgets (``*__buf__``);`` |
+|     W/B |    =   | ``cprintf (``*__fmt__``, ...);`` |
+|     W/B |    =   | ``cputs (``*__buf__``);`` |
+|     W/B |    =   | ``cscanf (``*__fmt__``, ...);`` |
+|       W |    =   | ``getch ();`` |
+|       W |    =   | ``_getch ();`` |
+|     W/B |    =   | ``getche ();`` |
+|       W |    =   | ``_getche ();`` |
+|       W |    =   | ``kbhit ();`` |
+|       W |    =   | ``_kbhit ();`` |
+|       W |    =   | ``ungetch (``__ch__``);`` |
+|       W |    =   | ``_ungetch (``__ch__``);`` |
+|     W/B |    =   | ``putch (``__ch__``);`` |
+|     W/B |    =   | ``vcprintf (``*__fmt__``,`` __ap__``);`` |
+|     W/B |    =   | ``vcscanf (``*__fmt__``,`` __ap__``);`` |
+|         |        | |
+|       B |    =   | ``clreol ();`` |
+|       B |    =   | ``clrscr ();`` |
+|       B |    =   | ``delline ();`` |
+|       B |    =   | *``getpass (``*__prompt__``);`` |
+|       B |    =   | ``gettextinfo (``*__text-info__``);`` | If the active video mode is a SuperVGA mode, __text-info__``\->currmode`` may be invalid.
+|       B |    =   | ``gotoxy (``__x__``,`` __y__``);`` |
+|       B |    =   | ``highvideo ();`` |
+|       B |    =   | ``insline ();`` |
+|       B |    =   | ``lowvideo ();`` |
+|       B |    =   | ``normvideo ();`` |
+|       B |    =   | ``textattr (``__new-attr__``);`` |
+|       B |    =   | ``textbackground (``__new-color__``);`` |
+|       B |    =   | ``textcolor (``__new-color__``);`` |
+|       B |    =   | ``textmode (``__mode__``);`` | Does not support _mode_ = ``LASTMODE`` yet.
+|       B |    =   | ``wherex ();`` |
+|       B |    =   | ``wherey ();`` |
+|       B |    =   | ``window (``__left__``,`` __top__``,`` __right__``,`` __bottom__``);`` |
+|         |        | |
+|       W |    =   | ``inp (``__port__``);`` |
+|       W |    =   | ``_inp (``__port__``);`` |
+|       B |    =   | ``inportb (``__port__``);`` |
+|       W |    =   | ``inpw (``__port__``);`` |
+|       W |    =   | ``_inpw (``__port__``);`` |
+|       B |    =   | ``inport (``__port__``);`` | Returns a signed value.
+|       B |    =   | ``inportw (``__port__``);`` | Returns an unsigned value.
+|       W |    =   | ``outp (``__port__``,`` __value__``);`` |
+|       W |    =   | ``_outp (``__port__``,`` __value__``);`` |
+|       B |    =   | ``outportb (``__port__``,`` __value__``);`` |
+|       W |    =   | ``outpw (``__port__``,`` __value__``);`` |
+|       W |    =   | ``_outpw (``__port__``,`` __value__``);`` |
+|       B |    =   | ``outport (``__port__``,`` __value__``);`` | Accepts a signed value to write.
+|       B |    =   | ``outportw (``__port__``,`` __value__``);`` | Accepts an unsigned value to write.
+|         |        | |
+|         |      2+| **``▗▚▚▚▚ <dir.h> ▞▞▞▞▖``**
+|       B |    =   | ``searchpath (``__file__``);`` |
+|       X |    =   | ``_searchpath (``__file__``);`` |
+|         |        | |
+|         |      2+| **``▗▚▚▚▚ <direct.h> ▞▞▞▞▖``**
+|  P01, W |   (=)  | ``getcwd (``*__buffer__``,`` __size__``);`` | (POSIX places this function in ``<unistd.h>``.)
+|       W |   (=)  | ``_getcwd (``*__buffer__``,`` __size__``);`` |
+|       W |    =   | ``_getdcwd (``__drive__``,`` *__buffer__``,`` __size__``);`` |
+|         |        | |
+|         |      2+| **``▗▚▚▚▚ <dos.h> ▞▞▞▞▖``**
+|         |      2+| **``<dos.h>`` also includes ``<i86.h>``, described below.  If `_BORLANDC_SOURCE` is defined, the ``union REGS`` type gets an additional ``.x.flags`` field, and ``<dos.h>`` switches accordingly to a different version of the ``intdos`` and ``intdosx`` routines.**
+|       W |    =   | ``bdos (``__dos-func__``,`` __dx__``,`` __al__``);`` |
+|       B |    =   | ``bdosptr (``__dos-func__``,`` *__dx__``,`` __al__``);`` |
+|     W/B |    =   | ``intdos (``*__in-regs__``,`` *__out-regs__``);`` |
+|     W/B |    =   | ``intdosx (``*__in-regs__``,`` *__out-regs__``,`` *__seg-regs__``);`` |
+|      W+ |    =   | ``_dos_allocmem (``__size__``,`` *__segment__``);`` | Also works under DPMI; yields a starting protected-mode selector.
+|       W |    =   | ``_dos_close (``__handle__``);`` |
+|       W |    =   | ``_dos_commit (``__handle__``);`` |
+|       W |    =   | ``_dos_creat (``*__path__``,`` __attr__``,`` *__handle__``);`` |
+|       W |    =   | ``_dos_creatnew (``*__path__``,`` __attr__``,`` *__handle__``);`` |
+|       W |    =   | ``_dos_findfirst (``*__path__``,`` __attributes__``,`` *__buffer__``);`` |
+|       W |    =   | ``_dos_findnext (``*__buffer__``);`` |
+|       W |    =   | ``_dos_findclose (``*__buffer__``);`` |
+|      W+ |    =   | ``_dos_freemem (``__segment__``);`` | Also works under DPMI; accepts a starting protected-mode selector.
+|       W |    =   | ``_dos_getdate (``*__date__``);`` |
+|       W |    =   | ``_dos_getdiskfree (``__drive__``,`` *__disk-space__``);`` |
+|       W |    =   | ``_dos_getdrive (``*__drive__``);`` |
+|       W |    =   | ``_dos_getfileattr (``*__path__``,`` *__attributes__``);`` |
+|       W |    =   | ``_dos_getftime (``__handle__``,`` *__date__``,`` *__time__``);`` |
+|       W |    =   | ``_dos_gettime (``*__time__``);`` |
+|       W |    =   | *``_dos_getvect (``__intr-no__``);`` | Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will return a far data pointer.
+|       W |    =   | ``_dos_keep (``__status__``,`` __keep-paras__``);`` |
+|       B |    =   | ``keep (``__status__``,`` __keep-paras__``);`` |
+|       W |    =   | ``_dos_open (``*__path__``,`` __mode__``,`` *__handle__``);`` |
+|       W |    =   | ``_dos_read (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` |
+|       W |    =   | ``_dos_setblock (``__size__``,`` __seg__``,`` *__max-size__``);`` |
+|       W |    =   | ``_dos_setdate (``*__date__``);`` |
+|       W |    =   | ``_dos_setdrive (``__drive__``,`` *__total__``);`` |
+|       W |    =   | ``_dos_setfileattr (``*__path__``,`` __attributes__``);`` |
+|       W |    =   | ``_dos_setftime (``__handle__``,`` __date__``,`` __time__``);`` |
+|       W |    =   | ``_dos_setvect (``__intr-no__``,`` *__handler__``);`` | Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will not be supported.
+|       W |    =   | ``_dos_write (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` |
+|       W |    =   | ``_getdrive ();`` |
+|         |        | |
+|       B |    =   | ``peek (``__segment__``,`` __offset__``);`` |
+|       B |    =   | ``peekb (``__segment__``,`` __offset__``);`` |
+|       B |    =   | ``poke (``__segment__``,`` __offset__``,`` __word-value__``);`` |
+|       B |    =   | ``pokeb (``__segment__``,`` __offset__``,`` __byte-value__``);`` |
+|       B |    =   | ``inportb (``__port__``);`` |
+|       B |    =   | ``inport (``__port__``);`` | Returns a signed value.
+|       B |    =   | ``inportw (``__port__``);`` | Returns an unsigned value.
+|       B |    =   | ``outportb (``__port__``,`` __value__``);`` |
+|       B |    =   | ``outport (``__port__``,`` __value__``);`` | Accepts a signed value to write.
+|       B |    =   | ``outportw (``__port__``,`` __value__``);`` | Accepts an unsigned value to write.
+|         |        | |
+|         |      2+| **``▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖``**
+|         |      2+| **Except for ``__DPMI_hosted ()`` and ``_DPMIIdle ()``, functions in ``<dpmi.h>`` should only be called when the caller knows it is running in DPMI mode.  ``<dpmi.h>`` is not supported for ACK.**
+|      IW |    G   | ``__DPMI_hosted ();`` | Returns 1 if running in protected mode under DPMI, -1 otherwise.  If the underlying C library has an implementation of this function, ``libi86`` will use that instead.
+|      IW |    G   | ``_DPMIAllocateDOSMemoryBlock (``__paras__``);`` | ``int 0x31`` function ``0x0100``.  Returns a structure giving the real mode segment and protected mode selector for the DOS memory block.  On failure, returns ``{ 0, 0 }``.
+|      IW |    G   | ``_DPMIAllocateLDTDescriptors (``__count__``);`` | ``int 0x31`` function ``0x0000``.  Returns a starting protected-mode selector, case to an ``int32_t``.  On failure, returns a negative value.
+|      IW |    G   | ``_DPMIFreeDOSMemoryBlock (``__sel__``);`` | ``int 0x31`` function ``0x0101``.  Returns 0 on success, -1 on error.
+|      IW |    G   | ``_DPMIFreeLDTDescriptor (``__sel__``);`` | ``int 0x31`` function ``0x0001``.  Returns 0 on success, -1 on error.
+|       X |    G   | ``_DPMIGetCapabilities (``*__capabilities-1__``,`` *__reserved-2__``,`` *__reserved-3__``,`` *__host-info__``);`` | ``int 0x31`` function ``0x0401``.  Returns 0 on success, -1 on error.
+|      IW |    G   | ``_DPMIGetDescriptor (``__sel__``,`` *__desc__``);`` | ``int 0x31`` function ``0x000b``.  Returns 0 on success, -1 on error.
+|      IW |    G   | ``_DPMIGetSegmentBaseAddress (``__sel__``);`` | ``int 0x31`` function ``0x0006``.  Returns _sel_'s base address on success; return value is undefined on error.
+|      IW |    G   | *``_DPMIGetVendorSpecificAPI (``*__vendor__``);`` | ``int 0x2f`` function ``0x168a``.  Returns a far null pointer on error.
+|       X |    G   | ``_DPMIGetVirtualInterruptState ();`` | ``int 0x31`` function ``0x0902``.  Returns ``true`` if virtual interrupts enabled, ``false`` otherwise.
+|      IW |    G   | ``_DPMIIdle ();`` | ``int 0x2f`` function ``0x1680``.  This implementation also returns a byte value saying whether this function call is actually supported (``0x00``), or not (``0x80``).  It is OK to ignore this value.
+|      IW |    G   | ``_DPMISegmentToDescriptor (``__seg-para__``);`` | ``int 0x31`` function ``0x0002``.  On success, returns a protected-mode selector value for the real-mode segment _seg-para__``:0``.  On failure, returns a negative value.
+|      IW |    G   | ``_DPMISetDescriptor (``__sel__``,`` *__desc__``);`` | ``int 0x31`` function ``0x000c``.  Returns 0 on success, -1 on error.
+|      IW |    G   | ``_DPMISimulateRealModeInterrupt (``__inter-no__``,`` __reset__``,`` __words-to-copy__``,`` *__call-struct__``);`` | ``int 0x31`` function ``0x0300``.  Returns 0 on success, -1 on error.  _words-to-copy_ should probably be 0.
+|         |        | |
+|         |      2+| **``▗▚▚▚▚ <graph.h> ▞▞▞▞▖``**
+|         |      2+| **Unlike in Open Watcom, where all functions in ``<graph.h>`` are far, in ``libi86`` the far-ness of functions follows the chosen memory model.  Thus, in a small-memory-model program, ``_setvideomode`` is a near function.  However, pointers to data are still far.**
+|       W |    =   | ``_clearscreen (``__area__``);`` |
+|       W |    =   | ``_displaycursor (``__curs-mode__``);`` |
+|       W |    =   | ``_gettextposition ();`` |
+|       X |    =   | ``_getvideomode ();`` |
+|       W |    =   | ``_outmem (``*__text__``,`` __length__``);`` |
+|       W |    =   | ``_outtext (``*__text__``);`` |
+|       W |    =   | ``_scrolltextwindow (``__rows__``);`` |
+|       W |    =   | ``_settextcolor (``__pix-val__``);`` |
+|       W |    =   | ``_settextposition (``__row__``,`` __col__``);`` |
+|       W |    =   | ``_settextwindow (``__row1__``,`` __col1__``,`` __row2__``,`` __col2__``);`` |
+|       W |    =   | ``_setvideomode (``__mode__``);`` | In the case of SuperVGA screen modes, only works with VESA interface.
+|         |        | |
+|         |      2+| **``▗▚▚▚▚ <i86.h> ▞▞▞▞▖``**
+|         |      2+| **If `_BORLANDC_SOURCE` is defined, the ``union REGS`` type gets an additional ``.x.flags`` field, and ``<i86.h>`` switches accordingly to a different version of the ``int86``, ``int86x``, ``_int86f``, and ``_int86xf`` routines.**
+|       W |    =   | ``delay (``__ms__``);`` |
+|       W |    =   | ``nosound ();`` |
+|       W |    =   | ``sound (``__freq__``);`` |
+|       W |    =   | ``segread (``*__seg-regs__``);`` |
+|       W |    =   | ``_disable ();`` |
+|       W |    =   | ``_enable ();`` |
+|     W/B |    =   | ``int86 (``__inter-no__``,`` *__in-regs__``,`` *__out-regs__``);`` |
+|     W/B |    =   | ``int86x (``__inter-no__``,`` *__in-regs__``,`` *__out-regs__``,`` *__seg-regs__``);`` |
+|       W |    =   | ``intr (``__inter-no__``,`` *__regs__``);`` | Clears ``SZAPC`` flags to 0 before issuing interrupt.  (This follows a documentation change in Open Watcom versions after Oct 2018.)
+|      XB |    =   | ``_int86f (``__inter-no__``,`` *__in-regs__``,`` *__out-regs__``);`` | Loads carry flag before issuing interrupt.
+|      XB |    =   | ``_int86xf (``__inter-no__``,`` *__in-regs__``,`` *__out-regs__``,`` *__seg-regs__``);`` | Loads carry flag before issuing interrupt.
+|       W |    =   | ``intrf (``__inter-no__``,`` *__regs__``);`` | Loads ``SZAPC`` flags before issuing interrupt.
+|       X |    =   | ``_intrf (``__inter-no__``,`` *__regs__``);`` | Loads ``SZAPC`` flags before issuing interrupt.
+|       W |    =   | ``FP_OFF (``*__ptr__``);`` | Macro.
+|       W |    =   | ``_FP_OFF (``*__ptr__``);`` | Macro.
+|       W |    =   | ``FP_SEG (``*__ptr__``);`` | Macro.
+|       W |    =   | ``_FP_SEG (``*__ptr__``);`` | Macro.
+|       W |    =   | *``MK_FP (``__seg__``,`` __off__``);`` | Macro.
+|       W |    =   | *``_MK_FP (``__seg__``,`` __off__``);`` | Macro.
+|       X |    =   | *``_CV_FP (``*__ptr__``);`` | Convert a default-sized pointer to a far pointer.  This is mainly useful for ACK, which lacks built-in far pointer support.
+|       X |    =   | *``_FP_EQ (``*__ptr1__``,`` __ptr2__``);`` | Test whether two far pointers are exactly equal.  This is mainly useful for ACK, which lacks built-in far pointer support.
+|         |        | |
+|         |      2+| **``▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖``**
+|         |      2+| **``<libi86/stdio.h>`` also includes the underlying C library's ``<stdio.h>``.**
+|     C99 |   (=)  | ``vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` | (C99 places this function in ``<stdio.h>``.)
+|       X |   (=)  | ``_vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` |
+|         |        | |
+|         |      2+| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
+|         |      2+| **``<libi86/stdlib.h>`` also includes the underlying C library's ``<stdlib.h>``.**
+|       W |    =   | *``_fullpath (``*__out-path__``,`` *__path__``,`` __size__``);`` |
+|       W |    G   | *``lltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
+|       W |    G   | *``_lltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
+|       W |    =   | *``ltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
+|       W |    =   | *``_ltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
+|      W+ |    =   | ``_makepath (``*__path__``,`` *__drive__``,`` *__dir__``,`` *__fname__``,`` *__ext__``);`` | As extensions, this function (1) checks for buffer overflow, and (2) gives a return value.  Upon an error, the return value is non-zero, ``errno`` is set, and __path__``[]`` holds either an empty string or a truncated path.  Network __drive__``[]`` values starting with two backslashes (``\\``) are not supported.
+|       W |    =   | ``_splitpath (``*__path__``,`` *__drive__``,`` *__dir__``,`` *__fname__``,`` *__ext__``);`` | Long filenames, and network paths starting with two backslashes (``\\``), are not supported.
+|       W |    G   | *``ulltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
+|       W |    G   | *``_ulltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
+|       W |    =   | *``ultoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
+|       W |    =   | *``_ultoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
+|         |        | |
+|         |      2+| **``▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖``**
+|         |      2+| **``<libi86/string.h>`` also includes the underlying C library's ``<string.h>``.**
+|       W |    =   | ``_fmemcmp (``*__s1__``,`` *__s2__``,`` __n__``);`` |
+|       W |    =   | *``_fmemcpy (``*__dest__``,`` *__src__``,`` __n__``);`` |
+|       W |    =   | *``_fmemmove (``*__dest__``,`` *__src__``,`` __n__``);`` |
+|       W |    =   | ``_fstrlen (``*__s__``);`` |
+|===
+
+=== Variables
+
+[cols=">1,>1,4,4"]
+|===
+| Compat. | Avail. | Variable | Notes
+
+|         |      2+| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
+|       W |    =   | ``_osmajor`` | Implemented as a function call on ACK.
+|       W |    =   | ``_osminor`` | Implemented as a function call on ACK.
+|       W |    =   | ``_psp`` | Implemented as a function call on ACK.
+|===

@@ -54,4 +54,4 @@ To list all the test cases and their test numbers:
 
   * &nbsp;`make listcheck`
 
-([↵](README.md))
+([↵](README.asciidoc))
