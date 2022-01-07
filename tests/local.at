@@ -81,10 +81,10 @@ m4_define([AT_LIBI86_RUN],[[( \
   ]m4_default($5,rm -f)[ a.log && \
   ulimit -t 60 && \
   if test yes = "$DOSEMU_IS_1"; then \
-    "$DOSEMU" $DOSEMU_OPTS ]m4_default($3,-dumb >a.log)[ \
+    "$DOSEMU" $DOSEMU_OPTS ]m4_default($3,$DOSEMUDUMB >a.log)[ \
       ]m4_default($2,.)/m4_default($1,a.exe)[; \
   else \
-    "$DOSEMU" $DOSEMU_OPTS ]m4_default($3,-dumb -tde >a.log)[ \
+    "$DOSEMU" $DOSEMU_OPTS ]m4_default($3,$DOSEMUDUMB >a.log)[ \
       -K ]m4_default($2,.)[ -E ]m4_default($1,a.exe)[; \
   fi </dev/null; \
   res=$?; \
@@ -325,7 +325,7 @@ dnl $2 = expected program output on serial port com4
 dnl $3 = additional options to pass to dosemu
 m4_define([AT_LIBI86_CHECK_COM4],[dnl
 AT_LIBI86_CHECK([$1],[$2],,dnl
-[$3 [-t -I 'serial { com 4 device "a.log" }' >/dev/null]],,touch)])
+[$3 [$DOSEMUDUMB -I 'serial { com 4 device "a.log" }' >/dev/null]],,touch)])
 
 dnl $1 = text of program to test
 dnl $2 = expected program output on parallel port lpt3
@@ -334,7 +334,7 @@ dnl NOTE: `{ lpt 3 file "a.log" }' does not really work here, as int 0x17 will
 dnl seek back to the beginning of a.log with each byte written
 m4_define([AT_LIBI86_CHECK_LPT3],[dnl
 AT_LIBI86_CHECK([$1],[$2],,dnl
-[$3 [-t -I 'printer { lpt 3 command "cat >>a.log" }' >/dev/null]])])
+[$3 [$DOSEMUDUMB -I 'printer { lpt 3 command "cat >>a.log" }' >/dev/null]])])
 
 dnl run a program with an additional temporary file as input
 dnl $1 = text of program to test

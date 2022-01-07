@@ -27,9 +27,10 @@
 
 : ${DOSEMU='@DOSEMU@'}
 DOSEMU_IS_1=no
+DOSEMUDUMB='-dumb -tde'
 "$DOSEMU" $DOSEMU_OPTS --version >/dev/null 2>/dev/null \
    && "$DOSEMU" $DOSEMU_OPTS -dumb -quiet exit >/dev/null 2>/dev/null \
-   && DOSEMU_IS_1=yes
+   && DOSEMU_IS_1=yes && DOSEMUDUMB=-dumb
 if test yes = $DOSEMU_IS_1; then
   at_libi86_dosemu_com4_avail=no
   if "$DOSEMU" $DOSEMU_OPTS -dumb -quiet \
