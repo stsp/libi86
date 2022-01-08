@@ -42,9 +42,13 @@ __libi86_call5_tiny:
 	pushw	%di
 	pushw	%es
 	pushw	%bp
+# ifdef __IA16_CALLCVT_REGPARMCALL
+	xchgw	%ax,	%cx
+# else
 	MOV_ARG0B_BX_(%cl)
 	MOV_ARG2W_BX_(%dx)
 	MOV_ARG4B_BX_(%al)
+# endif
 	call	0x0005
 	popw	%bp
 	popw	%es

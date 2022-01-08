@@ -42,9 +42,13 @@ __libi86_call5:
 	pushw	%di
 	pushw	%es
 	pushw	%bp
+# ifdef __IA16_CALLCVT_REGPARMCALL
+	xchgw	%ax,	%cx
+# else
 	MOV_ARG0B_BX_(%cl)
 	MOV_ARG2W_BX_(%dx)
 	MOV_ARG4B_BX_(%al)
+# endif
 	/*
 	 * PSP:0x0005 only handles a near return address, but we are most
 	 * probably running in a code segment other than the PSP segment.
@@ -55,15 +59,7 @@ __libi86_call5:
 	 * return to that...
 	 */
 	pushw	%cs
-	movw	$1f,	%bx
-	pushw	%bx
-	movw	$0x0050+2, %bx
-	pushw	%bx
-	pushw	_psp
-	movb	$0x0005, %bl
-	pushw	%bx
-	lretw
-1:
+	call	1f
 	popw	%bp
 	popw	%es
 	popw	%di
@@ -71,6 +67,13 @@ __libi86_call5:
 	pushw	%ss
 	popw	%ds
 	RET_(6)
+1:
+	movw	$0x0050+2, %bx
+	pushw	%bx
+	pushw	_psp
+	movb	$0x05,	%bl
+	pushw	%bx
+	lretw
 #else
 # error
 #endif
