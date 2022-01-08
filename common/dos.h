@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018--2021 TK Chia
+ * Copyright (c) 2018--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -177,6 +177,18 @@ _LIBI86_REDIRECT_AND_INLINE_VOID_2 (keep, unsigned char, unsigned,
 # endif
 #endif  /* _BORLANDC_SOURCE */
 
+/* For testing purposes. */
+#ifdef __GNUC__
+# if #system (msdos bdos call5)
+#   ifdef __TINY__
+_LIBI86_REDIRECT_3 (int, bdos, int, unsigned, unsigned, __libi86_call5_tiny)
+#   else
+_LIBI86_REDIRECT_3 (int, bdos, int, unsigned, unsigned, __libi86_call5)
+#   endif
+#   define _LIBI86_USE_BDOS_CALL5
+# endif
+#endif
+
 _LIBI86_END_EXTERN_C
 
-#endif
+#endif  /* ! _LIBI86_DOS_H_ */

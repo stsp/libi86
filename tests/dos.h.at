@@ -48,6 +48,41 @@ main (void)
   return 0;
 }]],[[Hello $from$ bdos!
 ]])
+if "$at_arg_x_test_underlying" -a yes = "$ac_compiler_gnu"; then
+AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+[[/* A little test to see if the underlying DOS handles CP/M `call 5'... */
+#ifndef __MSDOS__
+# error
+#endif
+#undef _LIBI86_USE_BDOS_CALL5
+#assert system (msdos bdos call5)
+#include <inttypes.h>
+#include <dos.h>
+#ifndef _LIBI86_USE_BDOS_CALL5
+# error
+#endif
+void abort (void);
+int
+main (void)
+{
+  bdos (9, (unsigned) "Hello $(ignore this)", 0);
+  bdos (2, '$', 0);
+  bdos (2, 'w', 0);
+  bdos (2, 'o', 0);
+  bdos (2, 'r', 0);
+  bdos (2, 'l', 0);
+  bdos (2, 'd', 0);
+  bdos (2, '\r', 0);
+  bdos (2, '\n', 0);
+  /* `call 5' should not handle any DOS functions above 0x24. */
+  if ((uint8_t) bdos (0x30, 0, 1) != 0)
+    abort ();
+  if ((uint8_t) bdos (0x25, 0xffff, 0x21) != 0)
+    abort ();
+  return 0;
+}]],[[Hello $world
+]])
+fi
 AT_CLEANUP
 
 AT_SETUP([[intdos]])

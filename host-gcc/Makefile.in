@@ -180,6 +180,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/intdosx.o \
 		  dos/libi86-bc-intdos.o \
 		  dos/libi86-bc-intdosx.o \
+		  dos/libi86-call5.o \
 		  dos/libi86-msdos-pathed.o \
 		  dos/libi86-ret-einval.o \
 		  dos/libi86-ret-really-set-errno.o \
@@ -274,6 +275,10 @@ ifneq "" "$(filter -mdpmi% -mprotected-mode,$(CC) $(CFLAGS) $(MULTILIB))"
   OBJS		+= direct/libi86-msdos-do-getdcwd.o \
 		   dos/libi86-dpmi-str.o \
 		   dos/libi86-dpmi-buf.o
+endif
+ifeq "" "$(filter-out -mcmodel=tiny -mcmodel=small, \
+			$(filter -mcmodel=%,$(CC) $(CFLAGS) $(MULTILIB)))"
+  OBJS		+= dos/libi86-call5-tiny.o
 endif
 ifeq "no" "$(ac_cv_have_func_getcwd)"
   OBJS		+= direct/getcwd.o
