@@ -84,6 +84,33 @@
 #define _GVIEWPORT	1
 #define _GWINDOW	2
 
+/*
+ * Some Open Watcom routines accept colour codes in the form of RGB triplets,
+ * as well as indexed colour codes --- unfortunately with no good way to
+ * distinguish them in some cases.
+ *
+ * Here I define constants for RGB triplets with a bit set in a high
+ * position, so that they can be more easily differentiated from indexed
+ * colour codes.
+ */
+#define _BLACK		0x800000L
+#define _BLUE		(_BLACK | 0x2a0000L)
+#define _GREEN		(_BLACK | 0x002a00L)
+#define _CYAN		(_BLACK | 0x2a2a00L)
+#define _RED		(_BLACK | 0x00002aL)
+#define _MAGENTA	(_BLACK | 0x2a002aL)
+#define _BROWN		(_BLACK | 0x00152aL)
+#define _WHITE		(_BLACK | 0x2a2a2aL)
+#define _GRAY		(_BLACK | 0x151515L)
+#define _LIGHTBLUE	(_BLACK | 0x3f1515L)
+#define _LIGHTGREEN	(_BLACK | 0x153f15L)
+#define _LIGHTCYAN	(_BLACK | 0x3f3f15L)
+#define _LIGHTRED	(_BLACK | 0x15153fL)
+#define _LIGHTMAGENTA	(_BLACK | 0x3f153fL)
+#define _YELLOW		(_BLACK | 0x153f3fL)
+#define _LIGHTYELLOW	_YELLOW
+#define _BRIGHTWHITE	(_BLACK | 0x3f3f3fL)
+
 #ifndef __ASSEMBLER__
 
 # include <libi86/internal/cdefs.h>
@@ -121,10 +148,15 @@ extern void _settextwindow (short __row1, short __col1,
 
 extern short __libi86_displaycursor_off (short __curs_mode);
 extern short __libi86_displaycursor_on (short __curs_mode);
+extern long __libi86_setbkcolor_rgb (long __color);
+extern grcolor __libi86_setbkcolor_indexed (grcolor __pixval);
+
 # if ! defined __GNUC__ || ! defined __OPTIMIZE__
 extern short _displaycursor (short __curs_mode);
+extern long _setbkcolor (long __color);
 # else  /* __GNUC__ && __OPTIMIZE__ */
 extern short __libi86_displaycursor (short __curs_mode);
+extern long __libi86_setbkcolor (long __color);
 
 #   ifndef _LIBI86_COMPILING_
 _LIBI86_ALT_INLINE short
@@ -136,6 +168,23 @@ _displaycursor (short __curs_mode)
     return __libi86_displaycursor_off (__curs_mode);
   else
     return __libi86_displaycursor_on (__curs_mode);
+}
+
+_LIBI86_ALT_INLINE _Bool
+__libi86_rgb_color_p (long __color)
+{
+  return __color < 0 /* ?!? */ || __color > (long) 0xff;
+}
+
+_LIBI86_ALT_INLINE long
+_setbkcolor (long __color)
+{
+  if (! __builtin_constant_p (__color))
+    return __libi86_setbkcolor (__color);
+  else if (__libi86_rgb_color_p (__color))
+    return __libi86_setbkcolor_rgb (__color);
+  else
+    return __libi86_setbkcolor_indexed ((grcolor) __color);
 }
 #   endif  /* ! _LIBI86_COMPILING_ */
 # endif  /* __GNUC__ && __OPTIMIZE__ */

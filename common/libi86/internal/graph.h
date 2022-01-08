@@ -86,6 +86,8 @@ struct __libi86_graph_state_t
   unsigned char max_colr;
   /* Current drawing colour. */
   unsigned char draw_colr;
+  /* Current overscan colour (as an indexed colour). */
+  unsigned char overscan_colr;
 };
 
 /*

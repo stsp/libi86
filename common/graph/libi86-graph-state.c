@@ -46,7 +46,10 @@ struct __libi86_graph_state_t __libi86_graph_state;
 void
 __libi86_graph_mode_changed (unsigned mode)
 {
-  unsigned char max_colr;
+  unsigned char max_colr, overscan_colr;
+#ifdef __GNUC__
+  unsigned ax, bx;
+#endif
 
   switch (mode)
     {
@@ -71,13 +74,12 @@ __libi86_graph_mode_changed (unsigned mode)
 	{
 	  uint8_t mem;
 #ifdef __GNUC__
-	  uint16_t ax, bx;
 	  __asm volatile ("int $0x10" : "=a" (ax), "=b" (bx)
 				      : "Rah" ((uint8_t) 0x12), "1" (0x0010U)
 				      : "cc", "cx", "dx", "memory");
 	  mem = (uint8_t) bx;
 #else
-	  mem = __libi86_vid_int_0x10 (0x1200U, 0x0010U, 0, 0) >> 24;
+	  mem = (uint8_t) __libi86_vid_int_0x10 (0x1200U, 0x0010U, 0, 0) >> 16;
 #endif
 	  if (! mem)
 	    max_colr = 0x03;
@@ -90,5 +92,17 @@ __libi86_graph_mode_changed (unsigned mode)
       max_colr = 0xff;
     }
 
+#ifdef __GNUC__
+  __asm volatile ("int $0x10" : "=a" (ax), "=b" (bx)
+			      : "0" (0x1008U), "1" (0xffffU)
+			      : "cc", "cx", "dx", "memory");
+  overscan_colr = bx >> 8;
+#else
+  overscan_colr =__libi86_vid_int_0x10 (0x1008U, 0xffffU, 0, 0) >> 24;
+#endif
+  if (overscan_colr == 0xff)
+    overscan_colr = 0x00;  /* FIXME? */
+
   __libi86_graph_state.max_colr = __libi86_graph_state.draw_colr = max_colr;
+  __libi86_graph_state.overscan_colr = overscan_colr;
 }
