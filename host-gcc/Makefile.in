@@ -173,6 +173,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-setdrive.o \
 		  dos/dos-setfileattr.o \
 		  dos/dos-setftime.o \
+		  dos/dos-settime.o \
 		  dos/dos-setvect.o \
 		  dos/dos-write.o \
 		  dos/getdrive.o \

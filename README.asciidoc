@@ -10,7 +10,7 @@ This is a code library which attempts to reimplement non-standard C library faci
 For now, the library is meant to be used with the following compilers and targets:
 
   * either a GCC toolchain for 16-bit x86;{fn-tkchia-22}
-  * or the Amsterdam Compiler Toolkit{fn-given-21} with the `msdos86` target platform.
+  * or the Amsterdam Compiler Kit{fn-given-21} with the `msdos86` target platform.
 
 It may be ported to other compilers and targets in the future.
 
@@ -203,6 +203,7 @@ link:README.linux-build.md[Detailed instructions] for doing so are available.
 |       W |    =   | ``_dos_setdrive (``__drive__``,`` *__total__``);`` |
 |       W |    =   | ``_dos_setfileattr (``*__path__``,`` __attributes__``);`` |
 |       W |    =   | ``_dos_setftime (``__handle__``,`` __date__``,`` __time__``);`` |
+|       W |    =   | ``_dos_settime (``*__time__``);`` |
 |       W |    =   | ``_dos_setvect (``__intr-no__``,`` *__handler__``);`` | Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will not be supported.
 |       W |    =   | ``_dos_write (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` |
 |       W |    =   | ``_getdrive ();`` |
