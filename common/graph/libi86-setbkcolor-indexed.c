@@ -36,10 +36,10 @@
 #define FG_MASK		(BLINK | 0x0f)
 #define BG_SHIFT	4
 
-grcolor
-__libi86_setbkcolor_indexed (grcolor pixval)
+long
+__libi86_setbkcolor_indexed (long pixval)
 {
-  grcolor prev_val;
+  long prev_val;
 
 #ifndef __GNUC__
   __libi86_vid_state_init ();
@@ -49,7 +49,8 @@ __libi86_setbkcolor_indexed (grcolor pixval)
     {
       prev_val = (__libi86_vid_state.attribute & ~FG_MASK) >> BG_SHIFT;
       __libi86_vid_state.attribute = (__libi86_vid_state.attribute & FG_MASK)
-				     | (pixval << BG_SHIFT & ~FG_MASK);
+				     | ((unsigned char) pixval << BG_SHIFT
+					& ~FG_MASK);
     }
   else
     {
@@ -63,7 +64,7 @@ __libi86_setbkcolor_indexed (grcolor pixval)
 #else
       __libi86_vid_int_0x10 (0x0b00U, (uint16_t) (uint8_t) pixval, 0, 0);
 #endif
-      __libi86_graph_state.overscan_colr = pixval;
+      __libi86_graph_state.overscan_colr = (uint8_t) pixval;
     }
 
   return prev_val;

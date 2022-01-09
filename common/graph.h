@@ -149,7 +149,7 @@ extern void _settextwindow (short __row1, short __col1,
 extern short __libi86_displaycursor_off (short __curs_mode);
 extern short __libi86_displaycursor_on (short __curs_mode);
 extern long __libi86_setbkcolor_rgb (long __color);
-extern grcolor __libi86_setbkcolor_indexed (grcolor __pixval);
+extern long __libi86_setbkcolor_indexed (long __pixval);
 
 # if ! defined __GNUC__ || ! defined __OPTIMIZE__
 extern short _displaycursor (short __curs_mode);
@@ -184,7 +184,7 @@ _setbkcolor (long __color)
   else if (__libi86_rgb_color_p (__color))
     return __libi86_setbkcolor_rgb (__color);
   else
-    return __libi86_setbkcolor_indexed ((grcolor) __color);
+    return __libi86_setbkcolor_indexed (__color);
 }
 #   endif  /* ! _LIBI86_COMPILING_ */
 # endif  /* __GNUC__ && __OPTIMIZE__ */
