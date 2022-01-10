@@ -273,11 +273,11 @@ link:README.linux-build.md[Detailed instructions] for doing so are available.
 |       W |    =   | *``MK_FP (``__seg__``,`` __off__``);`` | Macro.
 |       W |    =   | *``_MK_FP (``__seg__``,`` __off__``);`` | Macro.
 |       X |    =   | *``_CV_FP (``*__ptr__``);`` | Convert a default-sized pointer to a far pointer.  This is mainly useful for ACK, which lacks built-in far pointer support.
-|       X |    =   | *``_FP_EQ (``*__ptr1__``,`` __ptr2__``);`` | Test whether two far pointers are exactly equal.  This is mainly useful for ACK, which lacks built-in far pointer support.
+|       X |    =   | ``_FP_EQ (``*__ptr1__``,`` *__ptr2__``);`` | Test whether two far pointers are exactly equal.  This is mainly useful for ACK, which lacks built-in far pointer support.
 |         |        | |
 |         |      2+| **``▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖``**
 |         |      2+| **``<libi86/stdio.h>`` also includes the underlying C library's ``<stdio.h>``.**
-|     C99 |   (=)  | ``vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` | (C99 places this function in ``<stdio.h>``.)
+|  C99, W |   (=)  | ``vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` | (C99 places this function in ``<stdio.h>``.)
 |       X |   (=)  | ``_vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` |
 |         |        | |
 |         |      2+| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
