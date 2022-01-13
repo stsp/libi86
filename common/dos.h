@@ -180,6 +180,8 @@ _LIBI86_REDIRECT_AND_INLINE_VOID_2 (keep, unsigned char, unsigned,
 
 /* For testing purposes. */
 #ifdef __GNUC__
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wdeprecated"
 # if #system (msdos bdos call5)
 #   ifdef __TINY__
 _LIBI86_REDIRECT_3 (int, bdos, int, unsigned, unsigned, __libi86_call5_tiny)
@@ -188,6 +190,7 @@ _LIBI86_REDIRECT_3 (int, bdos, int, unsigned, unsigned, __libi86_call5)
 #   endif
 #   define _LIBI86_USE_BDOS_CALL5
 # endif
+# pragma GCC diagnostic pop
 #endif
 
 _LIBI86_END_EXTERN_C
