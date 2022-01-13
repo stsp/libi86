@@ -1,6 +1,9 @@
 = libi86
 
-https://gitlab.com/tkchia/libi86/-/commits/master[image:https://gitlab.com/tkchia/libi86/badges/master/pipeline.svg["Gitlab pipeline status"]]
+// Macros to work around AsciiDoc lossage. :-|
+:plus: +
+
+https://gitlab.com/tkchia/libi86/-/commits/master[image:https://gitlab.com/tkchia/libi86/badges/master/pipeline.svg["GitLab pipeline status"]] · https://github.com/tkchia/libi86/actions/workflows/ci-build.yml[image:https://github.com/tkchia/libi86/actions/workflows/ci-build.yml/badge.svg["GitHub pipeline status"]]
 
 This is a code library which attempts to reimplement non-standard C library facilities (e.g. `<conio.h>`) commonly used in classical MS-DOS programs.  The library also implements a few standard facilities which are part of newer C language standards, where the underlying C library lacks them.
 
@@ -18,9 +21,6 @@ It may be ported to other compilers and targets in the future.
 :fn-ow-22: footnote:ow-2022[Open Watcom Contributors, et al.  Open Watcom C Library Reference, 2022.  https://github.com/open-watcom/open-watcom-v2-wikidocs/blob/master/docs/clib.pdf.  Retrieved on 6 Jan 2022.]
 
 The current aim is to be compatible enough with the Open Watcom{fn-ow} runtime — as described in the __Open Watcom C Library Reference__{fn-ow-22} — to be useful for building existing MS-DOS code.
-
-// Macros to work around AsciiDoc lossage. :-|
-:plus: +
 
 :fn-borland: footnote:borland[http://cc.embarcadero.com/Item/25636.]
 :fn-borland-91: footnote:borland-91[Borland International.  Borland C{plus}{plus} 2.0 Library Reference, 1991.  https://archive.org/details/bitsavers_borlandborn2.0LibraryReference1991_17218611.]
