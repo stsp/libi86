@@ -559,6 +559,10 @@ main (int argc, char **argv)
     abort ();
   puts ("7 OK");
 
+  if (_dos_setfileattr (argv[0], 0) != 0)
+    abort ();
+  puts ("8 OK");
+
   return 0;
 #else
 # error
@@ -570,6 +574,7 @@ main (int argc, char **argv)
 5 OK
 6 OK
 7 OK
+8 OK
 ]])
 AT_CLEANUP
 
