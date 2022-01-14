@@ -43,6 +43,7 @@ extern char *_getcwd (char *__buf, __libi86_size_t __size);
 _LIBI86_REDIRECT_2 (char *, getcwd, char *, __libi86_size_t, _getcwd)
 #endif
 extern char *_getdcwd (int __drive, char *__buf, __libi86_size_t __size);
+extern int _getdrive (void);
 
 _LIBI86_END_EXTERN_C
 

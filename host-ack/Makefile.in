@@ -1,4 +1,4 @@
-# Copyright (c) 2018--2021 TK Chia
+# Copyright (c) 2018--2022 TK Chia
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -140,6 +140,7 @@ OBJS		= bios/bios-disk.o \
 		  dir/searchpath.o \
 		  direct/getcwd.o \
 		  direct/getdcwd.o \
+		  direct/getdrive.o \
 		  direct/libi86-msdos-do-getdcwd.o \
 		  dos/bdos.o \
 		  dos/dos-allocmem.o \
@@ -168,7 +169,6 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-setftime.o \
 		  dos/dos-settime.o \
 		  dos/dos-write.o \
-		  dos/getdrive.o \
 		  dos/intdos.o \
 		  dos/intdosx.o \
 		  dos/libi86-bc-intdos.o \

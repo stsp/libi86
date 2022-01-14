@@ -1,4 +1,4 @@
-dnl Copyright (c) 2021 TK Chia
+dnl Copyright (c) 2021--2022 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -74,4 +74,20 @@ main (void)
 7 OK
 8 OK
 ]])
+AT_CLEANUP
+
+AT_SETUP([[_getdrive]])
+AT_LIBI86_CHECK(dnl
+[[#include <direct.h>
+void abort (void);
+int
+main (void)
+{
+  int drive = _getdrive ();
+  if (drive < 1 || drive > 0xff)
+    abort ();
+  if (_getdrive () != drive)
+    abort ();
+  return 0;
+}]],[])
 AT_CLEANUP

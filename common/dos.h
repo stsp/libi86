@@ -85,6 +85,14 @@ find_t
   char name[13];
 };
 
+struct _DOSERROR
+{
+  int exterror;
+  char errclass;
+  char action;
+  char locus;
+};
+
 extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
 #ifdef _BORLANDC_SOURCE
 _LIBI86_REDIRECT_3 (int, bdosptr, int, void *, unsigned, __libi86_bdosptr)
@@ -132,8 +140,16 @@ extern unsigned _dos_write (int __handle, __libi86_fpcv_t __buf,
  *	int _getdrive (void);
  * but the actual <dos.h> and <direct.h> files in Open Watcom both give an
  * unsigned return type.
+ *	-- tkchia 20210223
+ *
+ * Update:  This has been fixed in newer versions of Open Watcom (e.g. 2.0
+ * beta Dec 27 2021).  In addition, _getdrive () is now merely defined in
+ * <direct.h> on default, & is defined in <dos.h> only in Borland mode.
+ *	-- tkchia 20220115
  */
-extern unsigned _getdrive (void);
+#ifdef _BORLANDC_SOURCE
+extern int _getdrive (void);
+#endif
 
 #ifdef __INTERRUPT
 # pragma GCC diagnostic push

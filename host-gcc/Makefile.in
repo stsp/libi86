@@ -1,4 +1,4 @@
-# Copyright (c) 2018--2021 TK Chia
+# Copyright (c) 2018--2022 TK Chia
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -148,6 +148,7 @@ OBJS		= bios/bios-disk.o \
 		  conio/libi86-vid-bc-outmem-do.o \
 		  dir/searchpath.o \
 		  direct/getdcwd.o \
+		  direct/getdrive.o \
 		  dos/bdos.o \
 		  dos/dos-allocmem.o \
 		  dos/dos-close.o \
@@ -176,7 +177,6 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-settime.o \
 		  dos/dos-setvect.o \
 		  dos/dos-write.o \
-		  dos/getdrive.o \
 		  dos/intdos.o \
 		  dos/intdosx.o \
 		  dos/libi86-bc-intdos.o \
@@ -269,7 +269,8 @@ CFLAGS		= @CFLAGS@ \
 		  -Wall \
 		  -Werror=strict-prototypes \
 		  -Werror=missing-prototypes \
-		  -Werror=unused
+		  -Werror=unused \
+		  -Werror=deprecated
 ifeq "" "$(filter -O%,$(CC) $(CFLAGS) $(MULTILIB))"
   CFLAGS	+= -Os
 endif

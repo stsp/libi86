@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018--2019 TK Chia
+dnl Copyright (c) 2018--2022 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -55,7 +55,9 @@ AT_LIBI86_CHECK_CONSOLE_FOR_NONDPMIABLE(dnl
 # error
 #endif
 #undef _LIBI86_USE_BDOS_CALL5
+#pragma GCC diagnostic ignored "-Wdeprecated"
 #assert system (msdos bdos call5)
+#pragma GCC diagnostic pop
 #include <inttypes.h>
 #include <dos.h>
 #ifndef _LIBI86_USE_BDOS_CALL5
@@ -408,9 +410,10 @@ main (void)
 }]],[[]])
 AT_CLEANUP
 
-AT_SETUP([[_dos_getdrive, _getdrive, _dos_setdrive]])
+AT_SETUP([[_dos_getdrive, _dos_setdrive]])
 AT_LIBI86_CHECK(dnl
-[[#include <dos.h>
+[[#include <direct.h>
+#include <dos.h>
 void abort (void);
 int
 main (void)
