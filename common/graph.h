@@ -80,6 +80,17 @@
 #define _ZRES64KCOLOR	0x011e
 #define _ZRESTRUECOLOR	0x011f
 
+#define _NODISPLAY	(-1)
+#define _UNKNOWN	0
+#define _MDPA		1
+#define _CGA		2
+#define _HERCULES	3
+#define _HGC		_HERCULES
+#define _MCGA		4
+#define _EGA		5
+#define _VGA		6
+#define _SVGA		7
+
 #define _GCLEARSCREEN	0
 #define _GVIEWPORT	1
 #define _GWINDOW	2
