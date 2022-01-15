@@ -82,12 +82,14 @@ struct __libi86_vid_state_t
 /* State variables used only for graphics output. */
 struct __libi86_graph_state_t
 {
-  /* Maximum colour value. */
-  unsigned char max_colr;
   /* Current drawing colour. */
   unsigned char draw_colr;
+  /* Maximum colour value. */
+  unsigned char max_colr;
   /* Current overscan colour (as an indexed colour). */
   unsigned char overscan_colr;
+  /* Active graphics adapter type. */
+  char adapter;
 };
 
 /*
@@ -191,6 +193,7 @@ __libi86_vid_go_rccoord (unsigned char pg_no,
 /* Get the current hardware cursor shape. */
 #ifndef __GNUC__
 extern unsigned __libi86_vid_get_curs_shape (void);
+extern uint32_t __libi86_vid_get_ega_info (void);
 #else
 _LIBI86_STATIC_INLINE unsigned
 __libi86_vid_get_curs_shape (void)
@@ -200,6 +203,16 @@ __libi86_vid_get_curs_shape (void)
 				: "Rah" ((uint8_t) 0x03), "b" (0U)
 				: "cc", "dx", "memory");
   return shape;
+}
+
+_LIBI86_STATIC_INLINE uint32_t
+__libi86_vid_get_ega_info (void)
+{
+  unsigned ax, bx, cx;
+  __asm volatile ("int {$}0x10" : "=a" (ax), "=b" (bx), "=c" (cx)
+				: "Rah" ((uint8_t) 0x12), "1" (0xff10U)
+				: "cc", "dx", "memory");
+  return (uint32_t) bx << 16 | cx;
 }
 #endif
 
@@ -482,13 +495,17 @@ _LIBI86_END_EXTERN_C
 	case _HERCMONO:		\
 	case _ERESNOCOLOR:	\
 	case _VRES2COLOR:
-#define _LIBI86_CASE_SUPPORTED_NONSVGA_4COLOR_GRAPHICS_MODES \
+#define _LIBI86_CASE_SUPPORTED_CGA_4COLOR_GRAPHICS_MODES \
 	case _MRES4COLOR:	\
 	case _MRESNOCOLOR:  /* 4 grays */
-#define _LIBI86_CASE_SUPPORTED_NONSVGA_16COLOR_GRAPHICS_MODES \
+#define _LIBI86_CASE_SUPPORTED_NONSVGA_4COLOR_GRAPHICS_MODES \
+	_LIBI86_CASE_SUPPORTED_CGA_4COLOR_GRAPHICS_MODES
+#define _LIBI86_CASE_SUPPORTED_EGA_16COLOR_GRAPHICS_MODES \
 	case _MRES16COLOR:	\
 	case _HRES16COLOR:	\
 	case _VRES16COLOR:
+#define _LIBI86_CASE_SUPPORTED_NONSVGA_16COLOR_GRAPHICS_MODES \
+	_LIBI86_CASE_SUPPORTED_EGA_16COLOR_GRAPHICS_MODES
 #define _LIBI86_CASE_SUPPORTED_NONSVGA_SUB256COLOR_GRAPHICS_MODES \
 	_LIBI86_CASE_SUPPORTED_NONSVGA_2COLOR_GRAPHICS_MODES \
 	_LIBI86_CASE_SUPPORTED_NONSVGA_4COLOR_GRAPHICS_MODES \

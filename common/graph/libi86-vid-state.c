@@ -59,7 +59,7 @@ __libi86_vid_get_norm_attr (void)
 
 /*
  * Again under GCC: if graphics output routines are used, then this routine
- * is overriden in libi86-graph-state.c .
+ * is overridden in libi86-graph-state.c .
  */
 # if defined __MEDIUM__ && __ia16__ - 0 < 20201106L
 __attribute__ ((far_section))  /* bug workaround */
@@ -160,12 +160,9 @@ __libi86_con_mode_changed (unsigned mode)
 /*
  * Obtain information about the active video mode at startup.  If the video
  * mode is not a supported mode, then switch to one that is. :-)
- *
- * Note: this constructor must run before __libi86_setvideomode_default ()
- * is primed.
  */
 #ifdef __GNUC__
-__attribute__ ((constructor (99))) static
+__attribute__ ((constructor (100))) static
 #endif
 void
 __libi86_vid_state_init (void)
