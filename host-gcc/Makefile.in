@@ -221,6 +221,7 @@ OBJS		= bios/bios-disk.o \
 		  graph/outmem.o \
 		  graph/outtext.o \
 		  graph/scrolltextwindow.o \
+		  graph/setbkcolor.o \
 		  graph/setcolor.o \
 		  graph/settextcolor.o \
 		  graph/settextposition.o \

@@ -86,8 +86,8 @@ struct __libi86_graph_state_t
   unsigned char draw_colr;
   /* Maximum colour value. */
   unsigned char max_colr;
-  /* Current overscan colour (as an indexed colour). */
-  unsigned char overscan_colr;
+  /* Background colour (if CGA or EGA). */
+  long bk_colr;
   /* Active graphics adapter type. */
   char adapter;
 };
@@ -194,7 +194,12 @@ __libi86_vid_go_rccoord (unsigned char pg_no,
 #ifndef __GNUC__
 extern unsigned __libi86_vid_get_curs_shape (void);
 extern uint32_t __libi86_vid_get_ega_info (void);
+extern uint8_t __libi86_vid_get_ega_pal_reg (uint8_t, uint8_t);
+extern void __libi86_vid_set_ega_pal_reg (uint8_t, uint8_t);
+extern long __libi86_vid_get_vga_dac_reg (uint8_t);
+extern void __libi86_vid_set_vga_dac_reg (uint8_t, long);
 #else
+/* Get the hardware cursor shape. */
 _LIBI86_STATIC_INLINE unsigned
 __libi86_vid_get_curs_shape (void)
 {
@@ -205,6 +210,7 @@ __libi86_vid_get_curs_shape (void)
   return shape;
 }
 
+/* Get EGA information. */
 _LIBI86_STATIC_INLINE uint32_t
 __libi86_vid_get_ega_info (void)
 {
@@ -213,6 +219,59 @@ __libi86_vid_get_ega_info (void)
 				: "Rah" ((uint8_t) 0x12), "1" (0xff10U)
 				: "cc", "dx", "memory");
   return (uint32_t) bx << 16 | cx;
+}
+
+/*
+ * Get the value of an individual EGA palette register.  If the BIOS does
+ * not allow this, return a given default value.
+ */
+_LIBI86_STATIC_INLINE uint8_t
+__libi86_vid_get_ega_pal_reg (uint8_t idx, uint8_t deflt)
+{
+  unsigned ax, bx;
+  __asm volatile ("int {$}0x10" : "=a" (ax), "=b" (bx)
+				: "0" (0x1007U),
+				  "1" ((uint16_t) deflt << 8 | idx)
+				: "cc", "cx", "dx", "memory");
+  return (uint8_t) (bx >> 8);
+}
+
+/* Set an individual EGA palette register. */
+_LIBI86_STATIC_INLINE void
+__libi86_vid_set_ega_pal_reg (uint8_t idx, uint8_t val)
+{
+  unsigned ax, bx;
+  __asm volatile ("int {$}0x10" : "=a" (ax), "=b" (bx)
+				: "0" (0x1000U),
+				  "1" ((uint16_t) val << 8 | idx)
+				: "cc", "cx", "dx", "memory");
+}
+
+/* Get the value of an individual VGA or MCGA palette register. */
+_LIBI86_STATIC_INLINE long
+__libi86_vid_get_vga_dac_reg (uint8_t idx)
+{
+  unsigned ax, bx, cx, dx;
+  uint8_t r, g, b;
+  __asm volatile ("int {$}0x10" : "=a" (ax), "=b" (bx), "=c" (cx), "=d" (dx)
+				: "0" (0x1015U), "b" ((uint16_t) idx));
+  r = (uint8_t) (dx >> 8);
+  g = (uint8_t) (cx >> 8);
+  b = (uint8_t) cx;
+  return _BLACK | r | (long) g << 8 | (long) b << 16;
+}
+
+/* Set an individual VGA or MCGA palette register. */
+_LIBI86_STATIC_INLINE void
+__libi86_vid_set_vga_dac_reg (uint8_t idx, long pixval)
+{
+  uint8_t r = (uint8_t) pixval & (uint8_t) 0x3f,
+	  g = (uint8_t) (pixval >> 8) & (uint8_t) 0x3f,
+	  b = (uint8_t) (pixval >> 16) & (uint8_t) 0x3f;
+  unsigned ax, bx, cx, dx;
+  __asm volatile ("int {$}0x10" : "=a" (ax), "=b" (bx), "=c" (cx), "=d" (dx)
+				: "0" (0x1010U), "b" ((uint16_t) idx),
+				  "c" ((uint16_t) g << 8 | b), "Rdh" (r));
 }
 #endif
 
@@ -425,7 +484,6 @@ __libi86_vid_scroll (unsigned char sx1z, unsigned char sy1z,
 			 (unsigned) sy2z << 8 | sx2z);
 #endif
 }
-
 
 /*
  * For the time being, all supported video modes have character cells that are

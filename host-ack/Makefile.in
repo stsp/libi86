@@ -199,12 +199,14 @@ OBJS		= bios/bios-disk.o \
 		  graph/libi86-vid-get-and-adjust-rccoord.o \
 		  graph/libi86-vid-get-curs-shape.o \
 		  graph/libi86-vid-get-ega-info.o \
+		  graph/libi86-vid-get-ega-pal-reg.o \
 		  graph/libi86-vid-int-0x10.o \
 		  graph/libi86-vid-outmem-do.o \
 		  graph/libi86-vid-state.o \
 		  graph/outmem.o \
 		  graph/outtext.o \
 		  graph/scrolltextwindow.o \
+		  graph/setbkcolor.o \
 		  graph/setcolor.o \
 		  graph/settextcolor.o \
 		  graph/settextposition.o \

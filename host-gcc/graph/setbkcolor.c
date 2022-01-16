@@ -28,65 +28,17 @@
  */
 
 #define _LIBI86_COMPILING_
-#include <stdint.h>
 #include "graph.h"
 #include "libi86/internal/graph.h"
 
-#define BLINK		0x80
-#define FG_MASK		(BLINK | 0x0f)
-#define BG_SHIFT	4
-
 long
-__libi86_setbkcolor_indexed (long pixval)
+__libi86_setbkcolor (long color)
 {
-  long prev_val;
-
-#ifdef __GNUC__
-  unsigned ax, bx;
-#else
-  __libi86_vid_state_init ();
-#endif
-
-  if (! __libi86_vid_state.graph_p)
-    {
-      prev_val = (__libi86_vid_state.attribute & ~FG_MASK) >> BG_SHIFT;
-      __libi86_vid_state.attribute = (__libi86_vid_state.attribute & FG_MASK)
-				     | ((unsigned char) pixval << BG_SHIFT
-					& ~FG_MASK);
-    }
+  if (__libi86_rgb_color_p (color))
+    return __libi86_setbkcolor_rgb (color);
   else
-    {
-      switch (__libi86_graph_state.adapter)
-	{
-	default:
-	  return -1;
-
-	case _CGA:
-	  prev_val = __libi86_graph_state.bk_colr;
-#ifdef __GNUC__
-	  __asm volatile ("int {$}0x10" : "=a" (ax), "=b" (bx)
-					: "Rah" ((uint8_t) 0x0b),
-					  "1" ((uint16_t) (uint8_t) pixval)
-					: "cc", "cx", "dx", "memory");
-#else
-	  __libi86_vid_int_0x10 (0x0b00U, (uint16_t) (uint8_t) pixval, 0, 0);
-#endif
-	  break;
-
-	case _MCGA:
-	case _VGA:
-	case _SVGA:
-	  prev_val = __libi86_vid_get_vga_dac_reg (0);
-	  goto set;
-
-	case _EGA:
-	  prev_val
-	    = __libi86_vid_get_ega_pal_reg (0, __libi86_graph_state.bk_colr);
-	set:
-	  __libi86_vid_set_ega_pal_reg (0, (uint8_t) pixval);
-	}
-    }
-
-  __libi86_graph_state.bk_colr = pixval;
-  return prev_val;
+    return __libi86_setbkcolor_indexed (color);
 }
+
+_LIBI86_ALIAS (__libi86_setbkcolor) long
+_setbkcolor (long color);
