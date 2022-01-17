@@ -471,7 +471,7 @@ main (void)
   return 0;
 }]],[])
 
-if "$at_arg_x_test_underlying" -a yes = "$at_libi86_cc_have_dpmi"; then
+if "$at_arg_x_test_underlying" && test yes = "$at_libi86_cc_have_dpmi"; then
 AT_LIBI86_CHECK(dnl
 [[#include <i86.h>
 #include <dpmi.h>

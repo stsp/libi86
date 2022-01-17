@@ -48,7 +48,7 @@ main (void)
   return 0;
 }]],[[Hello $from$ bdos!
 ]])
-if "$at_arg_x_test_underlying" -a yes = "$ac_compiler_gnu"; then
+if "$at_arg_x_test_underlying" && test yes = "$ac_compiler_gnu"; then
 AT_LIBI86_CHECK_CONSOLE_FOR_NONDPMIABLE(dnl
 [[/* A little test to see if the underlying DOS handles CP/M `call 5'... */
 #ifndef __MSDOS__
