@@ -246,7 +246,7 @@ link:README.linux-build.md[Detailed instructions] for doing so are available.
 |       W |    =   | ``_outmem (``*__text__``,`` __length__``);`` |
 |       W |    =   | ``_outtext (``*__text__``);`` |
 |       W |    =   | ``_scrolltextwindow (``__rows__``);`` |
-|       W |    G   | ``_setbkcolor (``__color__``);`` | Only partially implemented — for cases where _color_ is a compile-time constant, and is an indexed colour.
+|       W |    =   | ``_setbkcolor (``__color__``);`` |
 |       W |    =   | ``_settextcolor (``__pix-val__``);`` |
 |       W |    =   | ``_settextposition (``__row__``,`` __col__``);`` |
 |       W |    =   | ``_settextwindow (``__row1__``,`` __col1__``,`` __row2__``,`` __col2__``);`` |

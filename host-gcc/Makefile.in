@@ -216,6 +216,7 @@ OBJS		= bios/bios-disk.o \
 		  graph/libi86-displaycursor-off.o \
 		  graph/libi86-displaycursor-on.o \
 		  graph/libi86-setbkcolor-indexed.o \
+		  graph/libi86-setbkcolor-rgb.o \
 		  graph/libi86-vid-get-and-adjust-rccoord.o \
 		  graph/libi86-vid-state.o \
 		  graph/outmem.o \

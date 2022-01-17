@@ -248,3 +248,93 @@ main (int argc, char **argv)
 }]],[[hola!!!
 ]])
 AT_CLEANUP
+
+AT_SETUP([[_setbkcolor]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#include <graph.h>
+#include <stdio.h>
+#include <stdlib.h>
+static void
+do_abort (unsigned line, long rv)
+{
+  _setvideomode (_DEFAULTMODE);
+  printf ("%u: rv == %#lx\n", line, rv);
+  fflush (stdout);
+  abort ();
+}
+int
+main (void)
+{
+  long rv;
+  _setvideomode (_TEXTC80);
+  rv = _setbkcolor (2);
+  if (rv != 0 && rv != _BLACK)
+    do_abort (__LINE__, rv);
+  rv = _setbkcolor (1);
+  if (rv != 2)
+    do_abort (__LINE__, rv);
+  rv = _setbkcolor (14);
+  if (rv != 1)
+    do_abort (__LINE__, rv);
+  rv = _setbkcolor (0);
+  if (rv != 14 && rv != 6)
+    do_abort (__LINE__, rv);
+  return 0;
+}]],[])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#include <graph.h>
+#include <stdio.h>
+#include <stdlib.h>
+static void
+do_abort (unsigned line, long rv)
+{
+  _setvideomode (_DEFAULTMODE);
+  printf ("%u: rv == %#lx\n", line, rv);
+  fflush (stdout);
+  abort ();
+}
+int
+main (void)
+{
+  long rv;
+  _setvideomode (_TEXTC80);
+  rv = _setbkcolor (_BLUE);
+  if (rv != 0 && rv != _BLACK)
+    do_abort (__LINE__, rv);
+  rv = _setbkcolor (_RED);
+  if (rv != _BLUE && rv != 1)
+    do_abort (__LINE__, rv);
+  rv = _setbkcolor (14);
+  if (rv != _RED && rv != 4)
+    do_abort (__LINE__, rv);
+  rv = _setbkcolor (0);
+  if (rv != 14 && rv != 6)
+    do_abort (__LINE__, rv);
+  return 0;
+}]],[])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#include <graph.h>
+#include <stdio.h>
+#include <stdlib.h>
+static void
+do_abort (unsigned line, long rv)
+{
+  _setvideomode (_DEFAULTMODE);
+  printf ("%u: rv == %#lx\n", line, rv);
+  fflush (stdout);
+  abort ();
+}
+int
+main (int argc, char **argv)
+{
+  long rv;
+  _setvideomode (_TEXTC80);
+  rv = _setbkcolor (argc == 1 ? _BLUE : _RED);
+  if (rv != 0 && rv != _BLACK)
+    do_abort (__LINE__, rv);
+  rv = _setbkcolor (argv[0] ? 0 : 2);
+  if (rv != _BLUE && rv != 1)
+    do_abort (__LINE__, rv);
+  return 0;
+}]],[])
+AT_CLEANUP

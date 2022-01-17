@@ -196,12 +196,17 @@ OBJS		= bios/bios-disk.o \
 		  graph/libi86-displaycursor-off.o \
 		  graph/libi86-displaycursor-on.o \
 		  graph/libi86-graph-state.o \
+		  graph/libi86-setbkcolor-indexed.o \
+		  graph/libi86-setbkcolor-rgb.o \
 		  graph/libi86-vid-get-and-adjust-rccoord.o \
 		  graph/libi86-vid-get-curs-shape.o \
 		  graph/libi86-vid-get-ega-info.o \
 		  graph/libi86-vid-get-ega-pal-reg.o \
+		  graph/libi86-vid-get-vga-dac-reg.o \
 		  graph/libi86-vid-int-0x10.o \
 		  graph/libi86-vid-outmem-do.o \
+		  graph/libi86-vid-set-ega-pal-reg.o \
+		  graph/libi86-vid-set-vga-dac-reg.o \
 		  graph/libi86-vid-state.o \
 		  graph/outmem.o \
 		  graph/outtext.o \

@@ -70,6 +70,8 @@ struct __libi86_vid_state_t
   unsigned char x1z, y1z, x2z, y2z;
   /* Current colour attribute for text output. */
   unsigned char attribute;
+  /* Active video adapter type. */
+  char adapter;
   /* Whether we are in a graphics mode. */
   unsigned graph_p : 1;
   /*
@@ -77,6 +79,8 @@ struct __libi86_vid_state_t
    * cursor in a text mode, & a software cursor in a graphics mode.
    */
   unsigned curs_p : 1;
+  /* Background colour. */
+  long bk_colr;
 };
 
 /* State variables used only for graphics output. */
@@ -86,10 +90,6 @@ struct __libi86_graph_state_t
   unsigned char draw_colr;
   /* Maximum colour value. */
   unsigned char max_colr;
-  /* Background colour (if CGA or EGA). */
-  long bk_colr;
-  /* Active graphics adapter type. */
-  char adapter;
 };
 
 /*

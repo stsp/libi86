@@ -162,6 +162,12 @@ extern short __libi86_displaycursor_on (short __curs_mode);
 extern long __libi86_setbkcolor_rgb (long __color);
 extern long __libi86_setbkcolor_indexed (long __pixval);
 
+_LIBI86_STATIC_INLINE int
+__libi86_rgb_color_p (long __color)
+{
+  return __color < 0 /* ?!? */ || __color > (long) 0xff;
+}
+
 # if ! defined __GNUC__ || ! defined __OPTIMIZE__
 extern short _displaycursor (short __curs_mode);
 extern long _setbkcolor (long __color);
@@ -179,12 +185,6 @@ _displaycursor (short __curs_mode)
     return __libi86_displaycursor_off (__curs_mode);
   else
     return __libi86_displaycursor_on (__curs_mode);
-}
-
-_LIBI86_ALT_INLINE _Bool
-__libi86_rgb_color_p (long __color)
-{
-  return __color < 0 /* ?!? */ || __color > (long) 0xff;
 }
 
 _LIBI86_ALT_INLINE long

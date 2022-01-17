@@ -1,5 +1,6 @@
+#
 /*
- * Copyright (c) 2021--2022 TK Chia
+ * Copyright (c) 2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,60 +28,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * Variable for the current state of graphics output, & routines to update
- * the state.
- */
+#include "libi86/internal/sect.h"
+#define __ASSEMBLER__
+#include "graph.h"
 
-#define _LIBI86_COMPILING_
-#include <stdbool.h>
-#include <stdint.h>
-#include "dos.h"
-#include "i86.h"
-#include "libi86/internal/graph.h"
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-# include "dpmi.h"
-#endif
+/* Get the value of an individual VGA or MCGA palette register. */
 
-struct __libi86_graph_state_t __libi86_graph_state;
-
-void
-__libi86_graph_mode_changed (unsigned mode)
-{
-  unsigned char max_colr;
-
-  switch (mode)
-    {
-    _LIBI86_CASE_SUPPORTED_2COLOR_GRAPHICS_MODES
-      max_colr = 0x01;
-      break;
-
-    _LIBI86_CASE_SUPPORTED_4COLOR_GRAPHICS_MODES
-      max_colr = 0x03;
-      break;
-
-    _LIBI86_CASE_SUPPORTED_16COLOR_GRAPHICS_MODES
-      max_colr = 0x0f;
-      break;
-
-      /*
-       * Video mode 0x10 is a special case.  Apparently, this is a 4-colour
-       * mode for EGA with 64 KiB of graphics memory, & a 16-colour mode for
-       * VGA or EGA with 256 KiB of graphics memory.
-       */
-    case _ERESCOLOR:
-	{
-	  uint8_t mem = (uint8_t) (__libi86_vid_get_ega_info () >> 16);
-	  if (! mem)
-	    max_colr = 0x03;
-	  else
-	    max_colr = 0x0f;
-	}
-      break;
-
-    default:
-      max_colr = 0xff;
-    }
-
-  __libi86_graph_state.max_colr = __libi86_graph_state.draw_colr = max_colr;
-}
+	.define	___libi86_vid_set_vga_dac_reg
+___libi86_vid_set_vga_dac_reg:
+	mov	bx, sp
+	mov	cx, 4(bx)
+	movb	dh, cl
+	movb	cl, 6(bx)
+	movb	bl, 2(bx)
+	and	cx, 0x3f3f
+	andb	dh, 0x3f
+	mov	ax, 0x1010
+	int	0x10
+	ret

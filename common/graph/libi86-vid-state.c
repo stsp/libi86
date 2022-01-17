@@ -105,6 +105,140 @@ __libi86_vid_get_mode (void)
 }
 #endif  /* ! __GNUC__ */
 
+static bool
+__libi86_vid_adapter_ega_p (void)
+{
+  uint32_t bxcx = __libi86_vid_get_ega_info ();
+
+  uint8_t cl = (uint8_t) bxcx;
+  uint16_t bx;
+
+  if (cl > 0xb)
+    return false;
+
+  bx = (uint16_t) (bxcx >> 16);
+  if ((bx & ~0x0301U) != 0)
+    return false;
+
+  return true;
+}
+
+static char
+__libi86_vid_get_adapter_nonvga (unsigned mode)
+{
+  switch (mode)
+    {
+    _LIBI86_CASE_SUPPORTED_EGA_16COLOR_GRAPHICS_MODES
+    case _ERESNOCOLOR:
+    case _ERESCOLOR:
+    case _VRES2COLOR:
+      return _EGA;
+    }
+
+  if (__libi86_vid_adapter_ega_p ())
+    return _EGA;
+
+  switch (mode)
+    {
+    _LIBI86_CASE_SUPPORTED_CGA_4COLOR_GRAPHICS_MODES
+    case _HRESBW:
+      return _CGA;
+
+    case _HERCMONO:
+      return _HERCULES;
+
+    default:
+      return _MDPA;  /* FIXME: detect Hercules? */
+    }
+}
+
+static char
+__libi86_vid_get_adapter (unsigned mode)
+{
+  uint8_t code;
+#ifdef __GNUC__
+  uint16_t ax, bx;
+#else
+  uint32_t res;
+#endif
+
+  switch (mode)
+    {
+    _LIBI86_CASE_SUPPORTED_SVGA_MODES
+      return _SVGA;
+    }
+
+#ifdef __GNUC__
+  __asm volatile ("int $0x10" : "=a" (ax), "=b" (bx)
+			      : "0" (0x1a00U)
+			      : "cc", "cx", "dx", "memory");
+  if ((uint8_t) ax != 0x1a)
+    return __libi86_vid_get_adapter_nonvga (mode);
+  code = (uint8_t) bx;
+#else
+  res = __libi86_vid_int_0x10 (0x1a00U, 0, 0, 0);
+  if ((uint8_t) res != 0x1a)
+    return __libi86_vid_get_adapter_nonvga (mode);
+  code = (uint8_t) (res >> 16);
+#endif
+
+  switch (code)
+    {
+    case 0x00:
+      return _NODISPLAY;
+    case 0x01:
+      return _MDPA;
+    case 0x02:
+      return _CGA;
+      /*
+       * RBIL says "03h" is "reserved", but Open Watcom treats it as a type
+       * of EGA...
+       */
+    case 0x03:
+    case 0x04:
+    case 0x05:
+      return _EGA;
+    case 0x07:
+    case 0x08:
+      return _VGA;
+      break;
+    case 0x0a:
+    case 0x0b:
+    case 0x0c:
+      return _MCGA;
+      break;
+      /*
+       * These display codes are interpreted thus by Open Watcom.  They are
+       * undocumented in RBIL...
+       */
+    case 0x0d:
+    case 0x0e:
+    case 0x0f:
+      return _HERCULES;
+    case 0x10:
+    case 0x11:
+      return _SVGA;
+    default:
+      return _UNKNOWN;
+    }
+}
+
+static long
+__libi86_vid_get_bk_colr (void)
+{
+  switch (__libi86_vid_state.adapter)
+    {
+    default:
+      return 0;  /* ?!? */
+    case _EGA:
+      return (long) __libi86_vid_get_ega_pal_reg (0, 0);
+    case _MCGA:
+    case _VGA:
+    case _SVGA:
+      return __libi86_vid_get_vga_dac_reg (0);
+    }
+}
+
 unsigned
 __libi86_con_mode_changed (unsigned mode)
 {
@@ -112,6 +246,9 @@ __libi86_con_mode_changed (unsigned mode)
 
   /* Record the mode number. */
   __libi86_vid_state.mode_num = mode;
+
+  /* Record information about the active graphics adapter. */
+  __libi86_vid_state.adapter = __libi86_vid_get_adapter (mode);
 
   /* Record the maximum (x, y) coordinates in character units. */
   max_x = __libi86_peekb_bios_ds (0x004aU) - 1;
@@ -124,7 +261,8 @@ __libi86_con_mode_changed (unsigned mode)
 
   /*
    * Decide if we are now in a text mode or a graphics mode, & whether the
-   * cursor is (or should be) displayed.
+   * cursor is (or should be) displayed.  If we are now in a graphics mode,
+   * try to obtain the current background colour setting.
    */
   switch (mode)
     {
@@ -137,6 +275,7 @@ __libi86_con_mode_changed (unsigned mode)
     default:
       __libi86_vid_state.graph_p = 1;
       __libi86_vid_state.curs_p = 0;
+      __libi86_vid_state.bk_colr = __libi86_vid_get_bk_colr ();
       __libi86_graph_mode_changed (mode);
     }
 
