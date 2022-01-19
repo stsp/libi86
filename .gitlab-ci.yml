@@ -43,6 +43,7 @@ test_gcc:
     - apt-get update -y
     - apt-get install -y gcc-ia16-elf dosemu dos2unix autoconf make bsdutils
   script: ./tests/ci-build-and-check.sh
+  timeout: 2h
 test_ack:
   stage: test
   before_script:
@@ -54,3 +55,4 @@ test_ack:
     - apt-get update -y
     - apt-get install -y ack-compiler dosemu dos2unix autoconf make bsdutils
   script: ./tests/ci-build-and-check.sh --ack
+  timeout: 2h
