@@ -40,7 +40,7 @@ _dos_settime:
 	movb	$0x2d,	%ah
 	movw	(%bx),	%cx
 	xchgb	%cl,	%ch
-	movb	2(%bx),	%dx
+	movw	2(%bx),	%dx
 	xchgb	%dl,	%dh
 	int	$0x21
 	testb	%al,	%al
