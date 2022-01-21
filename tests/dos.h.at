@@ -911,3 +911,46 @@ main (int argc, char **argv)
 #endif
 }]],[])
 AT_CLEANUP
+
+AT_SETUP([[dosexterr]])
+AT_LIBI86_CHECK_WITH_TMP_FILE(dnl
+[[#include <dos.h>
+#include <errno.h>
+#include <string.h>
+#include <unistd.h>
+void abort (void);
+int
+main (void)
+{
+  struct _DOSERROR err;
+  int fd;
+#ifndef __ACK  /* As of Jan 2022, ACK does not have unlink (.) yet :-| */
+  if (unlink (TMP_FILE) != 0)
+    abort ();
+  if (unlink (TMP_FILE) == 0)
+    abort ();
+  if (errno != ENOENT)
+    abort ();
+  memset (&err, 0xf6, sizeof err);
+  /*
+   * Unlike MS-DOS, FreeDOS does not set the other extended error fields
+   * upon an "ordinary" DOS error.  Should it do so?
+   */
+  if (dosexterr (&err) != 2)
+    abort ();
+  if (err.exterror != 2)
+    abort ();
+  if (_dos_creatnew (TMP_FILE, _A_NORMAL, &fd) != 0)
+    abort ();
+  _dos_close (fd);
+#endif
+  if (_dos_creatnew (TMP_FILE, _A_NORMAL, &fd) != 0x50)  /* file exists */
+    abort ();
+  memset (&err, 0xf6, sizeof err);
+  if (dosexterr (&err) != 0x50)
+    abort ();
+  if (err.exterror != 0x50)
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP

@@ -177,6 +177,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-settime.o \
 		  dos/dos-setvect.o \
 		  dos/dos-write.o \
+		  dos/dosexterr.o \
 		  dos/intdos.o \
 		  dos/intdosx.o \
 		  dos/libi86-bc-intdos.o \

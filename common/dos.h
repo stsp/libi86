@@ -135,6 +135,7 @@ extern unsigned _dos_setftime (int __handle, unsigned __date, unsigned __time);
 extern unsigned _dos_settime (const struct dostime_t *__time);
 extern unsigned _dos_write (int __handle, __libi86_fpcv_t __buf,
 			    unsigned __count, unsigned *__bytes);
+extern int dosexterr (struct _DOSERROR *__doserror);
 /*
  * Note:  The Open Watcom C Library Reference has
  *	int _getdrive (void);
@@ -143,9 +144,9 @@ extern unsigned _dos_write (int __handle, __libi86_fpcv_t __buf,
  *	-- tkchia 20210223
  *
  * Update:  This has been fixed in newer versions of Open Watcom (e.g. 2.0
- * beta Dec 27 2021).  In addition, _getdrive () is now merely defined in
- * <direct.h> on default, & is defined in <dos.h> only in Borland mode.
- *	-- tkchia 20220115
+ * beta Dec 27 2021).  In addition, _getdrive () is now merely declared in
+ * <direct.h> on default, & is declared in <dos.h> only in Borland mode.
+ *	-- tkchia 20220121
  */
 #ifdef _BORLANDC_SOURCE
 extern int _getdrive (void);
