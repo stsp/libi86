@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,41 +27,78 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_INTERNAL_ACCONFIG_H
-#define _LIBI86_INTERNAL_ACCONFIG_H
+#define _LIBI86_COMPILING_
+#include <errno.h>
+#include "direct.h"
+#include "libi86/internal/acconfig.h"
+#include "libi86/internal/dos.h"
+#ifdef __IA16_FEATURE_PROTECTED_MODE
+# include "dpmi.h"
+#endif
 
-#undef _LIBI86_VERSION
+#undef __libi86_mkdir1
+#undef _mkdir
 
-#undef _LIBI86_INTERNAL_HAVE_ASM_N_CONSTRAINT
+extern int __libi86_mkdir1 (const char *);
 
-#undef _LIBI86_INTERNAL_HAVE___DPMI_HOSTED
+int
+__libi86_mkdir1 (const char *path)
+{
+#ifdef __IA16_FEATURE_PROTECTED_MODE
+  if (__DPMI_hosted () == 1)
+    {
+      dpmi_dos_block path_blk;
+      rm_call_struct rmc;
+      int res;
 
-#undef _LIBI86_INTERNAL_HAVE_LONG_LONG_INT
+      path_blk = __libi86_dpmi_low_dup_str (path);
+      if (! path_blk.pm)
+	return errno;
 
-#undef _LIBI86_INTERNAL_HAVE_O_TEXT
+      rmc.ss = rmc.sp = rmc.flags = 0;
+      rmc.ax = 0x3900U;
+      rmc.ds = path_blk.rm;
+      rmc.dx = 0;
+      res = _DPMISimulateRealModeInterrupt (0x21, 0, 0, &rmc);
 
-#undef _LIBI86_INTERNAL_HAVE_ENAMETOOLONG
+      __libi86_dpmi_low_free_str (path_blk);
 
-#undef _LIBI86_INTERNAL_HAVE_VSSCANF
+      if (res != 0)
+	{
+	  errno = EIO;
+	  return -1;
+	}
 
-#undef _LIBI86_INTERNAL_HAVE_GETCWD
+      if ((rmc.flags & 1) != 0)
+	{
+	  errno = rmc.ax;
+	  return -1;
+	}
 
-#undef _LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE
+      return 0;
+    }
+  else
+#endif
+    {
+      unsigned ax, res, xx1, xx2;
 
-#undef _LIBI86_INTERNAL_HAVE__DOS_FREE_DBCS_LEAD_TABLE
+      __asm volatile ("int $0x21; sbbw %1, %1"
+		      : "=a" (ax), "=bc" (res), "=bc" (xx1), "=d" (xx2)
+		      : "Rah" ((unsigned char) 0x39),
+			"Rds" (FP_SEG (path)), "3" (FP_OFF (path))
+		      : "cc", "memory");
 
-#undef _LIBI86_INTERNAL_HAVE_SYS_SYSLIMITS_H
+      if (res)
+	{
+	  errno = ax;
+	  return -1;
+	}
 
-#undef _LIBI86_INTERNAL_HAVE__PATH_MAX
+      return 0;
+    }
+}
 
-#undef _LIBI86_INTERNAL_HAVE_PATH_MAX
-
-#undef _LIBI86_INTERNAL_HAVE_MKDIR2
-
-#undef _LIBI86_INTERNAL_HAVE_MKDIR1
-
-#undef _LIBI86_INTERNAL_HAVE__MKDIR
-
-#undef _LIBI86_INTERNAL_HAVE_RMDIR
-
+#ifndef _LIBI86_INTERNAL_HAVE__MKDIR
+_LIBI86_WEAK_ALIAS (__libi86_mkdir1) int
+_mkdir (const char *path);
 #endif

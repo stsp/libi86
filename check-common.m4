@@ -58,3 +58,25 @@ fi
 AC_CHECK_DECL([PATH_MAX],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_PATH_MAX],[1])],,
 	      [#include <limits.h>])
+AC_MSG_CHECKING([whether mkdir (const char *, mode_t) is declared])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/stat.h>]]
+				   [[#include <sys/types.h>]],
+				   [[mkdir ("foo", 0700);]])],
+		  [AC_DEFINE([_LIBI86_INTERNAL_HAVE_MKDIR2],[1])
+		   AC_MSG_RESULT(yes)],
+		  [AC_MSG_RESULT(no)])
+AC_MSG_CHECKING([whether mkdir (const char *) is declared])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/stat.h>]],
+				   [[mkdir ("foo");]])],
+		  [AC_DEFINE([_LIBI86_INTERNAL_HAVE_MKDIR1],[1])
+		   AC_MSG_RESULT(yes)],
+		  [AC_MSG_RESULT(no)])
+dnl libi86 does not actually call libc's _mkdir, but we try to detect it so
+dnl that we can avoid conflicting with libc, in case we too want to define
+dnl an _mkdir symbol.
+AC_CHECK_FUNC([_mkdir],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__MKDIR],[1])])
+AC_CHECK_FUNC([rmdir],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_RMDIR],[1])])
+
+AC_SUBST(ac_cv_have_decl_vsscanf)
+AC_SUBST(ac_cv_func_getcwd)
+AC_SUBST(ac_cv_func_rmdir)
