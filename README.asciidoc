@@ -91,6 +91,7 @@ link:README.linux-build.md[Detailed instructions] for doing so are available.
 |   = | Available for all compilers and platforms that `libi86` targets.
 | (=) | Available for all compilers and platforms that do not already define this facility themselves.
 |   G | Available (only) under IA-16 GCC.
+| (G) | Available (only) under IA-16 GCC, and only where the C library does not already define this facility.
 |===
 
 === Functions
@@ -172,6 +173,14 @@ link:README.linux-build.md[Detailed instructions] for doing so are available.
 |       W |   (=)  | ``_getcwd (``*__buffer__``,`` __size__``);`` |
 |       W |    =   | ``_getdcwd (``__drive__``,`` *__buffer__``,`` __size__``);`` |
 |       W |    =   | ``_getdrive ();`` |
+|     P01 |   (=)  | ``mkdir (``*__path__``,`` __mode__``);`` .4+a|
+			* In Watcom, both `mkdir` and ``_mkdir`` take only a single _path_ argument.
+			* POSIX however says that `mkdir` takes two arguments, where the second argument give Unix-style permission bits.
+			* For compatibility with both, `libi86` under `gcc-ia16` allows both `mkdir` and ``_mkdir`` to be called with either one or two arguments.
+			* Under ACK, however, ``_mkdir`` will always only takes one argument, and `mkdir` takes two (unless ACK's C library says otherwise).
+|       X |    G   | ``_mkdir (``*__path__``,`` __mode__``);``
+|       W |   (G)  | ``mkdir (``*__path__``);``
+|       W |    =   | ``_mkdir (``*__path__``);``
 |         |        | |
 |         |      2+| **``▗▚▚▚▚ <dos.h> ▞▞▞▞▖``**
 |         |      2+| **``<dos.h>`` also includes ``<i86.h>``, described below.  If `_BORLANDC_SOURCE` is defined, the ``union REGS`` type gets an additional ``.x.flags`` field, and ``<dos.h>`` switches accordingly to a different version of the ``intdos`` and ``intdosx`` routines.**
