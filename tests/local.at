@@ -359,6 +359,18 @@ AT_LIBI86_CHECK(dnl
 ]$1],[$2],,[$3])
 rm -rf temp.dir])
 
+dnl run a C++ program with an additional temporary directory
+dnl $1 = text of program to test
+dnl $2 = expected program output
+dnl $3 = additional options to pass to dosemu
+m4_define([AT_LIBI86_CHECK_CXX_WITH_TMP_DIR],[dnl
+mkdir temp.dir
+AT_LIBI86_CHECK_CXX(dnl
+[[#define TMP_DIR "temp.dir"
+#line 1
+]$1],[$2],,[$3])
+rm -rf temp.dir])
+
 dnl completely skip a test if C compiler does not support DPMI programs
 m4_define([AT_LIBI86_SKIP_IF_NO_DPMI],[dnl
 AT_SKIP_IF([test no = "$at_libi86_cc_have_dpmi"])])

@@ -121,4 +121,20 @@ main (void)
     abort ();
   return 0;
 }]],[])
+AT_LIBI86_CHECK_CXX_WITH_TMP_DIR(dnl
+[[#include <direct.h>
+extern "C" void abort (void);
+int
+main (void)
+{
+  if (_mkdir (TMP_DIR "/foo") != 0)
+    abort ();
+  if (_mkdir (TMP_DIR "/foo", 0700) == 0)
+    abort ();
+  if (_rmdir (TMP_DIR "/foo") != 0)
+    abort ();
+  if (_rmdir (TMP_DIR "/foo") == 0)
+    abort ();
+  return 0;
+}]],[])
 AT_CLEANUP

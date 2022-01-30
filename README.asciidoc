@@ -174,7 +174,7 @@ link:README.linux-build.md[Detailed instructions] for doing so are available.
 |       W |    =   | ``_getdcwd (``__drive__``,`` *__buffer__``,`` __size__``);`` |
 |       W |    =   | ``_getdrive ();`` |
 |     P01 |   (=)  | ``mkdir (``*__path__``,`` __mode__``);`` .4+a|
-			* In Watcom, both `mkdir` and ``_mkdir`` take only a single _path_ argument.
+			* In Watcom, both `mkdir` and ``_mkdir`` take only a single __path__ argument.
 			* POSIX however says that `mkdir` takes two arguments, where the second argument give Unix-style permission bits.
 			* For compatibility with both, `libi86` under `gcc-ia16` allows both `mkdir` and ``_mkdir`` to be called with either one or two arguments.
 			* Under ACK, however, ``_mkdir`` will always only takes one argument, and `mkdir` takes two (unless ACK's C library says otherwise).
