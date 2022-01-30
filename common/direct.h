@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2021--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -32,19 +32,88 @@
 
 #include <libi86/internal/acconfig.h>
 #include <libi86/internal/cdefs.h>
+#include <sys/types.h>
 
 _LIBI86_BEGIN_EXTERN_C
 
 #ifdef _LIBI86_INTERNAL_HAVE_GETCWD
-extern char *getcwd (char *__buf, __libi86_size_t __size);
 _LIBI86_REDIRECT_2 (char *, _getcwd, char *, __libi86_size_t, getcwd)
 #else
-extern char *_getcwd (char *__buf, __libi86_size_t __size);
 _LIBI86_REDIRECT_2 (char *, getcwd, char *, __libi86_size_t, _getcwd)
 #endif
 extern char *_getdcwd (int __drive, char *__buf, __libi86_size_t __size);
 extern int _getdrive (void);
+#ifdef _LIBI86_INTERNAL_HAVE_RMDIR
+_LIBI86_REDIRECT_1 (int, _rmdir, const char *, rmdir)
+#else
+_LIBI86_REDIRECT_1 (int, rmdir, const char *, _rmdir)
+#endif
 
 _LIBI86_END_EXTERN_C
+
+/*
+ * Andrew Bird pointed out (https://github.com/tkchia/libi86/issues/16) that
+ * Open Watcom & Turbo C++ declare & define mkdir differently from newlib-ia16.
+ * OW & TC++ say
+ *     int mkdir (const char *);
+ * while newlib-ia16 follows POSIX & has
+ *     int mkdir (const char *, mode_t);
+ *
+ * Here, try to define _mkdir & mkdir in such a way that callers can call
+ * them with either one or two arguments:
+ *   * If we are in C++ mode, use function overloading.
+ *   * If in C99 mode, use variadic macros.
+ *
+ * If in C89 mode, we (probably) lose.  We declare _mkdir to take 1
+ * argument, & if mkdir is not already in libc, we declare it to take 2
+ * arguments per POSIX.
+ *
+ * Also pay attention to whether the underlying libc defines either (or both)
+ * forms of mkdir.
+ */
+#if ! defined _LIBI86_INTERNAL_HAVE_MKDIR1 \
+    || ! defined _LIBI86_INTERNAL_HAVE_MKDIR2
+# undef __libi86_mkdir2
+# undef __libi86_mkdir1
+# ifdef _LIBI86_INTERNAL_HAVE_MKDIR2
+#   define __libi86_mkdir2	mkdir
+# endif
+# ifdef _LIBI86_INTERNAL_HAVE_MKDIR1
+#   define __libi86_mkdir1	mkdir
+# endif
+_LIBI86_BEGIN_EXTERN_C
+extern int __libi86_mkdir2 (const char *__path, mode_t __mode);
+extern int __libi86_mkdir1 (const char *__path);
+_LIBI86_END_EXTERN_C
+# if defined __cplusplus
+extern "C++"
+{
+  _LIBI86_REDIRECT_2 (int, _mkdir, const char *, mode_t, __libi86_mkdir2)
+  _LIBI86_REDIRECT_1 (int, _mkdir, const char *, __libi86_mkdir1)
+#   ifndef __libi86_mkdir2
+  _LIBI86_REDIRECT_2 (int, mkdir, const char *, mode_t, __libi86_mkdir2)
+#   endif
+#   ifndef __libi86_mkdir1
+  _LIBI86_REDIRECT_1 (int, mkdir, const char *, __libi86_mkdir1)
+#   endif
+}
+# elif __STDC_VERSION__ - 0 >= 199901L  /* not C++ */
+#   undef _mkdir
+#   undef mkdir
+#   define __libi86_select_mkdir(__a1, __a2, __num_args, ...) \
+	   __libi86_mkdir ## __num_args
+#   define _mkdir(...) \
+	   (__libi86_select_mkdir (__VA_ARGS__, 2, 1)) (__VA_ARGS__)
+#   define mkdir(...) \
+	   (__libi86_select_mkdir (__VA_ARGS__, 2, 1)) (__VA_ARGS__)
+# else  /* not C++, not C99 */
+_LIBI86_REDIRECT_1 (int, _mkdir, const char *, __libi86_mkdir1)
+#   if defined __libi86_mkdir1
+_LIBI86_REDIRECT_1 (int, mkdir, const char *, __libi86_mkdir1)
+#   elif ! defined __libi86_mkdir2
+_LIBI86_REDIRECT_2 (int, mkdir, const char *, mode_t, __libi86_mkdir2)
+#   endif
+# endif  /* not C++, not C99 */
+#endif  /* ! _LIBI86_INTERNAL_HAVE_MKDIR1 */
 
 #endif

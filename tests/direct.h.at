@@ -91,3 +91,34 @@ main (void)
   return 0;
 }]],[])
 AT_CLEANUP
+
+AT_SETUP([[_mkdir, _rmdir]])
+AT_LIBI86_CHECK_WITH_TMP_DIR(dnl
+[[#include <direct.h>
+void abort (void);
+int
+main (void)
+{
+  if (_mkdir (TMP_DIR "/foo") != 0)
+    abort ();
+  if (_mkdir (TMP_DIR "/foo") == 0)
+    abort ();
+#ifndef __ACK
+  if (_mkdir (TMP_DIR "/foo", 0700) == 0)
+    abort ();
+#endif
+  if (_mkdir (TMP_DIR "/foo/bar") != 0)
+    abort ();
+#ifndef __ACK
+  if (_mkdir (TMP_DIR "/foo/bar", 0777) == 0)
+    abort ();
+#endif
+  if (_rmdir (TMP_DIR "/foo/bar") != 0)
+    abort ();
+  if (_rmdir (TMP_DIR "/foo") != 0)
+    abort ();
+  if (_rmdir (TMP_DIR "/foo") == 0)
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP

@@ -44,7 +44,8 @@ bindir = @bindir@
 libdir = @libdir@
 tooldir = $(exec_prefix)/$(target_alias)
 
-ac_cv_have_func_getcwd = @ac_cv_have_func_getcwd@
+ac_cv_func_getcwd = @ac_cv_func_getcwd@
+ac_cv_func_rmdir = @ac_cv_func_rmdir@
 
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -149,6 +150,8 @@ OBJS		= bios/bios-disk.o \
 		  dir/searchpath.o \
 		  direct/getdcwd.o \
 		  direct/getdrive.o \
+		  direct/mkdir1.o \
+		  direct/mkdir2.o \
 		  dos/bdos.o \
 		  dos/dos-allocmem.o \
 		  dos/dos-close.o \
@@ -286,8 +289,11 @@ ifeq "" "$(filter-out -mcmodel=tiny -mcmodel=small, \
 			$(filter -mcmodel=%,$(CC) $(CFLAGS) $(MULTILIB)))"
   OBJS		+= dos/libi86-call5-tiny.o
 endif
-ifeq "no" "$(ac_cv_have_func_getcwd)"
+ifeq "no" "$(ac_cv_func_getcwd)"
   OBJS		+= direct/getcwd.o
+endif
+ifeq "no" "$(ac_cv_func_rmdir)"
+  OBJS		+= direct/rmdir.o
 endif
 ASFLAGS		=
 # Headers we depend on when creating .o files; these do not include

@@ -35,6 +35,7 @@
 
 #define _LIBI86_BEGIN_EXTERN_C
 #define _LIBI86_END_EXTERN_C
+#define _LIBI86_EXTERN_C	extern
 
 typedef struct
   {

@@ -45,7 +45,8 @@ libi86_ackhost = @libi86_ackhost@
 tooldir = $(prefix)/share/ack/$(libi86_ackhost)
 
 ac_cv_have_decl_vsscanf = @ac_cv_have_decl_vsscanf@
-ac_cv_have_func_getcwd = @ac_cv_have_func_getcwd@
+ac_cv_func_getcwd = @ac_cv_func_getcwd@
+ac_cv_func_rmdir = @ac_cv_func_rmdir@
 
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -142,6 +143,7 @@ OBJS		= bios/bios-disk.o \
 		  direct/getdcwd.o \
 		  direct/getdrive.o \
 		  direct/libi86-msdos-do-getdcwd.o \
+		  direct/mkdir.o \
 		  dos/bdos.o \
 		  dos/dos-allocmem.o \
 		  dos/dos-close.o \
@@ -256,8 +258,11 @@ OBJS		= bios/bios-disk.o \
 ifeq "no" "$(ac_cv_have_decl_vsscanf)"
   OBJS		+= stdio/vsscanf.o
 endif
-ifeq "no" "$(ac_cv_have_func_getcwd)"
+ifeq "no" "$(ac_cv_func_getcwd)"
   OBJS		+= direct/getcwd.o
+endif
+ifeq "no" "$(ac_cv_func_rmdir)"
+  OBJS		+= direct/rmdir.o
 endif
 OBJ_SUBDIRS	= $(sort $(dir $(OBJS)))
 CFLAGS		= -O6 -S
