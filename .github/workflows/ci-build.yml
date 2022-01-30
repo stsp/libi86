@@ -31,7 +31,7 @@ name: ci-build
 on: [push, pull_request]
 jobs:
   test-gcc:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: setup
@@ -42,13 +42,14 @@ jobs:
           # PPA's public key.
           sudo add-apt-repository -y ppa:tkchia/build-ia16 \
            || sudo apt-key add tests/ppa-pub-key.gpg.bin
+          sudo add-apt-repository -y ppa:tkchia/de-rebus || :
           sudo apt-get update -y
-          sudo apt-get install -y gcc-ia16-elf dosemu dos2unix autoconf make \
-                                  bsdutils
+          sudo apt-get install -y gcc-ia16-elf dosemu2 dos2unix autoconf \
+                                  make bsdutils
       - name: build-and-test
         run: ./tests/ci-build-and-check.sh
   test-ack:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: setup
@@ -58,7 +59,7 @@ jobs:
           sudo add-apt-repository -y ppa:tkchia/de-rebus \
            || sudo apt-key add tests/ppa-pub-key.gpg.bin
           sudo apt-get update -y
-          sudo apt-get install -y ack-compiler dosemu dos2unix autoconf make \
-                                  bsdutils
+          sudo apt-get install -y ack-compiler dosemu2 dos2unix autoconf \
+                                  make bsdutils
       - name: build-and-test
         run: ./tests/ci-build-and-check.sh --ack
