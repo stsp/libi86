@@ -93,34 +93,60 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_mkdir, _rmdir]])
+dnl FIXME
+AT_SKIP_IF([test yes = "$DOSEMU_IS_1"])
 AT_LIBI86_CHECK_WITH_TMP_DIR(dnl
 [[#include <direct.h>
+#include <errno.h>
+#include <stdio.h>
 void abort (void);
 int
 main (void)
 {
-  if (_mkdir (TMP_DIR "/foo") != 0)
-    abort ();
+  int rv = _mkdir (TMP_DIR "/foo");
+  if (rv != 0)
+    {
+      int err = errno;
+      fprintf (stderr, "%u: rv == %d, errno == %d\n", __LINE__, rv, err);
+      abort ();
+    }
+  puts ("1 OK");
   if (_mkdir (TMP_DIR "/foo") == 0)
     abort ();
+  puts ("2 OK");
 #ifndef __ACK
   if (_mkdir (TMP_DIR "/foo", 0700) == 0)
     abort ();
 #endif
+  puts ("3 OK");
   if (_mkdir (TMP_DIR "/foo/bar") != 0)
     abort ();
+  puts ("4 OK");
 #ifndef __ACK
   if (_mkdir (TMP_DIR "/foo/bar", 0777) == 0)
     abort ();
 #endif
+  puts ("5 OK");
   if (_rmdir (TMP_DIR "/foo/bar") != 0)
     abort ();
+  puts ("6 OK");
   if (_rmdir (TMP_DIR "/foo") != 0)
     abort ();
+  puts ("7 OK");
   if (_rmdir (TMP_DIR "/foo") == 0)
     abort ();
+  puts ("8 OK");
   return 0;
-}]],[])
+}]],dnl
+[[1 OK
+2 OK
+3 OK
+4 OK
+5 OK
+6 OK
+7 OK
+8 OK
+]])
 AT_LIBI86_CHECK_CXX_WITH_TMP_DIR(dnl
 [[#include <direct.h>
 extern "C" void abort (void);
