@@ -32,9 +32,6 @@
 #include "direct.h"
 #include "libi86/internal/acconfig.h"
 #include "libi86/internal/dos.h"
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-# include "dpmi.h"
-#endif
 
 #undef __libi86_mkdir1
 #undef _mkdir
@@ -44,58 +41,12 @@ extern int __libi86_mkdir1 (const char *);
 int
 __libi86_mkdir1 (const char *path)
 {
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-  if (__DPMI_hosted () == 1)
-    {
-      dpmi_dos_block path_blk;
-      rm_call_struct rmc;
-      int res;
+  __libi86_bdos_res_t res = __libi86_bdos_dsdxsz (0x39, path);
 
-      path_blk = __libi86_dpmi_low_dup_str (path);
-      if (! path_blk.pm)
-	return errno;
+  if (res.carry)
+    return -1;
 
-      rmc.ss = rmc.sp = rmc.flags = 0;
-      rmc.ax = 0x3900U;
-      rmc.ds = path_blk.rm;
-      rmc.dx = 0;
-      res = _DPMISimulateRealModeInterrupt (0x21, 0, 0, &rmc);
-
-      __libi86_dpmi_low_free_str (path_blk);
-
-      if (res != 0)
-	{
-	  errno = EIO;
-	  return -1;
-	}
-
-      if ((rmc.flags & 1) != 0)
-	{
-	  errno = rmc.ax;
-	  return -1;
-	}
-
-      return 0;
-    }
-  else
-#endif
-    {
-      unsigned ax, res, xx1, xx2;
-
-      __asm volatile ("int $0x21; sbbw %1, %1"
-		      : "=a" (ax), "=bc" (res), "=bc" (xx1), "=d" (xx2)
-		      : "Rah" ((unsigned char) 0x39),
-			"Rds" (FP_SEG (path)), "3" (FP_OFF (path))
-		      : "cc", "memory");
-
-      if (res)
-	{
-	  errno = ax;
-	  return -1;
-	}
-
-      return 0;
-    }
+  return 0;
 }
 
 #ifndef _LIBI86_INTERNAL_HAVE__MKDIR

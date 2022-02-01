@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,32 +27,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "libi86/internal/call-cvt.h"
+#define _LIBI86_COMPILING_
+#include <errno.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include "dos.h"
+#include "libi86/string.h"
+#include "libi86/internal/dos.h"
 
-	.code16
-	.att_syntax prefix
+unsigned
+_dos_creatnew (const char *path, unsigned attr, int *handle)
+{
+  __libi86_bdos_res_t res;
 
-	TEXT_ (dos_creatnew.S.LIBI86)
-	.global	_dos_creatnew
-_dos_creatnew:
-#ifndef __IA16_CALLCVT_REGPARMCALL
-	ENTER_BX_ (6)
-	MOV_ARG0W_BX_ (%dx)
-	MOV_ARG2W_BX_ (%cx)
-	movb	$0x5b,	%ah
-	int	$0x21
-	jc	.error
-	ENTER_BX_ (6)
-	MOV_ARG4W_BX_ (%bx)
-#else
-	pushw	%cx
-	xchgw	%ax,	%dx
-	xchgw	%ax,	%cx
-	movb	$0x5b,	%ah
-	int	$0x21
-	popw	%bx
-	jc	.error
-#endif
-	movw	%ax,	(%bx)
-.error:
-	RET_SET_ERRNO_ (6)
+  res = __libi86_bdos_dsdxsz_al_cx (0x5b, path, __libi86_any8 (), attr);
+
+  if (res.carry)
+    return res.ax;
+
+  *handle = res.ax;
+  return 0;
+}

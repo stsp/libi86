@@ -61,7 +61,7 @@ __libi86_dpmi_pm_to_rm_buf (const void __far *buf, size_t count,
    * Check that the buffer does not wrap around within its segment. (!)
    * FIXME: should this flag a more serious error?
    */
-  if (pm_off + count < pm_off)
+  if (count && pm_off + count - 1 < pm_off)
     return 2;
 
   /* Check that BUF's segment selector gives us the needed access. */

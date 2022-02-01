@@ -35,9 +35,6 @@
 #include "dos.h"
 #include "libi86/string.h"
 #include "libi86/internal/dos.h"
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-# include "dpmi.h"
-#endif
 
 #define POSIX_O_ACCMODE	((unsigned) (O_RDONLY | O_WRONLY | O_RDWR))
 #define DOS_BAD_ACCESS	12  /* MS-DOS error code for "invalid access" */
@@ -45,6 +42,8 @@
 unsigned
 _dos_open (const char *path, unsigned mode, int *handle)
 {
+  __libi86_bdos_res_t res;
+
   /*
    * In case the C library's O_RDONLY, O_WRONLY, &/or O_RDWR values do not
    * match up with MS-DOS's...
@@ -59,56 +58,10 @@ _dos_open (const char *path, unsigned mode, int *handle)
   if (mode >> 8 != 0)
     return __libi86_ret_really_set_errno (DOS_BAD_ACCESS);
 
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-  if (__DPMI_hosted () == 1)
-    {
-      dpmi_dos_block path_blk;
-      rm_call_struct rmc;
-      int res;
+  res = __libi86_bdos_dsdxsz_al (0x3d, path, mode);
+  if (res.carry)
+    return res.ax;
 
-      path_blk = __libi86_dpmi_low_dup_str (path);
-      if (! path_blk.pm)
-	return errno;
-
-      rmc.ss = rmc.sp = rmc.flags = 0;
-      rmc.ax = 0x3d00U | mode;
-      rmc.ds = path_blk.rm;
-      rmc.dx = 0;
-      res = _DPMISimulateRealModeInterrupt (0x21, 0, 0, &rmc);
-
-      __libi86_dpmi_low_free_str (path_blk);
-
-      if (res != 0)
-	{
-	  errno = res = EIO;
-	  return res;
-	}
-
-      if ((rmc.flags & 1) != 0)
-	{
-	  errno = res = rmc.ax;
-	  return res;
-	}
-
-      *handle = rmc.ax;
-      return 0;
-    }
-  else
-#endif
-    {
-      unsigned ax, res, xx1, xx2;
-
-      __asm volatile ("int $0x21; sbbw %1, %1"
-		      : "=a" (ax), "=bc" (res), "=bc" (xx1), "=d" (xx2)
-		      : "Rah" ((unsigned char) 0x3d),
-			"Ral" ((unsigned char) mode),
-			"Rds" (FP_SEG (path)), "3" (FP_OFF (path))
-		      : "cc", "memory");
-
-      if (res)
-	return __libi86_ret_really_set_errno (ax);
-
-      *handle = ax;
-      return 0;
-    }
+  *handle = res.ax;
+  return 0;
 }

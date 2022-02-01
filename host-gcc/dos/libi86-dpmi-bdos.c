@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -39,72 +39,77 @@
 #endif
 
 #ifdef __IA16_FEATURE_PROTECTED_MODE
-/*
- * When under DPMI, we cannot simply set the DOS Disk Transfer Area (DTA) to
- * point to the user's `struct find_t', since it might not be in low memory
- * (i.e. below the 1 MiB mark).  We need to set up an area in low memory to
- * serve as the DTA.
- *
- * In fact, even the file specification for _dos_findfirst (...) must be
- * temporarily copied to low memory.
- */
-struct find_t __far *
-__libi86_dpmi_set_dta (void)
+__libi86_bdos_res_t
+__libi86_bdos_dsdxsz_al_cx (unsigned char dos_func, const char *dsdx,
+			    unsigned char al, unsigned cx)
 {
-  static dpmi_dos_block dta_blk = { 0, 0 };
-  rm_call_struct rmc;
+  __libi86_bdos_res_t res = { EIO, -1 };
 
-  if (! dta_blk.pm)
-    {
-      dta_blk
-	= _DPMIAllocateDOSMemoryBlock ((sizeof (struct find_t) + 15) / 16);
-      if (! dta_blk.pm)
-	{
-	  errno = ENOMEM;
-	  return NULL;
-	}
-    }
-
-  rmc.ss = rmc.sp = rmc.flags = 0;
-  rmc.ax = 0x1a00U;
-  rmc.ds = dta_blk.rm;
-  rmc.dx = 0;
-  if (_DPMISimulateRealModeInterrupt (0x21, 0, 0, &rmc) != 0)
-    {
-      errno = EIO;
-      return NULL;
-    }
-
-  return (struct find_t __far *) MK_FP (dta_blk.pm, 0);
-}
-#endif
-
-unsigned
-_dos_findfirst (const char *path, unsigned attr, struct find_t *buf)
-{
-  __libi86_bdos_res_t res;
-
-#ifdef __IA16_FEATURE_PROTECTED_MODE
   if (__DPMI_hosted () == 1)
     {
-      struct find_t __far *dta = __libi86_dpmi_set_dta ();
+      __libi86_segment_t rm_ds;
+      size_t count = strlen (dsdx) + 1, rm_dx;
+      dpmi_dos_block dsdx_blk;
+      rm_call_struct rmc;
+      int rmi_res;
 
-      if (! dta)
-	return errno;
+      rmc.ss = rmc.sp = rmc.flags = 0;
+      rmc.ax = (unsigned) dos_func << 8 | al;
+      rmc.cx = cx;
 
-      res = __libi86_bdos_dsdxsz_al_cx (0x4e, path, 0x00, attr);
+      switch (__libi86_dpmi_pm_to_rm_buf (dsdx, count, false, &rm_ds, &rm_dx))
+	{
+	case 0:
+	  rmc.ds = rm_ds;
+	  rmc.dx = rm_dx;
+	  rmi_res = _DPMISimulateRealModeInterrupt (0x21, 0, 0, &rmc);
+	  break;
 
-      *buf = *dta;
+	case 1:
+	  dsdx_blk
+	    = _DPMIAllocateDOSMemoryBlock ((count ? count - 1 : 0) / 0x10 + 1);
+	  if (! dsdx_blk.pm)
+	    {
+	      errno = res.ax = ENOMEM;
+	      return res;
+	    }
+
+	  _fmemcpy (MK_FP (dsdx_blk.pm, 0), dsdx, count);
+
+	  rmc.ds = dsdx_blk.rm;
+	  rmc.dx = 0;
+	  rmi_res = _DPMISimulateRealModeInterrupt (0x21, 0, 0, &rmc);
+
+	  _DPMIFreeDOSMemoryBlock (dsdx_blk.pm);
+	  break;
+
+	default:
+	  abort ();
+	}
+
+      if (rmi_res != 0)
+	errno = EIO;
+      else if ((rmc.flags & 1) != 0)
+	errno = res.ax = rmc.ax;
+      else
+	{
+	  res.carry = 0;
+	  res.ax = rmc.ax;
+	}
     }
   else
-#endif
     {
-      __libi86_msdos_set_dta (buf);
-      res = __libi86_bdos_dsdxsz_al_cx (0x4e, path, 0x00, attr);
+      unsigned xx1, xx2;
+      __asm volatile ("int $0x21; sbbw %1, %1"
+		      : "=a" (res.ax), "=bcd" (res.carry),
+			"=bcd" (xx1), "=bcd" (xx2)
+		      : "Rah" (dos_func), "Ral" (al), "c" (cx),
+			"Rds" (FP_SEG (dsdx)), "d" (FP_OFF (dsdx))
+		      : "cc", "memory");
+      if (res.carry)
+	errno = res.ax;
     }
 
-  if (res.carry)
-    return res.ax;
-
-  return 0;
+  return res;
 }
+#endif  /* __IA16_FEATURE_PROTECTED_MODE */

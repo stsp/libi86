@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -47,7 +47,7 @@ _dos_write (int fd, const void __far *buf, unsigned count, unsigned *bytes)
       __libi86_segment_t ds;
       size_t dx;
       rm_call_struct rmc;
-      unsigned ax, res;
+      unsigned res;
 
       rmc.ss = rmc.sp = rmc.flags = 0;
       rmc.ax = 0x4000U;
@@ -72,7 +72,7 @@ _dos_write (int fd, const void __far *buf, unsigned count, unsigned *bytes)
 	    if (! buf_blk.pm)
 	      return __libi86_ret_really_set_errno (ENOMEM);
 
-	    _fmemcpy (buf, MK_FP (buf_blk.pm, 0), ax);
+	    _fmemcpy (MK_FP (buf_blk.pm, 0), buf, count);
 
 	    rmc.ds = buf_blk.rm;
 	    rmc.dx = 0;

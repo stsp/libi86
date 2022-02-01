@@ -276,13 +276,15 @@ CFLAGS		= @CFLAGS@ \
 		  -Werror=strict-prototypes \
 		  -Werror=missing-prototypes \
 		  -Werror=unused \
-		  -Werror=deprecated
+		  -Werror=deprecated \
+		  -Werror=uninitialized \
+		  -Werror=maybe-uninitialized
 ifeq "" "$(filter -O%,$(CC) $(CFLAGS) $(MULTILIB))"
   CFLAGS	+= -Os
 endif
 ifneq "" "$(filter -mdpmi% -mprotected-mode,$(CC) $(CFLAGS) $(MULTILIB))"
   OBJS		+= direct/libi86-msdos-do-getdcwd.o \
-		   dos/libi86-dpmi-str.o \
+		   dos/libi86-dpmi-bdos.o \
 		   dos/libi86-dpmi-buf.o
 endif
 ifeq "" "$(filter-out -mcmodel=tiny -mcmodel=small, \

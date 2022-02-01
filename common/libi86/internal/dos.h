@@ -62,8 +62,6 @@ extern unsigned
 __libi86_ret_really_set_errno (unsigned);
 #if defined __GNUC__ && defined __IA16_FEATURE_PROTECTED_MODE
 extern struct find_t __far *__libi86_dpmi_set_dta (void);
-extern dpmi_dos_block __libi86_dpmi_low_dup_str (const char *);
-extern void __libi86_dpmi_low_free_str (dpmi_dos_block);
 extern unsigned __libi86_dpmi_pm_to_rm_buf (const void __far *, size_t, bool,
 					    __libi86_segment_t *, size_t *);
 #endif
@@ -155,6 +153,98 @@ extern unsigned __libi86_ret_really_set_errno (unsigned);
 extern unsigned __libi86_msdos_do_truename (const char *path, char *out_path);
 extern const char *__libi86_msdos_parse_to_fcb (const char *name,
 						__libi86_msdos_fcb_t *fcb);
+
+#ifdef __GNUC__
+typedef struct
+{
+  unsigned ax;
+  int carry;
+} __libi86_bdos_res_t;
+
+_LIBI86_STATIC_INLINE unsigned char
+__libi86_any8 (void)
+{
+  unsigned char x;
+  __asm volatile ("" : "=r" (x));
+  return x;
+}
+
+_LIBI86_STATIC_INLINE unsigned
+__libi86_any16 (void)
+{
+  unsigned x;
+  __asm volatile ("" : "=r" (x));
+  return x;
+}
+
+# ifndef __IA16_FEATURE_PROTECTED_MODE
+_LIBI86_STATIC_INLINE __libi86_bdos_res_t
+__libi86_bdos_dsdxsz_al_cx (unsigned char dos_func, const char *dsdx,
+			    unsigned char al, unsigned cx)
+{
+  __libi86_bdos_res_t res;
+  unsigned xx1;
+  __asm volatile ("int $0x21; sbbw %1, %1"
+		  : "=a" (res.ax), "=d" (res.carry), "=c" (xx1)
+		  : "Rah" (dos_func), "Ral" (al), "c" (cx),
+		    "Rds" (FP_SEG (dsdx)), "1" (FP_OFF (dsdx))
+		  : "cc", "bx", "memory");
+  if (res.carry)
+    errno = res.ax;
+  return res;
+}
+
+_LIBI86_STATIC_INLINE __libi86_bdos_res_t
+__libi86_bdos_dsdxsz_al (unsigned char dos_func, const char *dsdx,
+			 unsigned char al)
+{
+  __libi86_bdos_res_t res;
+  __asm volatile ("int $0x21; sbbw %1, %1"
+		  : "=a" (res.ax), "=d" (res.carry)
+		  : "Rah" (dos_func), "Ral" (al),
+		    "Rds" (FP_SEG (dsdx)), "1" (FP_OFF (dsdx))
+		  : "cc", "bx", "cx", "memory");
+  if (res.carry)
+    errno = res.ax;
+  return res;
+}
+
+_LIBI86_STATIC_INLINE __libi86_bdos_res_t
+__libi86_bdos_dsdxsz (unsigned char dos_func, const char *dsdx)
+{
+  __libi86_bdos_res_t res;
+  __asm volatile ("int $0x21; sbbw %1, %1"
+		  : "=a" (res.ax), "=d" (res.carry)
+		  : "Rah" (dos_func),
+		    "Rds" (FP_SEG (dsdx)), "1" (FP_OFF (dsdx))
+		  : "cc", "bx", "cx", "memory");
+  if (res.carry)
+    errno = res.ax;
+  return res;
+}
+# else  /* __IA16_FEATURE_PROTECTED_MODE */
+/*
+ * DSDX points to a null-terminated string --- which may need to be copied
+ * to base memory below the 1 MiB mark, when in DPMI mode.
+ */
+extern __libi86_bdos_res_t
+       __libi86_bdos_dsdxsz_al_cx (unsigned char dos_func, const char *dsdx,
+				   unsigned char al, unsigned cx);
+
+_LIBI86_STATIC_INLINE __libi86_bdos_res_t
+__libi86_bdos_dsdxsz_al (unsigned char dos_func, const char *dsdx,
+			 unsigned char al)
+{
+  return __libi86_bdos_dsdxsz_al_cx (dos_func, dsdx, al, __libi86_any16 ());
+}
+
+_LIBI86_STATIC_INLINE __libi86_bdos_res_t
+__libi86_bdos_dsdxsz (unsigned char dos_func, const char *dsdx)
+{
+  return __libi86_bdos_dsdxsz_al (dos_func, dsdx, __libi86_any8 ());
+}
+# endif  /* __IA16_FEATURE_PROTECTED_MODE */
+#endif  /* __GNUC__ */
 
 /*
  * Iterate through the directories in %PATH%.  At each iteration, set

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -29,27 +29,23 @@
 
 #define _LIBI86_COMPILING_
 #include <errno.h>
+#include <fcntl.h>
+#include <stdlib.h>
 #include <string.h>
-#include "dpmi.h"
+#include "dos.h"
 #include "libi86/string.h"
 #include "libi86/internal/dos.h"
 
-dpmi_dos_block
-__libi86_dpmi_low_dup_str (const char *str)
+unsigned
+_dos_creat (const char *path, unsigned attr, int *handle)
 {
-  size_t size = strlen (str) + 1;
-  dpmi_dos_block str_blk = _DPMIAllocateDOSMemoryBlock ((size + 15) / 16);
+  __libi86_bdos_res_t res;
 
-  if (! str_blk.pm)
-    errno = ENOMEM;
-  else
-    _fmemcpy (MK_FP (str_blk.pm, 0), str, size);
+  res = __libi86_bdos_dsdxsz_al_cx (0x3c, path, __libi86_any8 (), attr);
 
-  return str_blk;
-}
+  if (res.carry)
+    return res.ax;
 
-void
-__libi86_dpmi_low_free_str (dpmi_dos_block str_blk)
-{
-  _DPMIFreeDOSMemoryBlock (str_blk.pm);
+  *handle = res.ax;
+  return 0;
 }
