@@ -52,7 +52,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[intdos (Borland)]])
-AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL_NONDPMIABLE(dnl
+AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL(dnl
 [[#define _BORLANDC_SOURCE
 #include <dos.h>
 void abort (void);
@@ -80,7 +80,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[intdosx (Borland)]])
-AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+AT_LIBI86_CHECK_FOR_NONDOSX(dnl
 [[#define _BORLANDC_SOURCE
 #include <dos.h>
 #include <string.h>
@@ -116,7 +116,7 @@ main (void)
   return 0;
 }]],[[hello world ~
 ]])
-AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE(dnl
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX(dnl
 [[#define _BORLANDC_SOURCE
 #include <dos.h>
 #include <string.h>
@@ -155,7 +155,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[peek, peekb]])
-AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+AT_LIBI86_CHECK_FOR_NONDOSX(dnl
 [[#define _BORLANDC_SOURCE
 #include <stdlib.h>
 #include <bios.h>
@@ -216,7 +216,7 @@ main (int argc, char **argv)
 AT_CLEANUP
 
 AT_SETUP([[inportb, outportb]])
-AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+AT_LIBI86_CHECK_FOR_NONDOSX(dnl
 [[#define _BORLANDC_SOURCE
 #include <dos.h>
 #include <stdlib.h>

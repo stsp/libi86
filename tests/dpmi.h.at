@@ -28,7 +28,7 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 AT_BANNER([[<dpmi.h> tests]])
 
 AT_SETUP([[__DPMI_hosted]])
-AT_LIBI86_SKIP_IF_NO_DPMI
+AT_LIBI86_SKIP_IF_NO_DOSX
 AT_LIBI86_CHECK(dnl
 [[#include <stdlib.h>
 #include <dpmi.h>
@@ -47,7 +47,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_DPMISegmentToDescriptor]])
-AT_LIBI86_SKIP_IF_NO_DPMI
+AT_LIBI86_SKIP_IF_NO_DOSX
 AT_LIBI86_CHECK(dnl
 [[#include <stdint.h>
 #include <stdlib.h>
@@ -77,7 +77,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_DPMIGetSegmentBaseAddress]])
-AT_LIBI86_SKIP_IF_NO_DPMI
+AT_LIBI86_SKIP_IF_NO_DOSX
 AT_LIBI86_CHECK(dnl
 [[#include <stdint.h>
 #include <stdlib.h>
@@ -102,7 +102,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_DPMISimulateRealModeInterrupt]])
-AT_LIBI86_SKIP_IF_NO_DPMI
+AT_LIBI86_SKIP_IF_NO_DOSX
 AT_LIBI86_CHECK(dnl
 [[#include <stdint.h>
 #include <stdlib.h>
@@ -128,7 +128,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_DPMIIdle, _DPMIGetVirtualInterruptState]])
-AT_LIBI86_SKIP_IF_NO_DPMI
+AT_LIBI86_SKIP_IF_NO_DOSX
 AT_LIBI86_CHECK(dnl
 [[#include <stdbool.h>
 #include <stdint.h>
@@ -186,7 +186,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_DPMIGetCapabilities]])
-AT_LIBI86_SKIP_IF_NO_DPMI
+AT_LIBI86_SKIP_IF_NO_DOSX
 AT_LIBI86_CHECK(dnl
 [[#include <dpmi.h>
 #include <stddef.h>

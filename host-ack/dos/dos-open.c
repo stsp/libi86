@@ -35,9 +35,6 @@
 #include "dos.h"
 #include "libi86/string.h"
 #include "libi86/internal/dos.h"
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-# include "dpmi.h"
-#endif
 
 #define POSIX_O_ACCMODE	((unsigned) (O_RDONLY | O_WRONLY | O_RDWR))
 #define DOS_BAD_ACCESS	12  /* MS-DOS error code for "invalid access" */

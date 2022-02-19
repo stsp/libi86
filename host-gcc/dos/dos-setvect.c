@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2021--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -30,25 +30,13 @@
 #define _LIBI86_COMPILING_
 #include "libi86/internal/cdefs.h"
 #include "dos.h"
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-# include "dpmi.h"
-#endif
 
 void
 _dos_setvect (unsigned intr_no, __libi86_isr_t isr)
 {
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-  if (__DPMI_hosted () == 1)
-    __asm volatile ("int $0x31"
-		    : /* no output operands */
-		    : "a" (0x0205u), "b" ((unsigned char) intr_no),
-		      "c" (FP_SEG (isr)), "d" (FP_OFF (isr))
-		    : "cc", "bh", "memory");
-  else
-#endif
-    __asm volatile ("int $0x21"
-		    : /* no output operands */
-		    : "a" (0x2500u | (unsigned char) intr_no),
-		      "Rds" (FP_SEG (isr)), "d" (FP_OFF (isr))
-		    : "cc", "memory");
+  __asm volatile ("int $0x21"
+		  : /* no output operands */
+		  : "a" (0x2500u | (unsigned char) intr_no),
+		    "Rds" (FP_SEG (isr)), "d" (FP_OFF (isr))
+		  : "cc", "memory");
 }

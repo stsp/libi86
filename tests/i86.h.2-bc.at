@@ -28,7 +28,7 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 AT_BANNER([[<i86.h> tests (part 2, Borland compatibility)]])
 
 AT_SETUP([[int86 (Borland)]])
-AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+AT_LIBI86_CHECK(dnl
 [[#define _BORLANDC_SOURCE
 #include <i86.h>
 #include <stdio.h>
@@ -102,7 +102,7 @@ int main (void)
 AT_CLEANUP
 
 AT_SETUP([[int86x (Borland)]])
-AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+AT_LIBI86_CHECK(dnl
 [[#define _BORLANDC_SOURCE
 #include <stdlib.h>
 #include <i86.h>
@@ -114,7 +114,7 @@ int main (void)
 #ifdef __MSDOS__
   static char msg[] = "Hello from int86x!\r\n$(ignore this part)\r\n";
   memset (&regs, 0xf6, sizeof (regs));
-  memset (&sregs, 0xf6, sizeof (sregs));
+  memset (&sregs, 0, sizeof (sregs));
   sregs.ds = FP_SEG (_CV_FP (msg));
   regs.h.ah = 0x09;
   regs.x.dx = FP_OFF (_CV_FP (msg));
@@ -127,7 +127,7 @@ int main (void)
 # endif
   if (sregs.ds != FP_SEG (_CV_FP (msg)))
     abort ();
-  if (sregs.es != 0xf6f6u)
+  if (sregs.es != 0)
     abort ();
   if (sregs.ss != FP_SEG (_CV_FP (&regs)))
     abort ();

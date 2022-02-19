@@ -40,6 +40,8 @@ _LIBI86_BEGIN_EXTERN_C
 /*
  * __DPMI_hosted () is from Watcom's internally-used interface.
  *
+ * If we are known to be running in DPMI mode, then always return 1.
+ *
  * If the C runtime (e.g. Newlib), or the program using libi86, defines
  * a __DPMI_hosted () function, then we use it.  We can check at `configure'
  * time whether the C runtime has this function.
@@ -49,8 +51,16 @@ _LIBI86_BEGIN_EXTERN_C
  * efficient.  This inefficient implementation is available via the name
  * __libi86_DPMI_hosted (), for testing purposes.
  */
-extern int __DPMI_hosted (void);
 extern int __libi86_DPMI_hosted (void);
+#if ! defined __IA16_FEATURE_DOSX || ! defined __OPTIMIZE__
+extern int __DPMI_hosted (void);
+#else
+_LIBI86_ALT_INLINE int
+__DPMI_hosted (void)
+{
+  return 1;
+}
+#endif
 
 /*
  * These follow Watcom's internally-used interface, & are defined in this

@@ -58,13 +58,7 @@ ifeq "yes" "$(ac_compiler_gnu)"
   ifeq "" "$(filter -O%,$(CC) $(CFLAGS))"
     CFLAGS	+= -O2
   endif
-  # If the C compiler supports the `-mhandle-non-i286' option, then use it
-  # when compiling dpmii86.c .
-  CFLAGS_DPMII86 = $(CFLAGS) -mdpmiable \
-		   $(shell $(CC) $(CFLAGS) -march=i286 -mhandle-non-i286 \
-				 -x c -E /dev/null -o /dev/null \
-				 >/dev/null 2>/dev/null \
-			   && echo '' -march=i286 -mhandle-non-i286)
+  CFLAGS_DPMII86 = $(CFLAGS) -mdosx
   LDFLAGS	= -L$(objroot)/$(shell $(CC) $(CFLAGS) \
 				     -print-multi-directory)/$(libi86_hostdir)
   LDLIBS	= -li86

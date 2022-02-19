@@ -98,7 +98,7 @@ main (int argc, char **argv)
 AT_CLEANUP
 
 AT_SETUP([[inp, outp]])
-AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+AT_LIBI86_CHECK_FOR_NONDOSX(dnl
 [[#include <conio.h>
 #include <stdlib.h>
 #ifndef __FAR

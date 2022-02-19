@@ -37,9 +37,6 @@
 #include "dos.h"
 #include "i86.h"
 #include "libi86/internal/graph.h"
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-# include "dpmi.h"
-#endif
 
 struct __libi86_vid_state_t __libi86_vid_state;
 

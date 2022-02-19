@@ -282,11 +282,6 @@ CFLAGS		= @CFLAGS@ \
 ifeq "" "$(filter -O%,$(CC) $(CFLAGS) $(MULTILIB))"
   CFLAGS	+= -Os
 endif
-ifneq "" "$(filter -mdpmi% -mprotected-mode,$(CC) $(CFLAGS) $(MULTILIB))"
-  OBJS		+= direct/libi86-msdos-do-getdcwd.o \
-		   dos/libi86-dpmi-bdos.o \
-		   dos/libi86-dpmi-buf.o
-endif
 ifeq "" "$(filter-out -mcmodel=tiny -mcmodel=small, \
 			$(filter -mcmodel=%,$(CC) $(CFLAGS) $(MULTILIB)))"
   OBJS		+= dos/libi86-call5-tiny.o
@@ -379,15 +374,6 @@ $(BSP): $(OBJS)
 %.o: %.c $(HEADERS)
 	mkdir -p $(@D)
 	$(CC) $(CPPFLAGS) -U_BORLANDC_SOURCE $(CFLAGS) $(MULTILIB) -c -o $@ $<
-
-# dos/libi86-dpmi-*.c will run only on 286 machines, & may in fact
-# explicitly use 286 machine instructions, so we might as well ask GCC to
-# generate 286-only code for these.
-dos/libi86-dpmi-%.o: dos/libi86-dpmi-%.c $(HEADERS)
-	mkdir -p $(@D)
-	$(CC) $(CPPFLAGS) -U_BORLANDC_SOURCE \
-	      $(filter-out -march=%,$(CFLAGS) $(MULTILIB)) -march=i286 \
-	      -c -o $@ $<
 
 # We need this rule to override the next rule in case we do have a separate
 # conio/libi86-bc-*.c source file.

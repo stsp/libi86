@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2021--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -30,26 +30,16 @@
 #define _LIBI86_COMPILING_
 #include "libi86/internal/cdefs.h"
 #include "dos.h"
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-# include "dpmi.h"
-#endif
 
 __libi86_isr_t
 _dos_getvect (unsigned intr_no)
 {
   __libi86_segment_t seg;
   unsigned off;
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-  if (__DPMI_hosted () == 1)
-    __asm volatile ("int $0x31"
-		    : "=c" (seg), "=d" (off)
-		    : "a" (0x0204u), "b" ((unsigned char) intr_no)
-		    : "cc", "bh", "memory");
-  else
-#endif
-    __asm volatile ("int $0x21"
-		    : "=e" (seg), "=b" (off)
-		    : "a" (0x3500u | (unsigned char) intr_no)
-		    : "cc", "memory");
+
+  __asm volatile ("int $0x21"
+		  : "=e" (seg), "=b" (off)
+		  : "a" (0x3500u | (unsigned char) intr_no)
+		  : "cc", "memory");
   return (__libi86_isr_t) MK_FP (seg, off);
 }

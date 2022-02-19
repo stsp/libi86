@@ -38,10 +38,6 @@
 #include <libi86/internal/cdefs.h>
 #include <i86.h>
 #include <conio.h>
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-# include <dpmi.h>
-# include <fcntl.h>
-#endif
 
 _LIBI86_BEGIN_EXTERN_C
 
@@ -79,14 +75,12 @@ __libi86_con_set_dev_info_word (int fd, unsigned dw)
 static inline int
 __libi86_con_open (const char *pathname, int flags)
 {
-  int fd;
-# ifdef __IA16_FEATURE_PROTECTED_MODE
-  if (__DPMI_hosted () == 1)
-    return open (pathname, flags ? O_WRONLY : O_RDONLY);
-# endif
+  int fd, xx;
   __asm volatile ("int $0x21; jnc 0f; sbbw %0, %0; 0:"
-    : "=a" (fd)
-    : "0" (0x3d00 | (unsigned char) flags), "d" (pathname));
+    : "=a" (fd), "=d" (xx)
+    : "0" (0x3d00 | (unsigned char) flags),
+      "1" (FP_OFF (pathname)), "Rds" (FP_SEG (pathname))
+    : "bx", "cx", "cc", "memory");
   return fd;
 }
 #endif /* __MSDOS__ */

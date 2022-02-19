@@ -49,7 +49,7 @@ main (void)
 }]],[[Hello $from$ bdos!
 ]])
 if "$at_arg_x_test_underlying" && test yes = "$ac_compiler_gnu"; then
-AT_LIBI86_CHECK_CONSOLE_FOR_NONDPMIABLE(dnl
+AT_LIBI86_CHECK_CONSOLE_FOR_NONDOSX(dnl
 [[/* A little test to see if the underlying DOS handles CP/M `call 5'... */
 #ifndef __MSDOS__
 # error
@@ -121,7 +121,7 @@ main (void)
 #endif
 }]],[[yo
 ]])
-AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL_NONDPMIABLE(dnl
+AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL(dnl
 [[#include <dos.h>
 void abort (void);
 int
@@ -183,7 +183,7 @@ main (void)
 #endif
 }]],[[yo
 ]])
-AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE(dnl
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX(dnl
 [[#include <dos.h>
 #include <string.h>
 #include <time.h>
@@ -709,7 +709,7 @@ main (int argc, char **argv)
 AT_CLEANUP
 
 AT_SETUP([[_dos_getvect]])
-AT_LIBI86_CHECK_FOR_NONDPMIABLE(dnl
+AT_LIBI86_CHECK_FOR_NONDOSX(dnl
 [[#include <dos.h>
 void abort (void);
 int

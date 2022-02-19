@@ -89,7 +89,7 @@ main (void)
   return 0;
 }]],[[world hello!!!
 ]])
-AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE(dnl
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX(dnl
 [[#include <dos.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -104,6 +104,8 @@ main (void)
   _fmemcpy (baz, bar, 6);
   _fmemcpy (baz + 6, foo, 8);
 #ifdef __MSDOS__
+  memset (&inr, 0xf6, sizeof inr);
+  memset (&sr, 0, sizeof sr);
   inr.h.ah = 0x40;
   inr.w.bx = 1;
   inr.w.cx = sizeof (baz);
@@ -119,7 +121,7 @@ main (void)
 #endif
 }]],[[world hello!!!
 ]])
-AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE(dnl
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX(dnl
 [[#include <unistd.h>
 #include <libi86/string.h>
 __far const char foo[] = "hello!!!", bar[] = "world ";
@@ -152,7 +154,7 @@ main (void)
   return 0;
 }]],[[!!hello!!!
 ]])
-AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE(dnl
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX(dnl
 [[#include <unistd.h>
 #include <libi86/string.h>
 const char __far foo[] = "!hello!!!\n\n";
@@ -185,7 +187,7 @@ main (void)
     abort ();
   return 0;
 }]],[])
-AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE(dnl
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX(dnl
 [[#include <unistd.h>
 #include <libi86/string.h>
 __far const char foo[] = "hello world", bar[] = "", baz[] = "!";

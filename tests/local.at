@@ -166,13 +166,13 @@ dnl $7 = command to prepare a.log before running dosemu (default rm -f)
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_F],[dnl
 _AT_LIBI86_DO_CHECK_EXPOUT_E($@)
 if test yes = "$ac_compiler_gnu"; then
-_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mdpmiable ]]$@)
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mdosx ]]$@)
 if "$at_arg_x_test_underlying"; then :; else
 _AT_LIBI86_DO_CHECK_EXPOUT_C([[-mprotected-mode ]]$@)
 fi
 fi])
 
-m4_define([AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL_NONDPMIABLE],[dnl
+m4_define([AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL_NONDOSX],[dnl
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
@@ -188,10 +188,9 @@ AT_DATA([[a.c]],[$1
 AT_DATA([[expout]],[$2])
 if test yes = "$ac_compiler_gnu"; then
 if "$at_arg_x_test_underlying"; then :; else
-_AT_LIBI86_DO_CHECK_EXPOUT_F(,a.c,,m4_shift(m4_shift($@)))
+_AT_LIBI86_DO_CHECK_EXPOUT_E(,a.c,,m4_shift(m4_shift($@)))
 fi
 _AT_LIBI86_DO_CHECK_EXPOUT_F([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
-dnl do not try -mdpmiable for medium model for now
 _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))
 else
 _AT_LIBI86_DO_CHECK_EXPOUT_F(,a.c,,m4_shift(m4_shift($@)))
@@ -231,7 +230,7 @@ dnl $6 = command to prepare a.log before running dosemu (default rm -f)
 m4_define([AT_LIBI86_CHECK_CXX],[dnl
 AT_LIBI86_CHECK_CXX_FOR_NEAR_DATA_MODEL($@)])
 
-m4_define([AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDPMIABLE],[dnl
+m4_define([AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX],[dnl
 if test yes = "$ac_compiler_gnu"; then
 AT_DATA([[a.c]],[$1
 ])
@@ -249,7 +248,7 @@ _AT_LIBI86_DO_CHECK_EXPOUT_F([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
 _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))
 fi])
 
-m4_define([AT_LIBI86_CHECK_FOR_NONDPMIABLE],[dnl
+m4_define([AT_LIBI86_CHECK_FOR_NONDOSX],[dnl
 AT_DATA([[a.c]],[$1
 ])
 AT_DATA([[expout]],[$2])
@@ -304,7 +303,7 @@ unix2dos x.bat
 AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE([$1],[$2],[[x.bat]],dnl
 [$3 [-t >/dev/null]],[["$abs_srcdir"/postproc-console.sh]])])
 
-m4_define([AT_LIBI86_CHECK_CONSOLE_FOR_NONDPMIABLE],[dnl
+m4_define([AT_LIBI86_CHECK_CONSOLE_FOR_NONDOSX],[dnl
 AT_LIBI86_COMPILE_CONSOLE_CAPTURE_PROG
 AT_DATA([[x.bat]],dnl
 [[@echo off
@@ -318,7 +317,7 @@ if errorlevel 1 del a.log
 :done
 ]])
 unix2dos x.bat
-AT_LIBI86_CHECK_FOR_NONDPMIABLE([$1],[$2],[[x.bat]],[$3 [-t >/dev/null]],dnl
+AT_LIBI86_CHECK_FOR_NONDOSX([$1],[$2],[[x.bat]],[$3 [-t >/dev/null]],dnl
 [["$abs_srcdir"/postproc-console.sh]])])
 
 dnl $1 = text of program to test
@@ -372,9 +371,10 @@ AT_LIBI86_CHECK_CXX(dnl
 ]$1],[$2],,[$3])
 rm -rf temp.dir])
 
-dnl completely skip a test if C compiler does not support DPMI programs
-m4_define([AT_LIBI86_SKIP_IF_NO_DPMI],[dnl
-AT_SKIP_IF([test no = "$at_libi86_cc_have_dpmi"])])
+dnl completely skip a test if C compiler does not support programs that use
+dnl a DOS extender
+m4_define([AT_LIBI86_SKIP_IF_NO_DOSX],[dnl
+AT_SKIP_IF([test no = "$at_libi86_cc_have_dosx"])])
 
 dnl completely skip a test if the dosemu setup does not allow capturing com4
 m4_define([AT_LIBI86_SKIP_IF_NO_COM4],[dnl

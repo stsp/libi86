@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2021--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -34,6 +34,7 @@
 # error "<libi86/internal/dos.h> should only be used when compiling libi86!"
 #endif
 
+#include <errno.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -41,11 +42,6 @@
 #include <libi86/stdlib.h>
 #include <libi86/internal/cdefs.h>
 #include <libi86/internal/dos-dbcs.h>
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-# include <dpmi.h>
-#else
-# include <errno.h>
-#endif
 
 _LIBI86_BEGIN_EXTERN_C
 
@@ -60,11 +56,6 @@ extern __attribute__ ((regparmcall)) unsigned
 extern unsigned
 #endif
 __libi86_ret_really_set_errno (unsigned);
-#if defined __GNUC__ && defined __IA16_FEATURE_PROTECTED_MODE
-extern struct find_t __far *__libi86_dpmi_set_dta (void);
-extern unsigned __libi86_dpmi_pm_to_rm_buf (const void __far *, size_t, bool,
-					    __libi86_segment_t *, size_t *);
-#endif
 
 _LIBI86_STATIC_INLINE bool
 __libi86_msdos_drive_letter_p (char c)
@@ -116,15 +107,7 @@ __libi86_msdos_set_dta (void __far *new_dta)
 		    "Rds" (FP_SEG (new_dta)), "1" (FP_OFF (new_dta))
 		  : "cc", "bx", "cx", "memory");
 }
-#else  /* ! __GNUC__ */
-extern void __libi86_msdos_set_dta (void *new_dta);
-extern unsigned __libi86_msdos_do_findfirst (const char *path, unsigned attr);
-extern unsigned __libi86_msdos_do_findnext (void);
-extern unsigned __libi86_msdos_do_open (const char *path, unsigned mode,
-					int *handle);
-#endif  /* ! __GNUC__ */
 
-#if defined __GNUC__ && ! defined __IA16_FEATURE_PROTECTED_MODE
 _LIBI86_STATIC_INLINE int
 __libi86_msdos_do_getdcwd (char buf[_MAX_PATH - 3], unsigned char drive)
 {
@@ -138,10 +121,15 @@ __libi86_msdos_do_getdcwd (char buf[_MAX_PATH - 3], unsigned char drive)
     errno = err;
   return carry;
 }
-#else  /* ! __GNUC__ || __IA16_FEATURE_PROTECTED_MODE */
+#else  /* ! __GNUC__ */
+extern void __libi86_msdos_set_dta (void *new_dta);
+extern unsigned __libi86_msdos_do_findfirst (const char *path, unsigned attr);
+extern unsigned __libi86_msdos_do_findnext (void);
+extern unsigned __libi86_msdos_do_open (const char *path, unsigned mode,
+					int *handle);
 extern int __libi86_msdos_do_getdcwd (char buf[_MAX_PATH - 3],
 				      unsigned char drive);
-#endif  /* ! __GNUC__ || __IA16_FEATURE_PROTECTED_MODE */
+#endif  /* ! __GNUC__ */
 
 extern long __libi86_ret_einval (void);
 #ifdef __GNUC__
@@ -177,7 +165,6 @@ __libi86_any16 (void)
   return x;
 }
 
-# ifndef __IA16_FEATURE_PROTECTED_MODE
 _LIBI86_STATIC_INLINE __libi86_bdos_res_t
 __libi86_bdos_dsdxsz_al_cx (unsigned char dos_func, const char *dsdx,
 			    unsigned char al, unsigned cx)
@@ -222,28 +209,6 @@ __libi86_bdos_dsdxsz (unsigned char dos_func, const char *dsdx)
     errno = res.ax;
   return res;
 }
-# else  /* __IA16_FEATURE_PROTECTED_MODE */
-/*
- * DSDX points to a null-terminated string --- which may need to be copied
- * to base memory below the 1 MiB mark, when in DPMI mode.
- */
-extern __libi86_bdos_res_t
-       __libi86_bdos_dsdxsz_al_cx (unsigned char dos_func, const char *dsdx,
-				   unsigned char al, unsigned cx);
-
-_LIBI86_STATIC_INLINE __libi86_bdos_res_t
-__libi86_bdos_dsdxsz_al (unsigned char dos_func, const char *dsdx,
-			 unsigned char al)
-{
-  return __libi86_bdos_dsdxsz_al_cx (dos_func, dsdx, al, __libi86_any16 ());
-}
-
-_LIBI86_STATIC_INLINE __libi86_bdos_res_t
-__libi86_bdos_dsdxsz (unsigned char dos_func, const char *dsdx)
-{
-  return __libi86_bdos_dsdxsz_al (dos_func, dsdx, __libi86_any8 ());
-}
-# endif  /* __IA16_FEATURE_PROTECTED_MODE */
 #endif  /* __GNUC__ */
 
 /*

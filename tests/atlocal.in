@@ -74,11 +74,11 @@ else
   at_libi86_cc_have_medium_model=no
 fi
 if test yes = $ac_compiler_gnu \
-   && $CC -mdpmiable -x c -E /dev/null -o /dev/null >/dev/null 2>/dev/null
+   && $CC -mdosx -x c -E /dev/null -o /dev/null >/dev/null 2>/dev/null
 then
-  at_libi86_cc_have_dpmi=yes
+  at_libi86_cc_have_dosx=yes
 else
-  at_libi86_cc_have_dpmi=no
+  at_libi86_cc_have_dosx=no
 fi
 
 : ${CXX='@CXX@'}
