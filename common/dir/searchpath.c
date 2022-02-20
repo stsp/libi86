@@ -52,13 +52,9 @@ _searchpath (const char *name)
   _LIBI86_FOR_EACH_PATHED_PATHNAME (pathname, name, dbcs, itr)
     {
       if (_dos_getfileattr (pathname, &attrs) == 0)
-	{
-	  _dos_free_dbcs_lead_table (dbcs);
-	  return _fullpath (full_pathname, pathname, sizeof full_pathname);
-	}
+	return _fullpath (full_pathname, pathname, sizeof full_pathname);
     }
 
-  _dos_free_dbcs_lead_table (dbcs);
   return NULL;
 }
 

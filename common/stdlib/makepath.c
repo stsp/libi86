@@ -144,14 +144,12 @@ _makepath (char path[_MAX_PATH], const char *drive, const char *dir,
   return 0;
 
 bogus:
-  _dos_free_dbcs_lead_table (dbcs);
   path[0] = 0;
 bogus0:
   errno = EINVAL;
   return -1;
 
 overflow:
-  _dos_free_dbcs_lead_table (dbcs);
   *e = 0;
 # ifdef _LIBI86_INTERNAL_HAVE_ENAMETOOLONG
   errno = ENAMETOOLONG;

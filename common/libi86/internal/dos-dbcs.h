@@ -61,23 +61,9 @@ extern bool __libi86_msdos_dbcs_lead_p (char, _dos_dbcs_lead_table_t);
  * _dos_get_dbcs_lead_table () is from Watcom's internal library interface.
  * When building libi86, this function might be defined in the underlying
  * C library, if the C library is newlib-ia16.
- *
- * _dos_free_dbcs_lead_table (.) might also be defined in the C library.
  */
 extern _dos_dbcs_lead_table_t __libi86_msdos_get_dbcs_lead_table (void);
 extern _dos_dbcs_lead_table_t _dos_get_dbcs_lead_table (void);
-extern void __libi86_msdos_free_dbcs_lead_table (_dos_dbcs_lead_table_t);
-#if (defined _LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE \
-     && ! defined _LIBI86_INTERNAL_HAVE__DOS_FREE_DBCS_LEAD_TABLE) \
-    || (! defined _LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE \
-	&& ! defined __IA16_FEATURE_PROTECTED_MODE)
-_LIBI86_ALT_INLINE void
-_dos_free_dbcs_lead_table (_dos_dbcs_lead_table_t __dbcs)
-{
-}
-#else
-extern void _dos_free_dbcs_lead_table (_dos_dbcs_lead_table_t);
-#endif
 
 _LIBI86_END_EXTERN_C
 

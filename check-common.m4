@@ -46,8 +46,6 @@ AC_CHECK_DECL([vsscanf],
 AC_CHECK_FUNC([getcwd],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_GETCWD],[1])])
 AC_CHECK_FUNC([_dos_get_dbcs_lead_table],
   [AC_DEFINE([_LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE],[1])])
-AC_CHECK_FUNC([_dos_free_dbcs_lead_table],
-  [AC_DEFINE([_LIBI86_INTERNAL_HAVE__DOS_FREE_DBCS_LEAD_TABLE],[1])])
 AC_CHECK_HEADER([sys/syslimits.h],
 		[AC_DEFINE([_LIBI86_INTERNAL_HAVE_SYS_SYSLIMITS_H],[1])])
 if test yes = "$ac_cv_header_sys_syslimits_h"; then

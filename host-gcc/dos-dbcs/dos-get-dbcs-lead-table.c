@@ -44,12 +44,11 @@ __libi86_msdos_get_dbcs_lead_table (void)
 #ifdef __IA16_FEATURE_PROTECTED_MODE
   if (__DPMI_hosted () == 1)
     {
+      static volatile __libi86_segment_t cached_seg_rm = 0, cached_seg_pm = 0;
       rm_call_struct rmc;
-      descriptor desc;
       int res;
       uint16_t off, seg_rm, seg_pm;
       int32_t res32;
-      uint32_t seg_linear;
       _dos_dbcs_lead_table_t lt;
 
       memset (&rmc, 0, sizeof (rmc));  /* also set rmc.ss = rmc.sp := 0 */
@@ -61,12 +60,7 @@ __libi86_msdos_get_dbcs_lead_table (void)
       if (res != 0)
 	abort ();
 
-      if (_osmajor < 3)
-	{
-	  if ((rmc.flags & 1) != 0)
-	    return _null_dbcs_lt;
-	}
-      else if ((uint8_t) rmc.ax != 0)
+      if ((uint8_t) rmc.ax != 0)
 	return _null_dbcs_lt;
 
       off = rmc.si;
@@ -75,32 +69,22 @@ __libi86_msdos_get_dbcs_lead_table (void)
       if (off == 0xffffU)
 	return _null_dbcs_lt;
 
-      res32 = _DPMIAllocateLDTDescriptors (1);
-      if (res32 < 0)
-	abort ();
+      seg_pm = cached_seg_pm;
+      if (! seg_pm || seg_rm != cached_seg_rm)
+	{
+	  res32 = _DPMISegmentToDescriptor (seg_rm);
+	  if (res32 < 0)
+	    abort ();
 
-      seg_pm = (uint16_t) res32;
-
-      if (_DPMIGetDescriptor (seg_pm, &desc) != 0)
-	abort ();
-
-      seg_linear = (uint32_t) seg_rm * 0x10;
-      desc.lim_0_15 = 0xffffU;
-      desc.base_0_15 = (uint16_t) seg_linear;
-      desc.base_16_23 = (uint8_t) (seg_linear >> 16);
-      desc.type.rdwr = desc.type.exp_down = desc.type.execute = 0;
-      desc.lim_16_19 = 0;
-      desc.xtype.use32 = desc.xtype.page_gran = 0;
-
-      if (_DPMISetDescriptor (seg_pm, &desc) != 0)
-	abort ();
+	  seg_pm = (__libi86_segment_t) res32;
+	  cached_seg_pm = 0;
+	  cached_seg_rm = seg_rm;
+	  cached_seg_pm = seg_pm;
+	}
 
       lt = MK_FP (seg_pm, off);
       if (! *lt)
-	{
-	  _DPMIFreeLDTDescriptor (seg_pm);
-	  return _null_dbcs_lt;
-	}
+	return _null_dbcs_lt;
 
       return lt;
     }
