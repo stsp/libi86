@@ -338,8 +338,8 @@ get_virt_if (void)
        * Besides returning the virtual interrupt state, also take a moment
        * to test the _real_ interrupt state.
        *
-       * If CPL = 3 > IOPL, then we assume that real interrupts are supposed
-       * to be always enabled, & test for that.
+       * If virtual interrupts are enabled, then it makes no sense for real
+       * interrupts to be disabled.  Check for this condition.
        *
        * If CPL > IOPL, & real interrupts are enabled, test that real
        * interrupts remain enabled even if we do a `popfw' or `iretw' that
@@ -351,14 +351,9 @@ get_virt_if (void)
        * interrupt state.
        */
       unsigned scratch;
-      bool real_if;
-      if (cpl == 3)
-	{
-	  check_real_if (true, "IF = 0 when CPL = 3 > IOPL");
-	  real_if = true;
-	}
-      else
-	real_if = ((flags & 0x0200U) != 0);
+      bool real_if = ((flags & 0x0200U) != 0);
+      if (virt_if && ! real_if)
+	do_abort ("VIF = 1 but IF = 0");
       __asm volatile ("push{w} %0; "
 		      "popfw"
 		      : /* no outputs */
