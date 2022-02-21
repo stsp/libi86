@@ -50,7 +50,15 @@ main (void)
 ]])
 if "$at_arg_x_test_underlying" && test yes = "$ac_compiler_gnu"; then
 AT_LIBI86_CHECK_CONSOLE_FOR_NONDOSX(dnl
-[[/* A little test to see if the underlying DOS handles CP/M `call 5'... */
+[[
+/*
+ * A little test to see if the underlying DOS handles CP/M `call 5'...
+ *
+ * Note that, upon a `call 5', MS-DOS might actually _clobber_ the value of
+ * %al before handing over to the int 0x21 syscall handler code.  (The
+ * FreeDOS kernel passes %al unchanged.)  This means that the third
+ * parameter to bdos (...) should be assumed to be ignored.  -- 20220221
+ */
 #ifndef __MSDOS__
 # error
 #endif
@@ -67,7 +75,7 @@ void abort (void);
 int
 main (void)
 {
-  if ((uint8_t) bdos (0xc, 0xf6f6, 1) != (uint8_t) '+')
+  if ((uint8_t) bdos (1, 0xf6f6, 0xf6) != (uint8_t) '+')
     abort ();
   bdos (9, (unsigned) "Hello $(ignore this)", 0);
   bdos (2, '$', 0);
