@@ -44,10 +44,12 @@ __libi86_msdos_get_dbcs_lead_table (void)
 #ifdef __IA16_FEATURE_PROTECTED_MODE
   if (__DPMI_hosted () == 1)
     {
-      static volatile __libi86_segment_t cached_seg_rm = 0, cached_seg_pm = 0;
+      static volatile __libi86_segment_t cached_seg_pm = 0;
+      static volatile uint16_t cached_seg_rm = 0;
       rm_call_struct rmc;
       int res;
-      uint16_t off, seg_rm, seg_pm;
+      uint16_t off, seg_rm;
+      __libi86_segment_t seg_pm;
       int32_t res32;
       _dos_dbcs_lead_table_t lt;
 
