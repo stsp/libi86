@@ -100,6 +100,7 @@ AT_CLEANUP
 AT_SETUP([[inp, outp]])
 AT_LIBI86_CHECK_FOR_NONDOSX(dnl
 [[#include <conio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #ifndef __FAR
 # include <bios.h>
@@ -107,9 +108,11 @@ AT_LIBI86_CHECK_FOR_NONDOSX(dnl
 
 static unsigned char s_ocw1;
 
-static void do_abort (void)
+static void do_abort (const char *msg)
 {
   outp (0x21, s_ocw1);
+  fputs (msg, stderr);
+  fputc ('\n', stderr);
   abort ();
 }
 
@@ -120,7 +123,7 @@ static unsigned ticks (void)
 #else
   long tv;
   if (_bios_timeofday (_TIME_GETCLOCK, &tv) < 0)
-    do_abort ();
+    do_abort ("cannot get time");
   return (unsigned) tv;
 #endif
 }
@@ -142,7 +145,7 @@ main (void)
   /* Check that the PIC 1 interrupt mask given by the output control word 1
      (OCW1) does not have either IRQ 0 or IRQ 1 disabled.  */
   if ((s_ocw1 & 0x03) != 0x00)
-    abort ();
+    do_abort ("IRQ 0 or IRQ 1 disabled at startup");
 
   srand (ticks ());
   c1 = 5000;
@@ -156,10 +159,10 @@ main (void)
       while (c2-- != 0)
 	{
 	  if (ticks () != from)
-	    do_abort ();
+	    do_abort ("bogus timer advance #1");
         }
       if (inp (0x21) != 0xff)
-	do_abort ();
+	do_abort ("OCW1 mismatch #1");
 
       outp (0x21, s_ocw1 | 0x01);
       /* Check that the IRQ 0 handler cannot update the tick count when IRQ
@@ -168,10 +171,10 @@ main (void)
       while (c2-- != 0)
 	{
 	  if (ticks () != from)
-	    do_abort ();
+	    do_abort ("bogus timer advance #2");
         }
       if (inp (0x21) != (s_ocw1 | 0x01))
-	do_abort ();
+	do_abort ("OCW1 mismatch #2");
 
       /* Allow IRQs 0--7 for a while.  Every now and then, also wait for the
 	 timer tick count to get updated.  */
@@ -180,7 +183,7 @@ main (void)
 	while (ticks () == from)
 	  hlt ();
       if (inp (0x21) != s_ocw1)
-	do_abort ();
+	do_abort ("OCW1 mismatch #3");
     }
 
   return 0;

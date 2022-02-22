@@ -219,6 +219,7 @@ AT_SETUP([[inportb, outportb]])
 AT_LIBI86_CHECK_FOR_NONDOSX(dnl
 [[#define _BORLANDC_SOURCE
 #include <dos.h>
+#include <stdio.h>
 #include <stdlib.h>
 #ifndef __FAR
 # include <bios.h>
@@ -226,9 +227,11 @@ AT_LIBI86_CHECK_FOR_NONDOSX(dnl
 
 static unsigned char s_ocw1;
 
-static void do_abort (void)
+static void do_abort (const char *msg)
 {
   outportb (0x21, s_ocw1);
+  fputs (msg, stderr);
+  fputc ('\n', stderr);
   abort ();
 }
 
@@ -239,7 +242,7 @@ static unsigned ticks (void)
 #else
   long tv;
   if (_bios_timeofday (_TIME_GETCLOCK, &tv) < 0)
-    do_abort ();
+    do_abort ("cannot get time");
   return (unsigned) tv;
 #endif
 }
@@ -259,7 +262,7 @@ main (void)
   s_ocw1 = inportb (0x21);
 
   if ((s_ocw1 & 0x03) != 0x00)
-    abort ();
+    do_abort ("IRQ 0 or IRQ 1 disabled at startup");
 
   srand (ticks ());
   c1 = 5000;
@@ -271,17 +274,17 @@ main (void)
       while (c2-- != 0)
 	{
 	  if (ticks () != from)
-	    do_abort ();
+	    do_abort ("bogus timer advance #1");
         }
       if (inportb (0x21) != 0xff)
-	do_abort ();
+	do_abort ("OCW1 mismatch #1");
 
       outportb (0x21, s_ocw1);
       if (c1 % 200 == 0)
 	while (ticks () == from)
 	  hlt ();
       if (inportb (0x21) != s_ocw1)
-	do_abort ();
+	do_abort ("OCW1 mismatch #2");
     }
 
   return 0;
