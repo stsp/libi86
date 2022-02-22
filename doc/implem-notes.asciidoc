@@ -7,4 +7,16 @@
 **``_mkdir`` and ``mkdir``**
 
   * ``libi86`` ignores any __mode__ argument that may be passed to ``mkdir`` or ``_mkdir``.
-  * It might initially seem useful to use the __mode__ to change a newly created directory's attributes, via the ``_dos_setfileattr`` mechanism.  MS-DOS does allow one to mark a directory "read-only"; however, during actual file operations, MS-DOS still allows one to remove a "read-only" directory, or even to change such a directory's contents.  Thus, honouring the __mode__ is not very useful.  {back-link}
+  ** It might initially seem useful to use the __mode__ to change a newly created directory's attributes, via the ``_dos_setfileattr`` mechanism.  MS-DOS does allow one to mark a directory "read-only"; however, during actual file operations, MS-DOS still allows one to remove a "read-only" directory, or even to change such a directory's contents.  Thus, honouring the __mode__ is not very useful.  {back-link}
+
+== ``<dos.h>``
+
+**``bdos``**
+
+:fn-chen-20: footnote:chen-20[R. Chen.  Why does MS-DOS put an int 20h at byte 0 of the COM file program segment?  The Old New Thing, Mar 2020.  https://devblogs.microsoft.com/oldnewthing/20200309-00/?p=103547.]
+:fn-necasek-11: footnote:necasek-11[M. Necasek.  Who needs the address wraparound, anyway?  OS/2 Museum, Sep 2011.  http://www.os2museum.com/wp/who-needs-the-address-wraparound-anyway/.]
+
+  * For IA-16 GCC, there is a second implementation of `bdos (`...`)` which uses the ancient `call 5` syscall interface.  This implementation exists mainly for stress-testing DOS implementations, and is likely not useful for writing new programs.
+  ** Use an `#assert` directive to enable this second `bdos`.  See `<dos.h>` for details.
+  ** `call 5` is an alternate way to invoke MS-DOS syscalls, supported to allow better compatibility with CP/M programs.{fn-chen-20}{fn-necasek-11}  Instead of calling `int 0x21` with the syscall number in `%ah`, one does a near call to `PSP:5` with the syscall number in `%cl`.  Only syscalls `0x00`—`0x24` work.
+  ** Note that MS-DOS's `call 5` may clobber `%al` before handing over to the actual syscall handling code.  This means that the third parameter to `bdos (`...`)` should be considered as ignored.  {back-link}
