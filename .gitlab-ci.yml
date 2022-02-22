@@ -1,4 +1,4 @@
-# Copyright (c) 2020--2021 TK Chia
+# Copyright (c) 2020--2022 TK Chia
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -27,11 +27,16 @@
 
 # Configuration file for GitLab (https://gitlab.com/) Continuous Integration.
 
-image: ubuntu:bionic
+image: ubuntu:focal
 stages:
   - test
 test_gcc:
   stage: test
+  variables:
+    # The keyboard-configuration package installation may stall & wait for
+    # input unless we set an environment variable.  See https://community
+    # .gitpod.io/t/configuring-keyboard-configuration/2675/5 .
+    DEBIAN_FRONTEND: noninteractive
   before_script:
     - apt-get update -y
     - apt-get install -y software-properties-common
@@ -40,12 +45,21 @@ test_gcc:
     - >
         add-apt-repository -y ppa:tkchia/build-ia16 ||
         apt-key add tests/ppa-pub-key.gpg.bin
+    - add-apt-repository -y ppa:tkchia/de-rebus || true
     - apt-get update -y
-    - apt-get install -y gcc-ia16-elf dosemu dos2unix autoconf make bsdutils
-  script: ./tests/ci-build-and-check.sh
+    - >
+        apt-get install -y gcc-ia16-elf dosemu2 fdpp dos2unix autoconf make
+        bsdutils adduser
+    - adduser user </dev/null
+  script: su user -c './tests/ci-build-and-check.sh'
   timeout: 2h
 test_ack:
   stage: test
+  variables:
+    # The keyboard-configuration package installation may stall & wait for
+    # input unless we set an environment variable.  See https://community
+    # .gitpod.io/t/configuring-keyboard-configuration/2675/5 .
+    DEBIAN_FRONTEND: noninteractive
   before_script:
     - apt-get update -y
     - apt-get install -y software-properties-common
@@ -53,6 +67,9 @@ test_ack:
         add-apt-repository -y ppa:tkchia/de-rebus ||
         apt-key add tests/ppa-pub-key.gpg.bin
     - apt-get update -y
-    - apt-get install -y ack-compiler dosemu dos2unix autoconf make bsdutils
-  script: ./tests/ci-build-and-check.sh --ack
+    - >
+        apt-get install -y ack-compiler dosemu2 fdpp dos2unix autoconf make
+        bsdutils adduser
+    - adduser user </dev/null
+  script: su user -c './tests/ci-build-and-check.sh --ack'
   timeout: 2h
