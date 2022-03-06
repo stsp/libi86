@@ -166,8 +166,13 @@ dnl $7 = command to prepare a.log before running dosemu (default rm -f)
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_F],[dnl
 _AT_LIBI86_DO_CHECK_EXPOUT_E($@)
 if test yes = "$ac_compiler_gnu"; then
+if test yes = "$at_libi86_cc_have_dosx"; then
 _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mdosx ]]$@)
+fi
 if "$at_arg_x_test_underlying"; then :; else
+if test yes = "$at_libi86_cc_have_newlib_nano_stdio"; then
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mnewlib-nano-stdio ]]$@)
+fi
 _AT_LIBI86_DO_CHECK_EXPOUT_C([[-mprotected-mode ]]$@)
 fi
 fi])
