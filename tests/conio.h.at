@@ -41,6 +41,16 @@ main (int argc, char **argv)
 
 ...with argc == 0x1
 ]])
+AT_LIBI86_CHECK_CONSOLE(dnl
+[[#include <math.h>
+#include <conio.h>
+int
+main (int argc, char **argv)
+{
+  cprintf ("hello %f\n", argc * acos (-1.));
+  return 0;
+}]],[[hello 3.141593
+]])
 AT_CLEANUP
 
 AT_SETUP([[getch, getche, kbhit, ungetch]])
