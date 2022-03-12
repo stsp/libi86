@@ -129,7 +129,9 @@ OBJS		= bios/bios-disk.o \
 		  conio/textmode.o \
 		  conio/ungetch.o \
 		  conio/vcprintf.o \
+		  conio/vcprintf-autofloat.o \
 		  conio/vcscanf.o \
+		  conio/vcscanf-autofloat.o \
 		  conio/wherex.o \
 		  conio/wherey.o \
 		  conio/window.o \
@@ -140,6 +142,7 @@ OBJS		= bios/bios-disk.o \
 		  conio/libi86-bc-getche.o \
 		  conio/libi86-bc-putch.o \
 		  conio/libi86-bc-vcprintf.o \
+		  conio/libi86-bc-vcprintf-autofloat.o \
 		  conio/libi86-bc-vcscanf.o \
 		  conio/libi86-con-in-fd.o \
 		  conio/libi86-con-name.o \
@@ -381,6 +384,10 @@ conio/libi86-bc-%.o: conio/libi86-bc-%.c $(HEADERS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(MULTILIB) -c -o $@ $<
 
 conio/libi86-bc-%.o: conio/%.c $(HEADERS)
+	mkdir -p $(@D)
+	$(CC) $(CPPFLAGS) -D_BORLANDC_SOURCE $(CFLAGS) $(MULTILIB) -c -o $@ $<
+
+conio/libi86-bc-%.o: conio/%.S $(HEADERS)
 	mkdir -p $(@D)
 	$(CC) $(CPPFLAGS) -D_BORLANDC_SOURCE $(CFLAGS) $(MULTILIB) -c -o $@ $<
 

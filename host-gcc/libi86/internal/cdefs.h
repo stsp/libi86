@@ -260,5 +260,12 @@ typedef __segment __libi86_segment_t;
 #else
 typedef __typeof__ (__builtin_ia16_selector (0u)) __libi86_segment_t;
 #endif
+#ifndef __libi86_autofloat_stdio
+# ifdef __IA16_FEATURE_ATTRIBUTE_AUTOFLOAT_STDIO_V2
+#   define __libi86_autofloat_stdio __attribute__ ((__autofloat_stdio_v2__))
+# else
+#   define __libi86_autofloat_stdio
+# endif
+#endif
 
 #endif

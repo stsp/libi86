@@ -39,6 +39,8 @@
 #include "libi86/internal/graph.h"
 #include "libi86/internal/acconfig.h"
 
+int __libi86_bc_vcprintf (const char *, va_list) __libi86_autofloat_stdio;
+
 int
 __libi86_bc_vcprintf (const char *fmt, va_list ap)
 {

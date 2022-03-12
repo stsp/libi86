@@ -77,18 +77,25 @@ _LIBI86_REDIRECT_1 (int, ungetch, int, _ungetch)
 _LIBI86_BC_REDIRECT_1 (char *, cgets, char *)
 _LIBI86_BC_REDIRECT_1 (int, cputs, const char *)
 _LIBI86_BC_REDIRECT_1 (int, putch, int)
-_LIBI86_BC_REDIRECT_2 (int, vcprintf, const char *, __libi86_va_list_t)
 #ifdef __GNUC__
 extern int _LIBI86_BC_REDIRECT_X (cprintf, (const char *, ...))
-	   __attribute__ ((__format__ (__printf__, 1, 2)));
+	   __attribute__ ((__format__ (__printf__, 1, 2)))
+	   __libi86_autofloat_stdio;
+extern int _LIBI86_BC_REDIRECT_X (vcprintf, (const char *, __libi86_va_list_t))
+	   __attribute__ ((__format__ (__printf__, 1, 0)))
+	   __libi86_autofloat_stdio;
 extern int _LIBI86_BC_REDIRECT_X (cscanf, (const char *, ...))
 	   __attribute__ ((__format__ (__scanf__, 1, 2)))
+	   __libi86_autofloat_stdio
 	   _LIBI86_DEPRECATED ("libi86 cscanf is hard to control, and works "
 			       "differently from Open Watcom cscanf");
 extern int _LIBI86_BC_REDIRECT_X (vcscanf, (const char *, __libi86_va_list_t))
+	   __attribute__ ((__format__ (__scanf__, 1, 0)))
+	   __libi86_autofloat_stdio
 	   _LIBI86_DEPRECATED ("libi86 vcscanf is hard to control, and works "
 			       "differently from Open Watcom vcscanf");
 #else  /* ! __GNUC__ */
+_LIBI86_BC_REDIRECT_2 (int, vcprintf, const char *, __libi86_va_list_t)
 _LIBI86_BC_REDIRECT_2 (int, vcscanf, const char *, __libi86_va_list_t)
 # ifdef _BORLANDC_SOURCE
 #   define cprintf	__libi86_bc_cprintf	/* FIXME */

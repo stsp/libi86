@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,30 +27,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define _LIBI86_COMPILING_
-#include <errno.h>
-#include <limits.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include "conio.h"
-#include "libi86/stdio.h"
-#include "libi86/internal/conio.h"
+/*
+ * Under gcc-ia16 with -mnewlib-autofloat-stdio, this module is linked in if
+ * a program uses cprintf (...) or vcprintf (...) with floating-point
+ * arguments.  This module will in turn trigger the linking in of floating-
+ * -point vfprintf (...), vprintf (...), or vsnprintf (...).
+ */
 
-int __libi86_bc_vcscanf (const char *, va_list) __libi86_autofloat_stdio;
+#include "libi86/internal/call-cvt.h"
 
-int
-#ifdef _BORLANDC_SOURCE
-__libi86_bc_vcscanf (const char *fmt, va_list ap)
+	.arch	i8086, jumps
+	.code16
+	.att_syntax prefix
+
+#ifndef _BORLANDC_SOURCE
+	.global	__ia16_have_printf_float.cprintf.v2
+	.set	__ia16_have_printf_float.cprintf.v2, 1
+	.global	__ia16_have_printf_float.vcprintf.v2
+	.set	__ia16_have_printf_float.vcprintf.v2, 1
+# ifdef __MSDOS__
+	.section .autofloat_stdio.__ia16_have_printf_float.vfprintf.v2, "a"
+	.reloc	., R_386_NONE, __ia16_have_printf_float.vfprintf.v2
+# else
+	.section .autofloat_stdio.__ia16_have_printf_float.vprintf.v2, "a"
+	.reloc	., R_386_NONE, __ia16_have_printf_float.vprintf.v2
+# endif
 #else
-vcscanf (const char *fmt, va_list ap)
+	.global	__ia16_have_printf_float.__libi86_bc_cprintf.v2
+	.set	__ia16_have_printf_float.__libi86_bc_cprintf.v2, 1
+	.global	__ia16_have_printf_float.__libi86_bc_vcprintf.v2
+	.set	__ia16_have_printf_float.__libi86_bc_vcprintf.v2, 1
+	.section .autofloat_stdio.__ia16_have_printf_float.vsnprintf.v2, "a"
+	.reloc	., R_386_NONE, __ia16_have_printf_float.vsnprintf.v2
 #endif
-{
-  char buf[UCHAR_MAX + 2], *p;
-
-  buf[0] = (char) UCHAR_MAX;
-  p = cgets (buf);
-  if (! p)
-    return EOF;
-
-  return _vsscanf (p, fmt, ap);
-}

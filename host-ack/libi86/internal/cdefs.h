@@ -183,5 +183,6 @@ __libi86_fpcc_t;
 typedef char *__libi86_va_list_t;
 /* And... */
 typedef unsigned short __libi86_size_t;
+#define __libi86_autofloat_stdio
 
 #endif
