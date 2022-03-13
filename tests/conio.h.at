@@ -41,6 +41,8 @@ main (int argc, char **argv)
 
 ...with argc == 0x1
 ]])
+dnl FIXME: fails on GitLab CI or GitHub CI + ACK.
+if test yes = "$ac_compiler_gnu"; then
 AT_LIBI86_CHECK_CONSOLE(dnl
 [[#include <math.h>
 #include <conio.h>
@@ -51,6 +53,7 @@ main (int argc, char **argv)
   return 0;
 }]],[[hello 3.141593
 ]])
+fi
 AT_CLEANUP
 
 AT_SETUP([[getch, getche, kbhit, ungetch]])

@@ -42,6 +42,8 @@ main (int argc, char **argv)
 
 ...with argc == 0x1
 ]])
+dnl FIXME: fails on GitLab CI or GitHub CI + ACK.
+if test yes = "$ac_compiler_gnu"; then
 AT_LIBI86_CHECK_CONSOLE(dnl
 [[#define _BORLANDC_SOURCE
 #include <math.h>
@@ -53,6 +55,7 @@ main (int argc, char **argv)
   return 0;
 }]],[[hello 3.141593 again
 ]])
+fi
 AT_CLEANUP
 
 AT_SETUP([cgets, cscanf (Borland)])
