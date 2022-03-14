@@ -166,8 +166,8 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       B |    =   | ``outportw (``__port__``,`` __value__``);`` | Accepts an unsigned value to write.
 |         |        | |
 |         |      2+| **``▗▚▚▚▚ <dir.h> ▞▞▞▞▖``**
-|       B |    =   | ``searchpath (``__file__``);`` |
-|       X |    =   | ``_searchpath (``__file__``);`` |
+|       B | = link:doc/implem-notes.asciidoc#dirh[(❧)] | ``searchpath (``__file__``);`` |
+|       X | = link:doc/implem-notes.asciidoc#dirh[(❧)] | ``_searchpath (``__file__``);`` |
 |         |        | |
 |         |      2+| **``▗▚▚▚▚ <direct.h> ▞▞▞▞▖``**
 |  P01, W |   (=)  | ``getcwd (``*__buffer__``,`` __size__``);`` | (POSIX places this function in ``<unistd.h>``.)
@@ -296,13 +296,13 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |         |        | |
 |         |      2+| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
 |         |      2+| **``<libi86/stdlib.h>`` also includes the underlying C library's ``<stdlib.h>``.**
-|       W |    =   | *``_fullpath (``*__out-path__``,`` *__path__``,`` __size__``);`` |
+|       W | = link:doc/implem-notes.asciidoc#libi86stdlibh[(❧)] | *``_fullpath (``*__out-path__``,`` *__path__``,`` __size__``);`` |
 |       W |    G   | *``lltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
 |       W |    G   | *``_lltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
 |       W |    =   | *``ltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
 |       W |    =   | *``_ltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
-|      W+ |    =   | ``_makepath (``*__path__``,`` *__drive__``,`` *__dir__``,`` *__fname__``,`` *__ext__``);`` | As extensions, this function (1) checks for buffer overflow, and (2) gives a return value.  Upon an error, the return value is non-zero, ``errno`` is set, and __path__``[]`` holds either an empty string or a truncated path.  Network __drive__``[]`` values starting with two backslashes (``\\``) are not supported.
-|       W |    =   | ``_splitpath (``*__path__``,`` *__drive__``,`` *__dir__``,`` *__fname__``,`` *__ext__``);`` | Long filenames, and network paths starting with two backslashes (``\\``), are not supported.
+|      W+ | = link:doc/implem-notes.asciidoc#libi86stdlibh[(❧)] | ``_makepath (``*__path__``,`` *__drive__``,`` *__dir__``,`` *__fname__``,`` *__ext__``);`` | As extensions, this function (1) checks for buffer overflow, and (2) gives a return value.  Upon an error, the return value is non-zero, ``errno`` is set, and __path__``[]`` holds either an empty string or a truncated path.  Network __drive__``[]`` values starting with two backslashes (``\\``) are not supported.
+|       W | = link:doc/implem-notes.asciidoc#libi86stdlibh[(❧)] | ``_splitpath (``*__path__``,`` *__drive__``,`` *__dir__``,`` *__fname__``,`` *__ext__``);`` | Long filenames, and network paths starting with two backslashes (``\\``), are not supported.
 |       W |    G   | *``ulltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
 |       W |    G   | *``_ulltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
 |       W |    =   | *``ultoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
