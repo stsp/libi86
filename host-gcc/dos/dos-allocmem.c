@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2020--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -39,35 +39,16 @@ unsigned
 _dos_allocmem (unsigned size, unsigned *seg)
 {
   unsigned ax, max_paras;
-  int res;
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-  if (__DPMI_hosted () == 1)
+  int res, xx;
+
+  __asm volatile ("int $0x21; sbbw %2, %2"
+		  : "=a,a" (ax), "=b,b" (max_paras), "=c,d" (res), "=d,c" (xx)
+		  : "Rah,Rah" ((unsigned char) 0x48), "1,1" (size)
+		  : "cc", "memory");
+  if (! res)
     {
-      unsigned sel;
-      __asm volatile ("int $0x31; sbbw %3, %3"
-		      : "=a" (ax), "=d" (sel), "=b" (max_paras), "=c" (res)
-		      : "0" (0x0100u), "2" (size)
-		      : "cc", "memory");
-      if (! res)
-	{
-	  *seg = sel;
-	  return 0;
-	}
-    }
-  else
-#endif
-    {
-      int xx;
-      __asm volatile ("int $0x21; sbbw %2, %2"
-		      : "=a,a" (ax), "=b,b" (max_paras),
-			"=c,d" (res), "=d,c" (xx)
-		      : "Rah,Rah" ((unsigned char) 0x48), "1,1" (size)
-		      : "cc", "memory");
-      if (! res)
-	{
-	  *seg = ax;
-	  return 0;
-	}
+      *seg = ax;
+      return 0;
     }
 
   *seg = max_paras;

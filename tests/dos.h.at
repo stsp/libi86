@@ -625,15 +625,28 @@ main (int argc, char **argv)
     abort ();
   puts ("6 OK");
 
+#ifdef __FAR
+  ptr = MK_FP (seg, 0);
+  i = max_paras;
+  if (i > 0x1000)
+    i = 0x1000;
+  while (i-- != 0)
+    {
+      *ptr++ = 0xf6f6f6f6ul;  *ptr++ = 0xf6f6f6f6ul;
+      *ptr++ = 0xf6f6f6f6ul;  *ptr++ = 0xf6f6f6f6ul;
+    }
+#endif
+  puts ("7 OK");
+
   if (_dos_setblock (0xffff, seg, &max_paras_2) != ENOMEM)
     abort ();
-  puts ("7 OK");
+  puts ("8 OK");
   if (max_paras_2 < max_paras)
     abort ();
-  puts ("8 OK");
+  puts ("9 OK");
   if (_dos_setblock (max_paras_2, seg, &max_paras_3) != 0)
     abort ();
-  puts ("9 OK");
+  puts ("10 OK");
 
 #ifdef __FAR
   ptr = MK_FP (seg, 0);
@@ -646,6 +659,7 @@ main (int argc, char **argv)
       *ptr++ = 0xf6f6f6f6ul;  *ptr++ = 0xf6f6f6f6ul;
     }
 #endif
+  puts ("11 OK");
 
 #ifndef __IA16_FEATURE_PROTECTED_MODE
 # ifdef __FAR
@@ -661,14 +675,15 @@ main (int argc, char **argv)
     }
 # endif
 #endif
+  puts ("12 OK");
 
   errno = 0;
   if (_dos_freemem (seg) != 0)
     abort ();
-  puts ("10 OK");
+  puts ("13 OK");
   if (errno)
     abort ();
-  puts ("11 OK");
+  puts ("14 OK");
 
   return 0;
 #else
@@ -685,6 +700,9 @@ main (int argc, char **argv)
 9 OK
 10 OK
 11 OK
+12 OK
+13 OK
+14 OK
 ]])
 AT_CLEANUP
 

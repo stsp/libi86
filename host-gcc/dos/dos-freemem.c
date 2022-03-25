@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 TK Chia
+ * Copyright (c) 2020--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -39,24 +39,13 @@ unsigned
 _dos_freemem (unsigned seg)
 {
   unsigned err;
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-  if (__DPMI_hosted () == 1)
-    __asm volatile ("int $0x31; "
-		    "jc 0f; "
-		    "xorw %0, %0; "
-		    "0:"
-		    : "=r" (err)
-		    : "a" (0x0101u), "d" (seg)
-		    : "cc", "memory");
-  else
-#endif
-    __asm volatile ("int $0x21; "
-		    "jc 0f; "
-		    "xorw %0, %0; "
-		    "0:"
-		    : "=a" (err)
-		    : "Rah" ((unsigned char) 0x49),
-		      "e" (__builtin_ia16_selector (seg))
-		    : "cc", "bx", "cx", "dx", "memory");
+  __asm volatile ("int $0x21; "
+		  "jc 0f; "
+		  "xorw %0, %0; "
+		  "0:"
+		  : "=a" (err)
+		  : "Rah" ((unsigned char) 0x49),
+		    "e" (__builtin_ia16_selector (seg))
+		  : "cc", "bx", "cx", "dx", "memory");
   return __libi86_ret_really_set_errno (err);
 }

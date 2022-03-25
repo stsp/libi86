@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2021--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -41,20 +41,12 @@ _dos_setblock (unsigned size, unsigned seg, unsigned *max_size)
   unsigned ax, max;
   int res, xx;
 
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-  if (__DPMI_hosted () == 1)
-    __asm volatile ("int $0x31; sbbw %3, %3"
-		    : "=a" (ax), "=d" (xx), "=b" (max), "=c" (res)
-		    : "0" (0x0102u), "1" (seg), "2" (size)
-		    : "cc", "memory");
-  else
-#endif
-    __asm volatile ("int $0x21; sbbw %2, %2"
-		    : "=a,a" (ax), "=b,b" (max),
-		      "=c,d" (res), "=d,c" (xx)
-		    : "Rah,Rah" ((unsigned char) 0x4a), "1,1" (size),
-		      "e,e" (__builtin_ia16_selector (seg))
-		    : "cc", "memory");
+  __asm volatile ("int $0x21; sbbw %2, %2"
+		  : "=a,a" (ax), "=b,b" (max),
+		    "=c,d" (res), "=d,c" (xx)
+		  : "Rah,Rah" ((unsigned char) 0x4a), "1,1" (size),
+		    "e,e" (__builtin_ia16_selector (seg))
+		  : "cc", "memory");
 
   if (! res)
     return 0;
