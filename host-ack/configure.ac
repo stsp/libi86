@@ -41,21 +41,11 @@ AC_INIT([libi86],m4_esyscmd_s([
   fi]),,[libi86])
 AC_CONFIG_SRCDIR(bios/bios-memsize.S)
 AC_CONFIG_SRCDIR(make-config.sh)
+AC_CONFIG_AUX_DIR(..)
 
 if test "${enable_shared}" = "yes" ; then
   echo "Shared libraries not supported for cross compiling, ignored"
 fi
-
-if test "$srcdir" = "." ; then
-  if test "${with_target_subdir}" != "." ; then
-    libi86_topdir="${srcdir}/${with_multisrctop}../.."
-  else
-    libi86_topdir="${srcdir}/${with_multisrctop}.."
-  fi
-else
-  libi86_topdir="${srcdir}/.."
-fi
-AC_CONFIG_AUX_DIR($libi86_topdir)
 
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
@@ -80,7 +70,7 @@ m4_include([../check-common.m4])
 AC_CHECK_DECLS([__MSDOS__],[libi86_ackhost=msdos86],[libi86_ackhost=pc86])
 AC_SUBST(libi86_ackhost)
 
-host_makefile_frag_path
+host_makefile_frag_path=
 host_makefile_frag=
 AC_SUBST(host_makefile_frag_path)
 AC_SUBST(host_makefile_frag)

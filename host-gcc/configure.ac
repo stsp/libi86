@@ -41,20 +41,11 @@ AC_CONFIG_SRCDIR(make-config.sh)
 m4_include([../aclocal.m4])
 _LIBI86_ACK_FIX
 
+AC_CONFIG_AUX_DIR(..)
+
 if test "${enable_shared}" = "yes" ; then
   echo "Shared libraries not supported for cross compiling, ignored"
 fi
-
-if test "$srcdir" = "." ; then
-  if test "${with_target_subdir}" != "." ; then
-    libi86_topdir="${srcdir}/${with_multisrctop}../.."
-  else
-    libi86_topdir="${srcdir}/${with_multisrctop}.."
-  fi
-else
-  libi86_topdir="${srcdir}/.."
-fi
-AC_CONFIG_AUX_DIR($libi86_topdir)
 
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
@@ -90,14 +81,14 @@ AC_SUBST(host_makefile_frag_path)
 AC_SUBST(host_makefile_frag)
 
 AC_CONFIG_FILES([Makefile],
-[. ${libi86_topdir}/config-ml.in],
+[. ${ac_aux_dir}/config-ml.in],
 srcdir="${srcdir}"
 host="${host}"
 target="${target}"
 with_multisubdir="${with_multisubdir}"
 ac_configure_args="--enable-multilib ${ac_configure_args}"
 CONFIG_SHELL="${CONFIG_SHELL-/bin/sh}"
-libi86_topdir="${libi86_topdir}"
+ac_aux_dir="${ac_aux_dir}"
 CC="${CC}"
 LDFLAGS="${LDFLAGS}"
 )

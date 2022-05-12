@@ -36,6 +36,16 @@ m4_divert_pop([DEFAULTS])])
 dnl Patch autoconf so that it recognizes an --ack option, & also works with
 dnl the Amsterdam Compiler Kit's non-standard default output file names.
 dnl	-- tkchia 20211030
+dnl
+dnl Also force autoconf _not_ to look for a C++ compiler, lest it decides to
+dnl use the host g++.
+dnl
+dnl And, apparently there is a rather bad bug in autoconf 2.71 in the macros
+dnl AC_TYPE_LONG_LONG_INT and AC_TYPE_UNSIGNED_LONG_LONG_INT: for some reason
+dnl they assume that `long long' is supported if the C compiler only
+dnl understands C89 (& C89 is the one C standard that does _not_ define a
+dnl `long long'!).  Patch these macros to remove this bug.
+dnl	-- tkchia 20220512
 AC_DEFUN([_LIBI86_ACK_FIX],dnl
 [m4_define([_LIBI86_SAVE_AC_INIT_PARSE_ARGS],dnl
 m4_defn([_AC_INIT_PARSE_ARGS]))dnl
@@ -43,7 +53,8 @@ m4_define([_AC_INIT_PARSE_ARGS],dnl
 [m4_bpatsubst(m4_defn([_LIBI86_SAVE_AC_INIT_PARSE_ARGS]),dnl
 [--x)],dnl
 [-ack | --ack)
-    host_alias=ia16-pc-msdosack ;;
+    host_alias=ia16-pc-msdosack
+    CXX=/bin/false ;;
  --x)])])dnl
 m4_define([_LIBI86_SAVE_AC_COMPILER_EXEEXT_DEFAULT],dnl
 m4_defn([_AC_COMPILER_EXEEXT_DEFAULT]))dnl
@@ -52,7 +63,19 @@ m4_define([_AC_COMPILER_EXEEXT_DEFAULT],dnl
 [a_out\.exe],dnl
 [a_out.exe cpm.com e.out linux386.exe linux68k.exe linuxmips.exe ]dnl
 [linuxppc.exe msdos86.exe osx386.exe osxppc.exe pc86.img qemuppc.img ]dnl
-[raspberrypi.bin])])])
+[raspberrypi.bin])])dnl
+m4_define([_LIBI86_SAVE_AC_TYPE_UNSIGNED_LONG_LONG_INT],dnl
+m4_defn([AC_TYPE_UNSIGNED_LONG_LONG_INT]))dnl
+m4_defun([AC_TYPE_UNSIGNED_LONG_LONG_INT],dnl
+[m4_bpatsubst(m4_defn([_LIBI86_SAVE_AC_TYPE_UNSIGNED_LONG_LONG_INT]),dnl
+[no | c89) ;;],dnl
+[lolwut) ;;])])dnl
+m4_define([_LIBI86_SAVE_AC_TYPE_LONG_LONG_INT],dnl
+m4_defn([AC_TYPE_LONG_LONG_INT]))dnl
+m4_defun([AC_TYPE_LONG_LONG_INT],dnl
+[m4_bpatsubst(m4_defn([_LIBI86_SAVE_AC_TYPE_LONG_LONG_INT]),dnl
+[no | c89) ;;],dnl
+[lolwut) ;;])])])
 
 AC_DEFUN([_LIBI86_DO_SET_HOST_DIR],dnl
 [if test $ac_compiler_gnu = yes; then

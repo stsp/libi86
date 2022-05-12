@@ -38,21 +38,11 @@ AC_INIT([libi86],m4_esyscmd_s([
     TZ=UTC0 date +%Y%m%d
   fi]),,[libi86])
 AC_CONFIG_SRCDIR(drivei86.c)
+AC_CONFIG_AUX_DIR(..)
 
 if test "${enable_shared}" = "yes" ; then
   echo "Shared libraries not supported for cross compiling, ignored"
 fi
-
-if test "$srcdir" = "." ; then
-  if test "${with_target_subdir}" != "." ; then
-    libi86_topdir="${srcdir}/../.."
-  else
-    libi86_topdir="${srcdir}/.."
-  fi
-else
-  libi86_topdir="${srcdir}/.."
-fi
-AC_CONFIG_AUX_DIR($libi86_topdir)
 
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
