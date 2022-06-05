@@ -51,6 +51,8 @@ typedef void __far *__libi86_fpv_t;
 typedef const void __far *__libi86_fpcv_t;
 typedef volatile void __far *__libi86_fpvv_t;
 typedef const volatile void __far *__libi86_fpcvv_t;
+typedef char __far *__libi86_fpc_t;
+typedef unsigned char __far *__libi86_fpuc_t;
 typedef const char __far *__libi86_fpcc_t;
 /*
  * As of October 2020, GCC does not yet support named address spaces --- in
@@ -64,7 +66,7 @@ typedef struct
     unsigned __off_, __seg_;
   }
 __libi86_fpv_t, __libi86_fpcv_t, __libi86_fpvv_t, __libi86_fpcvv_t,
-__libi86_fpcc_t;
+__libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
 #endif
 
 /*

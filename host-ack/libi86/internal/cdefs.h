@@ -42,7 +42,7 @@ typedef struct
     unsigned __off_, __seg_;
   }
 __libi86_fpv_t, __libi86_fpcv_t, __libi86_fpvv_t, __libi86_fpcvv_t,
-__libi86_fpcc_t;
+__libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
 
 #define _LIBI86_DEPRECATED(msg)
 #define _LIBI86_WARNING(msg)
@@ -182,7 +182,7 @@ __libi86_fpcc_t;
 /* Yep, `va_list' is a pointer-to-char on ACK for the i86 target. */
 typedef char *__libi86_va_list_t;
 /* And... */
-typedef unsigned short __libi86_size_t;
+typedef unsigned short __libi86_size_t, __libi86_segment_t;
 #define __libi86_autofloat_stdio
 
 #endif
