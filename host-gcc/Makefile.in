@@ -71,6 +71,7 @@ RANLIB = @RANLIB@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 
 INSTALL_LIBS	= libi86.a
+INSTALL_SPECS	= $(CLEAN_SPECS)
 INSTALL_HEADERS	= bios.h \
 		  conio.h \
 		  dir.h \
@@ -87,10 +88,15 @@ INSTALL_HEADERS	= bios.h \
 		  libi86/internal/cdefs.h \
 		  libi86/internal/far-cxx.h \
 		  libi86/internal/farptr.h \
+		  libi86/internal/features.h \
 		  libi86/internal/portio.h \
 		  $(CLEAN_HEADERS) \
 		  $(DISTCLEAN_HEADERS)
-CLEAN_HEADERS	= libi86/config.h
+CLEAN_HEADERS	= libi86/config.h \
+		  libi86/internal/wrap/stdio.h \
+		  libi86/internal/wrap/stdlib.h \
+		  libi86/internal/wrap/string.h
+CLEAN_SPECS	= r-msdos.d/libi86.spec
 DISTCLEAN_HEADERS = libi86/internal/acconfig.h
 
 OBJS		= bios/bios-disk.o \
@@ -315,15 +321,17 @@ CPPFLAGS += $(INCLUDES) -I. -I$(srcdir) -I$(srcroot)/common
 default: all
 
 .PHONY: all
-all: $(INSTALL_LIBS) $(INSTALL_HEADERS)
+all: $(INSTALL_LIBS) $(INSTALL_SPECS) $(INSTALL_HEADERS)
 	+@$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=$@
 
 .PHONY: install
-install: $(INSTALL_LIBS) $(INSTALL_HEADERS)
+install: $(INSTALL_LIBS) $(INSTALL_SPECS) $(INSTALL_HEADERS)
 	$(mkinstalldirs) $(DESTDIR)$(tooldir)/lib$(MULTISUBDIR) \
+			 $(DESTDIR)$(tooldir)/lib/rt-specs/r-msdos.d \
 			 $(DESTDIR)$(tooldir)/include \
 			 $(DESTDIR)$(tooldir)/include/libi86 \
-			 $(DESTDIR)$(tooldir)/include/libi86/internal
+			 $(DESTDIR)$(tooldir)/include/libi86/internal \
+			 $(DESTDIR)$(tooldir)/include/libi86/internal/wrap
 	set -e; \
 	d=$(DESTDIR)$(tooldir)/lib$(MULTISUBDIR); \
 	for f in $(INSTALL_LIBS); do \
@@ -333,17 +341,30 @@ install: $(INSTALL_LIBS) $(INSTALL_HEADERS)
 	    $(INSTALL_DATA) $(srcdir)/"$$f" "$$d/$$f"; \
 	  fi; \
 	done
-	set -e; \
-	d=$(DESTDIR)$(tooldir)/include; \
-	for f in $(INSTALL_HEADERS); do \
-	  if [ -f "$$f" ]; then \
-	    $(INSTALL_DATA) "$$f" "$$d/$$f"; \
-	  elif [ -f $(srcdir)/"$$f" ]; then \
-	    $(INSTALL_DATA) $(srcdir)/"$$f" "$$d/$$f"; \
-	  else \
-	    $(INSTALL_DATA) $(srcroot)/common/"$$f" "$$d/$$f"; \
-	  fi; \
-	done
+	if [ -z "$(MULTISUBDIR)" ]; then \
+	  set -e; \
+	  d=$(DESTDIR)$(tooldir)/lib/rt-specs; \
+	  for f in $(INSTALL_SPECS); do \
+	    if [ -f "$$f" ]; then \
+	      $(INSTALL_DATA) "$$f" "$$d/$$f"; \
+	    else \
+	      $(INSTALL_DATA) $(srcdir)/"$$f" "$$d/$$f"; \
+	    fi; \
+	  done; \
+	fi
+	if [ -z "$(MULTISUBDIR)" ]; then \
+	  set -e; \
+	  d=$(DESTDIR)$(tooldir)/include; \
+	  for f in $(INSTALL_HEADERS); do \
+	    if [ -f "$$f" ]; then \
+	      $(INSTALL_DATA) "$$f" "$$d/$$f"; \
+	    elif [ -f $(srcdir)/"$$f" ]; then \
+	      $(INSTALL_DATA) $(srcdir)/"$$f" "$$d/$$f"; \
+	    else \
+	      $(INSTALL_DATA) $(srcroot)/common/"$$f" "$$d/$$f"; \
+	    fi; \
+	  done; \
+	fi
 	+@$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=$@
 
 .PHONY: test doc info install-info clean-info
@@ -356,7 +377,7 @@ clean mostlyclean: clean-here
 
 .PHONY: clean-here
 clean-here:
-	$(RM) $(BSP) $(CLEAN_HEADERS)
+	$(RM) $(BSP) $(CLEAN_HEADERS) $(CLEAN_SPECS)
 	for d in . $(OBJ_SUBDIRS); do \
 		$(RM) "$$d"/a.out "$$d"/core "$$d"/*.[iox] "$$d"/*-test \
 		      "$$d"/*.srec "$$d"/*.dis "$$d"/*.hex; \
@@ -417,6 +438,16 @@ libi86/config.h: make-config.sh $(BSP)
 	mkdir -p $(@D)
 	NM='$(NM)' AWK='$(AWK)' PACKAGE_VERSION='$(PACKAGE_VERSION)' \
 	  $(SHELL) $< $(BSP) >$@.tmp
+	mv $@.tmp $@
+
+libi86/internal/wrap/%.h: make-wrap-h.sh
+	mkdir -p $(@D)
+	$(SHELL) $< $* >$@.tmp
+	mv $@.tmp $@
+
+r-%.d/libi86.spec: r-%.d/libi86.spec.in
+	mkdir -p $(@D)
+	$(SHELL) $< >$@.tmp
 	mv $@.tmp $@
 
 Makefile: Makefile.in config.status @host_makefile_frag_path@
