@@ -96,7 +96,7 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |===
 
 === Functions
-
+	
 [cols=">1,>1,4,4"]
 |===
 | Compat. | Avail. | Function | Notes
@@ -114,8 +114,10 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       W |    =   | ``_bios_timeofday (``__service__``,`` *__timeval__``);`` |
 |       X |    =   | ``_bios_joystick (``__service__``,`` *__joyinfo__``);`` | Reads joystick status via ``int 0x15`` function ``0x84``.
 |         |        | |
-|         |      2+| **``▗▚▚▚▚ <conio.h> ▞▞▞▞▖``**
-|         |      2+| **If `_BORLANDC_SOURCE` is defined, ``<conio.h>`` switches to an alternate implementation of the console output routines which is based on ``<graph.h>`` facilities.**
+|         |     2+a| **``▗▚▚▚▚ <conio.h> ▞▞▞▞▖``**
+
+			* **If `_BORLANDC_SOURCE` is defined, ``<conio.h>`` switches to an alternate implementation of the console output routines which is based on ``<graph.h>`` facilities.**
+
 |     W/B |    =   | *``cgets (``*__buf__``);`` |
 |     W/B |    =   | ``cprintf (``*__fmt__``, ...);`` |
 |     W/B |    =   | ``cputs (``*__buf__``);`` |
@@ -185,8 +187,11 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |  P01, W |   (=)  | ``rmdir (``*__path__``);`` | (POSIX places this function in ``<unistd.h>``.)
 |       W |    =   | ``_rmdir (``*__path__``);`` |
 |         |        | |
-|         |      2+| **``▗▚▚▚▚ <dos.h> ▞▞▞▞▖``**
-|         |      2+| **``<dos.h>`` also includes ``<i86.h>``, described below.  If `_BORLANDC_SOURCE` is defined, the ``union REGS`` type gets an additional ``.x.flags`` field, and ``<dos.h>`` switches accordingly to a different version of the ``intdos`` and ``intdosx`` routines.**
+|         |     2+a| **``▗▚▚▚▚ <dos.h> ▞▞▞▞▖``**
+
+			* **``<dos.h>`` also includes ``<i86.h>``, described below.**
+			* **If `_BORLANDC_SOURCE` is defined, the ``union REGS`` type gets an additional ``.x.flags`` field, and ``<dos.h>`` switches accordingly to a different version of the ``intdos`` and ``intdosx`` routines.**
+
 |       W | = link:doc/implem-notes.asciidoc#dosh[(❧)] | ``bdos (``__dos-func__``,`` __dx__``,`` __al__``);`` |
 |       B |    =   | ``bdosptr (``__dos-func__``,`` *__dx__``,`` __al__``);`` |
 |     W/B |    =   | ``intdos (``*__in-regs__``,`` *__out-regs__``);`` |
@@ -233,8 +238,11 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       B |    =   | ``outport (``__port__``,`` __value__``);`` | Accepts a signed value to write.
 |       B |    =   | ``outportw (``__port__``,`` __value__``);`` | Accepts an unsigned value to write.
 |         |        | |
-|         |      2+| **``▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖``**
-|         |      2+| **Except for ``__DPMI_hosted ()`` and ``_DPMIIdle ()``, functions in ``<dpmi.h>`` should only be called when the caller knows it is running in DPMI mode.  ``<dpmi.h>`` is not supported for ACK.**
+|         |     2+a| **``▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖``**
+
+			* **Except for ``__DPMI_hosted ()`` and ``_DPMIIdle ()``, functions in ``<dpmi.h>`` should only be called when the caller knows it is running in DPMI mode.**
+			* **``<dpmi.h>`` is not supported for ACK.**
+
 |      IW |    G   | ``__DPMI_hosted ();`` | Returns 1 if running in protected mode under DPMI, -1 otherwise.  If the underlying C library has an implementation of this function, ``libi86`` will use that instead.
 |      IW |    G   | ``_DPMIAllocateDOSMemoryBlock (``__paras__``);`` | ``int 0x31`` function ``0x0100``.  Returns a structure giving the real mode segment and protected mode selector for the DOS memory block.  On failure, returns ``{ 0, 0 }``.
 |      IW |    G   | ``_DPMIAllocateLDTDescriptors (``__count__``);`` | ``int 0x31`` function ``0x0000``.  Returns a starting protected-mode selector, case to an ``int32_t``.  On failure, returns a negative value.
@@ -250,8 +258,10 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |      IW |    G   | ``_DPMISetDescriptor (``__sel__``,`` *__desc__``);`` | ``int 0x31`` function ``0x000c``.  Returns 0 on success, -1 on error.
 |      IW |    G   | ``_DPMISimulateRealModeInterrupt (``__inter-no__``,`` __reset__``,`` __words-to-copy__``,`` *__call-struct__``);`` | ``int 0x31`` function ``0x0300``.  Returns 0 on success, -1 on error.  _words-to-copy_ should probably be 0.
 |         |        | |
-|         |      2+| **``▗▚▚▚▚ <graph.h> ▞▞▞▞▖``**
-|         |      2+| **Unlike in Open Watcom, where all functions in ``<graph.h>`` are far, in ``libi86`` the far-ness of functions follows the chosen memory model.  Thus, in a small-memory-model program, ``_setvideomode`` is a near function.  However, pointers to data are still far.**
+|         |     2+a| **``▗▚▚▚▚ <graph.h> ▞▞▞▞▖``**
+
+			* **Unlike in Open Watcom, where all functions in ``<graph.h>`` are far, in ``libi86`` the far-ness of functions follows the chosen memory model.  Thus, in a small-memory-model program, ``_setvideomode`` is a near function.  However, pointers to data are still far.**
+
 |       W |    =   | ``_clearscreen (``__area__``);`` |
 |       W |    =   | ``_displaycursor (``__curs-mode__``);`` |
 |       W |    =   | ``_gettextposition ();`` |
@@ -265,8 +275,10 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       W |    =   | ``_settextwindow (``__row1__``,`` __col1__``,`` __row2__``,`` __col2__``);`` |
 |       W |    =   | ``_setvideomode (``__mode__``);`` | In the case of SuperVGA screen modes, only works with VESA interface.
 |         |        | |
-|         |      2+| **``▗▚▚▚▚ <i86.h> ▞▞▞▞▖``**
-|         |      2+| **If `_BORLANDC_SOURCE` is defined, the ``union REGS`` type gets an additional ``.x.flags`` field, and ``<i86.h>`` switches accordingly to a different version of the ``int86``, ``int86x``, ``_int86f``, and ``_int86xf`` routines.**
+|         |     2+a| **``▗▚▚▚▚ <i86.h> ▞▞▞▞▖``**
+
+			* **If `_BORLANDC_SOURCE` is defined, the ``union REGS`` type gets an additional ``.x.flags`` field, and ``<i86.h>`` switches accordingly to a different version of the ``int86``, ``int86x``, ``_int86f``, and ``_int86xf`` routines.**
+
 |       W |    =   | ``delay (``__ms__``);`` |
 |       W |    =   | ``nosound ();`` |
 |       W |    =   | ``sound (``__freq__``);`` |
@@ -289,13 +301,19 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       X |    =   | *``_CV_FP (``*__ptr__``);`` | Convert a default-sized pointer to a far pointer.  This is mainly useful for ACK, which lacks built-in far pointer support.
 |       X |    =   | ``_FP_EQ (``*__ptr1__``,`` *__ptr2__``);`` | Test whether two far pointers are exactly equal.  This is mainly useful for ACK, which lacks built-in far pointer support.
 |         |        | |
-|         |      2+| **``▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖``**
-|         |      2+| **``<libi86/stdio.h>`` also includes the underlying C library's ``<stdio.h>``.**
+|         |     2+a| **``▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖``**
+
+			* **``<libi86/stdio.h>`` also includes the underlying C library's ``<stdio.h>``.**
+			* **Under newer versions of `gcc-ia16`, ``<stdio.h>`` will also automatically include ``<libi86/stdio.h>``, unless GCC is in "strict ANSI" or `gnu89` mode.**
+
 |  C99, W |   (=)  | ``vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` | (C99 places this function in ``<stdio.h>``.)
 |       X |   (=)  | ``_vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` |
 |         |        | |
-|         |      2+| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
-|         |      2+| **``<libi86/stdlib.h>`` also includes the underlying C library's ``<stdlib.h>``.**
+|         |     2+a| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
+
+			* **``<libi86/stdlib.h>`` also includes the underlying C library's ``<stdlib.h>``.**
+			* **Under newer versions of `gcc-ia16`, ``<stdlib.h>`` will also automatically include ``<libi86/stdlib.h>``, unless GCC is in "strict ANSI" or `gnu89` mode.**
+
 |       W | = link:doc/implem-notes.asciidoc#libi86stdlibh[(❧)] | *``_fullpath (``*__out-path__``,`` *__path__``,`` __size__``);`` |
 |       W |    G   | *``lltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
 |       W |    G   | *``_lltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
@@ -308,8 +326,11 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       W |    =   | *``ultoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
 |       W |    =   | *``_ultoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
 |         |        | |
-|         |      2+| **``▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖``**
-|         |      2+| **``<libi86/string.h>`` also includes the underlying C library's ``<string.h>``.**
+|         |     2+a| **``▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖``**
+
+			* **``<libi86/string.h>`` also includes the underlying C library's ``<string.h>``.**
+			* **Under newer versions of `gcc-ia16`, ``<string.h>`` will also automatically include ``<libi86/string.h>``, unless GCC is in "strict ANSI" or `gnu89` mode.**
+
 |       W |    =   | ``_fmemcmp (``*__s1__``,`` *__s2__``,`` __n__``);`` |
 |       W |    =   | *``_fmemcpy (``*__dest__``,`` *__src__``,`` __n__``);`` |
 |       W |    =   | *``_fmemmove (``*__dest__``,`` *__src__``,`` __n__``);`` |
