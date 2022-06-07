@@ -99,6 +99,10 @@ AT_LIBI86_CHECK_WITH_TMP_DIR(dnl
 [[#include <direct.h>
 #include <errno.h>
 #include <stdio.h>
+#undef CC89
+#if __STDC_VERSION__ - 0 < 199901L
+# define CC89
+#endif
 void abort (void);
 int
 main (void)
@@ -114,7 +118,7 @@ main (void)
   if (_mkdir (TMP_DIR "/foo") == 0)
     abort ();
   puts ("2 OK");
-#ifndef __ACK
+#ifndef CC89
   if (_mkdir (TMP_DIR "/foo", 0700) == 0)
     abort ();
 #endif
@@ -122,7 +126,7 @@ main (void)
   if (_mkdir (TMP_DIR "/foo/bar") != 0)
     abort ();
   puts ("4 OK");
-#ifndef __ACK
+#ifndef CC89
   if (_mkdir (TMP_DIR "/foo/bar", 0777) == 0)
     abort ();
 #endif

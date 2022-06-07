@@ -111,6 +111,7 @@ AT_CHECK([AT_LIBI86_RUN($4,,$5,$6,$7)],,[[expout]],[[ignore]])])
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_B],[dnl
 if test yes = "$ac_compiler_gnu"; then
 _AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os ]]$@)
+_AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os -std=gnu89 ]]$@)
 if "$at_arg_x_test_underlying"; then :; else
 _AT_LIBI86_DO_CHECK_EXPOUT_A([[-O0 ]]$@)
 _AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os -masm=intel ]]$@)

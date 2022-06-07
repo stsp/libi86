@@ -48,7 +48,7 @@ cat <<FIN
 #ifndef _LIBI86_LIBI86_INTERNAL_WRAP_${cap_hdr}_H_
 #define _LIBI86_LIBI86_INTERNAL_WRAP_${cap_hdr}_H_
 #include_next <$hdr.h>
-#if ! defined __STRICT_ANSI__ && __STDC_VERSION__ - 0 >= 199901L
+#ifndef __STRICT_ANSI__
 # include <libi86/$hdr.h>
 #endif
 #endif

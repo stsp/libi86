@@ -38,9 +38,6 @@
 # define _LIBI86_END_EXTERN_C	}
 # define _LIBI86_EXTERN_C	extern "C"
 #else
-# if __STDC_VERSION__ - 0 < 199901L
-#   error "libi86 does not support GCC operating in C89 mode!"
-# endif
 # define _LIBI86_BEGIN_EXTERN_C
 # define _LIBI86_END_EXTERN_C
 # define _LIBI86_EXTERN_C	extern

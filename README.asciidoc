@@ -304,7 +304,7 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |         |     2+a| **``▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖``**
 
 			* **``<libi86/stdio.h>`` also includes the underlying C library's ``<stdio.h>``.**
-			* **Under newer versions of `gcc-ia16`, ``<stdio.h>`` will also automatically include ``<libi86/stdio.h>``, unless GCC is in "strict ANSI" or `gnu89` mode.**
+			* **Under newer versions of `gcc-ia16`, ``<stdio.h>`` will also automatically include ``<libi86/stdio.h>``, unless GCC is in "strict ANSI" mode.**
 
 |  C99, W |   (=)  | ``vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` | (C99 places this function in ``<stdio.h>``.)
 |       X |   (=)  | ``_vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` |
@@ -312,7 +312,7 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |         |     2+a| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
 
 			* **``<libi86/stdlib.h>`` also includes the underlying C library's ``<stdlib.h>``.**
-			* **Under newer versions of `gcc-ia16`, ``<stdlib.h>`` will also automatically include ``<libi86/stdlib.h>``, unless GCC is in "strict ANSI" or `gnu89` mode.**
+			* **Under newer versions of `gcc-ia16`, ``<stdlib.h>`` will also automatically include ``<libi86/stdlib.h>``, unless GCC is in "strict ANSI" mode.**
 
 |       W | = link:doc/implem-notes.asciidoc#libi86stdlibh[(❧)] | *``_fullpath (``*__out-path__``,`` *__path__``,`` __size__``);`` |
 |       W |    G   | *``lltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
@@ -329,7 +329,7 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |         |     2+a| **``▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖``**
 
 			* **``<libi86/string.h>`` also includes the underlying C library's ``<string.h>``.**
-			* **Under newer versions of `gcc-ia16`, ``<string.h>`` will also automatically include ``<libi86/string.h>``, unless GCC is in "strict ANSI" or `gnu89` mode.**
+			* **Under newer versions of `gcc-ia16`, ``<string.h>`` will also automatically include ``<libi86/string.h>``, unless GCC is in "strict ANSI" mode.**
 
 |       W |    =   | ``_fmemcmp (``*__s1__``,`` *__s2__``,`` __n__``);`` |
 |       W |    =   | *``_fmemcpy (``*__dest__``,`` *__src__``,`` __n__``);`` |

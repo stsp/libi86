@@ -1105,6 +1105,21 @@ AT_LIBI86_CHECK(dnl
 #ifdef __GNUC__
 # include <libi86/stdlib.h>
 #endif
+/*
+ * In -std=gnu89 mode, GCC's <limits.h> defines LONG_LONG_MIN etc., but not
+ * the C99 constants LLONG_MIN etc.
+ */
+#if __STDC_VERSION__ - 0 < 199901L
+# if ! defined LLONG_MIN && defined LONG_LONG_MIN
+#   define LLONG_MIN LONG_LONG_MIN
+# endif
+# if ! defined LLONG_MAX && defined LONG_LONG_MAX
+#   define LLONG_MAX LONG_LONG_MAX
+# endif
+# if ! defined ULLONG_MAX && defined ULONG_LONG_MAX
+#   define ULLONG_MAX ULONG_LONG_MAX
+# endif
+#endif
 static void
 test_l_ul_ll_ull (long x)
 {
