@@ -4103,7 +4103,8 @@ then :
   printf "%s\n" "#define _LIBI86_INTERNAL_HAVE_O_TEXT 1" >>confdefs.h
 
 fi
-ac_fn_check_decl "$LINENO" "ENAMETOOLONG" "ac_cv_have_decl_ENAMETOOLONG" "$ac_includes_default" "$ac_c_undeclared_builtin_options" "CFLAGS"
+ac_fn_check_decl "$LINENO" "ENAMETOOLONG" "ac_cv_have_decl_ENAMETOOLONG" "#include <errno.h>
+" "$ac_c_undeclared_builtin_options" "CFLAGS"
 if test "x$ac_cv_have_decl_ENAMETOOLONG" = xyes
 then :
   printf "%s\n" "#define _LIBI86_INTERNAL_HAVE_ENAMETOOLONG 1" >>confdefs.h
