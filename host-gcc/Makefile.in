@@ -266,6 +266,7 @@ OBJS		= bios/bios-disk.o \
 		  string/fmemcmp.o \
 		  string/fmemcpy.o \
 		  string/fmemmove.o \
+		  string/fmemset.o \
 		  string/fstrlen.o \
 		  string/libi86-fmemmove-backward.o \
 		  stdlib/fullpath.o \

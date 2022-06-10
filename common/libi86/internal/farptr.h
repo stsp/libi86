@@ -78,6 +78,14 @@ __libi86_pokeb (unsigned __s, unsigned __o, char __v)
 {
   * (volatile char __far *) __libi86_MK_FP (__s, __o) = __v;
 }
+
+# ifdef _LIBI86_COMPILING_
+_LIBI86_ALT_INLINE void
+__libi86_pokefpb (volatile void __far *__p, char __v)
+{
+  * (volatile char __far *) __p = __v;
+}
+# endif  /* _LIBI86_COMPILING_ */
 #elif defined __cplusplus  /* ! __FAR */
 # define __libi86_FP_SEG(__p)	((__libi86_fpcvv_t (__p)).__FP_SEG ())
 # define __libi86_FP_OFF(__p)	((__libi86_fpcvv_t (__p)).__FP_OFF ())
@@ -124,6 +132,12 @@ __libi86_peekfpbi (__libi86_fpcc_t *__pp)
   unsigned __s = __pp->__seg_;
   unsigned __o = __pp->__off_++;
   return __libi86_peekb (__s, __o);
+}
+
+static void
+__libi86_pokefpb (__libi86_fpc_t __p, char __v)
+{
+  __libi86_pokeb (__p.__seg_, __p.__off_, __v);
 }
 # endif  /* _LIBI86_COMPILING_ */
 #endif  /* ! __FAR && ! __cplusplus */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,25 +27,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_LIBI86_STRING_H_
-#define _LIBI86_LIBI86_STRING_H_
+#include "libi86/internal/call-cvt.h"
 
-#include <string.h>
+	.arch	i8086, jumps
+	.code16
+	.att_syntax prefix
 
-#include <libi86/internal/cdefs.h>
-
-_LIBI86_BEGIN_EXTERN_C
-
-extern int _fmemcmp (__libi86_fpcv_t __s1, __libi86_fpcv_t __s2,
-		     __libi86_size_t __n);
-extern __libi86_fpv_t _fmemcpy (__libi86_fpv_t __dest, __libi86_fpcv_t __src,
-				__libi86_size_t __n);
-extern __libi86_fpv_t _fmemmove (__libi86_fpv_t __dest, __libi86_fpcv_t __src,
-				 __libi86_size_t __n);
-extern __libi86_fpv_t _fmemset (__libi86_fpv_t __dest, int __c,
-				__libi86_size_t __n);
-extern __libi86_size_t _fstrlen (__libi86_fpcc_t __s);
-
-_LIBI86_END_EXTERN_C
-
+#ifdef __IA16_CMODEL_IS_FAR_TEXT	/* 1st stack arg. offset from %di */
+# define SA0		6
+#else
+# define SA0		4
 #endif
+
+	TEXT_ (fmemset.S.LIBI86)
+	.global	_fmemset
+_fmemset:
+	pushw	%di
+	movw	%sp,	%di
+	pushw	%es
+#ifdef __IA16_CALLCVT_REGPARMCALL	/* we will return DEST as %dx:%ax; */
+	xchgw	%ax,	%bx		/* stash offset part in %bx first */
+	xchgw	%ax,	%cx
+	movw	SA0(%di), %cx
+	movw	%dx,	%es
+	movw	%bx,	%di
+#else
+	movb	SA0+4(%di), %al
+	movw	SA0+6(%di), %cx
+	lesw	SA0(%di), %di
+	movw	%es,	%dx
+	movw	%di,	%bx
+#endif
+	movb	%al,	%ah
+	shrw	%cx
+	rep stosw
+	adcw	%cx,	%cx
+	rep stosb
+	xchgw	%ax,	%bx
+	popw	%es
+	popw	%di
+	RET_ (8)

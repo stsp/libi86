@@ -334,6 +334,7 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       W |    =   | ``_fmemcmp (``*__s1__``,`` *__s2__``,`` __n__``);`` |
 |       W |    =   | *``_fmemcpy (``*__dest__``,`` *__src__``,`` __n__``);`` |
 |       W |    =   | *``_fmemmove (``*__dest__``,`` *__src__``,`` __n__``);`` |
+|       W |    =   | *``_fmemset (``*__s__``,`` __c__``,`` __n__``);`` |
 |       W |    =   | ``_fstrlen (``*__s__``);`` |
 |===
 
