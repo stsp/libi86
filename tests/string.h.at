@@ -75,6 +75,7 @@ AT_CLEANUP
 AT_SETUP([[_fmemcpy]])
 AT_LIBI86_CHECK(dnl
 [[#include <i86.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <libi86/string.h>
 const char foo[] = "hello!!!", bar[] = "world ";
@@ -82,8 +83,13 @@ char baz[14];
 int
 main (void)
 {
+  __libi86_fpv_t res;
   _fmemcpy (_CV_FP (baz), _CV_FP (bar), 6);
   _fmemcpy (_CV_FP (baz + 6), _CV_FP (foo), 8);
+  /* Beware of corner cases... */
+  res = _fmemcpy (_CV_FP (foo), _CV_FP (bar), 0);
+  if (! _FP_EQ (res, _CV_FP (foo)))
+    abort ();
   write (1, baz, sizeof (baz));
   write (1, "\n", 1);
   return 0;
@@ -122,7 +128,8 @@ main (void)
 }]],[[world hello!!!
 ]])
 AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX(dnl
-[[#include <unistd.h>
+[[#include <stdlib.h>
+#include <unistd.h>
 #include <libi86/string.h>
 __far const char foo[] = "hello!!!", bar[] = "world ";
 char baz[14];
@@ -131,6 +138,8 @@ main (void)
 {
   _fmemcpy (baz, bar, 6);
   _fmemcpy (baz + 6, foo, 8);
+  if (_fmemcpy (foo, bar, 0) != foo)
+    abort ();
   write (1, baz, sizeof (baz));
   write (1, "\n", 1);
   return 0;
@@ -141,32 +150,78 @@ AT_CLEANUP
 AT_SETUP([[_fmemmove]])
 AT_LIBI86_CHECK(dnl
 [[#include <i86.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <libi86/string.h>
-const char foo[] = "!hello!!!\n\n";
+char foo[] = "!hello!!!\n\n";
 char bar[11];
 int
 main (void)
 {
-  _fmemmove (_CV_FP (foo + 1), _CV_FP (foo), 9);
+  __libi86_fpv_t res = _fmemmove (_CV_FP (foo + 1), _CV_FP (foo), 9);
+  if (! _FP_EQ (res, _CV_FP (foo + 1)))
+    abort ();
   _fmemcpy (_CV_FP (bar), _CV_FP (foo), 11);
   write (1, bar, 11);
   return 0;
 }]],[[!!hello!!!
 ]])
 AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX(dnl
-[[#include <unistd.h>
+[[#include <stdlib.h>
+#include <unistd.h>
 #include <libi86/string.h>
-const char __far foo[] = "!hello!!!\n\n";
+char __far foo[] = "!hello!!!\n\n";
 char bar[11];
 int
 main (void)
 {
-  _fmemmove (foo + 1, foo, 9);
+  if (_fmemmove (foo + 1, foo, 9) != foo + 1)
+    abort ();
   _fmemcpy (bar, foo, 11);
   write (1, bar, 11);
   return 0;
 }]],[[!!hello!!!
+]])
+AT_CLEANUP
+
+AT_SETUP([[_fmemset]])
+AT_LIBI86_CHECK(dnl
+[[#include <i86.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <libi86/string.h>
+char foo[] = "!hello!!!\n\n";
+char bar[11];
+int
+main (void)
+{
+  __libi86_fpv_t res = _fmemset (_CV_FP (foo + 2), 'a', 8);
+  if (! _FP_EQ (res, _CV_FP (foo + 2)))
+    abort ();
+  _fmemset (_CV_FP (foo + 9), '.', 1);
+  _fmemset (_CV_FP (foo + 10), '?', 0);
+  _fmemcpy (_CV_FP (bar), _CV_FP (foo), 11);
+  write (1, bar, 11);
+  return 0;
+}]],[[!haaaaaaa.
+]])
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX(dnl
+[[#include <stdlib.h>
+#include <unistd.h>
+#include <libi86/string.h>
+char __far foo[] = "!hello!!!\n\n";
+char bar[11];
+int
+main (void)
+{
+  if (_fmemset (foo + 2, 'a', 8) != foo + 2)
+    abort ();
+  _fmemset (foo + 9, '.', 1);
+  _fmemset (foo + 10, '?', 0);
+  _fmemcpy (bar, foo, 11);
+  write (1, bar, 11);
+  return 0;
+}]],[[!haaaaaaa.
 ]])
 AT_CLEANUP
 
@@ -188,7 +243,8 @@ main (void)
   return 0;
 }]],[])
 AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX(dnl
-[[#include <unistd.h>
+[[#include <stdlib.h>
+#include <unistd.h>
 #include <libi86/string.h>
 __far const char foo[] = "hello world", bar[] = "", baz[] = "!";
 int
