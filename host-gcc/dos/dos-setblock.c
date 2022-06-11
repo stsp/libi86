@@ -31,9 +31,6 @@
 #include <stdint.h>
 #include "dos.h"
 #include "libi86/internal/dos.h"
-#ifdef __IA16_FEATURE_PROTECTED_MODE
-# include "dpmi.h"
-#endif
 
 unsigned
 _dos_setblock (unsigned size, unsigned seg, unsigned *max_size)
