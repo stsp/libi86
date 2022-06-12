@@ -43,5 +43,6 @@ ___libi86_get_osmajor_osminor:
 	mov	(.cached_osver), ax
 	ret
 
+	.sect	.bss  /* workaround: prevent ACK as from using wrong section */
 	.comm	.cached_osver, 2
 #endif

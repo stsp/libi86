@@ -44,5 +44,6 @@ ___libi86_get_psp:
 	mov	(.cached_psp), ax
 	ret
 
+	.sect	.bss  /* workaround: prevent ACK as from using wrong section */
 	.comm	.cached_psp, 2
 #endif
