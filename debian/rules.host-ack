@@ -1,0 +1,22 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE = 1
+
+	# launchpad.net specifies options which make sense when compiling to
+	# an Ubuntu host, but not so much sense when cross-compiling to an
+	# ACK host.  -- tkchia
+undefine CFLAGS
+undefine CPPFLAGS
+undefine LDFLAGS
+
+%:
+	exec dh $@ --parallel --builddirectory=build
+
+override_dh_update_autotools_config:
+	# Nope, do not touch config.sub or config.guess .
+
+override_dh_auto_configure:
+	dh_auto_configure -O--parallel -- --ack --prefix=/usr
+
+override_dh_strip:
+	# Not needed for now.

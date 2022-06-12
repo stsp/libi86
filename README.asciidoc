@@ -38,8 +38,8 @@ When using IA-16 GCC:
 
 When using ACK:
 
-  * `ack-cc -mmsdos86` [..._ack-options_...] `-li86.a` [...]
-  * Or (if compiler is installed as `ack`): `ack -mmsdos86` [..._ack-options_...] `-li86.a` [...]
+  * `ack-cc -mmsdos86 -.c` [..._ack-options_...] `-li86.a` [...]
+  * Or (if compiler is installed as `ack`): `ack -mmsdos86 -.c` [..._ack-options_...] `-li86.a` [...]
 
 === Installing from pre-compiled Ubuntu Linux packages, for cross development
 
@@ -49,7 +49,11 @@ When using IA-16 GCC:
 
   * Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from https://launchpad.net/~tkchia/+archive/ubuntu/build-ia16/[my `build-ia16` PPA].{fn-tkchia-22b}
 
-When using ACK, you currently need to build `libi86` from sources.
+When using ACK:
+
+:fn-tkchia-22c: footnote:tkchia-22c[https://launchpad.net/~tkchia/+archive/ubuntu/de-rebus/.]
+
+  * Grab the `ack-compiler` and `libi86-ack` packages from https://launchpad.net/~tkchia/+archive/ubuntu/de-rebus/[my `de-rebus` PPA].{fn-tkchia-22c}
 
 === Building from sources, installing, and testing, on Linux
 

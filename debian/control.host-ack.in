@@ -1,0 +1,17 @@
+Source: libi86-ack
+Section: devel
+Priority: optional
+Maintainer: TK Chia <tkchia@gmx.com>
+Build-Depends: debhelper (>=9), autotools-dev,
+ ack-compiler (>= 1:6.0~pre5-20220319), xz-utils
+Standards-Version: 3.9.6
+Homepage: https://gitlab.com/tkchia/libi86
+Vcs-Git: https://gitlab.com/tkchia/libi86.git
+
+Package: libi86-ack
+Architecture: any
+Depends: ack-compiler, ${shlibs:Depends}, ${misc:Depends}
+Description: Non-standard C library routines, for ACK msdos86 target
+ Implementation of some non-standard C library facilities (e.g. <conio.h>),
+ as commonly used in classical MS-DOS programs, for the msdos86 (MS-DOS on
+ 16-bit Intel x86 CPUs) target of the Amsterdam Compiler Kit.
