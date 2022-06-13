@@ -248,10 +248,10 @@ __libi86_con_mode_changed (unsigned mode)
   __libi86_vid_state.adapter = __libi86_vid_get_adapter (mode);
 
   /* Record the maximum (x, y) coordinates in character units. */
-  max_x = __libi86_peekb_bios_ds (0x004aU) - 1;
+  max_x = __libi86_peekb_bda (0x004aU) - 1;
   __libi86_vid_state.max_x = max_x;
 
-  max_y = __libi86_peekb_bios_ds (0x0084U);
+  max_y = __libi86_peekb_bda (0x0084U);
   if (! max_y)
     max_y = 24;
   __libi86_vid_state.max_y = max_y;

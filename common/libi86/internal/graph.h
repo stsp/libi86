@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -37,6 +37,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <libi86/internal/bda.h>
 #include <libi86/internal/cdefs.h>
 #include <libi86/internal/farptr.h>
 #include <graph.h>
@@ -47,8 +48,6 @@ _LIBI86_BEGIN_EXTERN_C
 /*
  * Various internal functions, variables, & macros used by <graph.h> routines.
  */
-
-extern uint16_t __libi86_bios_ds;
 
 /* State variables used for both text & graphics output. */
 struct __libi86_vid_state_t
@@ -111,29 +110,11 @@ union __libi86_vid_rccoord_union_t
 extern struct __libi86_vid_state_t __libi86_vid_state;
 extern struct __libi86_graph_state_t __libi86_graph_state;
 
-_LIBI86_STATIC_INLINE uint16_t
-__libi86_peek_bios_ds (unsigned off)
-{
-  return (uint16_t) __libi86_peek (__libi86_bios_ds, off);
-}
-
-_LIBI86_STATIC_INLINE uint8_t
-__libi86_peekb_bios_ds (unsigned off)
-{
-  return (uint8_t) __libi86_peekb (__libi86_bios_ds, off);
-}
-
-_LIBI86_STATIC_INLINE void
-__libi86_poke_bios_ds (unsigned off, uint16_t val)
-{
-  __libi86_poke (__libi86_bios_ds, off, (int) val);
-}
-
 /* Get the BIOS's idea of the current display page. */
 _LIBI86_STATIC_INLINE unsigned char
 __libi86_vid_get_curr_pg (void)
 {
-  return __libi86_peekb_bios_ds (0x0062U);
+  return __libi86_peekb_bda (0x0062U);
 }
 
 /*
@@ -144,7 +125,7 @@ _LIBI86_STATIC_INLINE struct __libi86_vid_rccoord_t
 __libi86_vid_get_rccoord (unsigned char pg_no)
 {
   union __libi86_vid_rccoord_union_t u;
-  u.w = __libi86_peek_bios_ds (0x0050U + 2 * pg_no);
+  u.w = __libi86_peek_bda (0x0050U + 2 * pg_no);
   return u.pxy;
 }
 
@@ -164,7 +145,7 @@ __libi86_vid_set_rccoord_only (unsigned char pg_no,
 {
   union __libi86_vid_rccoord_union_t u;
   u.pxy = pxy;
-  __libi86_poke_bios_ds (0x0050U + 2 * pg_no, u.w);
+  __libi86_poke_bda (0x0050U + 2 * pg_no, u.w);
 }
 
 #ifndef __GNUC__
@@ -498,7 +479,7 @@ __libi86_vid_get_cell_width (void)
 _LIBI86_STATIC_INLINE unsigned char
 __libi86_vid_get_cell_height (void)
 {
-  unsigned char cell_ht = __libi86_peekb_bios_ds (0x0085U);
+  unsigned char cell_ht = __libi86_peekb_bda (0x0085U);
   if (! cell_ht)
     cell_ht = 8;
   return cell_ht;

@@ -283,6 +283,9 @@ AT_LIBI86_CHECK(dnl
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#if ! defined __FAR || defined __IA16_FEATURE_DOSX
+# include <libi86/internal/bda.h>
+#endif
 #ifdef __IA16_FEATURE_DOSX
 # include <dpmi.h>
 #endif
@@ -297,12 +300,20 @@ static void do_abort (const char *msg)
 static unsigned ticks (void)
 {
 #if defined __FAR && ! defined __IA16_FEATURE_DOSX
-  return *(unsigned volatile __far *) 0x0040006cul;
+  return *(unsigned volatile __far *) 0x0040006cUL;
 #else
-  long tv;
-  if (_bios_timeofday (_TIME_GETCLOCK, &tv) < 0)
-    do_abort ("_bios_timeofday (, ) failed");
-  return (unsigned) tv;
+  /*
+   * Do not use _bios_timeofday (, ) (i.e. int 0x1a) here!
+   *
+   * In particular, the IBM AT BIOS (11/15/85)'s int 0x1a handler will set
+   * the interrupt flag (IF) to 1 & actually return to its caller with IF = 1.
+   * SeaBIOS's int 0x1a handler will also enable interrupts internally.  For
+   * this particular case, we want to read the time of the day without
+   * altering IF.
+   *
+   * See https://github.com/dosemu2/dosemu2/issues/1673 .
+   */
+  return __libi86_peek_bda (0x006cU);
 #endif
 }
 
