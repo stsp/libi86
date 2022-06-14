@@ -43,5 +43,3 @@ make
 make check || \
   (cat tests/testsuite.log && exit 1)
 make install
-make installcheck TESTSUITEFLAGS='-j2 --x-test-underlying' || \
-  (cat tests/testsuite.log && exit 1)

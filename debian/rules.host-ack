@@ -16,7 +16,8 @@ override_dh_update_autotools_config:
 	# Nope, do not touch config.sub or config.guess .
 
 override_dh_auto_configure:
-	dh_auto_configure -O--parallel -- --ack --prefix=/usr
+	mkdir build
+	cd build && ../configure --ack --prefix=/usr
 
 override_dh_strip:
 	# Not needed for now.
