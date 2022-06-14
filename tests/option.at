@@ -1,4 +1,4 @@
-dnl Copyright (c) 2020 TK Chia
+dnl Copyright (c) 2020--2022 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -24,6 +24,10 @@ dnl PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
 dnl LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+AT_ARG_OPTION([x-installcheck],dnl
+AS_HELP_STRING([--x-installcheck],dnl
+[test installed libi86, rather than libi86 in build tree]))
 
 AT_ARG_OPTION([x-test-underlying],dnl
 AS_HELP_STRING([--x-test-underlying],dnl

@@ -1,3 +1,9 @@
+libi86-ack (20220614-build20220614-1~@distro@) @distro@; urgency=medium
+
+  * Install missing header files.
+
+ -- TK Chia <tkchia@users.noreply.github.com>  Tue, 14 Jun 2022 17:12:24 +0000
+
 libi86-ack (20220612-build20220612-1~@distro@) @distro@; urgency=medium
 
   * Release.

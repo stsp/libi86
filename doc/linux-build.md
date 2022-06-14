@@ -34,17 +34,19 @@
 
  6. &nbsp;`make`
 
- 7. &nbsp;`make check`
+ 7. &nbsp;`make check` &nbsp;# optional
 
  8. &nbsp;`make install`
 
+ 9. &nbsp;`make installcheck` &nbsp;# optional; tests the installed copy
+
 ### Customizing the test suite run
 
-Instead of just saying `make check`, you can specify options to the test suite to control how the tests are run, via the `$(TESTSUITEFLAGS)` makefile variable.  E.g.:
+Instead of just saying `make check` or `make installcheck`, you can specify options to the test suite to control how the tests are run, via the `$(TESTSUITEFLAGS)` makefile variable.  E.g.:
 
   * &nbsp;`make check TESTSUITEFLAGS='--x-test-underlying --x-with-dosemu=/`_path-to_`/dosemu'`
   * &nbsp;`make check TESTSUITEFLAGS='16'` &nbsp;# run _only_ test #16
-  * &nbsp;`make check TESTSUITEFLAGS='10 --x-test-underlying'`
+  * &nbsp;`make installcheck TESTSUITEFLAGS='10 --x-test-underlying'`
 
 To see a complete list of test suite options you can put into `$(TESTSUITEFLAGS)`, run
 

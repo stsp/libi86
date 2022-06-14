@@ -31,6 +31,13 @@ dnl $3 = C compiler options
 m4_define([AT_LIBI86_COMPILE],[dnl
 if test yes = "$ac_compiler_gnu"; then
 at_libi86_multilib="`$CC $CPPFLAGS $3 -print-multi-directory`"
+if "$at_arg_x_installcheck"; then
+AT_CHECK([[$CC -o ]m4_default($2,a.exe)[ $CPPFLAGS ]]dnl
+[[-Wall -Werror=strict-prototypes -Werror=missing-prototypes ]]dnl
+[[-Werror=unused -Werror=deprecated -Werror=uninitialized ]]dnl
+[[-Werror=maybe-uninitialized ]$3] [$1] [[-li86 -Wl,-Map=a.map]],dnl
+,[[ignore]],[[ignore]])
+else
 AT_CHECK([[$CC -o ]m4_default($2,a.exe)[ $CPPFLAGS ]]dnl
 [[-isystem "$abs_top_builddir"/"$libi86_hostdir" ]]dnl
 [[-isystem "$abs_top_srcdir"/"$libi86_hostdir" ]]dnl
@@ -40,6 +47,11 @@ AT_CHECK([[$CC -o ]m4_default($2,a.exe)[ $CPPFLAGS ]]dnl
 [[-Werror=maybe-uninitialized ]$3] [$1] dnl
 [["$abs_top_builddir"/"$at_libi86_multilib"/"$libi86_hostdir"/libi86.a]] dnl
 [[-Wl,-Map=a.map]],,[[ignore]],[[ignore]])
+fi
+elif "$at_arg_x_installcheck"; then
+AT_CHECK([[$CC -c -o a.o $CPPFLAGS ]][$3] [$1],,[[ignore]],[[ignore]])
+AT_CHECK([[$CC -.c -o ]m4_default($2,a.exe) $3[ a.o -li86.a]],dnl
+,[[ignore]],[[ignore]])
 else
 AT_CHECK([[$CC -c -o a.o $CPPFLAGS ]]dnl
 [[-I"$abs_top_builddir"/"$libi86_hostdir" ]]dnl

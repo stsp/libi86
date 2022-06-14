@@ -71,6 +71,8 @@ INSTALL_HEADERS	= bios.h \
 		  conio.h \
 		  dir.h \
 		  direct.h \
+		  dos.h \
+		  graph.h \
 		  i86.h \
 		  share.h \
 		  libi86/stdio.h \
