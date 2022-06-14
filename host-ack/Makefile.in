@@ -36,13 +36,15 @@ VPATH = $(srcdir):$(srcroot)/common
 mkinstalldirs = $(SHELL) $(srcroot)/mkinstalldirs
 
 prefix = @prefix@
+exec_prefix = @exec_prefix@
 
 host_alias = @host_alias@
 
 bindir = @bindir@
+includedir = @includedir@
 libdir = @libdir@
+# ${libi86_ackhost} is used by ${exec_prefix}!
 libi86_ackhost = @libi86_ackhost@
-tooldir = $(prefix)/share/ack/$(libi86_ackhost)
 
 ac_cv_have_decl_vsscanf = @ac_cv_have_decl_vsscanf@
 ac_cv_func_getcwd = @ac_cv_func_getcwd@
@@ -291,11 +293,11 @@ all: $(INSTALL_LIBS) $(INSTALL_HEADERS)
 
 .PHONY: install
 install: $(INSTALL_LIBS) $(INSTALL_HEADERS)
-	$(mkinstalldirs) $(DESTDIR)$(tooldir)/include \
-			 $(DESTDIR)$(tooldir)/include/libi86 \
-			 $(DESTDIR)$(tooldir)/include/libi86/internal
+	$(mkinstalldirs) $(DESTDIR)$(includedir) \
+			 $(DESTDIR)$(includedir)/libi86 \
+			 $(DESTDIR)$(includedir)/libi86/internal
 	set -e; \
-	d=$(DESTDIR)$(tooldir); \
+	d=$(DESTDIR)$(libdir); \
 	for f in $(INSTALL_LIBS); do \
 	  if [ -f "$$f" ]; then \
 	    $(INSTALL_DATA) "$$f" "$$d/$$f"; \
@@ -304,7 +306,7 @@ install: $(INSTALL_LIBS) $(INSTALL_HEADERS)
 	  fi; \
 	done
 	set -e; \
-	d=$(DESTDIR)$(tooldir)/include; \
+	d=$(DESTDIR)$(includedir); \
 	for f in $(INSTALL_HEADERS); do \
 	  if [ -f "$$f" ]; then \
 	    $(INSTALL_DATA) "$$f" "$$d/$$f"; \

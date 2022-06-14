@@ -27,7 +27,7 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 set -x
 m4_include([../aclocal.m4])
-_LIBI86_ACK_FIX
+_LIBI86_GCC_ACK_FIX
 
 AC_PREREQ(2.69)
 AC_INIT([libi86],m4_esyscmd_s([

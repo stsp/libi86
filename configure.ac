@@ -34,7 +34,7 @@ dnl For tests, however, this script _does_ do the actual work of setting up
 dnl the test suite runs, using the GNU Autotools' experimental Autotest
 dnl feature.	-- tkchia 20210519
 
-_LIBI86_ACK_FIX
+_LIBI86_GCC_ACK_FIX
 
 AC_PREREQ(2.69)
 AC_INIT([libi86],m4_esyscmd_s([

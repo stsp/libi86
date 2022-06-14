@@ -41,8 +41,8 @@ exec_prefix = @exec_prefix@
 host_alias = @host_alias@
 
 bindir = @bindir@
+includedir = @includedir@
 libdir = @libdir@
-tooldir = $(exec_prefix)/$(target_alias)
 
 ac_cv_func_getcwd = @ac_cv_func_getcwd@
 ac_cv_func_rmdir = @ac_cv_func_rmdir@
@@ -328,14 +328,14 @@ all: $(INSTALL_LIBS) $(INSTALL_SPECS) $(INSTALL_HEADERS)
 
 .PHONY: install
 install: $(INSTALL_LIBS) $(INSTALL_SPECS) $(INSTALL_HEADERS)
-	$(mkinstalldirs) $(DESTDIR)$(tooldir)/lib$(MULTISUBDIR) \
-			 $(DESTDIR)$(tooldir)/lib/rt-specs/r-msdos.d \
-			 $(DESTDIR)$(tooldir)/include \
-			 $(DESTDIR)$(tooldir)/include/libi86 \
-			 $(DESTDIR)$(tooldir)/include/libi86/internal \
-			 $(DESTDIR)$(tooldir)/include/libi86/internal/wrap
+	$(mkinstalldirs) $(DESTDIR)$(libdir)$(MULTISUBDIR) \
+			 $(DESTDIR)$(libdir)/rt-specs/r-msdos.d \
+			 $(DESTDIR)$(includedir) \
+			 $(DESTDIR)$(includedir)/libi86 \
+			 $(DESTDIR)$(includedir)/libi86/internal \
+			 $(DESTDIR)$(includedir)/libi86/internal/wrap
 	set -e; \
-	d=$(DESTDIR)$(tooldir)/lib$(MULTISUBDIR); \
+	d=$(DESTDIR)$(libdir)$(MULTISUBDIR); \
 	for f in $(INSTALL_LIBS); do \
 	  if [ -f "$$f" ]; then \
 	    $(INSTALL_DATA) "$$f" "$$d/$$f"; \
@@ -345,7 +345,7 @@ install: $(INSTALL_LIBS) $(INSTALL_SPECS) $(INSTALL_HEADERS)
 	done
 	if [ -z "$(MULTISUBDIR)" ]; then \
 	  set -e; \
-	  d=$(DESTDIR)$(tooldir)/lib/rt-specs; \
+	  d=$(DESTDIR)$(libdir)/rt-specs; \
 	  for f in $(INSTALL_SPECS); do \
 	    if [ -f "$$f" ]; then \
 	      $(INSTALL_DATA) "$$f" "$$d/$$f"; \
@@ -356,7 +356,7 @@ install: $(INSTALL_LIBS) $(INSTALL_SPECS) $(INSTALL_HEADERS)
 	fi
 	if [ -z "$(MULTISUBDIR)" ]; then \
 	  set -e; \
-	  d=$(DESTDIR)$(tooldir)/include; \
+	  d=$(DESTDIR)$(includedir); \
 	  for f in $(INSTALL_HEADERS); do \
 	    if [ -f "$$f" ]; then \
 	      $(INSTALL_DATA) "$$f" "$$d/$$f"; \

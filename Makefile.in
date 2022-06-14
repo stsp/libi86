@@ -43,6 +43,10 @@ check check-local: tests/testsuite
 	exec $< -C tests $(TESTSUITEFLAGS)
 .PHONY: check check-local
 
+installcheck installcheck-local: tests/testsuite
+	exec $< --x-installcheck -C tests $(TESTSUITEFLAGS)
+.PHONY: installcheck installcheck-local
+
 helpcheck: tests/testsuite
 	exec $< -C tests --help $(TESTSUITEFLAGS)
 .PHONY: helpcheck
