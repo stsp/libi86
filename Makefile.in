@@ -26,7 +26,18 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 abs_srcdir = @abs_srcdir@
+srcdir = @srcdir@
 libi86_hostdir = @libi86_hostdir@
+libexecdir = @libexecdir@
+testsuitedir = $(libexecdir)/libi86/tests
+mkinstalldirs = $(SHELL) $(srcdir)/mkinstalldirs
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
 
 CXX = @CXX@
 
@@ -36,7 +47,8 @@ default: all
 distclean maintainer-clean:
 	$(MAKE) -C $(libi86_hostdir) $@
 	$(MAKE) -C examples $@
-	$(RM) Makefile config.cache config.log config.status
+	$(RM) Makefile config.cache config.log config.status \
+		       config.status.tests
 .PHONY: distclean maintainer-clean
 
 check check-local: tests/testsuite
@@ -67,9 +79,43 @@ tests/testsuite: $(abs_srcdir)/tests/testsuite
 	fi
 
 $(abs_srcdir)/tests/testsuite: $(abs_srcdir)/tests/testsuite.at \
-			   $(wildcard $(abs_srcdir)/tests/*.at \
-				      $(abs_srcdir)/tests/*.in)
+			      $(wildcard $(abs_srcdir)/tests/*.at \
+					 $(abs_srcdir)/tests/*.in)
 	cd $(abs_srcdir)/tests && exec autom4te --language=autotest -o $@ $<
+
+# Hack: slightly modify the config.status script into config.status.tests
+# which pretends that the source tree is in $(datadir) & the build tree is
+# whatever the current directory is.
+#
+# With this we can kind of create a rump "build tree" for running the test
+# suite script on a libi86 installation:
+#
+#	$ mkdir testing
+#	$ cd testing
+#	$ /usr/share/libi86/tests/config.status.tests \
+#	    tests/atconfig tests/atlocal
+#	$ /usr/share/libi86/tests/testsuite -C tests --x-installcheck \
+#						     --x-test-underlying 1-10
+#
+config.status.tests: config.status
+	sed -e '1 a# Modified by $(lastword $(MAKEFILE_LIST)).' \
+	    -e '/^ac_pwd=.*$$/ s;;ac_pwd=`pwd`;' \
+	    -e '/^srcdir=.*$$/ s;;srcdir='\''$(testsuitedir)/..'\'';' \
+	    $< >$@.tmp
+	mv $@.tmp $@
+.PRECIOUS: config.status.tests
+
+install-testsuite: config.status.tests $(abs_srcdir)/tests/testsuite \
+		   $(wildcard $(abs_srcdir)/tests/*.in \
+			      $(abs_srcdir)/tests/*.[sS] \
+			      $(abs_srcdir)/tests/*.com \
+			      $(abs_srcdir)/tests/postproc-*.sh)
+	$(mkinstalldirs) $(DESTDIR)$(testsuitedir)
+	$(INSTALL_DATA) -t $(DESTDIR)$(testsuitedir) \
+			$(filter-out config.status.tests %/testsuite %.sh,$^)
+	$(INSTALL_PROGRAM) -t $(DESTDIR)$(testsuitedir) \
+			   $(filter config.status.tests %/testsuite %.sh,$^)
+.PHONY: install-testsuite
 
 %:
 	$(MAKE) -C $(libi86_hostdir) $@

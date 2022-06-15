@@ -62,6 +62,7 @@ case "$host_alias" in
       export CPP
     fi ;;
 esac
+AC_PROG_INSTALL
 AC_PROG_CC
 AC_PROG_CXX
 AC_PATH_PROG(DOSEMU, dosemu, /bin/false)
