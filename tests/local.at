@@ -68,13 +68,18 @@ dnl $2 = file to write compiled binary to (default a.exe)
 dnl $3 = C++ compiler options
 m4_define([AT_LIBI86_COMPILE_CXX],[dnl
 at_libi86_multilib="`$CXX $CPPFLAGS $3 -print-multi-directory`"
+if "$at_arg_x_installcheck"; then
+AT_CHECK([[$CXX -o ]m4_default($2,a.exe)[ $CPPFLAGS ]]dnl
+[[-Wall ]][$3] [$1] [[-li86]],,[[ignore]],[[ignore]])
+else
 AT_CHECK([[$CXX -o ]m4_default($2,a.exe)[ $CPPFLAGS ]]dnl
 [[-isystem "$abs_top_builddir"/"$libi86_hostdir" ]]dnl
 [[-isystem "$abs_top_srcdir"/"$libi86_hostdir" ]]dnl
 [[-isystem "$abs_top_srcdir"/common ]]dnl
 [[-Wall ]][$3] [$1] dnl
 [["$abs_top_builddir"/"$at_libi86_multilib"/"$libi86_hostdir"/libi86.a]],dnl
-,[[ignore]],[[ignore]])])
+,[[ignore]],[[ignore]])
+fi])
 
 dnl $1 = program to run on dosemu (default a.exe)
 dnl $2 = Unix path which $1 resides in (defaults to current directory)
