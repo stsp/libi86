@@ -13,7 +13,16 @@ Package: libi86-ia16-elf
 Architecture: any
 Depends: libnewlib-ia16-elf (>= @nl_ver@), ${shlibs:Depends}, ${misc:Depends}
 Suggests: causeway-dosx, gcc-ia16-elf
-Description: Non-standard C library routines, for ia16-elf target
+Description: Non-standard C library routines, for ia16-elf-gcc target
  Implementation of some non-standard C library facilities (e.g. <conio.h>),
  as commonly used in classical MS-DOS programs, for the ia16-elf (16-bit
- Intel x86 CPUs) target.
+ Intel x86 CPUs) target of gcc-ia16.
+
+Package: libi86-testsuite-ia16-elf
+Architecture: any
+Depends: libi86-ia16-elf (= @li_pver@), gcc-ia16-elf (>= @gcc_ver@),
+ libnewlib-ia16-elf (>= @nl_ver@), ${shlibs:Depends}, ${misc:Depends}
+Suggests: dosemu2, fdpp
+Description: Self-test suite for libi86 for ia16-elf-gcc target
+ Suite of self-tests for the libi86 library of non-standard C library
+ facilities (e.g. <conio.h>), for the ia16-elf-gcc target.
