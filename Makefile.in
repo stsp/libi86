@@ -1,4 +1,4 @@
-# Copyright (c) 2018 TK Chia
+# Copyright (c) 2018--2022 TK Chia
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -41,8 +41,20 @@ INSTALL_DATA = @INSTALL_DATA@
 
 CXX = @CXX@
 
-default: all
+TEST_DATA	= $(wildcard $(abs_srcdir)/tests/*.in \
+			     $(abs_srcdir)/tests/*.[sS] \
+			     $(abs_srcdir)/tests/*.com)
+TEST_SCRIPTS	= config.status.tests \
+		  $(abs_srcdir)/tests/testsuite \
+		  $(wildcard $(abs_srcdir)/tests/postproc-*.sh)
+
+default:
+	$(MAKE) -C $(libi86_hostdir) $@
+	$(MAKE) -C examples $@
 .PHONY: default
+
+all: default test-data test-scripts
+.PHONY: all
 
 distclean maintainer-clean:
 	$(MAKE) -C $(libi86_hostdir) $@
@@ -67,6 +79,12 @@ listcheck: tests/testsuite
 	exec $< -C tests --list $(TESTSUITEFLAGS)
 .PHONY: listcheck
 
+test-data: $(TEST_DATA)
+.PHONY: test-data
+
+test-scripts: $(TEST_SCRIPTS)
+.PHONY: test-scripts
+
 # Copy the generated tests/testsuite from the source directory to the build
 # directory, or create a symlink from the latter to the former --- but only
 # if the two directories are different.
@@ -77,25 +95,28 @@ tests/testsuite: $(abs_srcdir)/tests/testsuite
 	  ln -s $< $@.tmp || cp $< $@.tmp; \
 	  mv $@.tmp $@; \
 	fi
+.PRECIOUS: tests/testsuite
 
 $(abs_srcdir)/tests/testsuite: $(abs_srcdir)/tests/testsuite.at \
 			      $(wildcard $(abs_srcdir)/tests/*.at \
 					 $(abs_srcdir)/tests/*.in)
 	cd $(abs_srcdir)/tests && exec autom4te --language=autotest -o $@ $<
+.PRECIOUS: $(abs_srcdir)/tests/testsuite
 
 # Hack: slightly modify the config.status script into config.status.tests
-# which pretends that the source tree is in $(datadir) & the build tree is
-# whatever the current directory is.
+# which pretends that the source tree is in $(libexecdir) & the build tree
+# is whatever the current directory is.
 #
 # With this we can kind of create a rump "build tree" for running the test
 # suite script on a libi86 installation:
 #
 #	$ mkdir testing
 #	$ cd testing
-#	$ /usr/share/libi86/tests/config.status.tests \
+#	$ /usr/ia16-elf/libexec/libi86/tests/config.status.tests \
 #	    tests/atconfig tests/atlocal
-#	$ /usr/share/libi86/tests/testsuite -C tests --x-installcheck \
-#						     --x-test-underlying 1-10
+#	$ /usr/ia16-elf/libexec/libi86/tests/testsuite -C tests \
+#						       --x-installcheck \
+#						       --x-test-underlying 1-10
 #
 config.status.tests: config.status
 	sed -e '1 a# Modified by $(lastword $(MAKEFILE_LIST)).' \
@@ -105,17 +126,18 @@ config.status.tests: config.status
 	mv $@.tmp $@
 .PRECIOUS: config.status.tests
 
-install-testsuite: config.status.tests $(abs_srcdir)/tests/testsuite \
-		   $(wildcard $(abs_srcdir)/tests/*.in \
-			      $(abs_srcdir)/tests/*.[sS] \
-			      $(abs_srcdir)/tests/*.com \
-			      $(abs_srcdir)/tests/postproc-*.sh)
-	$(mkinstalldirs) $(DESTDIR)$(testsuitedir)
-	$(INSTALL_DATA) -t $(DESTDIR)$(testsuitedir) \
-			$(filter-out config.status.tests %/testsuite %.sh,$^)
-	$(INSTALL_PROGRAM) -t $(DESTDIR)$(testsuitedir) \
-			   $(filter config.status.tests %/testsuite %.sh,$^)
+install-testsuite: install-test-data install-test-scripts
 .PHONY: install-testsuite
+
+install-test-data: $(TEST_DATA)
+	$(mkinstalldirs) $(DESTDIR)$(testsuitedir)
+	$(INSTALL_DATA) -t $(DESTDIR)$(testsuitedir) $^
+.PHONY: install-test-data
+
+install-test-scripts: $(TEST_SCRIPTS)
+	$(mkinstalldirs) $(DESTDIR)$(testsuitedir)
+	$(INSTALL_PROGRAM) -t $(DESTDIR)$(testsuitedir) $^
+.PHONY: install-test-scripts
 
 %:
 	$(MAKE) -C $(libi86_hostdir) $@
