@@ -26,6 +26,8 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 : ${DOSEMU='@DOSEMU@'}
+# In case dosemu was installed only after (?) the initial `configure' run...
+$at_arg_given_x_with_dosemu || test /bin/false != "$DOSEMU" || DOSEMU=dosemu
 DOSEMU_IS_1=no
 DOSEMUDUMB='-dumb -tde'
 "$DOSEMU" $DOSEMU_OPTS --version >/dev/null 2>/dev/null \

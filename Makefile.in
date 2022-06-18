@@ -112,10 +112,7 @@ $(abs_srcdir)/tests/testsuite: $(abs_srcdir)/tests/testsuite.at \
 #
 #	$ mkdir testing
 #	$ cd testing
-#	$ /usr/ia16-elf/libexec/libi86/tests/config.status.tests \
-#	    tests/atconfig tests/atlocal
-#	$ /usr/ia16-elf/libexec/libi86/tests/testsuite -C tests \
-#						       --x-installcheck \
+#	$ /usr/ia16-elf/libexec/libi86/tests/testsuite --x-installcheck \
 #						       --x-test-underlying 1-10
 #
 config.status.tests: config.status

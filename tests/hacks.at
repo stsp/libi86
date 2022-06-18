@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018--2022 TK Chia
+dnl Copyright (c) 2022 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -25,32 +25,40 @@ dnl LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-m4_include([hacks.at])
+dnl Patch the TESTS_BEGIN diversion to add some sanity checks to the
+dnl `atconfig' & `atlocal' processing, to invoke `config.status.tests'
+dnl automatically if appropriate, & to allow for the tests to run in a
+dnl lower-level tests/ subdirectory (beyond what -C says).
+m4_divert_push([TESTS_BEGIN])
+if $at_change_dir
+then
+  test x != "x$at_dir" && cd "$at_dir" \
+    || AS_ERROR([unable to change directory])
+  at_dir=`pwd`
+fi
 
-AT_INIT([libi86])
-AT_COPYRIGHT([Copyright (C) 2018--2022 TK Chia.
-Released under the 3-clause BSD license.])
+if test -r atconfig || test -r tests/atconfig; then
+  :
+elif "$at_arg_x_installcheck"; then
+  at_libi86_config_status=`AS_DIRNAME([$at_myself])`/config.status.tests
+  if test -x "$at_libi86_config_status"; then
+    AS_MESSAGE([running $at_libi86_config_status])
+    "$at_libi86_config_status" tests/atconfig tests/atlocal \
+      || AS_ERROR([config.status.tests failed])
+  fi
+fi
 
-AT_COLOR_TESTS
-
-dnl Process options.
-m4_include([option.at])
-
-dnl Test that the test harness works.  Naturally, this should come first.
-m4_include([metacheck.at])
-
-dnl Then do the actual tests...
-m4_include([i86.h.1.at])
-m4_include([bios.h.at])
-m4_include([bios.h.bc.at])
-m4_include([conio.h.at])
-m4_include([conio.h.bc.at])
-m4_include([direct.h.at])
-m4_include([dos.h.at])
-m4_include([dos.h.bc.at])
-m4_include([dpmi.h.at])
-m4_include([graph.h.at])
-m4_include([i86.h.2.at])
-m4_include([i86.h.2-bc.at])
-m4_include([stdlib.h.at])
-m4_include([string.h.at])
+for at_file in atconfig atlocal
+do
+  if test -r $at_file; then
+    :
+  elif test -r tests/$at_file && test atconfig = $at_file; then
+    cd tests
+    at_change_dir=:
+    at_dir=`pwd`
+    AS_WARN([running tests in $at_dir])
+  else
+    AS_ERROR([needed config file missing: $at_file or tests/$at_file])
+  fi
+done
+m4_divert_pop([TESTS_BEGIN])
