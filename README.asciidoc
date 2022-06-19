@@ -48,6 +48,7 @@ When using IA-16 GCC:
 :fn-tkchia-22b: footnote:tkchia-22b[https://launchpad.net/~tkchia/+archive/ubuntu/build-ia16/.]
 
   * Grab the `gcc-ia16-elf` and `libi86-ia16-elf` packages from https://launchpad.net/~tkchia/+archive/ubuntu/build-ia16/[my `build-ia16` PPA].{fn-tkchia-22b}
+  * You can now (June 2022) also install and run `libi86` 's self-test suite.  link:doc/ppa-test.md[Instructions] for doing so are available.
 
 When using ACK:
 
