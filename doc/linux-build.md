@@ -14,9 +14,13 @@
 
  6. &nbsp;`make`
 
- 7. &nbsp;`make check`
+ 7. Install [`dosemu2`](http://dosemu2.github.io/dosemu2/), if you wish to run self-tests (optional).
 
- 8. &nbsp;`make install`
+ 8. &nbsp;`make check` &nbsp;# optional
+
+ 9. &nbsp;`make install`
+
+ 10. &nbsp;`make installcheck` &nbsp;# optional; tests the installed copy
 
 ### Building and installing `libi86` from sources, on Linux, for the Amsterdam Compiler Kit
 
@@ -34,11 +38,13 @@
 
  6. &nbsp;`make`
 
- 7. &nbsp;`make check` &nbsp;# optional
+ 7. Install [`dosemu2`](http://dosemu2.github.io/dosemu2/), if you wish to run self-tests (optional).
 
- 8. &nbsp;`make install`
+ 8. &nbsp;`make check` &nbsp;# optional
 
- 9. &nbsp;`make installcheck` &nbsp;# optional; tests the installed copy
+ 9. &nbsp;`make install`
+
+ 10. &nbsp;`make installcheck` &nbsp;# optional; tests the installed copy
 
 ### Customizing the test suite run
 
