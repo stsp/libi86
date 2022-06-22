@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 TK Chia
+ * Copyright (c) 2019--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,6 +27,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "libi86/internal/acconfig.h"
 #include "libi86/internal/call-cvt.h"
 
 	.arch	i8086, jumps
@@ -37,7 +38,7 @@
 .Lctor_psp:
 	movb	$0x51,	%ah
 	int	$0x21
-	movw	%bx,	_psp
+	movw	%bx,	__libi86_psp
 	RET_(0)
 
 	.section .ctors.65535
@@ -47,7 +48,10 @@
 
 	.bss
 
-/* Make _psp weak, in case the underlying libc already defines it.  */
-	.weak	_psp
+#ifndef _LIBI86_INTERNAL_HAVE__PSP
+	.global	_psp
 _psp:
+#endif
+	.global	__libi86_psp
+__libi86_psp:
 	.skip	2

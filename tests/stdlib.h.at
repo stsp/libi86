@@ -1,4 +1,4 @@
-dnl Copyright (c) 2019--2021 TK Chia
+dnl Copyright (c) 2019--2022 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -44,6 +44,12 @@ main (void)
   if (__libi86_peek (_psp, 0) != 0x20cdu)
     abort ();
 # endif
+  /*
+   * If the underlying libc defines _psp, make sure it has the same value as
+   * what libi86 discovers.
+   */
+  if (_psp != __libi86_psp)
+    abort ();
   return 0;
 #else
 # error

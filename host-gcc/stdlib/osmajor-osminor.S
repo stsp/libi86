@@ -27,6 +27,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "libi86/internal/acconfig.h"
 #include "libi86/internal/call-cvt.h"
 
 	.arch	i8086, jumps
@@ -47,14 +48,20 @@
 
 	.bss
 
-/* (1) Make these variables weak, in case the underlying libc has its own
-       definitions (and initializations) of _osmajor and _osminor.
-   (2) The variables must be arranged like this, so that a single store of
-       %ax can correctly fill both _osmajor and _osminor.  */
+/* The variables must be arranged like this, so that a single store of %ax
+   can correctly fill both {__libi86_}_osmajor and {__libi86_}_osminor.  */
 0:
-	.weak	_osmajor
+#ifndef _LIBI86_INTERNAL_HAVE__OSMAJOR
+	.global	_osmajor
 _osmajor:
+#endif
+	.global	__libi86_osmajor
+__libi86_osmajor:
 	.skip	1
-	.weak	_osminor
+#ifndef _LIBI86_INTERNAL_HAVE__OSMINOR
+	.global	_osminor
 _osminor:
+#endif
+	.global	__libi86_osminor
+__libi86_osminor:
 	.skip	1

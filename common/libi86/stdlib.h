@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019--2021 TK Chia
+ * Copyright (c) 2019--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -78,8 +78,18 @@ _LIBI86_BEGIN_EXTERN_C
 #define _MAX_EXT	5
 
 #ifndef __ACK
+# ifndef _LIBI86_INTERNAL_HAVE__PSP
 extern unsigned _psp;
-extern unsigned char _osmajor, _osminor;
+# endif
+# ifndef _LIBI86_INTERNAL_HAVE__OSMAJOR
+extern unsigned char _osmajor;
+# endif
+# ifndef _LIBI86_INTERNAL_HAVE__OSMINOR
+extern unsigned char _osminor;
+# endif
+/* For testing purposes. */
+extern unsigned __libi86_psp;
+extern unsigned char __libi86_osmajor, __libi86_osminor;
 #else  /* __ACK */
 /*
  * The Amsterdam Compiler Kit does not (yet) allow library modules to insert
@@ -89,10 +99,19 @@ extern unsigned char _osmajor, _osminor;
  */
 extern unsigned __libi86_get_psp (void), __libi86_get_osmajor_osminor (void);
 
-# define _psp		(__libi86_get_psp ())
-# define _osmajor	((unsigned char) __libi86_get_osmajor_osminor ())
-# define _osminor	((unsigned char) \
-			 (__libi86_get_osmajor_osminor () >> 8))
+# define __libi86_psp	(__libi86_get_psp ())
+# define __libi86_osmajor ((unsigned char) __libi86_get_osmajor_osminor ())
+# define __libi86_osminor ((unsigned char) \
+			   (__libi86_get_osmajor_osminor () >> 8))
+# ifndef _LIBI86_INTERNAL_HAVE__PSP
+#   define _psp		__libi86_psp
+# endif
+# ifndef _LIBI86_INTERNAL_HAVE__OSMAJOR
+#   define _osmajor	__libi86_osmajor
+# endif
+# ifndef _LIBI86_INTERNAL_HAVE__OSMINOR
+#   define _osminor	__libi86_osminor
+# endif
 #endif  /* __ACK */
 
 #ifdef _LIBI86_INTERNAL_HAVE_LONG_LONG_INT
