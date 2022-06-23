@@ -32,22 +32,16 @@
 
 #include <libi86/internal/acconfig.h>
 #include <libi86/internal/cdefs.h>
+#include <libi86/internal/libc-defer.h>
 #include <sys/types.h>
 
 _LIBI86_BEGIN_EXTERN_C
 
-#ifdef _LIBI86_INTERNAL_HAVE_GETCWD
-_LIBI86_REDIRECT_2 (char *, _getcwd, char *, __libi86_size_t, getcwd)
-#else
-_LIBI86_REDIRECT_2 (char *, getcwd, char *, __libi86_size_t, _getcwd)
-#endif
+_LIBI86_LIBC_DEFER_2 (char *, getcwd, char *, __libi86_size_t,
+		      @ac_cv_func_getcwd@)
 extern char *_getdcwd (int __drive, char *__buf, __libi86_size_t __size);
 extern int _getdrive (void);
-#ifdef _LIBI86_INTERNAL_HAVE_RMDIR
-_LIBI86_REDIRECT_1 (int, _rmdir, const char *, rmdir)
-#else
-_LIBI86_REDIRECT_1 (int, rmdir, const char *, _rmdir)
-#endif
+_LIBI86_LIBC_DEFER_1 (int, rmdir, const char*, @ac_cv_func_rmdir@)
 
 _LIBI86_END_EXTERN_C
 

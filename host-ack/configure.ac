@@ -75,7 +75,7 @@ host_makefile_frag=
 AC_SUBST(host_makefile_frag_path)
 AC_SUBST(host_makefile_frag)
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile direct.h:../common/direct.h.in])
 AC_DEFINE_UNQUOTED([_LIBI86_VERSION],[${PACKAGE_VERSION}L])
 AC_CONFIG_HEADERS([libi86/internal/acconfig.h])
 AC_OUTPUT

@@ -74,8 +74,10 @@ dnl libi86 does not actually call libc's _mkdir, but we try to detect it so
 dnl that we can avoid conflicting with libc, in case we too want to define
 dnl an _mkdir symbol.
 AC_CHECK_FUNC([_mkdir],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__MKDIR],[1])])
-AC_CHECK_FUNC([rmdir],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_RMDIR],[1])])
 dnl ...
+AC_CHECK_FUNC([getpid],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_GETPID],[1])])
+AC_CHECK_FUNC([getppid],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_GETPPID],[1])])
+AC_CHECK_FUNC([rmdir],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_RMDIR],[1])])
 AC_CHECK_DECL([_psp],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__PSP],[1])],,dnl
 	      [#include <stdlib.h>])
 AC_CHECK_DECL([_osmajor],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__OSMAJOR],[1])],,dnl
@@ -85,6 +87,8 @@ AC_CHECK_DECL([_osminor],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__OSMINOR],[1])],,dnl
 
 AC_SUBST(ac_cv_have_decl_vsscanf)
 AC_SUBST(ac_cv_func_getcwd)
+AC_SUBST(ac_cv_func_getpid)
+AC_SUBST(ac_cv_func_getppid)
 AC_SUBST(ac_cv_func_rmdir)
 AC_SUBST(ac_cv_have_decl__psp)
 AC_SUBST(ac_cv_have_decl__osmajor)

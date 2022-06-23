@@ -50,7 +50,7 @@ __libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
 #define _LIBI86_NORETURN
 
 /*
- * ACK lacks support post-C89 C language features and C extensions,
+ * ACK lacks support for post-C89 C language features and C extensions,
  * including the `inline' keyboard.  However --- if optimization is enabled
  * --- it does know how to inline calls to local functions into their callers.
  */

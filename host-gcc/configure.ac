@@ -92,6 +92,7 @@ ac_aux_dir="${ac_aux_dir}"
 CC="${CC}"
 LDFLAGS="${LDFLAGS}"
 )
+AC_CONFIG_FILES([direct.h:../common/direct.h.in])
 AC_DEFINE_UNQUOTED([_LIBI86_VERSION],[${PACKAGE_VERSION}L])
 AC_CONFIG_HEADERS([libi86/internal/acconfig.h])
 AC_OUTPUT
