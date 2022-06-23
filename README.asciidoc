@@ -350,7 +350,7 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 | Compat. | Avail. | Variable | Notes
 
 |         |      2+| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
-|       W |    =   | ``_osmajor`` | Implemented as a function call on ACK.
-|       W |    =   | ``_osminor`` | Implemented as a function call on ACK.
-|       W |    =   | ``_psp`` | Implemented as a function call on ACK.
+|       W |   (=)  | ``_osmajor`` | Implemented as a function call on ACK.
+|       W |   (=)  | ``_osminor`` | Implemented as a function call on ACK.
+|       W |   (=)  | ``_psp`` | Implemented as a function call on ACK.
 |===
