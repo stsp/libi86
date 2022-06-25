@@ -107,7 +107,7 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |===
 | Compat. | Avail. | Function | Notes
 
-|         |      2+| **``▗▚▚▚▚ <bios.h> ▞▞▞▞▖``**
+2+|              2+| **``▗▚▚▚▚ <bios.h> ▞▞▞▞▖``**
 |      W+ |    =   | ``_bios_disk (``__service__``,`` *__diskinfo__``);`` | As an extension, also accepts _service_ = ``_DISK_DRIVEPARAMS``, which returns drive parameters in *__diskinfo__.
 |       W |    =   | ``_bios_equiplist ();`` |
 |       B |    =   | ``biosequip ();`` |
@@ -119,8 +119,8 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       W |    =   | ``_bios_serialcom (``__service__``,`` __port__``,`` __data__``);`` |
 |       W |    =   | ``_bios_timeofday (``__service__``,`` *__timeval__``);`` |
 |       X |    =   | ``_bios_joystick (``__service__``,`` *__joyinfo__``);`` | Reads joystick status via ``int 0x15`` function ``0x84``.
-|         |        | |
-|         |     2+a| **``▗▚▚▚▚ <conio.h> ▞▞▞▞▖``**
+4+|
+2+|             2+a| **``▗▚▚▚▚ <conio.h> ▞▞▞▞▖``**
 
 			* **If `_BORLANDC_SOURCE` is defined, ``<conio.h>`` switches to an alternate implementation of the console output routines which is based on ``<graph.h>`` facilities.**
 
@@ -139,7 +139,7 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |     W/B |    =   | ``putch (``__ch__``);`` |
 |     W/B |    =   | ``vcprintf (``*__fmt__``,`` __ap__``);`` |
 |     W/B |    =   | ``vcscanf (``*__fmt__``,`` __ap__``);`` |
-|         |        | |
+4+|
 |       B |    =   | ``clreol ();`` |
 |       B |    =   | ``clrscr ();`` |
 |       B |    =   | ``delline ();`` |
@@ -157,7 +157,7 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       B |    =   | ``wherex ();`` |
 |       B |    =   | ``wherey ();`` |
 |       B |    =   | ``window (``__left__``,`` __top__``,`` __right__``,`` __bottom__``);`` |
-|         |        | |
+4+|
 |       W |    =   | ``inp (``__port__``);`` |
 |       W |    =   | ``_inp (``__port__``);`` |
 |       B |    =   | ``inportb (``__port__``);`` |
@@ -172,17 +172,16 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       W |    =   | ``_outpw (``__port__``,`` __value__``);`` |
 |       B |    =   | ``outport (``__port__``,`` __value__``);`` | Accepts a signed value to write.
 |       B |    =   | ``outportw (``__port__``,`` __value__``);`` | Accepts an unsigned value to write.
-|         |        | |
-|         |      2+| **``▗▚▚▚▚ <dir.h> ▞▞▞▞▖``**
+4+|
+2+|              2+| **``▗▚▚▚▚ <dir.h> ▞▞▞▞▖``**
 |       B | = link:doc/implem-notes.asciidoc#dirh[(❧)] | ``searchpath (``__file__``);`` |
 |       X | = link:doc/implem-notes.asciidoc#dirh[(❧)] | ``_searchpath (``__file__``);`` |
-|         |        | |
-|         |      2+| **``▗▚▚▚▚ <direct.h> ▞▞▞▞▖``**
+4+|
+2+|              2+| **``▗▚▚▚▚ <direct.h> ▞▞▞▞▖``**
 |  P01, W |   (=)  | ``getcwd (``*__buffer__``,`` __size__``);`` | (POSIX places this function in ``<unistd.h>``.)
 |       W |   :=   | ``_getcwd (``*__buffer__``,`` __size__``);`` |
 |       W |    =   | ``_getdcwd (``__drive__``,`` *__buffer__``,`` __size__``);`` |
 |       W |    =   | ``_getdrive ();`` |
-|         |        | |
 |     P01 | (=) link:doc/implem-notes.asciidoc#directh[(❧)] | ``mkdir (``*__path__``,`` __mode__``);`` .4+a|
 			* In Watcom, both `mkdir` and ``_mkdir`` take only a single __path__ argument.
 			* POSIX however says that `mkdir` (placed in `<sys/stat.h>`) takes two arguments; the second argument gives Unix-style permission bits.
@@ -193,8 +192,8 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       W |   :=   | ``_mkdir (``*__path__``);``
 |  P01, W |   (=)  | ``rmdir (``*__path__``);`` | (POSIX places this function in ``<unistd.h>``.)
 |       W |   :=   | ``_rmdir (``*__path__``);`` |
-|         |        | |
-|         |     2+a| **``▗▚▚▚▚ <dos.h> ▞▞▞▞▖``**
+4+|
+2+|             2+a| **``▗▚▚▚▚ <dos.h> ▞▞▞▞▖``**
 
 			* **``<dos.h>`` also includes ``<i86.h>``, described below.**
 			* **If `_BORLANDC_SOURCE` is defined, the ``union REGS`` type gets an additional ``.x.flags`` field, and ``<dos.h>`` switches accordingly to a different version of the ``intdos`` and ``intdosx`` routines.**
@@ -203,6 +202,7 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       B |    =   | ``bdosptr (``__dos-func__``,`` *__dx__``,`` __al__``);`` |
 |     W/B |    =   | ``intdos (``*__in-regs__``,`` *__out-regs__``);`` |
 |     W/B |    =   | ``intdosx (``*__in-regs__``,`` *__out-regs__``,`` *__seg-regs__``);`` |
+4+|
 |      W+ |    =   | ``_dos_allocmem (``__size__``,`` *__segment__``);`` | Also works under DPMI; yields a starting protected-mode selector.
 |       W |    =   | ``_dos_close (``__handle__``);`` |
 |       W |    =   | ``_dos_commit (``__handle__``);`` |
@@ -233,7 +233,7 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       W |    =   | ``_dos_write (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` |
 |       W |    =   | ``dosexterr (``*__err-info__``);`` |
 |       B |    =   | ``_getdrive ();`` |
-|         |        | |
+4+|
 |       B |    =   | ``peek (``__segment__``,`` __offset__``);`` |
 |       B |    =   | ``peekb (``__segment__``,`` __offset__``);`` |
 |       B |    =   | ``poke (``__segment__``,`` __offset__``,`` __word-value__``);`` |
@@ -244,8 +244,8 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       B |    =   | ``outportb (``__port__``,`` __value__``);`` |
 |       B |    =   | ``outport (``__port__``,`` __value__``);`` | Accepts a signed value to write.
 |       B |    =   | ``outportw (``__port__``,`` __value__``);`` | Accepts an unsigned value to write.
-|         |        | |
-|         |     2+a| **``▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖``**
+4+|
+2+|             2+a| **``▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖``**
 
 			* **Except for ``__DPMI_hosted ()`` and ``_DPMIIdle ()``, functions in ``<dpmi.h>`` should only be called when the caller knows it is running in DPMI mode.**
 			* **``<dpmi.h>`` is not supported for ACK.**
@@ -264,8 +264,8 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |      IW |    G   | ``_DPMISegmentToDescriptor (``__seg-para__``);`` | ``int 0x31`` function ``0x0002``.  On success, returns a protected-mode selector value for the real-mode segment _seg-para__``:0``.  On failure, returns a negative value.
 |      IW |    G   | ``_DPMISetDescriptor (``__sel__``,`` *__desc__``);`` | ``int 0x31`` function ``0x000c``.  Returns 0 on success, -1 on error.
 |      IW |    G   | ``_DPMISimulateRealModeInterrupt (``__inter-no__``,`` __reset__``,`` __words-to-copy__``,`` *__call-struct__``);`` | ``int 0x31`` function ``0x0300``.  Returns 0 on success, -1 on error.  _words-to-copy_ should probably be 0.
-|         |        | |
-|         |     2+a| **``▗▚▚▚▚ <graph.h> ▞▞▞▞▖``**
+4+|
+2+|             2+a| **``▗▚▚▚▚ <graph.h> ▞▞▞▞▖``**
 
 			* **Unlike in Open Watcom, where all functions in ``<graph.h>`` are far, in ``libi86`` the far-ness of functions follows the chosen memory model.  Thus, in a small-memory-model program, ``_setvideomode`` is a near function.  However, pointers to data are still far.**
 
@@ -281,8 +281,8 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       W |    =   | ``_settextposition (``__row__``,`` __col__``);`` |
 |       W |    =   | ``_settextwindow (``__row1__``,`` __col1__``,`` __row2__``,`` __col2__``);`` |
 |       W |    =   | ``_setvideomode (``__mode__``);`` | In the case of SuperVGA screen modes, only works with VESA interface.
-|         |        | |
-|         |     2+a| **``▗▚▚▚▚ <i86.h> ▞▞▞▞▖``**
+4+|
+2+|             2+a| **``▗▚▚▚▚ <i86.h> ▞▞▞▞▖``**
 
 			* **If `_BORLANDC_SOURCE` is defined, the ``union REGS`` type gets an additional ``.x.flags`` field, and ``<i86.h>`` switches accordingly to a different version of the ``int86``, ``int86x``, ``_int86f``, and ``_int86xf`` routines.**
 
@@ -292,6 +292,7 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       W |    =   | ``segread (``*__seg-regs__``);`` |
 |       W |    =   | ``_disable ();`` |
 |       W |    =   | ``_enable ();`` |
+4+|
 |     W/B |    =   | ``int86 (``__inter-no__``,`` *__in-regs__``,`` *__out-regs__``);`` |
 |     W/B |    =   | ``int86x (``__inter-no__``,`` *__in-regs__``,`` *__out-regs__``,`` *__seg-regs__``);`` |
 |       W |    =   | ``intr (``__inter-no__``,`` *__regs__``);`` | Clears ``SZAPC`` flags to 0 before issuing interrupt.  (This follows a documentation change in Open Watcom versions after Oct 2018.)
@@ -299,6 +300,7 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |      XB |    =   | ``_int86xf (``__inter-no__``,`` *__in-regs__``,`` *__out-regs__``,`` *__seg-regs__``);`` | Loads carry flag before issuing interrupt.
 |       W |    =   | ``intrf (``__inter-no__``,`` *__regs__``);`` | Loads ``SZAPC`` flags before issuing interrupt.
 |       X |    =   | ``_intrf (``__inter-no__``,`` *__regs__``);`` | Loads ``SZAPC`` flags before issuing interrupt.
+4+|
 |       W |    =   | ``FP_OFF (``*__ptr__``);`` | Macro.
 |       W |    =   | ``_FP_OFF (``*__ptr__``);`` | Macro.
 |       W |    =   | ``FP_SEG (``*__ptr__``);`` | Macro.
@@ -307,20 +309,20 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       W |    =   | *``_MK_FP (``__seg__``,`` __off__``);`` | Macro.
 |       X |    =   | *``_CV_FP (``*__ptr__``);`` | Convert a default-sized pointer to a far pointer.  This is mainly useful for ACK, which lacks built-in far pointer support.
 |       X |    =   | ``_FP_EQ (``*__ptr1__``,`` *__ptr2__``);`` | Test whether two far pointers are exactly equal.  This is mainly useful for ACK, which lacks built-in far pointer support.
-|         |        | |
-|         |      2+| **``▗▚▚▚▚ <process.h> ▞▞▞▞▖``**
+4+|
+2+|              2+| **``▗▚▚▚▚ <process.h> ▞▞▞▞▖``**
 |  P01, W |   (=)  | ``getpid ();`` | (POSIX places this function in ``<unistd.h>``.)
 |       W |   :=   | ``_getpid ();`` |
-|         |        | |
-|         |     2+a| **``▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖``**
+4+|
+2+|             2+a| **``▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖``**
 
 			* **``<libi86/stdio.h>`` also includes the underlying C library's ``<stdio.h>``.**
 			* **Under newer versions of `gcc-ia16`, ``<stdio.h>`` will also automatically include ``<libi86/stdio.h>``, unless GCC is in "strict ANSI" mode.**
 
 |  C99, W |   (=)  | ``vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` | (C99 places this function in ``<stdio.h>``.)
 |       X |   :=   | ``_vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` |
-|         |        | |
-|         |     2+a| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
+4+|
+2+|             2+a| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
 
 			* **``<libi86/stdlib.h>`` also includes the underlying C library's ``<stdlib.h>``.**
 			* **Under newer versions of `gcc-ia16`, ``<stdlib.h>`` will also automatically include ``<libi86/stdlib.h>``, unless GCC is in "strict ANSI" mode.**
@@ -336,8 +338,8 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       W |    G   | *``_ulltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
 |       W |    =   | *``ultoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
 |       W |    =   | *``_ultoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
-|         |        | |
-|         |     2+a| **``▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖``**
+4+|
+2+|             2+a| **``▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖``**
 
 			* **``<libi86/string.h>`` also includes the underlying C library's ``<string.h>``.**
 			* **Under newer versions of `gcc-ia16`, ``<string.h>`` will also automatically include ``<libi86/string.h>``, unless GCC is in "strict ANSI" mode.**
@@ -355,7 +357,7 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |===
 | Compat. | Avail. | Variable | Notes
 
-|         |      2+| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
+2+|              2+| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
 |       W |   (=)  | ``_osmajor`` | Implemented as a function call on ACK.
 |       W |   (=)  | ``_osminor`` | Implemented as a function call on ACK.
 |       W |   (=)  | ``_psp`` | Implemented as a function call on ACK.
