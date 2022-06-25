@@ -38,28 +38,43 @@
 #include <libi86/internal/cdefs.h>
 
 /*
- * Declare the 0-argument function _{NAME} (with leading underscore) to be
- * an alias of NAME, if IN_LIBC is the token `yes'.  Otherwise, if IN_LIBC
- * is the token `no', declare NAME to be an alias of _{NAME}.
+ * Decide how to declare the 0-argument functions named NAME & _{NAME}.
+ * For example, NAME might be `getpid'.
+ *
+ *   * If IN_LIBC is the token `no', then the underlying libc lacks the
+ *     function NAME.  Declare both NAME & _{NAME} to be aliases of
+ *     __libi86_{NAME}.
+ *
+ *   * If IN_LIBC is the token `yes', then it means the underlying libc
+ *     already has NAME.  In this case, declare _{NAME} to be an alias of
+ *     NAME --- i.e. the libc definition --- & also separtely declare
+ *     __libi86_{NAME}, which will always be our libi86 definition.
  */
 #define _LIBI86_LIBC_DEFER_0(ret_type, name, in_libc) \
 	_LIBI86_LIBC_DEFER_ ## in_libc ## _0 (ret_type, name)
-#define _LIBI86_LIBC_DEFER_yes_0 (ret_type, name) \
-	_LIBI86_REDIRECT_0(ret_type, _ ## name, name)
-#define _LIBI86_LIBC_DEFER_no_0 (ret_type, name) \
-	_LIBI86_REDIRECT_0(ret_type, name, _ ## name)
+#define _LIBI86_LIBC_DEFER_yes_0(ret_type, name) \
+	_LIBI86_REDIRECT_0 (ret_type, _ ## name, name) \
+	ret_type __libi86_ ## name (void);
+#define _LIBI86_LIBC_DEFER_no_0(ret_type, name) \
+	_LIBI86_REDIRECT_0 (ret_type, name, __libi86_ ## name) \
+	_LIBI86_REDIRECT_0 (ret_type, _ ## name, __libi86_ ## name)
 /* Ditto for functions with 1 or 2 arguments. */
 #define _LIBI86_LIBC_DEFER_1(ret_type, name, type1, in_libc) \
 	_LIBI86_LIBC_DEFER_ ## in_libc ## _1 (ret_type, name, type1)
 #define _LIBI86_LIBC_DEFER_2(ret_type, name, type1, type2, in_libc) \
 	_LIBI86_LIBC_DEFER_ ## in_libc ## _2 (ret_type, name, type1, type2)
 #define _LIBI86_LIBC_DEFER_yes_1(ret_type, name, type1) \
-	_LIBI86_REDIRECT_1 (ret_type, _ ## name, type1, name)
+	_LIBI86_REDIRECT_1 (ret_type, _ ## name, type1, name) \
+	ret_type __libi86_ ## name (type1);
 #define _LIBI86_LIBC_DEFER_no_1(ret_type, name, type1) \
-	_LIBI86_REDIRECT_1 (ret_type, name, type1, _ ## name)
+	_LIBI86_REDIRECT_1 (ret_type, name, type1, __libi86_ ## name) \
+	_LIBI86_REDIRECT_1 (ret_type, _ ## name, type1, __libi86_ ## name)
 #define _LIBI86_LIBC_DEFER_yes_2(ret_type, name, type1, type2) \
-	_LIBI86_REDIRECT_2 (ret_type, _ ## name, type1, type2, name)
+	_LIBI86_REDIRECT_2 (ret_type, _ ## name, type1, type2, name) \
+	ret_type __libi86_ ## name (type1, type2);
 #define _LIBI86_LIBC_DEFER_no_2(ret_type, name, type1, type2) \
-	_LIBI86_REDIRECT_2 (ret_type, name, type1, type2, _ ## name)
+	_LIBI86_REDIRECT_2 (ret_type, name, type1, type2, __libi86_ ## name) \
+	_LIBI86_REDIRECT_2 (ret_type, _ ## name, type1, type2, \
+				      __libi86_ ## name)
 
 #endif

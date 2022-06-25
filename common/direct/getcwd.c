@@ -32,7 +32,18 @@
 #include "direct.h"
 
 char *
-_getcwd (char *buf, size_t size)
+__libi86_getcwd (char *buf, size_t size)
 {
   return _getdcwd (0, buf, size);
 }
+
+#ifdef __GNUC__
+# ifndef _LIBI86_INTERNAL_HAVE__GETCWD
+_LIBI86_WEAK_ALIAS (__libi86_getcwd) char *
+_getcwd (char *, size_t);
+# endif
+# ifndef _LIBI86_INTERNAL_HAVE_GETCWD
+_LIBI86_WEAK_ALIAS (__libi86_getcwd) char *
+getcwd (char *, size_t);
+# endif
+#endif

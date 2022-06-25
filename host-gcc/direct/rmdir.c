@@ -33,12 +33,21 @@
 #include "libi86/internal/dos.h"
 
 int
-_rmdir (const char *path)
+__libi86_rmdir (const char *path)
 {
-  __libi86_bdos_res_t res = __libi86_bdos_dsdxsz_al (0x3a, path);
+  __libi86_bdos_res_t res = __libi86_bdos_dsdxsz_al (0x3a, path, 0);
 
   if (res.carry)
     return -1;
 
   return 0;
 }
+
+#ifndef _LIBI86_INTERNAL_HAVE__RMDIR
+_LIBI86_WEAK_ALIAS (__libi86_rmdir) int
+_rmdir (const char *path);
+#endif
+#ifndef _LIBI86_INTERNAL_HAVE_RMDIR
+_LIBI86_WEAK_ALIAS (__libi86_rmdir) int
+rmdir (const char *path);
+#endif

@@ -28,11 +28,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "libi86/internal/acconfig.h"
 #include "libi86/internal/sect.h"
 
 #ifdef __MSDOS__
+	.define	___libi86_rmdir
+___libi86_rmdir:
+# ifndef _LIBI86_INTERNAL_HAVE__RMDIR
 	.define	__rmdir
 __rmdir:
+# endif
+# ifndef _LIBI86_INTERNAL_HAVE_RMDIR
+	.define	_rmdir
+_rmdir:
+# endif
 	mov	bx, sp
 	mov	dx, 2(bx)
 	movb	ah, 0x3a

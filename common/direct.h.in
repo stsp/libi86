@@ -33,7 +33,6 @@
 #include <libi86/internal/acconfig.h>
 #include <libi86/internal/cdefs.h>
 #include <libi86/internal/libc-defer.h>
-#include <sys/types.h>
 
 _LIBI86_BEGIN_EXTERN_C
 
@@ -76,16 +75,18 @@ _LIBI86_END_EXTERN_C
 #   define __libi86_mkdir1	mkdir
 # endif
 _LIBI86_BEGIN_EXTERN_C
-extern int __libi86_mkdir2 (const char *__path, mode_t __mode);
+extern int __libi86_mkdir2 (const char *__path, __libi86_mode_t __mode);
 extern int __libi86_mkdir1 (const char *__path);
 _LIBI86_END_EXTERN_C
 # if defined __cplusplus
 extern "C++"
 {
-  _LIBI86_REDIRECT_2 (int, _mkdir, const char *, mode_t, __libi86_mkdir2)
+  _LIBI86_REDIRECT_2 (int, _mkdir, const char *, __libi86_mode_t,
+			   __libi86_mkdir2)
   _LIBI86_REDIRECT_1 (int, _mkdir, const char *, __libi86_mkdir1)
 #   ifndef __libi86_mkdir2
-  _LIBI86_REDIRECT_2 (int, mkdir, const char *, mode_t, __libi86_mkdir2)
+  _LIBI86_REDIRECT_2 (int, mkdir, const char *, __libi86_mode_t,
+			   __libi86_mkdir2)
 #   endif
 #   ifndef __libi86_mkdir1
   _LIBI86_REDIRECT_1 (int, mkdir, const char *, __libi86_mkdir1)
@@ -105,7 +106,7 @@ _LIBI86_REDIRECT_1 (int, _mkdir, const char *, __libi86_mkdir1)
 #   if defined __libi86_mkdir1
 _LIBI86_REDIRECT_1 (int, mkdir, const char *, __libi86_mkdir1)
 #   elif ! defined __libi86_mkdir2
-_LIBI86_REDIRECT_2 (int, mkdir, const char *, mode_t, __libi86_mkdir2)
+_LIBI86_REDIRECT_2 (int, mkdir, const char *, __libi86_mode_t, __libi86_mkdir2)
 #   endif
 # endif  /* not C++, not C99 */
 #endif  /* ! _LIBI86_INTERNAL_HAVE_MKDIR1 */

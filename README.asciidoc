@@ -101,6 +101,8 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |===
 
 === Functions
+
+:fn-x-us: footnote:x-us[Declared to be an alias of the corresponding standard library function if present.  For example, if the C library defines getpid (), then this header file will declare _getpid () to be an alias of getpid ().]
 	
 [cols=">1,>1,4,4"]
 |===
@@ -178,9 +180,10 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |         |        | |
 |         |      2+| **``▗▚▚▚▚ <direct.h> ▞▞▞▞▖``**
 |  P01, W |   (=)  | ``getcwd (``*__buffer__``,`` __size__``);`` | (POSIX places this function in ``<unistd.h>``.)
-|       W |   (=)  | ``_getcwd (``*__buffer__``,`` __size__``);`` |
+|       W | ={fn-x-us} | ``_getcwd (``*__buffer__``,`` __size__``);`` |
 |       W |    =   | ``_getdcwd (``__drive__``,`` *__buffer__``,`` __size__``);`` |
 |       W |    =   | ``_getdrive ();`` |
+|         |        | |
 |     P01 | (=) link:doc/implem-notes.asciidoc#directh[(❧)] | ``mkdir (``*__path__``,`` __mode__``);`` .4+a|
 			* In Watcom, both `mkdir` and ``_mkdir`` take only a single __path__ argument.
 			* POSIX however says that `mkdir` (placed in `<sys/stat.h>`) takes two arguments; the second argument gives Unix-style permission bits.
@@ -188,9 +191,9 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 			* Under ACK, however, ``_mkdir`` will always only take one argument, and `mkdir` will take two (unless ACK's C library says otherwise).
 |       X | G link:doc/implem-notes.asciidoc#directh[(❧)] | ``_mkdir (``*__path__``,`` __mode__``);``
 |       W |   (G)  | ``mkdir (``*__path__``);``
-|       W |    =   | ``_mkdir (``*__path__``);``
+|       W | ={fn-x-us} | ``_mkdir (``*__path__``);``
 |  P01, W |   (=)  | ``rmdir (``*__path__``);`` | (POSIX places this function in ``<unistd.h>``.)
-|       W |    =   | ``_rmdir (``*__path__``);`` |
+|       W | ={fn-x-us} | ``_rmdir (``*__path__``);`` |
 |         |        | |
 |         |     2+a| **``▗▚▚▚▚ <dos.h> ▞▞▞▞▖``**
 
@@ -306,13 +309,17 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 |       X |    =   | *``_CV_FP (``*__ptr__``);`` | Convert a default-sized pointer to a far pointer.  This is mainly useful for ACK, which lacks built-in far pointer support.
 |       X |    =   | ``_FP_EQ (``*__ptr1__``,`` *__ptr2__``);`` | Test whether two far pointers are exactly equal.  This is mainly useful for ACK, which lacks built-in far pointer support.
 |         |        | |
+|         |      2+| **``▗▚▚▚▚ <process.h> ▞▞▞▞▖``**
+|  P01, W |   (=)  | ``getpid ();`` | (POSIX places this function in ``<unistd.h>``.)
+|       W | ={fn-x-us} | ``_getpid ();`` |
+|         |        | |
 |         |     2+a| **``▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖``**
 
 			* **``<libi86/stdio.h>`` also includes the underlying C library's ``<stdio.h>``.**
 			* **Under newer versions of `gcc-ia16`, ``<stdio.h>`` will also automatically include ``<libi86/stdio.h>``, unless GCC is in "strict ANSI" mode.**
 
 |  C99, W |   (=)  | ``vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` | (C99 places this function in ``<stdio.h>``.)
-|       X |   (=)  | ``_vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` |
+|       X | ={fn-x-us} | ``_vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` |
 |         |        | |
 |         |     2+a| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
 

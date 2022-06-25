@@ -45,6 +45,7 @@ dnl segment to overflow...  -- tkchia 20211207
 AC_CHECK_DECL([vsscanf],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_VSSCANF],[1])])
 AC_CHECK_FUNC([getcwd],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_GETCWD],[1])])
+AC_CHECK_FUNC([_getcwd],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__GETCWD],[1])])
 AC_CHECK_FUNC([_dos_get_dbcs_lead_table],
   [AC_DEFINE([_LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE],[1])])
 AC_CHECK_HEADER([sys/syslimits.h],
@@ -76,14 +77,54 @@ dnl an _mkdir symbol.
 AC_CHECK_FUNC([_mkdir],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__MKDIR],[1])])
 dnl ...
 AC_CHECK_FUNC([getpid],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_GETPID],[1])])
-AC_CHECK_FUNC([getppid],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_GETPPID],[1])])
+AC_CHECK_FUNC([_getpid],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__GETPID],[1])])
 AC_CHECK_FUNC([rmdir],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_RMDIR],[1])])
+AC_CHECK_FUNC([_rmdir],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__RMDIR],[1])])
 AC_CHECK_DECL([_psp],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__PSP],[1])],,dnl
 	      [#include <stdlib.h>])
 AC_CHECK_DECL([_osmajor],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__OSMAJOR],[1])],,dnl
 	      [#include <stdlib.h>])
 AC_CHECK_DECL([_osminor],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__OSMINOR],[1])],,dnl
 	      [#include <stdlib.h>])
+
+dnl We want to define types __libi86_mode_t & __libi86_pid_t to be the same
+dnl as the types mode_t & pid_t, but without actually bringing in all the
+dnl other types in <sys/types.h>.  Play some games with function prototypes
+dnl to try to detect the underlying types for mode_t & pid_t.
+AC_DEFUN([_LIBI86_TYPE],
+  [AC_CACHE_CHECK([underlying type of ]$1,[[libi86_cv_type_]$1],dnl
+    [[libi86_cv_type_]$1=
+     _LIBI86_TYPE_DO([$1],[$2],[[int]])
+     _LIBI86_TYPE_DO([$1],[$2],[[unsigned]])
+     _LIBI86_TYPE_DO([$1],[$2],[[signed char]])
+     _LIBI86_TYPE_DO([$1],[$2],[[unsigned char]])
+     _LIBI86_TYPE_DO([$1],[$2],[[char]])
+     _LIBI86_TYPE_DO([$1],[$2],[[short]])
+     _LIBI86_TYPE_DO([$1],[$2],[[unsigned short]])
+     _LIBI86_TYPE_DO([$1],[$2],[[long]])
+     _LIBI86_TYPE_DO([$1],[$2],[[unsigned long]])
+     _LIBI86_TYPE_DO([$1],[$2],[[long long]])
+     _LIBI86_TYPE_DO([$1],[$2],[[unsigned long long]])
+     [if test -z "$libi86_cv_type_]$1["; then]
+        AC_MSG_ERROR([[could not figure out ]$1[ type definition]])
+     [fi]])])
+AC_DEFUN([_LIBI86_TYPE_DO],
+	 [[if test -z "$libi86_cv_type_]$1["; then]
+	    AC_COMPILE_IFELSE([AC_LANG_PROGRAM(dnl
+				 [$2
+				  [void __libi86_foo(]$1[ __libi86_quux);]
+				  [void __libi86_foo(]$3[ __libi86_quux);]
+				  [void __libi86_bar(]$1[ *__libi86_quux);]
+				  [void __libi86_bar(]$3[ *__libi86_quux);]
+				  $1 [__libi86_baz(void);]
+				  $3 [__libi86_baz(void);]
+				  $1 [*__libi86_qux(void);]
+				  $3 [*__libi86_qux(void);]],dnl
+				 [])],
+			      [[libi86_cv_type_]$1='$3'])
+	  [fi]])
+_LIBI86_TYPE([pid_t],[#include <sys/types.h>])
+_LIBI86_TYPE([mode_t],[#include <sys/types.h>])
 
 AC_SUBST(ac_cv_have_decl_vsscanf)
 AC_SUBST(ac_cv_func_getcwd)
@@ -93,3 +134,5 @@ AC_SUBST(ac_cv_func_rmdir)
 AC_SUBST(ac_cv_have_decl__psp)
 AC_SUBST(ac_cv_have_decl__osmajor)
 AC_SUBST(ac_cv_have_decl__osminor)
+AC_SUBST(libi86_cv_type_pid_t)
+AC_SUBST(libi86_cv_type_mode_t)

@@ -40,6 +40,10 @@ ___libi86_mkdir1:
 	.define	__mkdir
 __mkdir:
 # endif
+# ifndef _LIBI86_INTERNAL_HAVE_MKDIR
+	.define	_mkdir
+_mkdir:
+# endif
 	mov	bx, sp
 	mov	dx, 2(bx)
 	movb	ah, 0x39

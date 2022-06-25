@@ -33,6 +33,8 @@
 #ifndef _LIBI86_INTERNAL_CDEFS_H_
 #define _LIBI86_INTERNAL_CDEFS_H_
 
+#include <libi86/internal/types.h>
+
 #ifdef __cplusplus
 # define _LIBI86_BEGIN_EXTERN_C	extern "C" {
 # define _LIBI86_END_EXTERN_C	}

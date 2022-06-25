@@ -47,8 +47,6 @@ libdir = @libdir@
 libi86_ackhost = @libi86_ackhost@
 
 ac_cv_have_decl_vsscanf = @ac_cv_have_decl_vsscanf@
-ac_cv_func_getcwd = @ac_cv_func_getcwd@
-ac_cv_func_rmdir = @ac_cv_func_rmdir@
 
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -70,7 +68,6 @@ INSTALL_LIBS	= libi86.a
 INSTALL_HEADERS	= bios.h \
 		  conio.h \
 		  dir.h \
-		  direct.h \
 		  dos.h \
 		  graph.h \
 		  i86.h \
@@ -89,7 +86,10 @@ INSTALL_HEADERS	= bios.h \
 		  $(CLEAN_HEADERS) \
 		  $(DISTCLEAN_HEADERS)
 CLEAN_HEADERS	= libi86/config.h
-DISTCLEAN_HEADERS = libi86/internal/acconfig.h
+DISTCLEAN_HEADERS = direct.h \
+		    process.h \
+		    libi86/internal/acconfig.h \
+		    libi86/internal/types.h
 
 OBJS		= bios/bios-disk.o \
 		  bios/bios-equiplist.o \
@@ -151,6 +151,7 @@ OBJS		= bios/bios-disk.o \
 		  direct/getdrive.o \
 		  direct/libi86-msdos-do-getdcwd.o \
 		  direct/mkdir.o \
+		  direct/rmdir.o \
 		  dos/bdos.o \
 		  dos/dos-allocmem.o \
 		  dos/dos-close.o \
@@ -249,6 +250,7 @@ OBJS		= bios/bios-disk.o \
 		  i86/nosound.o \
 		  i86/segread.o \
 		  i86/sound.o \
+		  process/getpid.o \
 		  stdlib/libi86-get-osmajor-osminor.o \
 		  stdlib/libi86-get-psp.o \
 		  stdlib/libi86-ultoa-uldiv.o \
@@ -265,12 +267,6 @@ OBJS		= bios/bios-disk.o \
 		  string/libi86-fmemmove-backward.o
 ifeq "no" "$(ac_cv_have_decl_vsscanf)"
   OBJS		+= stdio/vsscanf.o
-endif
-ifeq "no" "$(ac_cv_func_getcwd)"
-  OBJS		+= direct/getcwd.o
-endif
-ifeq "no" "$(ac_cv_func_rmdir)"
-  OBJS		+= direct/rmdir.o
 endif
 OBJ_SUBDIRS	= $(sort $(dir $(OBJS)))
 CFLAGS		= -O6 -S
