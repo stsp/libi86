@@ -268,5 +268,8 @@ typedef __typeof__ (__builtin_ia16_selector (0u)) __libi86_segment_t;
 #   define __libi86_autofloat_stdio
 # endif
 #endif
+#ifndef __libi86_packed
+# define __libi86_packed	__attribute__ ((__packed__))
+#endif
 
 #endif

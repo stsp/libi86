@@ -67,20 +67,20 @@ __DPMI_hosted (void)
  * very library.
  */
 
-typedef struct __attribute__ ((__packed__))
+typedef struct __libi86_packed
   {
     uint8_t accessed : 1, rdwr : 1, exp_down: 1, execute : 1,
 	    mustbe_1 : 1, dpl : 2, present : 1;
   }
 dsc_type;
 
-typedef struct __attribute__ ((__packed__))
+typedef struct __libi86_packed
   {
     uint8_t : 4, useravail : 1, mustbe_0 : 1, use32 : 1, page_gran : 1;
   }
 dsc_xtype;
 
-typedef struct __attribute__ ((__packed__))
+typedef struct __libi86_packed
   {
     uint16_t lim_0_15, base_0_15;
     uint8_t base_16_23;
@@ -97,7 +97,7 @@ typedef struct __attribute__ ((__packed__))
   }
 descriptor;
 
-typedef struct __attribute__ ((__packed__))
+typedef struct __libi86_packed
   {
     union
       {

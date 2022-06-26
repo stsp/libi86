@@ -71,11 +71,7 @@ struct diskfree_t
 	   bytes_per_sector;
 };
 
-struct
-#ifdef __GNUC__
-__attribute__ ((__packed__))
-#endif
-find_t
+struct __libi86_packed find_t
 {
   char reserved[21];
   char attrib;
