@@ -43,8 +43,17 @@
 	xorw	%bx,	%bx
 	clc
 	int	$0x31
-	jnc	.cont
-.oops:
+	call	.1			/* check if %bx:0 if an EPSP; also
+					   load %es */
+	movw	%es:epsp_parent, %bx	/* get the parent EPSP */
+	call	.2			/* now check that the parent is
+					   actually also an EPSP */
+	popw	%es
+	popaw
+
+	.section .text.startup.msdos_init.causeway, "ax"
+
+.0:
 	pushw	%ss
 	popw	%ds
 	movb	$9,	%ah
@@ -52,25 +61,22 @@
 	int	$0x21
 	movw	$0x4cff, %ax
 	int	$0x21
-.cont:
-	lsl	%bx,	%ax		/* check if %bx is a valid selector */
-	jnz	.oops
-	cmpw	$epsp_parent+1, %ax
-	jb	.oops
-	movw	%bx,	%es		/* check if %bx:0 is an EPSP */
-	cmpw	$0x20cd, %es:0
-	jnz	.oops
-	movw	%es:epsp_parent, %bx	/* check if parent field points to
-					   a valid selector too... */
-	lsl	%bx,	%ax
-	jnz	.oops
-	cmpw	$epsp_parent+1, %ax
-	jb	.oops
-	movw	%bx,	%es		/* ...& is also an EPSP */
-	cmpw	$0x20cd, %es:0
-	jnz	.oops
-	popw	%es
-	popaw
+.1:
+	jc	.0
+.2:
+	larw	%bx,	%ax		/* check descr. %bx's access rights: */
+	jnz	.0			/* should be data segment & not */
+	andb	$0b10011100, %ah	/* expand-down */
+	cmpb	$0b10010000, %ah
+	jnz	.0
+	lslw	%bx,	%ax		/* check %bx's limit --- the */
+	jnz	.0			/* epsp_parent field should be */
+	cmpw	$epsp_parent+1, %ax	/* accessible */
+	jb	.0
+	movw	%bx,	%es		/* check for PSP signature at %bx:0 */
+	cmpw	$0x20cd, %es:0		/* also load %es */
+	jnz	.0
+	ret
 
 	.section .msdos_init_rodata, "a"
 
