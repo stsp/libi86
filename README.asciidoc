@@ -189,7 +189,7 @@ link:doc/linux-build.md[Detailed instructions] for doing so are available.
 			* Under ACK, however, ``_mkdir`` will always only take one argument, and `mkdir` will take two (unless ACK's C library says otherwise).
 |       X | G link:doc/implem-notes.asciidoc#directh[(❧)] | ``_mkdir (``*__path__``,`` __mode__``);``
 |       W |   (G)  | ``mkdir (``*__path__``);``
-|       W |   :=   | ``_mkdir (``*__path__``);``
+|       W |    =   | ``_mkdir (``*__path__``);``
 |  P01, W |   (=)  | ``rmdir (``*__path__``);`` | (POSIX places this function in ``<unistd.h>``.)
 |       W |   :=   | ``_rmdir (``*__path__``);`` |
 4+|
