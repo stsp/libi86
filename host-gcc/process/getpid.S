@@ -38,6 +38,12 @@
 #define epsp_parent	0x100
 
 	TEXT_ (dos_getpid.S.LIBI86)
+
+/* If in DOS extender mode, force linking in libi86-init-causeway.S. */
+#ifdef __IA16_FEATURE_DOSX
+	.reloc	., R_386_NONE, __libi86_have_init_causeway
+#endif
+
 	.global	__libi86_getpid
 __libi86_getpid:
 #ifndef _LIBI86_INTERNAL_HAVE__GETPID

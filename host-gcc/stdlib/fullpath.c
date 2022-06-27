@@ -29,6 +29,7 @@
 
 #define _LIBI86_COMPILING_
 #include <errno.h>
+#include <string.h>
 #include <unistd.h>
 #include "libi86/stdlib.h"
 #include "libi86/internal/acconfig.h"

@@ -296,8 +296,12 @@ ifeq "" "$(filter -O%,$(CC) $(CFLAGS) $(MULTILIB))"
   CFLAGS	+= -Os
 endif
 ifeq "" "$(filter-out -mcmodel=tiny -mcmodel=small, \
-			$(filter -mcmodel=%,$(CC) $(CFLAGS) $(MULTILIB)))"
+		      $(filter -mcmodel=%,$(CC) $(CFLAGS) $(MULTILIB)))"
   OBJS		+= dos/libi86-call5-tiny.o
+endif
+ifneq "" "$(filter -mdpmi% -mprotected-mode% -mdosx%, \
+		   $(CC) $(CFLAGS) $(MULTILIB))"
+  OBJS		+= process/libi86-init-causeway.o
 endif
 ASFLAGS		=
 # Headers we depend on when creating .o files; these do not include
