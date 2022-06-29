@@ -89,6 +89,72 @@ struct _DOSERROR
   char locus;
 };
 
+struct __libi86_packed _fcb
+{
+  char _fcb_drive;
+  char _fcb_name[8];
+  char _fcb_ext[3];
+  short _fcb_curblk;
+  short _fcb_recsize;
+  long _fcb_filsize;
+  short _fcb_date;
+  char _fcb_resv[10];
+  char _fcb_currec;
+  long _fcb_random;
+};
+
+#ifdef _BORLANDC_SOURCE
+struct __libi86_packed fcb
+{
+  char fcb_drive;
+  char fcb_name[8];
+  char fcb_ext[3];
+  short fcb_curblk;
+  short fcb_recsize;
+  long fcb_filsize;
+  short fcb_date;
+  char fcb_resv[10];
+  char fcb_currec;
+  long fcb_random;
+};
+# ifdef __GNUC__
+typedef union __attribute__ ((__transparent_union__))
+{
+  struct _fcb *__libi86_fcb_ptr_1;
+  struct fcb *__libi86_fcb_ptr_2;
+} __libi86_fcb_ptr_t;
+# else  /* ! __GNUC__ */
+typedef void *__libi86_fcb_ptr_t;
+# endif  /* ! __GNUC__ */
+#else  /* ! _BORLANDC_SOURCE */
+typedef struct _fcb *__libi86_fcb_ptr_t;
+#endif  /* ! _BORLANDC_SOURCE */
+
+struct __libi86_packed __libi86_dosspawn_proc_run_t
+{
+  __libi86_segment_t _env_seg;
+  __libi86_fpc_t _argv, _fcb1, _fcb2;
+};
+
+struct __libi86_packed __libi86_dosspawn_proc_t
+{
+  __libi86_segment_t _env_seg;
+  __libi86_fpc_t _argv, _fcb1, _fcb2;
+  __libi86_fpv_t _sssp, _csip;
+};
+
+struct __libi86_packed __libi86_dosspawn_overlay_t
+{
+  __libi86_segment_t _load_seg, _reloc_factor;
+};
+
+union _dosspawn_t
+{
+  struct __libi86_dosspawn_proc_run_t _proc_run;
+  struct __libi86_dosspawn_proc_t _proc;
+  struct __libi86_dosspawn_overlay_t _overlay;
+};
+
 extern int bdos (int __dos_func, unsigned __dx, unsigned __al);
 #ifdef _BORLANDC_SOURCE
 _LIBI86_REDIRECT_3 (int, bdosptr, int, void *, unsigned, __libi86_bdosptr)
@@ -129,6 +195,8 @@ extern void _dos_setdrive (unsigned __drive, unsigned *__total);
 extern unsigned _dos_setfileattr (const char *__path, unsigned __attributes);
 extern unsigned _dos_setftime (int __handle, unsigned __date, unsigned __time);
 extern unsigned _dos_settime (const struct dostime_t *__time);
+extern unsigned _dos_spawn (unsigned char __subfunc, const char *__path,
+			    union _dosspawn_t *__params, unsigned __mode);
 extern unsigned _dos_write (int __handle, __libi86_fpcv_t __buf,
 			    unsigned __count, unsigned *__bytes);
 extern int dosexterr (struct _DOSERROR *__doserror);
@@ -147,6 +215,8 @@ extern int dosexterr (struct _DOSERROR *__doserror);
 #ifdef _BORLANDC_SOURCE
 extern int _getdrive (void);
 #endif
+extern char *_parsfnm (const char *__cmd_line, __libi86_fcb_ptr_t __fcb,
+		       int __opt);
 
 #ifdef __INTERRUPT
 # pragma GCC diagnostic push
@@ -172,6 +242,10 @@ _dos_findclose (struct find_t *__buf)
 }
 
 #ifdef _BORLANDC_SOURCE
+# if 0
+_LIBI86_REDIRECT_AND_INLINE_3 (char *, parsfnm,
+			       const char *, __libi86_fcb_ptr_t, int, _parsfnm)
+# endif
 _LIBI86_REDIRECT_AND_INLINE_2 (int, peek, unsigned, unsigned, __libi86_peek)
 _LIBI86_REDIRECT_AND_INLINE_2 (char, peekb, unsigned, unsigned, __libi86_peekb)
 _LIBI86_REDIRECT_AND_INLINE_VOID_3 (poke, unsigned, unsigned, int,
