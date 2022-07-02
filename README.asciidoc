@@ -58,7 +58,12 @@ When using ACK:
 
 === Building from sources, installing, and testing, on Linux
 
-link:doc/linux-build.md[Detailed instructions] for doing so are available.
+:fn-tkchia-22d: footnote:tkchia-22d[https://gitlab.com/tkchia/libi86.]
+:fn-tkchia-22e: footnote:tkchia-22e[https://codeberg.org/tkchia/libi86.]
+:fn-tkchia-22f: footnote:tkchia-22f[https://github.com/tkchia/libi86.]
+
+  * link:doc/linux-build.md[Detailed instructions] for building the code are available.
+  * You can download the `libi86` source code from https://gitlab.com/tkchia/libi86[GitLab],{fn-tkchia-22d} https://codeberg.org/tkchia/libi86[Codeberg],{fn-tkchia-22e} or https://github.com/tkchia/libi86[GitHub].{fn-tkchia-22f}
 
 == License
 
