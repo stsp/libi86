@@ -35,4 +35,4 @@ m4_define([AT_PACKAGE_VERSION],m4_esyscmd_s([
     TZ=UTC0 date +%Y%m%d
   fi]))
 m4_define([AT_PACKAGE_STRING],AT_PACKAGE_NAME AT_PACKAGE_VERSION)
-m4_define([AT_PACKAGE_BUGREPORT],[https://github.com/tkchia/libi86/issues])
+m4_define([AT_PACKAGE_BUGREPORT],[https://gitlab.com/tkchia/libi86/-/issues])
