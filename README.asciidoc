@@ -342,7 +342,10 @@ When using ACK:
 |       W |    G   | *``_lltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
 |       W |    =   | *``ltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
 |       W |    =   | *``_ltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
-|      W+ | = link:doc/implem-notes.asciidoc#libi86stdlibh[(❧)] | ``_makepath (``*__path__``,`` *__drive__``,`` *__dir__``,`` *__fname__``,`` *__ext__``);`` | As extensions, this function (1) checks for buffer overflow, and (2) gives a return value.  Upon an error, the return value is non-zero, ``errno`` is set, and __path__``[]`` holds either an empty string or a truncated path.  Network __drive__``[]`` values starting with two backslashes (``\\``) are not supported.
+|      W+ | = link:doc/implem-notes.asciidoc#libi86stdlibh[(❧)] | ``_makepath (``*__path__``,`` *__drive__``,`` *__dir__``,`` *__fname__``,`` *__ext__``);`` a|
+			* As extensions, this function (1) checks for buffer overflow, and (2) gives a return value.
+			* Upon an error, the return value is non-zero, ``errno`` is set, and __path__``[]`` holds either an empty string or a truncated path.
+			* Network __drive__``[]`` values starting with two backslashes (``\\``) are not supported.
 |       W | = link:doc/implem-notes.asciidoc#libi86stdlibh[(❧)] | ``_splitpath (``*__path__``,`` *__drive__``,`` *__dir__``,`` *__fname__``,`` *__ext__``);`` | Long filenames, and network paths starting with two backslashes (``\\``), are not supported.
 |       W |    G   | *``ulltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
 |       W |    G   | *``_ulltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
