@@ -202,6 +202,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/libi86-ret-einval.o \
 		  dos/libi86-ret-really-set-errno.o \
 		  dos/libi86-ret-set-errno.o \
+		  dos/parsfnm.o \
 		  dos/peek.o \
 		  dos/peekb.o \
 		  dos/poke.o \

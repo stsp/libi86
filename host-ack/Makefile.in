@@ -182,6 +182,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dosexterr.o \
 		  dos/intdos.o \
 		  dos/intdosx.o \
+		  dos/parsfnm.o \
 		  dos/libi86-bc-intdos.o \
 		  dos/libi86-bc-intdosx.o \
 		  dos/libi86-msdos-do-findfirst.o \

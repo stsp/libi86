@@ -238,6 +238,11 @@ When using ACK:
 |       W |    =   | ``_dos_write (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` |
 |       W |    =   | ``dosexterr (``*__err-info__``);`` |
 |       B |    =   | ``_getdrive ();`` |
+|       X |    =   | *``_parsfnm (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);`` .2+a|
+			* Parses __cmd-line__``[]`` into a DOS 1.x-style File Control Block (FCB) — via `int 0x21`, `%ah` = `0x29`.
+			* __cmd-line__``[]`` should end with either a null character, a carriage return (``\r``), or a new line (``\n``).
+			* In non-Borland mode, __fcb__ should point to a ``struct _fcb`` (with underscore), rather than a ``struct fcb``.
+|       B |    =   | *``parsfnm (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);``
 4+|
 |       B |    =   | ``peek (``__segment__``,`` __offset__``);`` |
 |       B |    =   | ``peekb (``__segment__``,`` __offset__``);`` |
