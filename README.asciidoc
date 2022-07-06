@@ -227,7 +227,9 @@ When using ACK:
 |       W |    =   | ``_dos_keep (``__status__``,`` __keep-paras__``);`` |
 |       B |    =   | ``keep (``__status__``,`` __keep-paras__``);`` |
 |       W |    =   | ``_dos_open (``*__path__``,`` __mode__``,`` *__handle__``);`` |
-|       W |    =   | ``_dos_read (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` |
+|       W |    =   | ``_dos_read (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` a|
+			* ``_dos_read`` __always__ directly invokes the relevant syscall (`int 0x21` function `0x3f`), without transforming the input bytes.
+			* Under ACK — but not `gcc-ia16` — the C library's ``read`` function may behave differently from ``_dos_read``: it may translate CRLFs to LFs, and handle end-of-file indicators (ASCII 26), if __handle__ is ``open`` 'd in "text mode".
 |       W |    =   | ``_dos_setblock (``__size__``,`` __seg__``,`` *__max-size__``);`` |
 |       W |    =   | ``_dos_setdate (``*__date__``);`` |
 |       W |    =   | ``_dos_setdrive (``__drive__``,`` *__total__``);`` |
@@ -235,7 +237,9 @@ When using ACK:
 |       W |    =   | ``_dos_setftime (``__handle__``,`` __date__``,`` __time__``);`` |
 |       W |    =   | ``_dos_settime (``*__time__``);`` |
 |       W |    =   | ``_dos_setvect (``__intr-no__``,`` *__handler__``);`` | Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will not be supported.
-|       W |    =   | ``_dos_write (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` |
+|       W |    =   | ``_dos_write (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` a|
+			* ``_dos_write`` __always__ directly invokes the relevant syscall (`int 0x21` function `0x40`), without transforming the output bytes.
+			* Under ACK — but not `gcc-ia16` — the C library's ``write`` function may behave differently from ``_dos_write``: it may translate LFs to CRLFs if __handle__ is ``open`` 'd in "text mode".
 |       W |    =   | ``dosexterr (``*__err-info__``);`` |
 |       B |    =   | ``_getdrive ();`` |
 |       X |    =   | *``_parsfnm (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);`` .2+a|
