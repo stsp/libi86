@@ -29,6 +29,7 @@
 
 #define _LIBI86_COMPILING_
 #include <errno.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include "dos.h"
 #ifdef __IA16_FEATURE_DOSX
@@ -54,8 +55,11 @@
  *    parsing an ASCIIZ file name, & parsing a command line to pass to int
  *    0x21, ah = 0x4b.
  *
- *    MS-DOS 2.x in fact stops scanning the CMD_LINE once it hits a control
- *    character, which it defines as any character with code 0--31.
+ *    MS-DOS 2.x in fact stops scanning the CMD_LINE once it hits
+ *	* a control character, which it defines as any character with code
+ *	  0--31; or
+ *	* a terminator (?) character which is not also a one-time delimiter
+ *	  --- '"', '/', '\\', '[', or ']'.
  */
 typedef struct __libi86_packed
 {
@@ -68,9 +72,19 @@ cmd_line_len (const char *cmd_line)
 {
   const char *p = cmd_line;
   char c;
+  bool termr = false;
   do
-    c = *p++;
-  while (c != 0 && c != '\r' && c != '\n');
+    {
+      c = *p++;
+      switch (c)
+	{
+	case 0:
+	case '\r':
+	case '\n':
+	  termr = true;
+	}
+    }
+  while (! termr);
   return p - cmd_line;
 }
 #endif  /* __IA16_FEATURE_DOSX */
