@@ -178,6 +178,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-setfileattr.o \
 		  dos/dos-setftime.o \
 		  dos/dos-settime.o \
+		  dos/dos-spawn.o \
 		  dos/dos-write.o \
 		  dos/dosexterr.o \
 		  dos/intdos.o \
