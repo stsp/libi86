@@ -196,7 +196,10 @@ extern unsigned _dos_setfileattr (const char *__path, unsigned __attributes);
 extern unsigned _dos_setftime (int __handle, unsigned __date, unsigned __time);
 extern unsigned _dos_settime (const struct dostime_t *__time);
 extern unsigned _dos_spawn (unsigned char __subfunc, const char *__path,
-			    union _dosspawn_t *__params, unsigned __mode);
+			    union _dosspawn_t *__params);
+extern unsigned _dos_spawnx (unsigned char __subfunc, const char *__path,
+			     union _dosspawn_t *__params, int __mode,
+			     __libi86_pid_t *__csid);
 extern unsigned _dos_write (int __handle, __libi86_fpcv_t __buf,
 			    unsigned __count, unsigned *__bytes);
 extern int dosexterr (struct _DOSERROR *__doserror);

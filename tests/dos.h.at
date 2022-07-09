@@ -1047,3 +1047,62 @@ main (void)
 3 OK
 ]])
 AT_CLEANUP
+
+AT_SETUP([[_dos_spawn]])
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <string.h>
+
+void abort (void);
+
+int
+main (int argc, char **argv)
+{
+  union _dosspawn_t spawn;
+  struct _fcb fcb1, fcb2;
+  char args[] = " h3llo w0rld\r", *aptr;
+  unsigned res;
+
+  if (argc > 1)
+    {
+      int i;
+      for (i = 1; i < argc; ++i)
+	puts (argv[i]);
+      return 0;
+    }
+
+  memset (&fcb1, 0xf6, sizeof fcb1);
+  memset (&fcb2, 0xf6, sizeof fcb2);
+  memset (&spawn, 0xf6, sizeof spawn);
+
+  aptr = _parsfnm (args, &fcb1, 1);
+  if (! aptr)
+    abort ();
+  /* ....
+   * :  : At this point one normally skips over any remaining file name
+   * :  : characters in the first parameter.  We know there are no such
+   * :..: characters though, so just omit this step.
+   */
+  aptr = _parsfnm (aptr, &fcb2, 1);
+  if (! aptr)
+    abort ();
+
+  spawn._proc_run._env_seg = 0;
+  spawn._proc_run._argv = args;
+  spawn._proc_run._fcb1 = _CV_FP (&fcb1);
+  spawn._proc_run._fcb2 = _CV_FP (&fcb2);
+
+  res = _dos_spawn (0, argv[0], &spawn);
+  if (res != 0)
+    abort ();
+
+  puts ("yo");
+  return 0;
+}]],[[h3llo
+w0rld
+yo
+]])
+AT_CLEANUP

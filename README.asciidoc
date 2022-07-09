@@ -237,6 +237,7 @@ When using ACK:
 |       W |    =   | ``_dos_setftime (``__handle__``,`` __date__``,`` __time__``);`` |
 |       W |    =   | ``_dos_settime (``*__time__``);`` |
 |       W |    =   | ``_dos_setvect (``__intr-no__``,`` *__handler__``);`` | Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will not be supported.
+|       X |    G   | ``_dos_spawn (``__subfunc__``,`` *__path__``,`` *__params__``);`` | ``int 0x21`` function ``0x4b`` (for __subfunc__ ≠ 4) or ``0x80`` (for __subfunc__ = 4).  Returns an error code on error, 0 on success.
 |       W |    =   | ``_dos_write (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` a|
 			* ``_dos_write`` __always__ directly invokes the relevant syscall (`int 0x21` function `0x40`), without transforming the output bytes.
 			* Under ACK — but not `gcc-ia16` — the C library's ``write`` function may behave differently from ``_dos_write``: it may translate LFs to CRLFs if __handle__ is ``open`` 'd in "text mode".
