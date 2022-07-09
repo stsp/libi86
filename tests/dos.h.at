@@ -1063,7 +1063,7 @@ main (int argc, char **argv)
 {
   union _dosspawn_t spawn;
   struct _fcb fcb1, fcb2;
-  char args[] = " h3llo w0rld\r", *aptr;
+  char args[] = "? h3llo w0rld\r", *aptr;
   unsigned res;
 
   if (argc > 1)
@@ -1078,7 +1078,10 @@ main (int argc, char **argv)
   memset (&fcb2, 0xf6, sizeof fcb2);
   memset (&spawn, 0xf6, sizeof spawn);
 
-  aptr = _parsfnm (args, &fcb1, 1);
+  /* Fill in the command line argument length. */
+  args[0] = strcspn (args + 1, "\r");
+
+  aptr = _parsfnm (args + 1, &fcb1, 1);
   if (! aptr)
     abort ();
   /* ....
@@ -1091,7 +1094,7 @@ main (int argc, char **argv)
     abort ();
 
   spawn._proc_run._env_seg = 0;
-  spawn._proc_run._argv = args;
+  spawn._proc_run._argv = _CV_FP (args);
   spawn._proc_run._fcb1 = _CV_FP (&fcb1);
   spawn._proc_run._fcb2 = _CV_FP (&fcb2);
 
