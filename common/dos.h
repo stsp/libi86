@@ -199,7 +199,7 @@ extern unsigned _dos_spawn (unsigned char __subfunc, const char *__path,
 			    union _dosspawn_t *__params);
 extern unsigned _dos_spawnx (unsigned char __subfunc, const char *__path,
 			     union _dosspawn_t *__params, int __mode,
-			     __libi86_pid_t *__csid);
+			     unsigned *__csid);
 extern unsigned _dos_write (int __handle, __libi86_fpcv_t __buf,
 			    unsigned __count, unsigned *__bytes);
 extern int dosexterr (struct _DOSERROR *__doserror);
