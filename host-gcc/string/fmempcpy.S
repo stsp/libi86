@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,27 +27,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_LIBI86_STRING_H_
-#define _LIBI86_LIBI86_STRING_H_
+#include "libi86/internal/call-cvt.h"
 
-#include <string.h>
+	.arch	i8086, jumps
+	.code16
+	.att_syntax prefix
 
-#include <libi86/internal/cdefs.h>
-
-_LIBI86_BEGIN_EXTERN_C
-
-extern int _fmemcmp (__libi86_fpcv_t __s1, __libi86_fpcv_t __s2,
-		     __libi86_size_t __n);
-extern __libi86_fpv_t _fmemcpy (__libi86_fpv_t __dest, __libi86_fpcv_t __src,
-				__libi86_size_t __n);
-extern __libi86_fpv_t _fmemmove (__libi86_fpv_t __dest, __libi86_fpcv_t __src,
-				 __libi86_size_t __n);
-extern __libi86_fpv_t _fmempcpy (__libi86_fpv_t __dest, __libi86_fpcv_t __src,
-				 __libi86_size_t __n);
-extern __libi86_fpv_t _fmemset (__libi86_fpv_t __dest, int __c,
-				__libi86_size_t __n);
-extern __libi86_size_t _fstrlen (__libi86_fpcc_t __s);
-
-_LIBI86_END_EXTERN_C
-
-#endif
+	TEXT_ (fmempcpy.S.LIBI86)
+	.global	_fmempcpy
+_fmempcpy:
+	ENTER2_BX_(10)
+	pushw	%ds
+	pushw	%es
+	pushw	%si
+	pushw	%di
+	MOV_ARG8W2_BX_(%cx)
+	MOV_ARG0W_BX_(%di)		/* we'll return DEST + N as %dx:%ax */
+	MOV_ARG2W_BX_(%dx)
+	movw	%dx,	%es
+	LDS_ARG4W2_BX_(%si)
+	shrw	$1,	%cx
+	rep movsw
+	adcw	%cx,	%cx
+	rep movsb
+	xchgw	%ax,	%di
+	popw	%di
+	popw	%si
+	popw	%es
+	popw	%ds
+	RET2_(10)

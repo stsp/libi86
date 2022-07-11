@@ -366,6 +366,7 @@ When using ACK:
 |       W |    =   | ``_fmemcmp (``*__s1__``,`` *__s2__``,`` __n__``);`` |
 |       W |    =   | *``_fmemcpy (``*__dest__``,`` *__src__``,`` __n__``);`` |
 |       W |    =   | *``_fmemmove (``*__dest__``,`` *__src__``,`` __n__``);`` |
+|       X |    =   | *``_fmempcpy (``*__dest__``,`` *__src__``,`` __n__``);`` | Like ``_fmemcpy``, but returns __dest__ + __n__.
 |       W |    =   | *``_fmemset (``*__s__``,`` __c__``,`` __n__``);`` |
 |       W |    =   | ``_fstrlen (``*__s__``);`` |
 |===

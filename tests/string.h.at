@@ -72,7 +72,7 @@ main (void)
 }]],[])
 AT_CLEANUP
 
-AT_SETUP([[_fmemcpy]])
+AT_SETUP([[_fmemcpy, _fmempcpy]])
 AT_LIBI86_CHECK(dnl
 [[#include <i86.h>
 #include <stdlib.h>
@@ -83,9 +83,12 @@ char baz[14];
 int
 main (void)
 {
-  __libi86_fpv_t res;
-  _fmemcpy (_CV_FP (baz), _CV_FP (bar), 6);
-  _fmemcpy (_CV_FP (baz + 6), _CV_FP (foo), 8);
+  __libi86_fpv_t res = _fmemcpy (_CV_FP (baz), _CV_FP (bar), 6);
+  if (! _FP_EQ (res, _CV_FP (baz)))
+    abort ();
+  res = _fmempcpy (_CV_FP (baz + 6), _CV_FP (foo), 8);
+  if (! _FP_EQ (res, _CV_FP (baz + 14)))
+    abort ();
   /* Beware of corner cases... */
   res = _fmemcpy (_CV_FP (foo), _CV_FP (bar), 0);
   if (! _FP_EQ (res, _CV_FP (foo)))
@@ -107,8 +110,8 @@ main (void)
 {
   union REGS inr, outr;
   struct SREGS sr;
-  _fmemcpy (baz, bar, 6);
-  _fmemcpy (baz + 6, foo, 8);
+  __libi86_fpv_t res = _fmempcpy (baz, bar, 6);
+  _fmemcpy (res, foo, 8);
 #ifdef __MSDOS__
   memset (&inr, 0xf6, sizeof inr);
   memset (&sr, 0, sizeof sr);
@@ -138,7 +141,7 @@ main (void)
 {
   _fmemcpy (baz, bar, 6);
   _fmemcpy (baz + 6, foo, 8);
-  if (_fmemcpy (foo, bar, 0) != foo)
+  if (_fmempcpy (foo, bar, 0) != foo)
     abort ();
   write (1, baz, sizeof (baz));
   write (1, "\n", 1);
