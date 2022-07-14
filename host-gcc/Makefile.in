@@ -194,6 +194,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-spawn.o \
 		  dos/dos-write.o \
 		  dos/dosexterr.o \
+		  dos/getswitchar.o \
 		  dos/intdos.o \
 		  dos/intdosx.o \
 		  dos/libi86-bc-intdos.o \
@@ -208,6 +209,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/peekb.o \
 		  dos/poke.o \
 		  dos/pokeb.o \
+		  dos/setswitchar.o \
 		  dos-dbcs/dos-get-dbcs-lead-table.o \
 		  dos-dbcs/libi86-msdos-dbcs-lead-p.o \
 		  dpmi/dpmi-hosted.o \

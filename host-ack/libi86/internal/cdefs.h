@@ -141,6 +141,8 @@ __libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
 #define _LIBI86_REDIRECT_2	_LIBI86_REDIRECT_AND_INLINE_2
 #define _LIBI86_REDIRECT_3	_LIBI86_REDIRECT_AND_INLINE_3
 #define _LIBI86_REDIRECT_4	_LIBI86_REDIRECT_AND_INLINE_4
+#define _LIBI86_REDIRECT_VOID_0	_LIBI86_REDIRECT_AND_INLINE_VOID_0
+#define _LIBI86_REDIRECT_VOID_1	_LIBI86_REDIRECT_AND_INLINE_VOID_1
 /*
  * If _BORLANDC_SOURCE is in effect, define a local 0-, 1-, 2-, 3- or
  * 4-argument function function NAME which calls __libi86_bc_NAME. 

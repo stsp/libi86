@@ -338,3 +338,27 @@ main (void)
 3 OK
 ]])
 AT_CLEANUP
+
+AT_SETUP([[getswitchar, setswitchar]])
+AT_LIBI86_CHECK(dnl
+[[#define _BORLANDC_SOURCE
+#include <dos.h>
+#include <stdlib.h>
+int
+main (void)
+{
+  int sw1 = getswitchar (), sw2;
+  if (sw1 != (unsigned char) sw1)
+    abort ();
+  setswitchar ('-');
+  sw2 = getswitchar ();
+  if (sw2 != '-' && sw2 != '/')
+    abort ();
+  setswitchar ((char) sw1);
+  if (sw2 == '/')
+    sw1 = '/';
+  if (getswitchar () != sw1)
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP

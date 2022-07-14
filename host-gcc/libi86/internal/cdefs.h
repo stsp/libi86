@@ -92,6 +92,10 @@ __libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
 	_LIBI86_EXTERN_C ret_type alias_to (type1, type2, type3, type4); \
 	extern ret_type name (type1, type2, type3, type4) \
 			__asm (_LIBI86_ASM_NAME (alias_to));
+#define _LIBI86_REDIRECT_VOID_0(name, alias_to) \
+	_LIBI86_REDIRECT_0(void, name, alias_to)
+#define _LIBI86_REDIRECT_VOID_1(name, type1, alias_to) \
+	_LIBI86_REDIRECT_1(void, name, type1, alias_to)
 #define _LIBI86_ASM_NAME(c_name) \
 	_LIBI86_ASM_NAME_P2(__USER_LABEL_PREFIX__, #c_name)
 #define _LIBI86_ASM_NAME_P2(prefix, c_name) _LIBI86_ASM_NAME_P3(prefix, c_name)

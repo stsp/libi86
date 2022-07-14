@@ -1109,3 +1109,26 @@ w0rld
 yo
 ]])
 AT_CLEANUP
+
+AT_SETUP([[_getswitchar, _setswitchar]])
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+#include <stdlib.h>
+int
+main (void)
+{
+  int sw1 = _getswitchar (), sw2;
+  if (sw1 != (unsigned char) sw1)
+    abort ();
+  _setswitchar ('-');
+  sw2 = _getswitchar ();
+  if (sw2 != '-' && sw2 != '/')
+    abort ();
+  _setswitchar ((char) sw1);
+  if (sw2 == '/')
+    sw1 = '/';
+  if (_getswitchar () != sw1)
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP

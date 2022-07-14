@@ -217,9 +217,13 @@ extern int dosexterr (struct _DOSERROR *__doserror);
  */
 #ifdef _BORLANDC_SOURCE
 extern int _getdrive (void);
+_LIBI86_REDIRECT_0 (int, getswitchar, _getswitchar)
+_LIBI86_REDIRECT_VOID_1 (setswitchar, char, _setswitchar)
 #endif
+extern int _getswitchar (void);
 extern char *_parsfnm (const char *__cmd_line, __libi86_fcb_ptr_t __fcb,
 		       int __opt);
+extern void _setswitchar (char __ch);
 
 #ifdef __INTERRUPT
 # pragma GCC diagnostic push
@@ -245,8 +249,8 @@ _dos_findclose (struct find_t *__buf)
 }
 
 #ifdef _BORLANDC_SOURCE
-_LIBI86_REDIRECT_AND_INLINE_3 (char *, parsfnm,
-			       const char *, __libi86_fcb_ptr_t, int, _parsfnm)
+_LIBI86_REDIRECT_3 (char *, parsfnm,
+		    const char *, __libi86_fcb_ptr_t, int, _parsfnm)
 _LIBI86_REDIRECT_AND_INLINE_2 (int, peek, unsigned, unsigned, __libi86_peek)
 _LIBI86_REDIRECT_AND_INLINE_2 (char, peekb, unsigned, unsigned, __libi86_peekb)
 _LIBI86_REDIRECT_AND_INLINE_VOID_3 (poke, unsigned, unsigned, int,

@@ -90,6 +90,7 @@ When using ACK:
 |   W | Behaves like the corresponding function in Open Watcom.
 |  W+ | Behaves like the corresponding function in Open Watcom, but with some extended behaviours.
 |   B | From Borland Turbo C{plus}{plus} — enable with `_BORLANDC_SOURCE`.
+|  UB | Undocumented (?) functionality from Borland Turbo C{plus}{plus} — enable with `_BORLANDC_SOURCE`.
 | W/B | By default, behaves as in Open Watcom; if `_BORLANDC_SOURCE` is defined, behaves as in Borland C{plus}{plus}.
 |  IW | From internal interfaces in Open Watcom's library code.
 |   X | `libi86`-specific extension; not in Open Watcom or Borland C{plus}{plus}.  Enabled even if the macros `_BORLANDC_SOURCE` and `_ISOC99_SOURCE` are not defined.
@@ -245,11 +246,15 @@ When using ACK:
 			* Under ACK — but not `gcc-ia16` — the C library's ``write`` function may behave differently from ``_dos_write``: it may translate LFs to CRLFs if __handle__ is ``open`` 'd in "text mode".
 |       W |    =   | ``dosexterr (``*__err-info__``);`` |
 |       B |    =   | ``_getdrive ();`` |
+|      UB |    =   | ``getswitchar ();`` | Returns the (nominal) character for command line switches — normally ``'/'`` — per `int 0x21`, `%ax` = `0x3700`.
+|       X |    =   | ``_getswitchar ();`` |
 |       X |    =   | *``_parsfnm (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);`` .2+a|
 			* Parses __cmd-line__``[]`` into a DOS 1.x-style File Control Block (FCB) — via `int 0x21`, `%ah` = `0x29`.
-			* __cmd-line__``[]`` should end with either a null character, a carriage return (``\r``), or a new line (``\n``).
+			* __cmd-line__``[]`` should end with either a null character, a carriage return (``'\r'``), or a new line (``'\n'``).
 			* In non-Borland mode, __fcb__ should point to a ``struct _fcb`` (with underscore), rather than a ``struct fcb``.
 |       B |    =   | *``parsfnm (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);``
+|      UB |    =   | ``setswitchar (``__ch__``);`` | Sets the (nominal) character for command line switches, with `int 0x21`, `%ax` = `0x3701`.
+|       X |    =   | ``_setswitchar (``__ch__``);`` |
 4+|
 |       B |    =   | ``peek (``__segment__``,`` __offset__``);`` |
 |       B |    =   | ``peekb (``__segment__``,`` __offset__``);`` |
