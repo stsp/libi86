@@ -191,7 +191,6 @@ OBJS		= bios/bios-disk.o \
 		  dos/libi86-msdos-do-findnext.o \
 		  dos/libi86-msdos-do-open.o \
 		  dos/libi86-msdos-do-truename.o \
-		  dos/libi86-msdos-parse-to-fcb.o \
 		  dos/libi86-msdos-set-dta.o \
 		  dos/libi86-ret-einval.o \
 		  dos/libi86-ret-really-set-errno.o \

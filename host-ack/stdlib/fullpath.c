@@ -234,7 +234,7 @@ _fullpath (char *out_path, const char *path, size_t size)
   /* Process the rest of the path, component by component. */
   while (path[i] != 0)
     {
-      __libi86_msdos_fcb_t fcb;
+      struct _fcb fcb;
       size_t name_len, ext_len;
 
       size_t k = __libi86_msdos_dbcs_strcspn (path + i, '\\', '/', dbcs), m;
@@ -275,8 +275,8 @@ _fullpath (char *out_path, const char *path, size_t size)
 	  ;
 	}
 
-      if (__libi86_msdos_parse_to_fcb (path + i, &fcb) != path + i + k
-	  || fcb.drive != 0)
+      if (_parsfnm (path + i, &fcb, 0) != path + i + k
+	  || fcb._fcb_drive != 0)
 	goto invalid;
 
       i += k;
@@ -284,7 +284,7 @@ _fullpath (char *out_path, const char *path, size_t size)
       name_len = m = 0;
       do
 	{
-	  c = (char) fcb.name[m];
+	  c = (char) fcb._fcb_name[m];
 	  ++m;
 	  if (c != ' ')
 	    {
@@ -298,7 +298,7 @@ _fullpath (char *out_path, const char *path, size_t size)
       ext_len = m = 0;
       do
 	{
-	  c = (char) fcb.ext[m];
+	  c = (char) fcb._fcb_ext[m];
 	  ++m;
 	  if (c != ' ')
 	    {
@@ -312,11 +312,11 @@ _fullpath (char *out_path, const char *path, size_t size)
       if (! name_len)
 	goto invalid;
 
-      COPY (fcb.name, name_len);
+      COPY (fcb._fcb_name, name_len);
       if (ext_len)
 	{
 	  COPY1 ('.');
-	  COPY (fcb.ext, ext_len);
+	  COPY (fcb._fcb_ext, ext_len);
 	}
       COPY1 ('\\');
       comp_start[n_comps] = j;

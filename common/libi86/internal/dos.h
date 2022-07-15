@@ -45,11 +45,6 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
-typedef struct
-{
-  uint8_t drive, name[8], ext[3], unused[25];
-} __libi86_msdos_fcb_t;
-
 #ifdef __GNUC__
 extern __attribute__ ((regparmcall)) unsigned
 #else
@@ -139,8 +134,6 @@ extern __attribute__ ((regparmcall)) unsigned
 extern unsigned __libi86_ret_really_set_errno (unsigned);
 #endif
 extern unsigned __libi86_msdos_do_truename (const char *path, char *out_path);
-extern const char *__libi86_msdos_parse_to_fcb (const char *name,
-						__libi86_msdos_fcb_t *fcb);
 
 #ifdef __GNUC__
 typedef struct
