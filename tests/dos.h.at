@@ -1048,6 +1048,67 @@ main (void)
 ]])
 AT_CLEANUP
 
+AT_SETUP([[_makefcb]])
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <string.h>
+
+void abort (void);
+
+#define CMP_SZ	offsetof (struct _fcb, _fcb_filsize)
+
+int
+main (void)
+{
+  static const char name1[] = "a:foO*.bAr",
+		    name2[] = "  ?:fOo?.bar,Baz";
+  static const struct _fcb expect_fcb1 = { 1, "FOO?????", "BAR", 0, 0, };
+#if 0  /* fails under dosemu2 */
+  static const struct _fcb expect_fcb2 = { '?' - 'A' + 1,
+					   "FOO?    ", "BAR", 0, 0, };
+#endif
+  struct _fcb fcb;
+  struct _makefcb_t res;
+
+  memset (&fcb, 0xf6, sizeof fcb);
+  res = _makefcb (name1, &fcb, 0);
+  if (res._status != 1)
+    abort ();
+  if (memcmp (&fcb, &expect_fcb1, CMP_SZ) != 0)
+    abort ();
+  puts ("1 OK");
+
+  memset (&fcb, 0xf6, sizeof fcb);
+  res = _makefcb (name2, &fcb, 1);
+  if (res._status != -1)
+    {
+      printf ("%u: status == %d != -1\n", __LINE__, res._status);
+      abort ();
+    }
+#if 0  /* fails under dosemu2 */
+  if (*res._tail != ',')
+    {
+      printf ("%u: *%p == '%c' != ','\n", __LINE__, res._tail,
+	      (int) (unsigned char) *res._tail);
+      abort ();
+    }
+  if (memcmp (&fcb, &expect_fcb2, CMP_SZ) != 0)
+    {
+      printf ("%u: drive %c name \"%.8s\" ext \"%.3s\"\n",
+	      __LINE__, 'A' - 1 + fcb._fcb_drive, fcb._fcb_name, fcb._fcb_ext);
+      abort ();
+    }
+#endif
+  puts ("2 OK");
+
+  return 0;
+}]],[[1 OK
+2 OK
+]])
+AT_CLEANUP
+
 AT_SETUP([[_dos_spawn]])
 AT_LIBI86_CHECK(dnl
 [[#include <dos.h>

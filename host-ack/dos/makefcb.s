@@ -31,24 +31,26 @@
 #include "libi86/internal/sect.h"
 
 #ifdef __MSDOS__
-	.define	__parsfnm
-__parsfnm:
-	mov	bx, sp
+	.define	__makefcb
+__makefcb:
+	push	bp
+	mov	bp, sp
 	push	es
 	push	si
 	push	di
-	mov	si, 2(bx)
-	mov	di, 4(bx)
-	movb	al, 6(bx)
+	mov	si, 6(bp)
+	mov	di, 8(bp)
+	movb	al, 10(bp)
 	movb	ah, 0x29
 	int	0x21
-	cmpb	al, 1
-	xchg	si, ax
-	jna	.ok
-	xor	ax, ax
-.ok:
+	mov	di, 4(bp)
+	cbw
+	mov	(di), ax
+	mov	2(di), si
+	xchg	di, ax
 	pop	di
 	pop	si
 	pop	es
+	pop	bp
 	ret
 #endif

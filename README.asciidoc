@@ -248,6 +248,14 @@ When using ACK:
 |       B |    =   | ``_getdrive ();`` |
 |      UB |    =   | ``getswitchar ();`` .2+a| Returns the (nominal) character for command line switches — usually ``'/'`` — per `int 0x21`, `%ax` = `0x3700`.
 |       X |    =   | ``_getswitchar ();``
+|       X |    =   | ``_makefcb (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);`` a|
+			* Parses __cmd-line__``[]`` into a DOS 1.x-style File Control Block (FCB) — via `int 0x21`, `%ah` = `0x29`.
+			* Returns a ``struct _makefcb_t`` structure (__result__):
+			** __result__``._status`` is either 0 (parse successful, no wildcards), 1 (parse succesfull, found wildcards), or -1 (invalid drive);
+			** __result__``.tail`` points to the first unparsed character, or may be ``NULL`` if a system error occurred.
+			* __cmd-line__``[]`` should end with either a null character, a carriage return (``'\r'``), or a new line (``'\n'``).
+			* In non-Borland mode, __fcb__ should point to a ``struct _fcb`` (with underscore), rather than a ``struct fcb``.
+			* This function provides more detailed information on the parse than the more "standardized" ``parsfnm`` function below.
 |       X |    =   | *``_parsfnm (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);`` .2+a|
 			* Parses __cmd-line__``[]`` into a DOS 1.x-style File Control Block (FCB) — via `int 0x21`, `%ah` = `0x29`.
 			* __cmd-line__``[]`` should end with either a null character, a carriage return (``'\r'``), or a new line (``'\n'``).

@@ -130,6 +130,12 @@ typedef void *__libi86_fcb_ptr_t;
 typedef struct _fcb *__libi86_fcb_ptr_t;
 #endif  /* ! _BORLANDC_SOURCE */
 
+struct _makefcb_t
+{
+  int _status;
+  char *_tail;
+};
+
 struct __libi86_packed __libi86_dosspawn_proc_run_t
 {
   __libi86_segment_t _env_seg;
@@ -221,6 +227,8 @@ _LIBI86_REDIRECT_0 (int, getswitchar, _getswitchar)
 _LIBI86_REDIRECT_VOID_1 (setswitchar, char, _setswitchar)
 #endif
 extern int _getswitchar (void);
+extern struct _makefcb_t _makefcb (const char *__cmd_line,
+				   __libi86_fcb_ptr_t __fcb, int __opt);
 extern char *_parsfnm (const char *__cmd_line, __libi86_fcb_ptr_t __fcb,
 		       int __opt);
 extern void _setswitchar (char __ch);
