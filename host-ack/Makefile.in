@@ -83,6 +83,7 @@ INSTALL_HEADERS	= bios.h \
 		  libi86/internal/graph.h \
 		  libi86/internal/libc-defer.h \
 		  libi86/internal/portio.h \
+		  libi86/internal/process.h \
 		  $(CLEAN_HEADERS) \
 		  $(DISTCLEAN_HEADERS)
 CLEAN_HEADERS	= libi86/config.h
@@ -256,6 +257,7 @@ OBJS		= bios/bios-disk.o \
 		  i86/segread.o \
 		  i86/sound.o \
 		  process/getpid.o \
+		  process/spawnve.o \
 		  stdlib/libi86-get-osmajor-osminor.o \
 		  stdlib/libi86-get-psp.o \
 		  stdlib/libi86-ultoa-uldiv.o \

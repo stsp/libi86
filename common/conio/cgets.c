@@ -110,5 +110,5 @@ cgets (char *buf)
     }
 }
 #else
-# warning "unknown host OS"
+# pragma GCC warning "unknown host OS"
 #endif

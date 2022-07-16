@@ -27,25 +27,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_PROCESS_H_
-#define _LIBI86_PROCESS_H_
+#ifndef _LIBI86_LIBI86_INTERNAL_PROCESS_H_
+#define _LIBI86_LIBI86_INTERNAL_PROCESS_H_
 
-#include <libi86/internal/acconfig.h>
-#include <libi86/internal/cdefs.h>
-#include <libi86/internal/libc-defer.h>
+#ifndef _LIBI86_COMPILING_
+# error \
+  "<libi86/internal/process.h> should only be used when compiling libi86!"
+#endif
 
-_LIBI86_BEGIN_EXTERN_C
+/*
+ * Special internal flags for the _spawnve (...) MODE.
+ *
+ * _P_OPT_C_SPECIAL: treat e.g. `command.com /c ...', where `...' is exactly
+ * one argument, as a special case: treat the argument as the complete
+ * command line, rather than the name of a script, & quote it accordingly.
+ */
+#define _P_OPT_C_SPECIAL	(1 << 8)
 
-_LIBI86_LIBC_DEFER_0 (__libi86_pid_t, getpid, @ac_cv_func_getpid@)
-_LIBI86_REDIRECT_4 (__libi86_pid_t, spawnve, int, const char *,
-		    const char * const *, const char * const *, _spawnve)
-
-#define _P_WAIT		0
-#define P_WAIT		_P_WAIT
-
-/* For testing purposes. */
-extern __libi86_pid_t __libi86_getpid (void);
-
-_LIBI86_END_EXTERN_C
+/* A mask of all our internal flags. */
+#define _P_INTERNAL_FLAGS	_P_OPT_C_SPECIAL
 
 #endif
