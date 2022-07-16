@@ -301,7 +301,7 @@ main (int argc, char **argv)
     abort ();
 
   /* Try to close the same file descriptor again.  This should fail.  */
-  if (_dos_close (0) != EBADF)
+  if (_dos_close (0) != 6)  /* "Invalid handle" */
     abort ();
 
   return 0;
@@ -500,7 +500,7 @@ main (int argc, char **argv)
     abort ();
   puts ("6 OK");
 
-  if (_dos_getfileattr ("nul", &attr3) != ENOENT)
+  if (_dos_getfileattr ("nul", &attr3) != 2)  /* "File not found" */
     abort ();
   puts ("7 OK");
   if (errno != ENOENT)
@@ -559,20 +559,22 @@ main (int argc, char **argv)
        * attributes of the "nul" device file, while FreeDOS says "File not
        * found".
        */
-    case ENOENT:
-    case EACCES:
+    case 2:  /* "File not found" */
+      if (errno != ENOENT)
+	abort ();
+      break;
+    case 5:  /* "Access denied" */
+      if (errno != EACCES)
+	abort ();
       break;
     default:
       abort ();
     }
   puts ("6 OK");
-  if (errno != ENOENT && errno != EACCES)
-    abort ();
-  puts ("7 OK");
 
   if (_dos_setfileattr (argv[0], 0) != 0)
     abort ();
-  puts ("8 OK");
+  puts ("7 OK");
 
   return 0;
 #else
@@ -585,7 +587,6 @@ main (int argc, char **argv)
 5 OK
 6 OK
 7 OK
-8 OK
 ]])
 AT_CLEANUP
 
@@ -604,7 +605,7 @@ main (int argc, char **argv)
 #endif
 #ifdef __MSDOS__
   errno = 0;
-  if (_dos_allocmem (0xffffu, &max_paras) != ENOMEM)
+  if (_dos_allocmem (0xffffu, &max_paras) != 8)  /* "Insufficient memory" */
     abort ();
   puts ("1 OK");
   if (errno != ENOMEM)
@@ -638,7 +639,7 @@ main (int argc, char **argv)
 #endif
   puts ("7 OK");
 
-  if (_dos_setblock (0xffff, seg, &max_paras_2) != ENOMEM)
+  if (_dos_setblock (0xffff, seg, &max_paras_2) != 8)
     abort ();
   puts ("8 OK");
   if (max_paras_2 < max_paras)
@@ -723,7 +724,7 @@ main (int argc, char **argv)
     abort ();
   if ((find.attrib & (_A_VOLID | _A_SUBDIR)) != 0)
     abort ();
-  if (_dos_findnext (&find) != 18)  /* "no more files" */
+  if (_dos_findnext (&find) != 18)  /* "No more files" */
     abort ();
   if (_dos_findclose (&find) != 0)
     abort ();
@@ -758,7 +759,8 @@ AT_CLEANUP
 
 AT_SETUP([[_dos_creat, _dos_creatnew, _dos_open]])
 AT_LIBI86_CHECK_WITH_TMP_FILE(dnl
-[[#include <dos.h>
+[[#include <libi86/internal/acconfig.h>
+#include <dos.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -788,6 +790,10 @@ main (int argc, char **argv)
   puts ("4 OK");
 
   /* read access should be denied */
+#if defined _LIBI86_INTERNAL_HAVE__SETMODE \
+    && defined _LIBI86_INTERNAL_HAVE_O_BINARY
+  _setmode (fd, O_BINARY);
+#endif
   if (read (fd, buf, sizeof buf) >= 0)
     abort ();
   puts ("5 OK");
