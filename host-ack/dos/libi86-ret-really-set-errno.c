@@ -29,6 +29,7 @@
 
 #define _LIBI86_COMPILING_
 #include <errno.h>
+#include "libi86/internal/acconfig.h"
 #include "libi86/internal/cdefs.h"
 
 /* Convert a system error code to an `errno' value. */
@@ -36,7 +37,7 @@
 unsigned
 __libi86_ret_really_set_errno (unsigned sys_err)
 {
-#ifndef _LIBI86_INTERNAL_HAVE__SYS_SETERRNO
+#ifdef _LIBI86_INTERNAL_HAVE__SYS_SETERRNO
   extern long _sys_seterrno (unsigned);
   _sys_seterrno (sys_err);
 #else

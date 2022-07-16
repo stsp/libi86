@@ -38,8 +38,8 @@ __dos_setblock:
 	push	si
 	mov	si, 6(bx)
 	movb	ah, 0x4a
-	mov	bx, 2(bx)
 	mov	es, 4(bx)
+	mov	bx, 2(bx)
 	int	0x21
 	jnc	.0
 	mov	(si), bx
