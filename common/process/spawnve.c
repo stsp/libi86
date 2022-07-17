@@ -67,8 +67,7 @@ is_dos_shell (const char name[8], const char ext[3])
 {
   static const char command_name[8] = "COMMAND ",
 		    fourdos_name[8] = "4DOS    ",
-		    ndos_name[8]    = "NDOS    ",
-		    com_ext[3] = "COM";
+		    ndos_name[8]    = "NDOS    ";
   switch (name[0])
     {
     case 'C':
@@ -87,7 +86,7 @@ is_dos_shell (const char name[8], const char ext[3])
       return false;
     }
 
-  return memcmp (ext, com_ext, 3) == 0;
+  return memcmp (ext, "COM", 3) == 0;
 }
 
 static bool
@@ -114,8 +113,7 @@ is_unix_shell (const char name[8], const char ext[3])
 		    tcsh_name[8]	= "TCSH    ",
 		    login_tcsh_name[8]	= "-TCSH   ",
 		    bash_name[8]	= "BASH    ",
-		    login_bash_name[8]	= "-BASH   ",
-		    exe_ext[3] = "EXE";
+		    login_bash_name[8]	= "-BASH   ";
   switch (name[2])
     {
     case ' ':
@@ -151,7 +149,7 @@ is_unix_shell (const char name[8], const char ext[3])
       return false;
     }
 
-  return memcmp (ext, exe_ext, 3) == 0;
+  return memcmp (ext, "EXE", 3) == 0;
 }
 
 static int
@@ -560,7 +558,7 @@ find_raw_ext (const char *raw_base, _dos_dbcs_lead_table_t dbcs)
       else if (__libi86_msdos_dbcs_lead_p (c, dbcs))
 	last_c_lead_p = true;
       else if (c == '.')
-	ext = (char *) p;
+	ext = (char *) p - 1;
     }
 
   return ext;
@@ -627,7 +625,7 @@ comspec_spawn (int mode, unsigned char subfunc,
 
   pp = envp;
   while ((p = *pp++) != NULL)
-    if (strncmp (p, "COMSPEC=", 8) == 0)
+    if (p[0] == 'C' && strncmp (p, "COMSPEC=", 8) == 0)
       {
 	comspec = p + 8;
 	break;
@@ -728,7 +726,6 @@ _spawnve (int mode, const char *path, const char * const *argv,
   char *raw_ext;
   unsigned attrs;
   bool restrict_ext;
-  bool path_ok = false;
 
   if (! path || ! path[0] || ! argv || ! argv[0])
     {
@@ -750,20 +747,21 @@ _spawnve (int mode, const char *path, const char * const *argv,
   dbcs = _dos_get_dbcs_lead_table ();
 
   /*
-   * Try to locate the executable to run.  Add a .COM, .EXE, .BAT, or .BTM
-   * extension if the extension-less file cannot be found.  Also decide how
-   * we need to run the executable.
+   * Try to locate the executable to run.
+   *
+   * If the file path has no extension, first try to add a .COM, .EXE, .BAT,
+   * or .BTM extension, _then_ if none of these can be found --- & if
+   * _P_RESTRICT_EXT is not specified --- we try to look for the extension-
+   * -less file.
+   *
+   * (This differs from what Open Watcom does, but is more similar to
+   * DJGPP's behaviour, & is arguably safer.)
    */
+  restrict_ext = ((mode & _P_RESTRICT_EXT) != 0);
   raw_base = find_raw_base_name (path, dbcs);
   raw_ext = find_raw_ext (raw_base, dbcs);
 
-  restrict_ext = ((mode & _P_RESTRICT_EXT) != 0);
-
-  if (! restrict_ext || raw_ext)
-    if (_dos_getfileattr (path, &attrs) == 0)
-      path_ok = true;
-
-  if (! path_ok)
+  if (! raw_ext)
     {
       size_t path_len = strlen (path);
 
@@ -777,26 +775,29 @@ _spawnve (int mode, const char *path, const char * const *argv,
 	  return -1;
 	}
 
-      raw_ext = find_raw_ext (raw_base, dbcs);
-      if (raw_ext)
-	return -1;
-
       memcpy (path_with_ext, path, path_len);
       path = path_with_ext;
-      raw_ext = path_with_ext + path_len + 1;
+      raw_ext = path_with_ext + path_len;
 
-      strcpy (raw_ext - 1, ".COM");
+      strcpy (raw_ext, ".COM");
       if (_dos_getfileattr (path, &attrs) != 0)
 	{
-	  strcpy (raw_ext, "EXE");
+	  strcpy (raw_ext + 1, "EXE");
 	  if (_dos_getfileattr (path, &attrs) != 0)
 	    {
-	      strcpy (raw_ext, "BAT");
+	      strcpy (raw_ext + 1, "BAT");
 	      if (_dos_getfileattr (path, &attrs) != 0)
 		{
-		  strcpy (raw_ext, "BTM");
+		  strcpy (raw_ext + 1, "BTM");
 		  if (_dos_getfileattr (path, &attrs) != 0)
-		    return -1;
+		    {
+		      if (restrict_ext)
+			return -1;
+
+		      *raw_ext = 0;
+		      if (_dos_getfileattr (path, &attrs) != 0)
+			return -1;
+		    }
 		}
 	    }
 	}
@@ -818,7 +819,10 @@ _spawnve (int mode, const char *path, const char * const *argv,
   if (! envp)
     envp = (const char **) environ;
 
+  /* Decide how we need to run the executable. */
   spawner = find_spawner (fcb._fcb_ext, restrict_ext);
+
+  /* Then run it. */
   return spawner (mode, subfunc, path, fcb._fcb_name, fcb._fcb_ext,
 		  argv, envp, dbcs);
 }

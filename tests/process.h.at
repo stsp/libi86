@@ -139,7 +139,7 @@ void abort (void);
 int
 main (int argc, char **argv)
 {
-  const char *prog = "./" BAT_FILE;
+  const char *prog = "./" BAT_FILE_MINUS_EXT;
   const char *kid_argv[] = { NULL, "/foo", "victor", "--bar", "::hugo", NULL };
   const char * const kid_envp[] = { "VINCENT=van gogh", NULL };
   kid_argv[0] = prog;

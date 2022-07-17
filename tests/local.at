@@ -401,8 +401,11 @@ dnl $3 = expected program output
 dnl $4 = additional options to pass to dosemu
 m4_define([AT_LIBI86_CHECK_WITH_BAT_FILE],[dnl
 AT_DATA([[w00t.bat]],[$2])
+AT_DATA([[w00t]],[[nope nope nope
+]])
 AT_LIBI86_CHECK(dnl
 [[#define BAT_FILE "w00t.bat"
+#define BAT_FILE_MINUS_EXT "w00t"
 #line 1
 ]$1],[$3],,[$4])])
 
