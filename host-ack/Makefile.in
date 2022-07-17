@@ -258,6 +258,8 @@ OBJS		= bios/bios-disk.o \
 		  i86/sound.o \
 		  process/getpid.o \
 		  process/spawnve.o \
+		  process/spawnvp.o \
+		  process/spawnvpe.o \
 		  stdlib/libi86-get-osmajor-osminor.o \
 		  stdlib/libi86-get-psp.o \
 		  stdlib/libi86-ultoa-uldiv.o \

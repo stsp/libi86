@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -28,37 +28,66 @@
  */
 
 #define _LIBI86_COMPILING_
-#include <stdlib.h>
-#include "dir.h"
+#include <errno.h>
 #include "dos.h"
-#include "libi86/stdlib.h"
+#include "process.h"
 #include "libi86/internal/dos.h"
+#include "libi86/internal/dos-dbcs.h"
 
-char *
-_searchpath (const char *name)
+static bool
+is_specific_path (const char *path, _dos_dbcs_lead_table_t dbcs)
 {
-  static char full_pathname[_MAX_PATH];
+  bool led_p = false;
+  const char *p = path;
+  char c;
+  if (__libi86_msdos_has_drive_spec_p (path))
+    return true;
+  while ((c = *p++) != 0)
+    {
+      if (led_p)
+	led_p = false;
+      else if (__libi86_msdos_path_sep_p (c))
+	return true;
+      else if (__libi86_msdos_dbcs_lead_p (c, dbcs))
+	led_p = true;
+    }
+  return false;
+}
 
-  const char *pathname;
+__libi86_pid_t
+_spawnvpe (int mode, const char *path, const char * const *argv,
+	   const char * const *envp)
+{
   _dos_dbcs_lead_table_t dbcs;
   __libi86_msdos_path_itr_t itr;
-  unsigned attrs;
+  __libi86_pid_t res;
+  const char *full;
 
-  if (_dos_getfileattr (name, &attrs) == 0)
-    return _fullpath (full_pathname, name, sizeof full_pathname);
-
-  dbcs = _dos_get_dbcs_lead_table ();
-
-  _LIBI86_FOR_EACH_PATHED_PATHNAME (pathname, name, NULL, dbcs, itr)
+  if (! path || ! path[0])
     {
-      if (_dos_getfileattr (pathname, &attrs) == 0)
-	return _fullpath (full_pathname, pathname, sizeof full_pathname);
+      errno = EINVAL;
+      return -1;
     }
 
-  return NULL;
+  res = _spawnve (mode, path, argv, envp);
+  if (res != -1 || errno != ENOENT)
+    return res;
+
+  dbcs = _dos_get_dbcs_lead_table ();
+  if (is_specific_path (path, dbcs))
+    return res;
+
+  _LIBI86_FOR_EACH_PATHED_PATHNAME (full, path, envp, dbcs, itr)
+    {
+      res = _spawnve (mode, full, argv, envp);
+      if (res != -1 || errno != ENOENT)
+	return res;
+    }
+
+  return res;
 }
 
 #ifdef __GNUC__
-_LIBI86_WEAK_ALIAS (_searchpath) char *
-searchpath (const char *);
+_LIBI86_WEAK_ALIAS (_spawnvpe) __libi86_pid_t
+spawnvpe (int, const char *, const char * const *, const char * const *);
 #endif

@@ -37,12 +37,25 @@
 #include "libi86/internal/dos-dbcs.h"
 
 char *
-__libi86_msdos_pathed_first (const char *name, _dos_dbcs_lead_table_t dbcs,
+__libi86_msdos_pathed_first (const char *name, const char * const *envp,
+			     _dos_dbcs_lead_table_t dbcs,
 			     __libi86_msdos_path_itr_t *itr)
 {
   itr->__name_ = name;
   itr->__dbcs_ = dbcs;
-  itr->__next_path_ = getenv ("PATH");
+  if (! envp)
+    itr->__next_path_ = getenv ("PATH");
+  else
+    {
+      const char *p, * const *pp = envp;
+      while ((p = *pp++) != NULL)
+	if (p[0] == 'P' && strncmp (p, "PATH=", 5) == 0)
+	  {
+	    p += 5;
+	    break;
+	  }
+      itr->__next_path_ = p;
+    }
 
   return __libi86_msdos_pathed_next (itr);
 }

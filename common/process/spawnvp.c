@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -29,36 +29,15 @@
 
 #define _LIBI86_COMPILING_
 #include <stdlib.h>
-#include "dir.h"
-#include "dos.h"
-#include "libi86/stdlib.h"
-#include "libi86/internal/dos.h"
+#include "process.h"
 
-char *
-_searchpath (const char *name)
+__libi86_pid_t
+_spawnvp (int mode, const char *path, const char * const *argv)
 {
-  static char full_pathname[_MAX_PATH];
-
-  const char *pathname;
-  _dos_dbcs_lead_table_t dbcs;
-  __libi86_msdos_path_itr_t itr;
-  unsigned attrs;
-
-  if (_dos_getfileattr (name, &attrs) == 0)
-    return _fullpath (full_pathname, name, sizeof full_pathname);
-
-  dbcs = _dos_get_dbcs_lead_table ();
-
-  _LIBI86_FOR_EACH_PATHED_PATHNAME (pathname, name, NULL, dbcs, itr)
-    {
-      if (_dos_getfileattr (pathname, &attrs) == 0)
-	return _fullpath (full_pathname, pathname, sizeof full_pathname);
-    }
-
-  return NULL;
+  return _spawnvpe (mode, path, argv, NULL);
 }
 
 #ifdef __GNUC__
-_LIBI86_WEAK_ALIAS (_searchpath) char *
-searchpath (const char *);
+_LIBI86_WEAK_ALIAS (_spawnvp) __libi86_pid_t
+spawnvp (int, const char *, const char * const *);
 #endif

@@ -207,8 +207,13 @@ __libi86_bdos_dsdxsz (unsigned char dos_func, const char *dsdx)
 /*
  * Iterate through the directories in %PATH%.  At each iteration, set
  * PATHNAME to point to a file path comprising the directory path & the file
- * name component NAME.  DBCS should point to a DBCS lead byte table.  ITR
- * should be a __libi86_msdos_path_itr_t object.
+ * name component NAME.
+ *
+ *   * ENVP should point to an array of environment variables --- %PATH%
+ *     will be looked up from there.  If ENVP is NULL, look up the caller's
+ *     own environment (environ[]).
+ *   * DBCS should point to a DBCS lead byte table.
+ *   * ITR should be a __libi86_msdos_path_itr_t object.
  *
  * If an error occurred while trying to set PATHNAME, the loop will
  * terminate prematurely & set errno to an error code (e.g. ENAMETOOLONG). 
@@ -216,8 +221,8 @@ __libi86_bdos_dsdxsz (unsigned char dos_func, const char *dsdx)
  * This caters to the common case where we need to find a particular file
  * along the %PATH% search path.
  */
-#define _LIBI86_FOR_EACH_PATHED_PATHNAME(pathname, name, dbcs, itr) \
-	for ((pathname) = __libi86_msdos_pathed_first ((name), (dbcs), \
+#define _LIBI86_FOR_EACH_PATHED_PATHNAME(pathname, name, envp, dbcs, itr) \
+	for ((pathname) = __libi86_msdos_pathed_first ((name), (envp), (dbcs),\
 						       &(itr)); \
 	     (pathname); \
 	     (pathname) = __libi86_msdos_pathed_next (&(itr)))
@@ -229,7 +234,7 @@ typedef struct
   _dos_dbcs_lead_table_t __dbcs_;
 } __libi86_msdos_path_itr_t;
 
-extern char *__libi86_msdos_pathed_first (const char *,
+extern char *__libi86_msdos_pathed_first (const char *, const char * const *,
 					  _dos_dbcs_lead_table_t,
 					  __libi86_msdos_path_itr_t *);
 extern char *__libi86_msdos_pathed_next (__libi86_msdos_path_itr_t *);

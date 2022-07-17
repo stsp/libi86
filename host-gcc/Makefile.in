@@ -275,6 +275,8 @@ OBJS		= bios/bios-disk.o \
 		  i86/sound.o \
 		  process/getpid.o \
 		  process/spawnve.o \
+		  process/spawnvp.o \
+		  process/spawnvpe.o \
 		  stdlib/fullpath.o \
 		  stdlib/lltoa.o \
 		  stdlib/ltoa.o \
