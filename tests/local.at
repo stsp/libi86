@@ -394,6 +394,18 @@ AT_LIBI86_CHECK_CXX(dnl
 ]$1],[$2],,[$3])
 rm -rf temp.dir])
 
+dnl run a program with an additional batch file as input
+dnl $1 = text of program to test
+dnl $2 = text of batch file
+dnl $3 = expected program output
+dnl $4 = additional options to pass to dosemu
+m4_define([AT_LIBI86_CHECK_WITH_BAT_FILE],[dnl
+AT_DATA([[w00t.bat]],[$2])
+AT_LIBI86_CHECK(dnl
+[[#define BAT_FILE "w00t.bat"
+#line 1
+]$1],[$3],,[$4])])
+
 dnl completely skip a test if C compiler does not support programs that use
 dnl a DOS extender
 m4_define([AT_LIBI86_SKIP_IF_NO_DOSX],[dnl

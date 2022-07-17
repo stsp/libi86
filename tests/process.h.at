@@ -130,4 +130,37 @@ vincent = van gogh
 yo
 ]])
 fi
+AT_LIBI86_CHECK_WITH_BAT_FILE(dnl
+[[#include <process.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+  const char *prog = "./" BAT_FILE;
+  const char *kid_argv[] = { NULL, "/foo", "victor", "--bar", "::hugo", NULL };
+  const char * const kid_envp[] = { "VINCENT=van gogh", NULL };
+  kid_argv[0] = prog;
+  if (_spawnve (_P_WAIT, prog, kid_argv, kid_envp) != (pid_t) 0)
+    abort ();
+  puts ("yo");
+  return 0;
+}]],dnl
+[[@echo %1
+@echo %2
+@echo %3
+@echo %4
+@echo "%5"
+@echo vincent = %VINCENT%
+]],dnl
+[[/foo
+victor
+--bar
+::hugo
+""
+vincent = van gogh
+yo
+]])
 AT_CLEANUP
