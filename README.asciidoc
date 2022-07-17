@@ -344,6 +344,8 @@ When using ACK:
 2+|              2+| **``▗▚▚▚▚ <process.h> ▞▞▞▞▖``**
 |  P01, W |   (=)  | ``getpid ();`` | (POSIX places this function in ``<unistd.h>``.)
 |       W |   :=   | ``_getpid ();`` |
+|       W |    =   | ``spawnve (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);`` .2+| Currently only implements the `P_WAIT` spawning mode.
+|       W |    =   | ``_spawnve (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);``
 4+|
 2+|             2+a| **``▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖``**
 
