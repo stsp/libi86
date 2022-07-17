@@ -206,6 +206,7 @@ extern unsigned _dos_spawn (unsigned char __subfunc, const char *__path,
 extern unsigned _dos_spawnx (unsigned char __subfunc, const char *__path,
 			     union _dosspawn_t *__params, int __mode,
 			     unsigned *__csid);
+extern unsigned _dos_wait (unsigned *__errorlevel);
 extern unsigned _dos_write (int __handle, __libi86_fpcv_t __buf,
 			    unsigned __count, unsigned *__bytes);
 extern int dosexterr (struct _DOSERROR *__doserror);
@@ -255,6 +256,17 @@ _dos_findclose (struct find_t *__buf)
 {
   return 0;
 }
+
+#ifdef __GNUC__
+_LIBI86_ALT_INLINE unsigned
+_dos_wait (unsigned *__errorlevel)
+{
+  __asm volatile ("int {$}0x21" : "=a" (*__errorlevel)
+				: "Rah" ((unsigned char) 0x4d)
+				: "memory", "cc");
+  return 0;
+}
+#endif
 
 #ifdef _BORLANDC_SOURCE
 _LIBI86_REDIRECT_3 (char *, parsfnm,

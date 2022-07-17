@@ -1115,7 +1115,7 @@ main (void)
 ]])
 AT_CLEANUP
 
-AT_SETUP([[_dos_spawn]])
+AT_SETUP([[_dos_spawn, _dos_wait]])
 AT_LIBI86_CHECK(dnl
 [[#include <dos.h>
 #include <stdbool.h>
@@ -1131,14 +1131,14 @@ main (int argc, char **argv)
   union _dosspawn_t spawn;
   struct _fcb fcb1, fcb2;
   char args[] = "? h3llo w0rld\r", *aptr;
-  unsigned res;
+  unsigned res, errlvl;
 
   if (argc > 1)
     {
       int i;
       for (i = 1; i < argc; ++i)
 	puts (argv[i]);
-      return 0;
+      return 0xe5;
     }
 
   memset (&fcb1, 0xf6, sizeof fcb1);
@@ -1167,6 +1167,12 @@ main (int argc, char **argv)
 
   res = _dos_spawn (0, argv[0], &spawn);
   if (res != 0)
+    abort ();
+
+  errlvl = 0xf6f6;
+  if (_dos_wait (&errlvl) != 0)
+    abort ();
+  if (errlvl != 0x00e5)
     abort ();
 
   puts ("yo");
