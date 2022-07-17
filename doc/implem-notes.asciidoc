@@ -7,7 +7,7 @@
 :fn-microsoft-93: footnote:microsoft-93[https://archive.org/details/microsoft-dos-v-5.0-v-japanese.]
 :fn-brown-00: footnote:brown-00[R. Brown et al.  Ralf Brown's Interrupt List, Jul 2000.  See in particular https://www.delorie.com/djgpp/doc/rbinter/ix/21/63.html.]
 
-**``searchpath``, ``_searchpath``**: these functions support double-byte character sets (DBCS).  They should work properly on systems such as MS-DOS 5.0/V (Japanese){fn-microsoft-93} where file names might contain double-byte characters.
+**``searchpath``, ``_searchpath``**: These functions support double-byte character sets (DBCS).  They should work properly on systems such as MS-DOS 5.0/V (Japanese){fn-microsoft-93} where file names might contain double-byte characters.
 
   * Note that it is the OS _kernel_ that determines whether file names may use double-byte characters.  Because of this, I have implemented DBCS support for file names separately from the _userspace_ ``LC_*`` support in `<locale.h>`.
   * `libi86` defines a function `_dos_get_dbcs_lead_table ()` which calls `int 0x21`, `%ax` =`0x6300`,{fn-brown-00} to obtain the DBCS lead byte table.   However, if the underlying C library already implements this function, `libi86` will use that implementation instead.  {back-link}
@@ -29,6 +29,23 @@
   * `call 5` is an alternate way to invoke MS-DOS syscalls, supported to allow better compatibility with CP/M programs.{fn-chen-20}{fn-necasek-11}  Instead of calling `int 0x21` with the syscall number in `%ah`, one does a near call to `PSP:5` with the syscall number in `%cl`.  Only syscalls `0x00`—`0x24` work.
   * Note that MS-DOS's `call 5` may clobber `%al` before handing over to the actual syscall handling code.  This means that the third parameter to `bdos (`...`)` should be considered as ignored.  {back-link}
 
+== ``<process.h>``
+
+:fn-delorie-18: footnote:delorie-18[See CVS version 1.29 of djgpp/src/libc/dos/process/dosexec.c in the DJGPP project, at https://delorie.com/bin/cvsweb.cgi/djgpp/src/libc/dos/process/dosexec.c.]
+
+**``spawnve (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``)``, ``_spawnve``**: ``libi86`` purposely deviates from Open Watcom's documented behaviour — and follows DJGPP's{fn-delorie-18} behaviour instead — in a few ways.  The intent is to make the functions safer to use and to reduce gotchas.
+
+  * If the __path__ has no file extension (e.g. ``c:/path/to/foo``), then ``libi86`` will always try to look for __path__``.COM``, __path__``.EXE``, etc., before looking for __path__.
+  ** (Open Watcom instead looks for __path__ before looking for __path__``.COM``, etc.)
+  * ``libi86`` 's ``spawnve`` looks up the ``COMSPEC`` environment variable inside ``envp[]``.  Only if that fails, will ``libi86`` consult the caller process's own environment (via ``getenv`` or ``environ[]``).
+  ** This allows a process to use a custom command processor to run a batch file, without having to doctor the process's own environment.
+  ** (Open Watcom in contrast looks up ``COMSPEC`` only in the caller process's environment.)
+
+``libi86`` supports a special ``libi86``-specific __mode__ value, ``P_WAIT | _P_RESTRICT_EXT``, which one can try to use for extra safety.  Under this mode, ``libi86`` will always make sure that
+
+  * the program that runs has an file extension, and
+  * the extension is for a type of executable file that ``libi86`` knows about.  {back-link}
+
 == ``<libi86/stdlib.h>``
 
-**``_fullpath``, ``_makepath``, ``_splitpath``**: see link:#dirh[notes on ``searchpath`` and ``_searchpath``].  {back-link}
+**``_fullpath``, ``_makepath``, ``_splitpath``**: See link:#dirh[notes on ``searchpath`` and ``_searchpath``].  {back-link}

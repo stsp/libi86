@@ -182,20 +182,20 @@ When using ACK:
 |       B |    =   | ``outportw (``__port__``,`` __value__``);`` | Accepts an unsigned value to write.
 4+|
 2+|              2+| **``▗▚▚▚▚ <dir.h> ▞▞▞▞▖``**
-|       B | = link:doc/implem-notes.asciidoc#dirh[(❧)] | ``searchpath (``__file__``);`` |
-|       X | = link:doc/implem-notes.asciidoc#dirh[(❧)] | ``_searchpath (``__file__``);`` |
+|       B | = link:doc/implem-notes.asciidoc#user-content-dir-h[(❧)] | ``searchpath (``__file__``);`` |
+|       X | = link:doc/implem-notes.asciidoc#user-content-dir-h[(❧)] | ``_searchpath (``__file__``);`` |
 4+|
 2+|              2+| **``▗▚▚▚▚ <direct.h> ▞▞▞▞▖``**
 |  P01, W |   (=)  | ``getcwd (``*__buffer__``,`` __size__``);`` | (POSIX places this function in ``<unistd.h>``.)
 |       W |   :=   | ``_getcwd (``*__buffer__``,`` __size__``);`` |
 |       W |    =   | ``_getdcwd (``__drive__``,`` *__buffer__``,`` __size__``);`` |
 |       W |    =   | ``_getdrive ();`` |
-|     P01 | (=) link:doc/implem-notes.asciidoc#directh[(❧)] | ``mkdir (``*__path__``,`` __mode__``);`` .4+a|
+|     P01 | (=) link:doc/implem-notes.asciidoc#user-content-direct-h[(❧)] | ``mkdir (``*__path__``,`` __mode__``);`` .4+a|
 			* In Watcom, both `mkdir` and ``_mkdir`` take only a single __path__ argument.
 			* POSIX however says that `mkdir` (placed in `<sys/stat.h>`) takes two arguments; the second argument gives Unix-style permission bits.
 			* For compatibility with both, `libi86` under `gcc-ia16` allows both `mkdir` and ``_mkdir`` to be called with either one or two arguments.
 			* Under ACK, however, ``_mkdir`` will always only take one argument, and `mkdir` will take two (unless ACK's C library says otherwise).
-|       X | G link:doc/implem-notes.asciidoc#directh[(❧)] | ``_mkdir (``*__path__``,`` __mode__``);``
+|       X | G link:doc/implem-notes.asciidoc#user-content-direct-h[(❧)] | ``_mkdir (``*__path__``,`` __mode__``);``
 |       W |   (G)  | ``mkdir (``*__path__``);``
 |       W |    =   | ``_mkdir (``*__path__``);``
 |  P01, W |   (=)  | ``rmdir (``*__path__``);`` | (POSIX places this function in ``<unistd.h>``.)
@@ -206,7 +206,7 @@ When using ACK:
 			* **``<dos.h>`` also includes ``<i86.h>``, described below.**
 			* **If `_BORLANDC_SOURCE` is defined, the ``union REGS`` type gets an additional ``.x.flags`` field, and ``<dos.h>`` switches accordingly to a different version of the ``intdos`` and ``intdosx`` routines.**
 
-|       W | = link:doc/implem-notes.asciidoc#dosh[(❧)] | ``bdos (``__dos-func__``,`` __dx__``,`` __al__``);`` |
+|       W | = link:doc/implem-notes.asciidoc#user-content-dos-h[(❧)] | ``bdos (``__dos-func__``,`` __dx__``,`` __al__``);`` |
 |       B |    =   | ``bdosptr (``__dos-func__``,`` *__dx__``,`` __al__``);`` |
 |     W/B |    =   | ``intdos (``*__in-regs__``,`` *__out-regs__``);`` |
 |     W/B |    =   | ``intdosx (``*__in-regs__``,`` *__out-regs__``,`` *__seg-regs__``);`` |
@@ -344,8 +344,10 @@ When using ACK:
 2+|              2+| **``▗▚▚▚▚ <process.h> ▞▞▞▞▖``**
 |  P01, W |   (=)  | ``getpid ();`` | (POSIX places this function in ``<unistd.h>``.)
 |       W |   :=   | ``_getpid ();`` |
-|       W |    =   | ``spawnve (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);`` .2+| Currently only implements the `P_WAIT` spawning mode.
-|       W |    =   | ``_spawnve (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);``
+|       W | = link:doc/implem-notes.asciidoc#user-content-process-h[(❧)] | ``spawnve (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);`` .2+a|
+			* Currently only implements the `P_WAIT` spawning mode.
+			* For these functions, `libi86` purposely deviates from Open Watcom's documented behaviour in a few ways.  See the link:doc/implem-notes.asciidoc#user-content-process-h[implementation notes].
+|       W | = link:doc/implem-notes.asciidoc#user-content-process-h[(❧)] | ``_spawnve (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);``
 4+|
 2+|             2+a| **``▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖``**
 
@@ -360,16 +362,16 @@ When using ACK:
 			* **``<libi86/stdlib.h>`` also includes the underlying C library's ``<stdlib.h>``.**
 			* **Under newer versions of `gcc-ia16`, ``<stdlib.h>`` will also automatically include ``<libi86/stdlib.h>``, unless GCC is in "strict ANSI" mode.**
 
-|       W | = link:doc/implem-notes.asciidoc#libi86stdlibh[(❧)] | *``_fullpath (``*__out-path__``,`` *__path__``,`` __size__``);`` |
+|       W | = link:doc/implem-notes.asciidoc#user-content-libi86stdlib-h[(❧)] | *``_fullpath (``*__out-path__``,`` *__path__``,`` __size__``);`` |
 |       W |    G   | *``lltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
 |       W |    G   | *``_lltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
 |       W |    =   | *``ltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
 |       W |    =   | *``_ltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
-|      W+ | = link:doc/implem-notes.asciidoc#libi86stdlibh[(❧)] | ``_makepath (``*__path__``,`` *__drive__``,`` *__dir__``,`` *__fname__``,`` *__ext__``);`` a|
+|      W+ | = link:doc/implem-notes.asciidoc#user-content-libi86stdlib-h[(❧)] | ``_makepath (``*__path__``,`` *__drive__``,`` *__dir__``,`` *__fname__``,`` *__ext__``);`` a|
 			* As extensions, this function (1) checks for buffer overflow, and (2) gives a return value.
 			* Upon an error, the return value is non-zero, ``errno`` is set, and __path__``[]`` holds either an empty string or a truncated path.
 			* Network __drive__``[]`` values starting with two backslashes (``\\``) are not supported.
-|       W | = link:doc/implem-notes.asciidoc#libi86stdlibh[(❧)] | ``_splitpath (``*__path__``,`` *__drive__``,`` *__dir__``,`` *__fname__``,`` *__ext__``);`` | Long filenames, and network paths starting with two backslashes (``\\``), are not supported.
+|       W | = link:doc/implem-notes.asciidoc#user-content-libi86stdlib-h[(❧)] | ``_splitpath (``*__path__``,`` *__drive__``,`` *__dir__``,`` *__fname__``,`` *__ext__``);`` | Long filenames, and network paths starting with two backslashes (``\\``), are not supported.
 |       W |    G   | *``ulltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
 |       W |    G   | *``_ulltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
 |       W |    =   | *``ultoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
