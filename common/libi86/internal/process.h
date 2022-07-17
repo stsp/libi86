@@ -35,16 +35,7 @@
   "<libi86/internal/process.h> should only be used when compiling libi86!"
 #endif
 
-/*
- * Special internal flags for the _spawnve (...) MODE.
- *
- * _P_OPT_C_SPECIAL: treat e.g. `command.com /c ...', where `...' is exactly
- * one argument, as a special case: treat the argument as the complete
- * command line, rather than the name of a script, & quote it accordingly.
- */
-#define _P_OPT_C_SPECIAL	(1 << 8)
-
-/* A mask of all our internal flags. */
-#define _P_INTERNAL_FLAGS	_P_OPT_C_SPECIAL
+/* A mask of all our special _spawnve (...) flags. */
+#define _P_SPVE_FLAGS		(_P_OPT_C_SPECIAL | _P_RESTRICT_EXT)
 
 #endif

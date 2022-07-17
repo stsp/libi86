@@ -48,3 +48,86 @@ main (void)
   return 0;
 }]],[])
 AT_CLEANUP
+
+AT_SETUP([[_spawnve]])
+AT_LIBI86_CHECK(dnl
+[[#include <process.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+  const char *prog = argv[0];
+  const char *kid_argv[] = { NULL, "/foo", "h3llo", "w0rld!", NULL };
+  const char * const kid_envp[] = { "VINCENT=van gogh", NULL };
+  if (argc > 1)
+    {
+      int i;
+      char *vincent;
+
+      for (i = 1; i < argc; ++i)
+	puts (argv[i]);
+      vincent = getenv ("VINCENT");
+      if (vincent)
+	{
+	  fputs ("vincent = ", stdout);
+	  puts (vincent);
+	}
+      return 0xe5;
+    }
+  kid_argv[0] = prog;
+  if (_spawnve (_P_WAIT, prog, kid_argv, kid_envp) != (pid_t) 0x00e5)
+    abort ();
+  puts ("yo");
+  return 0;
+}]],[[/foo
+h3llo
+w0rld!
+vincent = van gogh
+yo
+]])
+dnl ACK does not properly handle quoted arguments (yet).  -- tkchia 20220717
+if test yes = "$ac_compiler_gnu"; then
+AT_LIBI86_CHECK(dnl
+[[#include <process.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+  const char *prog = argv[0];
+  const char *kid_argv[] = { NULL, "/foo", "h3llo w0rld",
+			     "!hola mundo!", NULL };
+  const char * const kid_envp[] = { "VINCENT=van gogh", NULL };
+  if (argc > 1)
+    {
+      int i;
+      char *vincent;
+
+      for (i = 1; i < argc; ++i)
+	puts (argv[i]);
+      vincent = getenv ("VINCENT");
+      if (vincent)
+	{
+	  fputs ("vincent = ", stdout);
+	  puts (vincent);
+	}
+      return 0xe5;
+    }
+  kid_argv[0] = prog;
+  if (_spawnve (_P_WAIT, prog, kid_argv, kid_envp) != (pid_t) 0x00e5)
+    abort ();
+  puts ("yo");
+  return 0;
+}]],[[/foo
+h3llo w0rld
+!hola mundo!
+vincent = van gogh
+yo
+]])
+fi
+AT_CLEANUP

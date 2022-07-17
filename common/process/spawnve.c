@@ -520,7 +520,9 @@ direct_spawn (int mode, unsigned char subfunc,
 
   if (res != 0)
     return -1;
-  return 0;
+
+  _dos_wait (&res);
+  return (__libi86_pid_t) res;
 }
 
 static const char *
@@ -573,8 +575,55 @@ comspec_spawn (int mode, unsigned char subfunc,
   const char *comspec = NULL, *p, * const *pp, **new_argv, **qq;
   struct _fcb comspec_fcb;
   size_t n_args = 0;
-  char opt_c[] = "/c";
+  char unslashed_path[_MAX_PATH], opt_c[] = "/c", *q, c;
   pid_t res;
+  bool last_c_lead_p = false;
+
+  /*
+   * The DJGPP sources point out that command.com does not handle program
+   * names with forward slashes.  Replace these slashes with backslashes.
+   *
+   * Also look out for "backslashes" that are really part of multi-byte
+   * characters.
+   */
+  if (strchr (path, '/'))
+    {
+      size_t path_len = strlen (path);
+      if (path_len >= _MAX_PATH)
+	{
+#ifdef _LIBI86_INTERNAL_HAVE_ENAMETOOLONG
+	  errno = ENAMETOOLONG;
+#else
+	  errno = E2BIG;
+#endif
+	  return -1;
+	}
+
+      p = path;
+      q = unslashed_path;
+      do
+	{
+	  c = *p++;
+	  if (last_c_lead_p)
+	    last_c_lead_p = false;
+	  else
+	    switch (c)
+	      {
+	      case 0:
+	        break;
+	      case '/':
+		c = '\\';
+	        break;
+	      default:
+		if (__libi86_msdos_dbcs_lead_p (c, dbcs))
+		  last_c_lead_p = true;
+	      }
+	  *q++ = c;
+	}
+      while (c != 0);
+
+      path = unslashed_path;
+    }
 
   pp = envp;
   while ((p = *pp++) != NULL)
@@ -625,8 +674,18 @@ comspec_spawn (int mode, unsigned char subfunc,
   return res;
 }
 
+static __libi86_pid_t
+error_spawn (int mode, unsigned char subfunc,
+	     const char *path, const char name[8], const char ext[3],
+	     const char * const *argv, const char * const *envp,
+	     _dos_dbcs_lead_table_t dbcs)
+{
+  errno = EACCES;
+  return -1;
+}
+
 static spawner_t
-find_spawner (const char ext[3])
+find_spawner (const char ext[3], bool restrict_ext)
 {
   switch (ext[1])
     {
@@ -635,13 +694,25 @@ find_spawner (const char ext[3])
 	return comspec_spawn;
       break;
 
+    case 'O':
+      if (ext[0] == 'C' && ext[2] == 'M')  /* COM */
+	return direct_spawn;
+      break;
+
     case 'T':
       if (ext[0] == 'B' && ext[2] == 'M')  /* BTM */
 	return comspec_spawn;
       break;
+
+    case 'X':
+      if (ext[0] == 'E' && ext[2] == 'E')  /* EXE */
+	return direct_spawn;
     }
 
-  return direct_spawn;
+  if (restrict_ext)
+    return error_spawn;
+  else
+    return direct_spawn;
 }
 
 __libi86_pid_t
@@ -656,6 +727,8 @@ _spawnve (int mode, const char *path, const char * const *argv,
   const char *raw_base;
   char *raw_ext;
   unsigned attrs;
+  bool restrict_ext;
+  bool path_ok = false;
 
   if (! path || ! path[0] || ! argv || ! argv[0])
     {
@@ -663,7 +736,7 @@ _spawnve (int mode, const char *path, const char * const *argv,
       return -1;
     }
 
-  switch (mode & ~_P_INTERNAL_FLAGS)
+  switch (mode & ~_P_SPVE_FLAGS)
     {
     case _P_WAIT:
       subfunc = 0;
@@ -682,13 +755,27 @@ _spawnve (int mode, const char *path, const char * const *argv,
    * we need to run the executable.
    */
   raw_base = find_raw_base_name (path, dbcs);
+  raw_ext = find_raw_ext (raw_base, dbcs);
 
-  if (_dos_getfileattr (path, &attrs) != 0)
+  restrict_ext = ((mode & _P_RESTRICT_EXT) != 0);
+
+  if (! restrict_ext || raw_ext)
+    if (_dos_getfileattr (path, &attrs) == 0)
+      path_ok = true;
+
+  if (! path_ok)
     {
       size_t path_len = strlen (path);
 
       if (path_len > _MAX_PATH - 5)
-	return -1;
+	{
+#ifdef _LIBI86_INTERNAL_HAVE_ENAMETOOLONG
+	  errno = ENAMETOOLONG;
+#else
+	  errno = E2BIG;
+#endif
+	  return -1;
+	}
 
       raw_ext = find_raw_ext (raw_base, dbcs);
       if (raw_ext)
@@ -731,7 +818,12 @@ _spawnve (int mode, const char *path, const char * const *argv,
   if (! envp)
     envp = (const char **) environ;
 
-  spawner = find_spawner (fcb._fcb_ext);
+  spawner = find_spawner (fcb._fcb_ext, restrict_ext);
   return spawner (mode, subfunc, path, fcb._fcb_name, fcb._fcb_ext,
 		  argv, envp, dbcs);
 }
+
+#ifdef __GNUC__
+_LIBI86_WEAK_ALIAS (_spawnve) __libi86_pid_t
+spawnve (int, const char *, const char * const *, const char * const *);
+#endif
