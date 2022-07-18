@@ -164,3 +164,95 @@ vincent = van gogh
 yo
 ]])
 AT_CLEANUP
+
+AT_SETUP([[_spawnvp]])
+AT_LIBI86_CHECK_WITH_BAT_FILE(dnl
+[[#include <direct.h>
+#include <process.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+  const char * const kid_argv[] = { BAT_FILE_MINUS_EXT, NULL };
+  _mkdir ("one");
+  if (_chdir ("one") != 0)
+    abort ();
+  if (putenv ("PATH=..") != 0)
+    abort ();
+  if (putenv ("VINCENT=van gogh") != 0)
+    abort ();
+  if (_spawnvp (_P_WAIT, kid_argv[0], kid_argv) != (pid_t) 0)
+    abort ();
+  if (chdir ("..") != 0)
+    abort ();
+  _rmdir ("one");
+  puts ("yo");
+  return 0;
+}]],dnl
+[[@echo vincent = %VINCENT%
+]],dnl
+[[vincent = van gogh
+yo
+]])
+AT_CLEANUP
+
+AT_SETUP([[_spawnvpe]])
+AT_LIBI86_CHECK_WITH_BAT_FILE(dnl
+[[#include <direct.h>
+#include <process.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+  const char * const kid1_argv[] = { BAT_FILE_MINUS_EXT, NULL },
+	     * const kid1_envp[] = { "PATH=..", "VINCENT=van gogh", NULL },
+	     * const kid2_argv[] = { "four.bat", "six", NULL },
+	     * const kid2_envp[] = { "PATH=two", NULL },
+	     * const kid3_argv[] = { "five", "seven", "ten", NULL },
+	     * const kid3_envp[] = { "PATH=../two;..\\three", NULL },
+	     * const kid4_argv[] = { "four", "eight", NULL },
+	     * const kid4_envp[] = { "PATH=../three", NULL };
+  _mkdir ("one");
+  if (_chdir ("one") != 0)
+    abort ();
+  if (_spawnvpe (_P_WAIT, kid1_argv[0], kid1_argv, kid1_envp) != (pid_t) 0)
+    abort ();
+  if (_spawnvpe (_P_WAIT, kid2_argv[0], kid2_argv, kid2_envp) != (pid_t) 0)
+    abort ();
+  if (_chdir ("nine") != 0)
+    abort ();
+  if (_spawnvpe (_P_WAIT, kid3_argv[0], kid3_argv, kid3_envp) != (pid_t) 0)
+    abort ();
+  if (_spawnvpe (_P_WAIT, kid4_argv[0], kid4_argv, kid4_envp) != (pid_t) -1)
+    abort ();
+  if (chdir ("../..") != 0)
+    abort ();
+  remove ("one/two/four.bat");
+  _rmdir ("one/two");
+  remove ("one/three/five.bat");
+  _rmdir ("one/three");
+  _rmdir ("one/nine");
+  _rmdir ("one");
+  puts ("yo");
+  return 0;
+}]],dnl
+[[@echo off
+mkdir two
+mkdir three
+mkdir nine
+echo @echo %%1 hello>two\four.bat
+echo @echo %%2 world>three\five.bat
+echo vincent = %VINCENT%
+]],dnl
+[[vincent = van gogh
+six hello
+ten world
+yo
+]])
+AT_CLEANUP

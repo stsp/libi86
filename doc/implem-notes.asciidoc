@@ -33,13 +33,14 @@
 
 :fn-delorie-18: footnote:delorie-18[See CVS version 1.29 of djgpp/src/libc/dos/process/dosexec.c in the DJGPP project, at https://delorie.com/bin/cvsweb.cgi/djgpp/src/libc/dos/process/dosexec.c.]
 
-**``spawnve (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``)``, ``_spawnve``**: ``libi86`` purposely deviates from Open Watcom's documented behaviour — and follows DJGPP's{fn-delorie-18} behaviour instead — in a few ways.  The intent is to make the functions safer to use and to reduce gotchas.
+**``spawnve (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``)``, ``_spawnve``, and the other ``spawn``... and ``_spawn``... functions**: ``libi86`` purposely deviates from Open Watcom's documented behaviour — and follows DJGPP's{fn-delorie-18} behaviour instead — in a few ways.  The intent is to make the functions safer to use and to reduce gotchas.
 
   * If the __path__ has no file extension (e.g. ``c:/path/to/foo``), then ``libi86`` will always try to look for __path__``.COM``, __path__``.EXE``, etc., before looking for __path__.
   ** (Open Watcom instead looks for __path__ before looking for __path__``.COM``, etc.)
-  * ``libi86`` 's ``spawnve`` looks up the ``COMSPEC`` environment variable inside ``envp[]``.  Only if that fails, will ``libi86`` consult the caller process's own environment (via ``getenv`` or ``environ[]``).
-  ** This allows a process to use a custom command processor to run a batch file, without having to doctor the process's own environment.
-  ** (Open Watcom in contrast looks up ``COMSPEC`` only in the caller process's environment.)
+  * ``libi86`` 's ``spawn``... functions look up the ``COMSPEC`` environment variable inside __envp__``[]``.  Only if that fails, will ``libi86`` consult the calling process's own environment (via ``getenv`` or ``environ[]``).
+  * In addition, ``libi86`` 's ``spawn``...``p``... only look up the ``PATH`` variable in __envp__``[]``, and will not look up ``PATH`` in the caller's environment (unless __envp__ = ``NULL``).
+  ** This allows a process to use a custom search path to locate a program, without having to doctor the process's own environment.
+  ** (Open Watcom in contrast looks up both ``COMSPEC`` and ``PATH`` in the caller's environment only.)
 
 ``libi86`` supports a special ``libi86``-specific __mode__ value, ``P_WAIT | _P_RESTRICT_EXT``, which one can try to use for extra safety.  Under this mode, ``libi86`` will always make sure that
 
