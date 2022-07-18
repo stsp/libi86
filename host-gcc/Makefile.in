@@ -159,6 +159,7 @@ OBJS		= bios/bios-disk.o \
 		  conio/libi86-vid-bc-insdelline.o \
 		  conio/libi86-vid-bc-outmem-do.o \
 		  dir/searchpath.o \
+		  direct/chdir.o \
 		  direct/getcwd.o \
 		  direct/getdcwd.o \
 		  direct/getdrive.o \

@@ -36,6 +36,7 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
+_LIBI86_LIBC_DEFER_1 (int, chdir, const char*, @ac_cv_func_chdir@)
 _LIBI86_LIBC_DEFER_2 (char *, getcwd, char *, __libi86_size_t,
 		      @ac_cv_func_getcwd@)
 extern char *_getdcwd (int __drive, char *__buf, __libi86_size_t __size);

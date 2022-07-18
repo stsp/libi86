@@ -192,6 +192,8 @@ When using ACK:
 |       X |    = {im-dir-h} | ``_searchpath (``__file__``);`` |
 4+|
 2+|              2+| **``▗▚▚▚▚ <direct.h> ▞▞▞▞▖``**
+|  P01, W |   (=)  | ``chdir (``*__path__``);`` | (POSIX places this function in ``<unistd.h>``.)
+|       W |   :=   | ``_chdir (``*__path__``);`` |
 |  P01, W |   (=)  | ``getcwd (``*__buffer__``,`` __size__``);`` | (POSIX places this function in ``<unistd.h>``.)
 |       W |   :=   | ``_getcwd (``*__buffer__``,`` __size__``);`` |
 |       W |    =   | ``_getdcwd (``__drive__``,`` *__buffer__``,`` __size__``);`` |
