@@ -761,7 +761,12 @@ _spawnve (int mode, const char *path, const char * const *argv,
   raw_base = find_raw_base_name (path, dbcs);
   raw_ext = find_raw_ext (raw_base, dbcs);
 
-  if (! raw_ext)
+  if (raw_ext)
+    {
+      if (_dos_getfileattr (path, &attrs) != 0)
+	return -1;
+    }
+  else
     {
       size_t path_len = strlen (path);
 

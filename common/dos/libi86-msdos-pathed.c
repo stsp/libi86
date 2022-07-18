@@ -32,6 +32,7 @@
 #define _LIBI86_COMPILING_
 #include <errno.h>
 #include <stdlib.h>
+#include <string.h>
 #include "libi86/internal/cdefs.h"
 #include "libi86/internal/dos.h"
 #include "libi86/internal/dos-dbcs.h"
@@ -83,7 +84,11 @@ __libi86_msdos_pathed_next (__libi86_msdos_path_itr_t *itr)
       *q++ = c;
       if (last_c_lead_p)
 	last_c_lead_p = false;
-      else if (itr->__dbcs_ && __libi86_msdos_dbcs_lead_p (c, itr->__dbcs_))
+#ifdef __FAR
+      else if (! itr->__dbcs_)
+	;
+#endif  /* __FAR */
+      else if (__libi86_msdos_dbcs_lead_p (c, itr->__dbcs_))
 	last_c_lead_p = true;
       else if (__libi86_msdos_path_sep_p (c))
 	{
