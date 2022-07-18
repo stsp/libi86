@@ -275,6 +275,7 @@ OBJS		= bios/bios-disk.o \
 		  i86/segread.o \
 		  i86/sound.o \
 		  process/getpid.o \
+		  process/spawnv.o \
 		  process/spawnve.o \
 		  process/spawnvp.o \
 		  process/spawnvpe.o \

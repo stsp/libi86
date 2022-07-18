@@ -352,14 +352,16 @@ When using ACK:
 2+|              2+| **``▗▚▚▚▚ <process.h> ▞▞▞▞▖``**
 |  P01, W |   (=)  | ``getpid ();`` | (POSIX places this function in ``<unistd.h>``.)
 |       W |   :=   | ``_getpid ();`` |
-|       W |    = {im-process-h} | ``spawnve (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);`` .6+a|
+|      W+ |    = {im-process-h} | ``spawnv (``__mode__``,`` *__path__``,`` *__argv__``);`` .8+a|
 			* Currently only implements the `P_WAIT` spawning mode.
 			* For these functions, `libi86` purposely deviates from Open Watcom's documented behaviour in a few ways.  See the link:doc/implem-notes.asciidoc#user-content-process-h[implementation notes].
-|       W |    = {im-process-h} | ``_spawnve (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);``
-|       W |    = {im-process-h} | ``spawnvp (``__mode__``,`` *__path__``,`` *__argv__``);``
-|       W |    = {im-process-h} | ``_spawnvp (``__mode__``,`` *__path__``,`` *__argv__``);``
-|       W |    = {im-process-h} | ``spawnvpe (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);``
-|       W |    = {im-process-h} | ``_spawnvpe (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);``
+|      W+ |    = {im-process-h} | ``_spawnv (``__mode__``,`` *__path__``,`` *__argv__``);``
+|      W+ |    = {im-process-h} | ``spawnve (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);``
+|      W+ |    = {im-process-h} | ``_spawnve (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);``
+|      W+ |    = {im-process-h} | ``spawnvp (``__mode__``,`` *__path__``,`` *__argv__``);``
+|      W+ |    = {im-process-h} | ``_spawnvp (``__mode__``,`` *__path__``,`` *__argv__``);``
+|      W+ |    = {im-process-h} | ``spawnvpe (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);``
+|      W+ |    = {im-process-h} | ``_spawnvpe (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);``
 4+|
 2+|             2+a| **``▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖``**
 
