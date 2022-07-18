@@ -35,7 +35,7 @@
 int
 __libi86_rmdir (const char *path)
 {
-  __libi86_bdos_res_t res = __libi86_bdos_dsdxsz_al (0x3a, path, 0);
+  __libi86_bdos_res_t res = __libi86_bdos_dsdxsz (0x3a, path);
 
   if (res.carry)
     return -1;
