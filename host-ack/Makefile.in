@@ -259,6 +259,10 @@ OBJS		= bios/bios-disk.o \
 		  i86/segread.o \
 		  i86/sound.o \
 		  process/getpid.o \
+		  process/spawnl.o \
+		  process/spawnle.o \
+		  process/spawnlp.o \
+		  process/spawnlpe.o \
 		  process/spawnv.o \
 		  process/spawnve.o \
 		  process/spawnvp.o \
@@ -383,6 +387,13 @@ i86/libi86-bc-%.o: i86/libi86-%.s $(HEADERS)
 i86/libi86-bc-%.o: i86/%.s $(HEADERS)
 	mkdir -p $(@D)
 	$(CC) $(CPPFLAGS) -D_BORLANDC_SOURCE $(CFLAGS) -c -o $@ $<
+
+process/spawnl.o \
+process/spawnle.o \
+process/spawnlp.o \
+process/spawnlpe.o: process/spawnlx.s $(HEADERS)
+	mkdir -p $(@D)
+	$(CC) $(CPPFLAGS) -DL_$(@F:.o=) $(CFLAGS) $(ASFLAGS) -c -o $@ $<
 
 %.o: %.s $(HEADERS)
 	mkdir -p $(@D)
