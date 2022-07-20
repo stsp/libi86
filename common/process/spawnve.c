@@ -197,7 +197,7 @@ make_fcbs (struct _fcb *p_fcb1, struct _fcb *p_fcb2, const char *args,
    *	''
    *
    * TODO: MS-DOS 5.0/V also treats the Shift-JIS "ideographic space" (0x81
-   * 0x48) as whitespace, & not as part of a file name.  Should this routine
+   * 0x40) as whitespace, & not as part of a file name.  Should this routine
    * do the same?  And, should one generalize this treatment to multi-byte
    * code pages other than Shift-JIS?
    */
