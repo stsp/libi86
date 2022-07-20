@@ -49,7 +49,7 @@ main (void)
 }]],[])
 AT_CLEANUP
 
-AT_SETUP([[_spawnve]])
+AT_SETUP([[_spawnv, _spawnve]])
 AT_LIBI86_CHECK(dnl
 [[#include <process.h>
 #include <stdio.h>
@@ -60,8 +60,9 @@ int
 main (int argc, char **argv)
 {
   const char *prog = argv[0];
-  const char *kid_argv[] = { NULL, "/foo", "h3llo", "w0rld!", NULL };
-  const char * const kid_envp[] = { "VINCENT=van gogh", NULL };
+  const char *kid1_argv[] = { NULL, "/foo", "h3llo", "w0rld!", NULL };
+  const char * const kid1_envp[] = { "VINCENT=van gogh", NULL };
+  const char *kid2_argv[] = { NULL, "/bar", NULL };
   if (argc > 1)
     {
       int i;
@@ -77,8 +78,12 @@ main (int argc, char **argv)
 	}
       return 0xe5;
     }
-  kid_argv[0] = prog;
-  if (_spawnve (_P_WAIT, prog, kid_argv, kid_envp) != (pid_t) 0x00e5)
+  kid1_argv[0] = kid2_argv[0] = prog;
+  if (_spawnve (_P_WAIT, prog, kid1_argv, kid1_envp) != (pid_t) 0x00e5)
+    abort ();
+  if (putenv ("VINCENT=lombardi") != 0)
+    abort ();
+  if (_spawnv (_P_WAIT, prog, kid2_argv) != (pid_t) 0x00e5)
     abort ();
   puts ("yo");
   return 0;
@@ -86,6 +91,8 @@ main (int argc, char **argv)
 h3llo
 w0rld!
 vincent = van gogh
+/bar
+vincent = lombardi
 yo
 ]])
 dnl ACK does not properly handle quoted arguments (yet).  -- tkchia 20220717
@@ -253,6 +260,52 @@ echo vincent = %VINCENT%
 [[vincent = van gogh
 six hello
 ten world
+yo
+]])
+AT_CLEANUP
+
+AT_SETUP([[_spawnl, _spawnle]])
+AT_LIBI86_CHECK(dnl
+[[#include <process.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+  const char *prog = argv[0];
+  const char * const kid_envp[] = { "VINCENT=van gogh", NULL };
+  if (argc > 1)
+    {
+      int i;
+      char *vincent;
+
+      for (i = 1; i < argc; ++i)
+	puts (argv[i]);
+      vincent = getenv ("VINCENT");
+      if (vincent)
+	{
+	  fputs ("vincent = ", stdout);
+	  puts (vincent);
+	}
+      return 0xe5;
+    }
+  if (_spawnle (_P_WAIT, prog, prog, "/foo", "h3llo", "w0rld!", NULL,
+		kid_envp) != (pid_t) 0x00e5)
+    abort ();
+  if (putenv ("VINCENT=lombardi") != 0)
+    abort ();
+  if (_spawnl (_P_WAIT, prog, prog, "/bar", NULL) != (pid_t) 0x00e5)
+    abort ();
+  puts ("yo");
+  return 0;
+}]],[[/foo
+h3llo
+w0rld!
+vincent = van gogh
+/bar
+vincent = lombardi
 yo
 ]])
 AT_CLEANUP

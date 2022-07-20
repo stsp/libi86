@@ -173,6 +173,8 @@ __libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
 /* Various other useful function properties. */
 #define _LIBI86_STATIC_INLINE	static inline
 #define _LIBI86_NORETURN	__attribute__ ((__noreturn__))
+#define _LIBI86_SENTINEL0	__attribute__ ((__sentinel__))
+#define _LIBI86_SENTINEL1	__attribute__ ((__sentinel__ (1)))
 /*
  * Many of the header files have `extern inline' versions of functions which
  * can be used instead of the out-of-line versions, and they require this

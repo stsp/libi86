@@ -94,6 +94,8 @@
  *   convention, it assumes that the function uses only two registers (%ax
  *   and %dx) to hold parameters.
  *
+ * - RET_VA_ returns from a function with variable arguments.
+ *
  * - TAIL_CALL_ (FUNC, N) does a tail call: it has the same effect as a CALL_
  *   (FUNC) followed by a RET_ (N).  FUNC should not accept any stack
  *   arguments.
@@ -301,5 +303,6 @@
 # endif
 # define RET2_(n)		RET_ (n)
 #endif
+#define RET_VA_			RET__
 #define RET_SET_ERRNO_(n)	TAIL_CALL_ (__libi86_ret_set_errno, n)
 #define RET2_SET_ERRNO_(n)	TAIL_CALL2_ (__libi86_ret_set_errno, n)

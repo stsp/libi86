@@ -50,6 +50,8 @@ __libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
 #define _LIBI86_WARNING(msg)
 #define _LIBI86_ERROR(msg)
 #define _LIBI86_NORETURN
+#define _LIBI86_SENTINEL0
+#define _LIBI86_SENTINEL1
 
 /*
  * ACK lacks support for post-C89 C language features and C extensions,
