@@ -309,3 +309,72 @@ vincent = lombardi
 yo
 ]])
 AT_CLEANUP
+
+AT_SETUP([[_spawnlp]])
+AT_LIBI86_CHECK_WITH_BAT_FILE(dnl
+[[#include <direct.h>
+#include <process.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+  static const char prog[] = BAT_FILE_MINUS_EXT;
+  _mkdir ("one");
+  if (_chdir ("one") != 0)
+    abort ();
+  if (putenv ("PATH=..") != 0)
+    abort ();
+  if (putenv ("VINCENT=van gogh") != 0)
+    abort ();
+  if (_spawnlp (_P_WAIT, prog, prog, "hello", NULL) != (pid_t) 0)
+    abort ();
+  if (chdir ("..") != 0)
+    abort ();
+  _rmdir ("one");
+  puts ("yo");
+  return 0;
+}]],dnl
+[[@echo %1
+@echo vincent = %VINCENT%
+]],dnl
+[[hello
+vincent = van gogh
+yo
+]])
+AT_CLEANUP
+
+AT_SETUP([[_spawnlpe]])
+AT_LIBI86_CHECK_WITH_BAT_FILE(dnl
+[[#include <direct.h>
+#include <process.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+  static const char prog[] = BAT_FILE_MINUS_EXT;
+  const char * const kid_envp[] = { "PATH=..", "VINCENT=van gogh", NULL };
+  _mkdir ("one");
+  if (_chdir ("one") != 0)
+    abort ();
+  if (_spawnlpe (_P_WAIT, prog, prog, NULL, kid_envp) != (pid_t) 0)
+    abort ();
+  if (chdir ("..") != 0)
+    abort ();
+  _rmdir ("one");
+  puts ("yo");
+  return 0;
+}]],dnl
+[[@echo "%1"
+@echo vincent = %VINCENT%
+]],dnl
+[[""
+vincent = van gogh
+yo
+]])
+AT_CLEANUP
