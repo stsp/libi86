@@ -52,7 +52,7 @@ test_gcc:
         bsdutils adduser
     - adduser user </dev/null
   script: su user -c './tests/ci-build-and-check.sh'
-  timeout: 3h
+  timeout: 4h
 test_ack:
   stage: test
   variables:
@@ -72,4 +72,4 @@ test_ack:
         bsdutils adduser
     - adduser user </dev/null
   script: su user -c './tests/ci-build-and-check.sh --ack'
-  timeout: 3h
+  timeout: 4h
