@@ -197,7 +197,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[keep]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_FOR_NONDOSX(dnl
 [[#define _BORLANDC_SOURCE
 #include <dos.h>
 void abort (void);

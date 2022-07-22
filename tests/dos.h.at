@@ -927,7 +927,7 @@ main (int argc, char **argv)
 AT_CLEANUP
 
 AT_SETUP([[_dos_keep]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_FOR_NONDOSX(dnl
 [[#include <dos.h>
 void abort (void);
 int
