@@ -1069,12 +1069,12 @@ int
 main (void)
 {
   static const char name1[] = "a:foO*.bAr",
-		    name2[] = "  ?:fOo?.bar,Baz";
-  static const struct _fcb expect_fcb1 = { 1, "FOO?????", "BAR", 0, 0, };
-#if 0  /* fails under dosemu2 */
-  static const struct _fcb expect_fcb2 = { '?' - 'A' + 1,
-					   "FOO?    ", "BAR", 0, 0, };
-#endif
+		    name2[] = "  ?:fOo?.bar,Baz",
+		    name3[] = "  \r:fOo?.bar,Baz";
+  static const struct _fcb expect_fcb1 = { 1, "FOO?????", "BAR", 0, 0, },
+			   expect_fcb2 = { '?' - 'A' + 1,
+					      "FOO?    ", "BAR", 0, 0, },
+			   expect_fcb3 = { 0, "        ", "   ", 0, 0, };
   struct _fcb fcb;
   struct _makefcb_t res;
 
@@ -1093,7 +1093,6 @@ main (void)
       printf ("%u: status == %d != -1\n", __LINE__, res._status);
       abort ();
     }
-#if 0  /* fails under dosemu2 */
   if (*res._tail != ',')
     {
       printf ("%u: *%p == '%c' != ','\n", __LINE__, res._tail,
@@ -1106,12 +1105,33 @@ main (void)
 	      __LINE__, 'A' - 1 + fcb._fcb_drive, fcb._fcb_name, fcb._fcb_ext);
       abort ();
     }
-#endif
   puts ("2 OK");
+
+  memset (&fcb, 0xf6, sizeof fcb);
+  res = _makefcb (name3, &fcb, 1);
+  if (res._status != 0)
+    {
+      printf ("%u: status == %d != 0\n", __LINE__, res._status);
+      abort ();
+    }
+  if (*res._tail != '\r')
+    {
+      printf ("%u: *%p == '%c' != '\\r'\n", __LINE__, res._tail,
+	      (int) (unsigned char) *res._tail);
+      abort ();
+    }
+  if (memcmp (&fcb, &expect_fcb3, CMP_SZ) != 0)
+    {
+      printf ("%u: drive %c name \"%.8s\" ext \"%.3s\"\n",
+	      __LINE__, 'A' - 1 + fcb._fcb_drive, fcb._fcb_name, fcb._fcb_ext);
+      abort ();
+    }
+  puts ("3 OK");
 
   return 0;
 }]],[[1 OK
 2 OK
+3 OK
 ]])
 AT_CLEANUP
 
