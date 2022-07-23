@@ -51,14 +51,11 @@ test_gcc:
         apt-get install -y gcc-ia16-elf dosemu2 fdpp dos2unix autoconf make
         bsdutils adduser
     - adduser user </dev/null
-  script: su user -c './tests/ci-build-and-check.sh'
-  timeout: 4h
+  script: su user -c 'TESTSUITEFLAGS=-j3 ./tests/ci-build-and-check.sh'
+  timeout: 3h
 test_ack:
   stage: test
   variables:
-    # The keyboard-configuration package installation may stall & wait for
-    # input unless we set an environment variable.  See https://community
-    # .gitpod.io/t/configuring-keyboard-configuration/2675/5 .
     DEBIAN_FRONTEND: noninteractive
   before_script:
     - apt-get update -y
@@ -72,4 +69,4 @@ test_ack:
         bsdutils adduser
     - adduser user </dev/null
   script: su user -c './tests/ci-build-and-check.sh --ack'
-  timeout: 4h
+  timeout: 3h
