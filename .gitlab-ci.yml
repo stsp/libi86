@@ -28,45 +28,89 @@
 # Configuration file for GitLab (https://gitlab.com/) Continuous Integration.
 
 image: ubuntu:focal
-stages:
-  - test
-test_gcc:
-  stage: test
-  variables:
-    # The keyboard-configuration package installation may stall & wait for
-    # input unless we set an environment variable.  See https://community
-    # .gitpod.io/t/configuring-keyboard-configuration/2675/5 .
-    DEBIAN_FRONTEND: noninteractive
+variables:
+  # The keyboard-configuration package installation may stall & wait for
+  # input unless we set an environment variable.  See https://community
+  # .gitpod.io/t/configuring-keyboard-configuration/2675/5 .
+  DEBIAN_FRONTEND: noninteractive
+default:
   before_script:
     - apt-get update -y
     - apt-get install -y software-properties-common
     # add-apt-repository may sometimes time out trying to download the PPA's
     # public key.
     - >
-        add-apt-repository -y ppa:tkchia/build-ia16 ||
-        apt-key add tests/ppa-pub-key.gpg.bin
-    - add-apt-repository -y ppa:tkchia/de-rebus || true
-    - apt-get update -y
-    - >
-        apt-get install -y gcc-ia16-elf dosemu2 fdpp dos2unix autoconf make
-        bsdutils adduser
-    - adduser user </dev/null
-  script: su user -c 'TESTSUITEFLAGS=-j3 ./tests/ci-build-and-check.sh'
-  timeout: 3h
-test_ack:
-  stage: test
-  variables:
-    DEBIAN_FRONTEND: noninteractive
-  before_script:
-    - apt-get update -y
-    - apt-get install -y software-properties-common
-    - >
         add-apt-repository -y ppa:tkchia/de-rebus ||
         apt-key add tests/ppa-pub-key.gpg.bin
     - apt-get update -y
     - >
-        apt-get install -y ack-compiler dosemu2 fdpp dos2unix autoconf make
+        apt-get install -y dosemu2 fdpp dos2unix autoconf make
         bsdutils adduser
     - adduser user </dev/null
-  script: su user -c './tests/ci-build-and-check.sh --ack'
+stages:
+  - build_and_install
+  - test
+build_and_install:gcc:
+  stage: build_and_install
+  script:
+    - add-apt-repository -y ppa:tkchia/build-ia16
+    - apt-get update -y
+    - apt-get install -y gcc-ia16-elf
+    - su user -c './tests/ci-build-and-install.sh'
   timeout: 3h
+  artifacts:
+    paths:
+      - ./build.tmp
+      - ./install.tmp
+build_and_install:ack:
+  stage: build_and_install
+  variables:
+    DEBIAN_FRONTEND: noninteractive
+  script:
+    - apt-get install -y ack-compiler
+    - su user -c './tests/ci-build-and-install.sh --ack'
+  timeout: 3h
+  artifacts:
+    paths:
+      - ./build.tmp
+      - ./install.tmp
+test1:gcc:
+  stage: test
+  needs:
+    - job: build_and_install:gcc
+      artifacts: true
+  script:
+    - add-apt-repository -y ppa:tkchia/build-ia16
+    - apt-get update -y
+    - apt-get install -y gcc-ia16-elf
+    - su user -c './tests/ci-check.sh -j2 1-60'
+  timeout: 3h
+  artifacts:
+    paths:
+      - ./build.tmp
+test2:gcc:
+  stage: test
+  needs:
+    - job: build_and_install:gcc
+      artifacts: true
+  script:
+    - add-apt-repository -y ppa:tkchia/build-ia16
+    - apt-get update -y
+    - apt-get install -y gcc-ia16-elf
+    - su user -c './tests/ci-check.sh -j2 61-'
+  timeout: 3h
+  artifacts:
+    paths:
+      - ./build.tmp
+test:ack:
+  stage: test
+  needs:
+    - job: build_and_install:ack
+      artifacts: true
+  script: 
+    - apt-get install -y ack-compiler
+    - su user -c './tests/ci-check.sh'
+  timeout: 3h
+  artifacts:
+    paths:
+      - ./build.tmp

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2018--2021 TK Chia
+# Copyright (c) 2018--2022 TK Chia
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -30,16 +30,7 @@
 # ci/), invoked by .gitlab-ci.yml .
 
 set -e -v
-mkdir build-$$ install-$$
-inst_prefix="`pwd`"/install-$$
-cd build-$$
-# Some CI platforms, e.g. Travis CI, set $CC to `gcc'.  This interferes with
-# the `configure' script's detection of the C compiler, which should really be
-# either `ia16-elf-gcc' or `ack-cc'. (!)
+cd build.tmp
 unset CC
-../configure --prefix="$inst_prefix" ${1+"$@"} || \
-  (cat config.log */config.log && exit 1)
-make
-make check TESTSUITEFLAGS="$TESTSUITEFLAGS" || \
-  (cat tests/testsuite.log && exit 1)
-make install
+make check TESTSUITEFLAGS="$*" \
+  || (cat tests/testsuite.log && exit 1)
