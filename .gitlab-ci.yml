@@ -60,6 +60,7 @@ build_and_install:gcc:
   timeout: 3h
   artifacts:
     paths:
+      - ./tests/testsuite
       - ./build.tmp
       - ./install.tmp
 build_and_install:ack:
@@ -83,7 +84,11 @@ test1:gcc:
     - add-apt-repository -y ppa:tkchia/build-ia16
     - apt-get update -y
     - apt-get install -y gcc-ia16-elf
-    - su user -c './tests/ci-check.sh -j2 1-60'
+    - >
+        n_tests="`su user -c './tests/ci-count-tests.sh'`"
+        && first=1
+        && last="`expr $n_tests / 3`"
+        && su user -c "./tests/ci-check.sh $first-$last"
   timeout: 3h
   artifacts:
     paths:
@@ -97,7 +102,29 @@ test2:gcc:
     - add-apt-repository -y ppa:tkchia/build-ia16
     - apt-get update -y
     - apt-get install -y gcc-ia16-elf
-    - su user -c './tests/ci-check.sh -j2 61-'
+    - >
+        n_tests="`su user -c './tests/ci-count-tests.sh'`"
+        && first="`expr $n_tests / 3 + 1`"
+        && last="`expr 2 \* $n_tests / 3`"
+        && su user -c "./tests/ci-check.sh $first-$last"
+  timeout: 3h
+  artifacts:
+    paths:
+      - ./build.tmp
+test3:gcc:
+  stage: test
+  needs:
+    - job: build_and_install:gcc
+      artifacts: true
+  script:
+    - add-apt-repository -y ppa:tkchia/build-ia16
+    - apt-get update -y
+    - apt-get install -y gcc-ia16-elf
+    - >
+        n_tests="`su user -c './tests/ci-count-tests.sh'`"
+        && first="`expr 2 \* $n_tests / 3 + 1`"
+        && last="$n_tests"
+        && su user -c "./tests/ci-check.sh $first-$last"
   timeout: 3h
   artifacts:
     paths:

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2018--2022 TK Chia
+# Copyright (c) 2022 TK Chia
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -26,20 +26,24 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Script to do automated building and (mock) installation under GitLab CI
-# (https://docs.gitlab.com/ee/ci/), invoked by .gitlab-ci.yml .
+# Script to postprocess the output of `tests/testsuite --list' & output the
+# number of tests in the test suite.
 
-set -e -v
-mkdir build.tmp install.tmp
-inst_prefix="`pwd`"/install.tmp
-cd build.tmp
-# Some CI platforms, e.g. Travis CI, set $CC to `gcc'.  This interferes with
-# the `configure' script's detection of the C compiler, which should really be
-# either `ia16-elf-gcc' or `ack-cc'. (!)
-unset CC
-../configure --prefix="$inst_prefix" ${1+"$@"} || \
-  (cat config.log */config.log && exit 1)
-make
-make install
-# This also invokes GNU Autotest to generate the test suite script.
-make listcheck
+tests/testsuite -C build.tmp --list \
+ | awk '
+  BEGIN {
+    count = 0
+    FS = "[ \t]+"
+  }
+  /^[ \t]*([0123456789]+):/ {
+    if ($1 != "")
+      idx = $1
+    else
+      idx = $2
+    idx *= 1
+    if (count < idx)
+      count = idx
+  }
+  END {
+    print count
+  }'

@@ -79,6 +79,11 @@ listcheck: tests/testsuite
 	exec $< -C tests --list $(TESTSUITEFLAGS)
 .PHONY: listcheck
 
+# Used in .gitlab-ci.yml to count the number of tests in the test suite.
+countcheck: tests/testsuite $(abs_srcdir)/tests/postproc-listcheck.sh
+	$< -C tests --list $(TESTSUITEFLAGS) | $(word 2,$^)
+.PHONY: countcheck
+
 test-data: $(TEST_DATA)
 .PHONY: test-data
 
