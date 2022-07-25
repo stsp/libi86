@@ -2944,7 +2944,6 @@ AT_LIBI86_CHECK(dnl
 #include <stdlib.h>
 typedef const unsigned short __attribute__ ((__aligned__ (1)))
 	__far *_dos_dbcs_lead_table_t;
-#define _null_dbcs_lt	((_dos_dbcs_lead_table_t) 0)
 extern _dos_dbcs_lead_table_t __libi86_msdos_get_dbcs_lead_table (void);
 extern _dos_dbcs_lead_table_t _dos_get_dbcs_lead_table (void);
 static void

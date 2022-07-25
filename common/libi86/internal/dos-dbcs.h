@@ -44,7 +44,6 @@ _LIBI86_BEGIN_EXTERN_C
 #ifdef __FAR
 typedef const unsigned short __attribute__ ((__aligned__ (1)))
 	__far *_dos_dbcs_lead_table_t;
-# define _null_dbcs_lt	((_dos_dbcs_lead_table_t) 0)
 #else  /* ! __FAR */
 typedef __libi86_fpcv_t _dos_dbcs_lead_table_t;
 _LIBI86_STATIC_INLINE __libi86_fpcv_t
@@ -53,7 +52,6 @@ __libi86_null_dbcs_lt_impl (void)
   __libi86_fpcv_t fp = { 0, 0 };
   return fp;
 }
-# define _null_dbcs_lt	(__libi86_null_dbcs_lt_impl ())
 #endif  /* ! __FAR */
 
 extern bool __libi86_msdos_dbcs_lead_p (char, _dos_dbcs_lead_table_t);

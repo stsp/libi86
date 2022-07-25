@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2021--222 TK Chia
  *
  * The authors hereby grant permission to use, copy, modify, distribute,
  * and license this software and its documentation for any purpose, provided
@@ -121,7 +121,7 @@ _fullpath (char *out_path, const char *path, size_t size)
    * each component begins (& ends).
    */
   size_t n_comps, comp_start[_MAX_PATH / 2];
-  _dos_dbcs_lead_table_t dbcs = _null_dbcs_lt;
+  _dos_dbcs_lead_table_t dbcs = __libi86_fnullptr;
 
   if (size < 2)
     {

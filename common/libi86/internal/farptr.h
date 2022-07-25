@@ -42,6 +42,7 @@ _LIBI86_BEGIN_EXTERN_C
 				((void __far *) \
 				 ((unsigned long) (unsigned) (__s) << 16 | \
 				  (unsigned) (__o)))
+#define __libi86_fnullptr	((void __far *) 0L)
 
 static inline void __far *
 __libi86_CV_FP (const volatile void *__p)
@@ -94,6 +95,7 @@ __libi86_pokefpb (volatile void __far *__p, char __v)
 # define __libi86_CV_FP(__p)	(__libi86_fpv_t (__p))
 # define __libi86_FP_EQ(__p, __q) (__libi86_fpcvv_t (__p) \
 				   == __libi86_fpcvv_t (__q))
+# define __libi86_fnullptr	(__libi86_MK_FP (0, 0))
 
 extern int __libi86_peek (unsigned __s, unsigned __o);
 extern char __libi86_peekb (unsigned __s, unsigned __o);
@@ -102,6 +104,7 @@ extern void __libi86_pokeb (unsigned __s, unsigned __o, char __v);
 #else  /* ! __FAR && ! __cplusplus */
 # define __libi86_FP_SEG(__p)	((__p).__seg_)
 # define __libi86_FP_OFF(__p)	((__p).__off_)
+# define __libi86_fnullptr	(__libi86_MK_FP (0, 0))
 
 _LIBI86_ALT_INLINE __libi86_fpv_t
 __libi86_MK_FP (unsigned __seg, unsigned __off)

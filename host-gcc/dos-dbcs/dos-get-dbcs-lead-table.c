@@ -33,6 +33,7 @@
 #include "dos.h"
 #include "libi86/stdlib.h"
 #include "libi86/internal/dos-dbcs.h"
+#include "libi86/internal/farptr.h"
 #ifdef __IA16_FEATURE_PROTECTED_MODE
 # include "dpmi.h"
 #endif
@@ -63,13 +64,13 @@ __libi86_msdos_get_dbcs_lead_table (void)
 	abort ();
 
       if ((uint8_t) rmc.ax != 0)
-	return _null_dbcs_lt;
+	return __libi86_fnullptr;
 
       off = rmc.si;
       seg_rm = rmc.ds;
 
       if (off == 0xffffU)
-	return _null_dbcs_lt;
+	return __libi86_fnullptr;
 
       seg_pm = cached_seg_pm;
       if (! seg_pm || seg_rm != cached_seg_rm)
@@ -86,7 +87,7 @@ __libi86_msdos_get_dbcs_lead_table (void)
 
       lt = MK_FP (seg_pm, off);
       if (! *lt)
-	return _null_dbcs_lt;
+	return __libi86_fnullptr;
 
       return lt;
     }
@@ -108,20 +109,20 @@ __libi86_msdos_get_dbcs_lead_table (void)
       if (_osmajor < 3)
 	{
 	  if (r.w.cflag)
-	    return _null_dbcs_lt;
+	    return __libi86_fnullptr;
 	}
       else if (r.h.al != 0)
-	return _null_dbcs_lt;
+	return __libi86_fnullptr;
 
       off = r.w.si;
       seg = sr.ds;
 
       if (off == 0xffffU)
-	return _null_dbcs_lt;
+	return __libi86_fnullptr;
 
       lt = MK_FP (seg, off);
       if (! *lt)
-	return _null_dbcs_lt;
+	return __libi86_fnullptr;
 
       return lt;
     }
