@@ -198,6 +198,7 @@ OBJS		= bios/bios-disk.o \
 		  dos/dos-write.o \
 		  dos/dosexterr.o \
 		  dos/getswitchar.o \
+		  dos/getsysvars.o \
 		  dos/intdos.o \
 		  dos/intdosx.o \
 		  dos/libi86-bc-intdos.o \

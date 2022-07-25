@@ -228,6 +228,7 @@ _LIBI86_REDIRECT_0 (int, getswitchar, _getswitchar)
 _LIBI86_REDIRECT_VOID_1 (setswitchar, char, _setswitchar)
 #endif
 extern int _getswitchar (void);
+extern __libi86_fpv_t _getsysvars (void);
 extern struct _makefcb_t _makefcb (const char *__cmd_line,
 				   __libi86_fcb_ptr_t __fcb, int __opt);
 extern char *_parsfnm (const char *__cmd_line, __libi86_fcb_ptr_t __fcb,

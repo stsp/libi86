@@ -1203,6 +1203,23 @@ yo
 ]])
 AT_CLEANUP
 
+AT_SETUP([[_getsysvars]])
+AT_LIBI86_SKIP_IF_NO_DOSX
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+#include <stdlib.h>
+int
+main (void)
+{
+  const unsigned __far *vars = _getsysvars ();
+  if (! vars)
+    abort ();
+  if (vars[-1] == 0)  /* segment of first MCB... */
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP
+
 AT_SETUP([[_getswitchar, _setswitchar]])
 AT_LIBI86_CHECK(dnl
 [[#include <dos.h>
