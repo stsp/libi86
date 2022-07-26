@@ -1204,18 +1204,30 @@ yo
 AT_CLEANUP
 
 AT_SETUP([[_getsysvars]])
-AT_LIBI86_SKIP_IF_NO_DOSX
 AT_LIBI86_CHECK(dnl
 [[#include <dos.h>
 #include <stdlib.h>
 int
 main (void)
 {
+#ifdef __FAR
   const unsigned __far *vars = _getsysvars ();
   if (! vars)
     abort ();
+  if (FP_OFF (vars) < 2)
+    abort ();
   if (vars[-1] == 0)  /* segment of first MCB... */
     abort ();
+#else
+  __libi86_fpv_t vars = _getsysvars ();
+  unsigned seg = FP_SEG (vars), off = FP_OFF (vars);
+  if (! seg && ! off)
+    abort ();
+  if (off < 2)
+    abort ();
+  if (__libi86_peek (seg, off - 2) == 0)
+    abort ();
+#endif
   return 0;
 }]],[])
 AT_CLEANUP

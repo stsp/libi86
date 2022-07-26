@@ -1,6 +1,6 @@
 #
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2022 TK Chia
  *
  * The authors hereby grant permission to use, copy, modify, distribute,
  * and license this software and its documentation for any purpose, provided
@@ -17,52 +17,17 @@
 #include "libi86/internal/acconfig.h"
 
 #ifdef __MSDOS__
-# ifndef _LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE
-	.define	__dos_get_dbcs_lead_table
-__dos_get_dbcs_lead_table:
-# endif
-	.define	___libi86_msdos_get_dbcs_lead_table
-___libi86_msdos_get_dbcs_lead_table:
-	call	___libi86_get_osmajor_osminor
-	push	bp
-	push	si
-	push	di
-	push	ds
-	push	es
-	cmpb	al, 3
-	mov	ax, 0x6300
-	mov	si, -1
-	jb	.18
+	.define	__getsysvars
+__getsysvars:
+	xor	bx, bx
+	mov	es, bx
+	movb	ah, 0x52
 	int	0x21
-.11:
-	inc	si
-	jz	.19
-	dec	si
-	testb	al, al
-	jnz	.19
-	cmpb	(si), al
-	jz	.19
-	xchg	si, ax
-	mov	dx, ds
-.12:
-	pop	es
-	pop	ds
-	pop	di
-	pop	si
-	pop	bp
+	xchg	bx, ax
 	mov	bx, sp
 	mov	bx, 2(bx)
 	mov	(bx), ax
-	mov	2(bx), dx
+	mov	2(bx), es
 	xchg	bx, ax
 	ret
-.18:
-	stc
-	int	0x21
-	sbbb	al, al
-	jmp	.11
-.19:
-	xor	ax, ax
-	cwd
-	jmp	.12
 #endif
