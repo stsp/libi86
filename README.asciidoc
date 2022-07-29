@@ -261,7 +261,7 @@ When using ACK:
 |       B |    =   | ``_getdrive ();`` |
 |      UB |    =   | ``getswitchar ();`` .2+a| Returns the (nominal) character for command line switches — usually ``'/'`` — per `int 0x21`, `%ax` = `0x3700`.
 |       X |    =   | ``_getswitchar ();``
-|       X |    G   | *``_getsysvars ();`` | ``int 0x21`` function ``0x52``.
+|       X |    =   | *``_getsysvars ();`` | ``int 0x21`` function ``0x52``.
 |       X |    =   | ``_makefcb (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);`` a|
 			* Parses __cmd-line__``[]`` into a DOS 1.x-style File Control Block (FCB) — via `int 0x21`, `%ah` = `0x29`.
 			* Returns a ``struct _makefcb_t`` structure (__result__):
