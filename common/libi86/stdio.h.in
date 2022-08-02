@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019--2021 TK Chia
+ * Copyright (c) 2019--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -35,26 +35,16 @@
 #include <libi86/internal/acconfig.h>
 #include <libi86/internal/cdefs.h>
 #include <libi86/internal/features.h>
+#include <libi86/internal/libc-defer.h>
 
 _LIBI86_BEGIN_EXTERN_C
 
-/*
- * If the C library has vsscanf (...), then define _vsscanf (...) as an
- * alias of vsscanf (...).
- *
- * If not, but if the necessary feature test macros are present, then do the
- * opposite: define vsscanf (...) as an alias of _vsscanf (...).
- */
-#ifdef _LIBI86_INTERNAL_HAVE_VSSCANF
-_LIBI86_REDIRECT_AND_INLINE_3 (int, _vsscanf, const char *, const char *,
-			       __libi86_va_list_t, vsscanf)
+#if _LIBI86_ISO_C_VISIBLE >= 1999
+_LIBI86_LIBC_DEFER_3 (int, vsscanf, const char *, const char *,
+		      __libi86_va_list_t, @ac_cv_have_decl_vsscanf@)
 #else
-extern int _vsscanf (const char *__str, const char *__fmt,
-		    __libi86_va_list_t __ap);
-# if _LIBI86_ISO_C_VISIBLE >= 1999
-_LIBI86_REDIRECT_AND_INLINE_3 (int, vsscanf, const char *, const char *,
-			       __libi86_va_list_t, _vsscanf)
-# endif
+_LIBI86_LIBC_DEFER_EXT_3 (int, vsscanf, const char *, const char *,
+			  __libi86_va_list_t, @ac_cv_have_decl_vsscanf@)
 #endif
 
 _LIBI86_END_EXTERN_C

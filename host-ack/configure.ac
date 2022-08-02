@@ -78,6 +78,7 @@ AC_SUBST(host_makefile_frag)
 AC_CONFIG_FILES([Makefile
 		 direct.h:../common/direct.h.in
 		 process.h:../common/process.h.in
+		 libi86/stdio.h:../common/libi86/stdio.h.in
 		 libi86/internal/types.h:../common/libi86/internal/types.h.in])
 AC_DEFINE_UNQUOTED([_LIBI86_VERSION],[${PACKAGE_VERSION}L])
 AC_CONFIG_HEADERS([libi86/internal/acconfig.h])

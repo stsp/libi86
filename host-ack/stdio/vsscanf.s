@@ -44,8 +44,8 @@
  * internal code & data structures, but this may break more easily.)
  */
 
-	.define	__vsscanf
-__vsscanf:
+	.define	___libi86_vsscanf
+___libi86_vsscanf:
 	push	si
 	push	di
 	push	bp

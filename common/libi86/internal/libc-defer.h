@@ -47,7 +47,7 @@
  *
  *   * If IN_LIBC is the token `yes', then it means the underlying libc
  *     already has NAME.  In this case, declare _{NAME} to be an alias of
- *     NAME --- i.e. the libc definition --- & also separtely declare
+ *     NAME --- i.e. the libc definition --- & also separately declare
  *     __libi86_{NAME}, which will always be our libi86 definition.
  */
 #define _LIBI86_LIBC_DEFER_0(ret_type, name, in_libc) \
@@ -58,11 +58,14 @@
 #define _LIBI86_LIBC_DEFER_no_0(ret_type, name) \
 	_LIBI86_REDIRECT_0 (ret_type, name, __libi86_ ## name) \
 	_LIBI86_REDIRECT_0 (ret_type, _ ## name, __libi86_ ## name)
-/* Ditto for functions with 1 or 2 arguments. */
+/* Ditto for functions with 1, 2, or 3 arguments. */
 #define _LIBI86_LIBC_DEFER_1(ret_type, name, type1, in_libc) \
 	_LIBI86_LIBC_DEFER_ ## in_libc ## _1 (ret_type, name, type1)
 #define _LIBI86_LIBC_DEFER_2(ret_type, name, type1, type2, in_libc) \
 	_LIBI86_LIBC_DEFER_ ## in_libc ## _2 (ret_type, name, type1, type2)
+#define _LIBI86_LIBC_DEFER_3(ret_type, name, type1, type2, type3, in_libc) \
+	_LIBI86_LIBC_DEFER_ ## in_libc ## _3 (ret_type, name, type1, type2, \
+							      type3)
 #define _LIBI86_LIBC_DEFER_yes_1(ret_type, name, type1) \
 	_LIBI86_REDIRECT_1 (ret_type, _ ## name, type1, name) \
 	ret_type __libi86_ ## name (type1);
@@ -75,6 +78,31 @@
 #define _LIBI86_LIBC_DEFER_no_2(ret_type, name, type1, type2) \
 	_LIBI86_REDIRECT_2 (ret_type, name, type1, type2, __libi86_ ## name) \
 	_LIBI86_REDIRECT_2 (ret_type, _ ## name, type1, type2, \
+				      __libi86_ ## name)
+#define _LIBI86_LIBC_DEFER_yes_3(ret_type, name, type1, type2, type3) \
+	_LIBI86_REDIRECT_3 (ret_type, _ ## name, type1, type2, type3, name) \
+	ret_type __libi86_ ## name (type1, type2, type3);
+#define _LIBI86_LIBC_DEFER_no_3(ret_type, name, type1, type2, type3) \
+	_LIBI86_REDIRECT_3 (ret_type, name, type1, type2, type3, \
+				      __libi86_ ## name) \
+	_LIBI86_REDIRECT_3 (ret_type, _ ## name, type1, type2, type3, \
+				      __libi86_ ## name)
+
+/*
+ * For a function like NAME = `vsscanf', we want to
+ *
+ *   * always declare _{NAME},
+ *   * but only declare NAME if the underlying libc lacks NAME, _and_ if
+ *     the necessary feature test macros are present.
+ */
+#define _LIBI86_LIBC_DEFER_EXT_3(ret_type, name, type1, type2, type3, \
+				 in_libc) \
+	_LIBI86_LIBC_DEFER_EXT_ ## in_libc ## _3 (ret_type, name, \
+						  type1, type2, type3)
+#define _LIBI86_LIBC_DEFER_EXT_yes_3(ret_type, name, type1, type2, type3) \
+	_LIBI86_LIBC_DEFER_yes_3 (ret_type, name, type1, type2, type3)
+#define _LIBI86_LIBC_DEFER_EXT_no_3(ret_type, name, type1, type2, type3) \
+	_LIBI86_REDIRECT_3 (ret_type, _ ## name, type1, type2, type3, \
 				      __libi86_ ## name)
 
 #endif
