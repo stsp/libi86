@@ -378,3 +378,32 @@ vincent = van gogh
 yo
 ]])
 AT_CLEANUP
+
+AT_SETUP([[system]])
+AT_LIBI86_CHECK_WITH_BAT_FILE(dnl
+[[#include <process.h>
+#include <stdlib.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+  const char *cmd_line = BAT_FILE_MINUS_EXT " /foo victor --bar ::hugo";
+  if (system (cmd_line) != 0)
+    abort ();
+  puts ("yo");
+  return 0;
+}]],dnl
+[[@echo %1
+@echo %2
+@echo %3
+@echo %4
+@echo "%5"
+]],dnl
+[[/foo
+victor
+--bar
+::hugo
+""
+yo
+]])
+AT_CLEANUP

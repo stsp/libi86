@@ -623,21 +623,7 @@ comspec_spawn (int mode, unsigned char subfunc,
       path = unslashed_path;
     }
 
-  pp = envp;
-  while ((p = *pp++) != NULL)
-    if (p[0] == 'C' && strncmp (p, "COMSPEC=", 8) == 0)
-      {
-	comspec = p + 8;
-	break;
-      }
-
-  if (! comspec)
-    {
-      comspec = getenv ("COMSPEC");
-      if (! comspec)
-	comspec = "C:\\COMMAND.COM";
-    }
-
+  comspec = __libi86_comspec (envp);
   if (! _parsfnm (find_raw_base_name (comspec, dbcs), &comspec_fcb, 0))
     {
       errno = EINVAL;
@@ -683,34 +669,39 @@ error_spawn (int mode, unsigned char subfunc,
 }
 
 static spawner_t
-find_spawner (const char ext[3], bool restrict_ext)
+find_spawner (const char ext[3], bool restrict_ext, bool interp)
 {
+  spawner_t spawner = error_spawn;
+
+  if (! restrict_ext)
+    spawner = direct_spawn;
+
   switch (ext[1])
     {
     case 'A':
       if (ext[0] == 'B' && ext[2] == 'T')  /* BAT */
-	return comspec_spawn;
+	spawner = comspec_spawn;
       break;
 
     case 'O':
       if (ext[0] == 'C' && ext[2] == 'M')  /* COM */
-	return direct_spawn;
+	spawner = direct_spawn;
       break;
 
     case 'T':
       if (ext[0] == 'B' && ext[2] == 'M')  /* BTM */
-	return comspec_spawn;
+	spawner = comspec_spawn;
       break;
 
     case 'X':
       if (ext[0] == 'E' && ext[2] == 'E')  /* EXE */
-	return direct_spawn;
+	spawner = direct_spawn;
     }
 
-  if (restrict_ext)
-    return error_spawn;
-  else
-    return direct_spawn;
+  if (interp && spawner == comspec_spawn)
+    spawner = direct_spawn;
+
+  return spawner;
 }
 
 __libi86_pid_t
@@ -723,9 +714,8 @@ _spawnve (int mode, const char *path, const char * const *argv,
   char path_with_ext[_MAX_PATH];
   unsigned char subfunc;
   const char *raw_base;
-  char *raw_ext;
   unsigned attrs;
-  bool restrict_ext;
+  bool restrict_ext, interp;
 
   if (! path || ! path[0] || ! argv || ! argv[0])
     {
@@ -758,16 +748,17 @@ _spawnve (int mode, const char *path, const char * const *argv,
    * DJGPP's behaviour, & is arguably safer.)
    */
   restrict_ext = ((mode & _P_RESTRICT_EXT) != 0);
+  interp = ((mode & _P_INTERP) != 0);
   raw_base = find_raw_base_name (path, dbcs);
-  raw_ext = find_raw_ext (raw_base, dbcs);
 
-  if (raw_ext)
+  if (interp || find_raw_ext (raw_base, dbcs))
     {
       if (_dos_getfileattr (path, &attrs) != 0)
 	return -1;
     }
   else
     {
+      char *raw_ext;
       size_t path_len = strlen (path);
 
       if (path_len > _MAX_PATH - 5)
@@ -825,7 +816,7 @@ _spawnve (int mode, const char *path, const char * const *argv,
     envp = (const char **) environ;
 
   /* Decide how we need to run the executable. */
-  spawner = find_spawner (fcb._fcb_ext, restrict_ext);
+  spawner = find_spawner (fcb._fcb_ext, restrict_ext, interp);
 
   /* Then run it. */
   return spawner (mode, subfunc, path, fcb._fcb_name, fcb._fcb_ext,

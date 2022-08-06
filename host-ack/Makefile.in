@@ -258,6 +258,7 @@ OBJS		= bios/bios-disk.o \
 		  i86/segread.o \
 		  i86/sound.o \
 		  process/getpid.o \
+		  process/libi86-comspec.o \
 		  process/spawnl.o \
 		  process/spawnle.o \
 		  process/spawnlp.o \
@@ -266,6 +267,7 @@ OBJS		= bios/bios-disk.o \
 		  process/spawnve.o \
 		  process/spawnvp.o \
 		  process/spawnvpe.o \
+		  process/system.o \
 		  stdio/vsscanf.o \
 		  stdlib/libi86-get-osmajor-osminor.o \
 		  stdlib/libi86-get-psp.o \

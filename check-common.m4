@@ -134,6 +134,7 @@ _LIBI86_TYPE([pid_t],[#include <sys/types.h>])
 _LIBI86_TYPE([mode_t],[#include <sys/types.h>])
 
 AC_SUBST(ac_cv_have_decl_vsscanf)
+AC_SUBST(ac_cv_func_system)
 AC_SUBST(ac_cv_func_getcwd)
 AC_SUBST(ac_cv_func_getpid)
 AC_SUBST(ac_cv_func_getppid)

@@ -27,18 +27,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_LIBI86_INTERNAL_PROCESS_H_
-#define _LIBI86_LIBI86_INTERNAL_PROCESS_H_
+/*
+ * The argument quoting logic in this implementation of _spawnve (...) is
+ * based on that of DJGPP, but (hopefully) simplified.
+ */
 
-#ifndef _LIBI86_COMPILING_
-# error \
-  "<libi86/internal/process.h> should only be used when compiling libi86!"
-#endif
+#define _LIBI86_COMPILING_
+#include <stdlib.h>
+#include <string.h>
+#include "libi86/internal/process.h"
 
-/* A mask of all our special _spawnve (...) flags. */
-#define _P_SPVE_FLAGS		(_P_OPT_C_SPECIAL | _P_RESTRICT_EXT \
-				 | _P_INTERP)
+extern char **environ;
 
-extern const char *__libi86_comspec (const char * const *__envp);
+const char *
+__libi86_comspec (const char * const *envp)
+{
+  const char *comspec = NULL, *p, * const *pp;
 
-#endif
+  pp = envp;
+  while ((p = *pp++) != NULL)
+    if (p[0] == 'C' && strncmp (p, "COMSPEC=", 8) == 0)
+      {
+	comspec = p + 8;
+	break;
+      }
+
+  if (! comspec)
+    {
+      comspec = getenv ("COMSPEC");
+      if (! comspec)
+	comspec = "C:\\COMMAND.COM";
+    }
+
+  return comspec;
+}
