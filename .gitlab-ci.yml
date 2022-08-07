@@ -123,8 +123,7 @@ test3:gcc:
     - >
         n_tests="`su user -c './tests/ci-count-tests.sh'`"
         && first="`expr 2 \* $n_tests / 3 + 1`"
-        && last="$n_tests"
-        && su user -c "./tests/ci-check.sh $first-$last"
+        && su user -c "./tests/ci-check.sh $first-"
   timeout: 3h
   artifacts:
     paths:
