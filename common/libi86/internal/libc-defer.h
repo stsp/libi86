@@ -89,7 +89,26 @@
 				      __libi86_ ## name)
 
 /*
- * For a function like NAME = `vsscanf', we want to
+ * For a C89 function like NAME = `system',
+ *
+ *   * if IN_LIBC is no, then instead of declaring NAME & _{NAME}
+ *     in terms of __libi86_{NAME}, declare _{NAME} & __libi86_{NAME} in
+ *     terms of NAME.
+ *
+ * Why?  It is quite likely that the underlying C library will declare NAME
+ * --- even if it does not actually define it.  And we want to minimize the
+ * possibility of conflicting function declarations.
+ */
+#define _LIBI86_LIBC_DEFER_STD_1(ret_type, name, type1, in_libc) \
+	_LIBI86_LIBC_DEFER_STD_ ## in_libc ## _1 (ret_type, name, type1)
+#define _LIBI86_LIBC_DEFER_STD_yes_1(ret_type, name, type1) \
+	_LIBI86_LIBC_DEFER_yes_1 (ret_type, name, type1)
+#define _LIBI86_LIBC_DEFER_STD_no_1(ret_type, name, type1) \
+	_LIBI86_REDIRECT_1 (ret_type, _ ## name, type1, name) \
+	_LIBI86_REDIRECT_1 (ret_type, __libi86_ ## name, type1, name)
+
+/*
+ * For a C99 function like NAME = `vsscanf', we want to
  *
  *   * always declare _{NAME},
  *   * but only declare NAME if the underlying libc lacks NAME, _and_ if
