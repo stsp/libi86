@@ -36,7 +36,7 @@
 #endif
 
 /* A mask of all our special _spawnve (...) flags. */
-#define _P_SPVE_FLAGS		(_P_OPT_C_SPECIAL | _P_RESTRICT_EXT \
+#define _P_SPVE_FLAGS		(_P_RESTRICT_EXT | _P_OPT_C_SPECIAL \
 				 | _P_INTERP)
 
 extern const char *__libi86_comspec (const char * const *__envp);

@@ -69,22 +69,26 @@ _LIBI86_REDIRECT_4 (__libi86_pid_t, spawnvpe, int, const char *,
 /*
  * Special libi86-specific flags for the _spawn... (...) MODE.
  *
- * _P_OPT_C_SPECIAL: treat e.g. `command.com /c ...', where `...' is exactly
- * one argument, as a special case: treat the argument as the complete
- * command line, rather than the name of a script, & quote it accordingly.
+ *   * _P_RESTRICT_EXT: do not blindly allow any file extension --- or lack
+ *     thereof --- in the program PATH.  If the PATH has no file extension,
+ *     always add an extension to it.  If the PATH does have an extension,
+ *     it _must_ have a known type of executable file extension.
  *
- * _P_RESTRICT_EXT: do not blindly allow any file extension --- or lack
- * thereof --- in the program PATH.  If the PATH has no file extension,
- * always add an extension to it.  If the PATH does have an extension, it
- * _must_ have a known type of executable file extension.
+ *   * _P_OPT_C_SPECIAL: treat e.g.  `command.com /c ...', where `...' is
+ *     exactly one argument, as a special case: treat the argument as the
+ *     complete command line, rather than the name of a script, & quote it
+ *     accordingly.
  *
- * _P_INTERP: treat PATH as a command interpreter path: never add an
- * extension to PATH, & never treat it as a script that needs a (different)
- * interpreter.
+ *   * _P_INTERP: treat PATH as a command interpreter path: never add an
+ *     extension to PATH, & never treat it as a script that needs a
+ *     (different) interpreter.
+ *
+ * Currently, _P_RESTRICT_EXT is kind of meant for general use, while
+ * _P_OPT_C_SPECIAL & _P_INTERP are "private" flags meant for system (.).
  */
-#define _P_OPT_C_SPECIAL	(1 <<  8)
-#define _P_RESTRICT_EXT		(1 <<  9)
-#define _P_INTERP		(1 << 10)
+#define _P_RESTRICT_EXT		(1 <<  6)
+#define _P_OPT_C_SPECIAL	(1 << 15)
+#define _P_INTERP		(1 << 14)
 
 /* For testing purposes. */
 extern __libi86_pid_t __libi86_getpid (void);
