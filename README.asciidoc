@@ -290,9 +290,9 @@ When using ACK:
 |       B |    =   | ``outportw (``__port__``,`` __value__``);`` | Accepts an unsigned value to write.
 4+|
 |      UB |    =   | ``inp (``__port__``);`` .4+| In non-Borland mode, these functions are declared only in `<conio.h>`.
-|      UB |    =   | ``inpw (``__port__``);`` |
-|      UB |    =   | ``outp (``__port__``,`` __value__``);`` |
-|      UB |    =   | ``outpw (``__port__``,`` __value__``);`` |
+|      UB |    =   | ``inpw (``__port__``);``
+|      UB |    =   | ``outp (``__port__``,`` __value__``);``
+|      UB |    =   | ``outpw (``__port__``,`` __value__``);``
 
 4+|
 2+|             2+a| **``▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖``**
