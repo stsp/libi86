@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021--2022 TK Chia
+ * Copyright (c) 2018--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,33 +27,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_LIBI86_INTERNAL_BC_PORTIO_H_
-#define _LIBI86_LIBI86_INTERNAL_BC_PORTIO_H_
+/*
+ * inp (.) inpw (.), outp (, ), & outpw (, ) is declared by both <dos.h> & 
+ * <conio.h> in _BORLANDC_SOURCE mode, but is only declared by <conio.h>
+ * in non-Borland mode.  This file is included by both <dos.h> & <conio.h>
+ * as appropriate.
+ */
 
-#if ! defined _LIBI86_COMPILING && defined _BORLANDC_SOURCE
+#ifndef _LIBI86_LIBI86_INTERNAL_INP_PORTIO_H_
+#define _LIBI86_LIBI86_INTERNAL_INP_PORTIO_H_
+
+#ifndef _LIBI86_COMPILING_
+# include <libi86/internal/cdefs.h>
 # include <libi86/internal/portio.h>
-# include <libi86/internal/inp-portio.h>
 
 _LIBI86_BEGIN_EXTERN_C
 
-_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, inportb, unsigned, __libi86_inp)
-_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, inportw, unsigned, __libi86_inpw)
-_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outportb, unsigned, unsigned,
-                               __libi86_outp)
-_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outportw, unsigned, unsigned,
-                               __libi86_outpw)
-/*
- * In the Borland toolchain, inport (.) & outport (, ) are older versions
- * of the inportw (.) & outportw (, ) functions that deal with signed values
- * rather than unsigned ones.
- */
-_LIBI86_REDIRECT_AND_INLINE_1 (int, inport, unsigned,
-			       __libi86_inpw_signed)
-_LIBI86_REDIRECT_AND_INLINE_VOID_2 (outport, unsigned, int,
-				    __libi86_outpw_signed)
+_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, inp, unsigned, __libi86_inp)
+_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, _inp, unsigned, __libi86_inp)
+_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, inpw, unsigned, __libi86_inpw)
+_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, _inpw, unsigned, __libi86_inpw)
+_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outp, unsigned, unsigned,
+			       __libi86_outp)
+_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, _outp, unsigned, unsigned,
+			       __libi86_outp)
+_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outpw, unsigned, unsigned,
+			       __libi86_outpw)
+_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, _outpw, unsigned, unsigned,
+			       __libi86_outpw)
 
 _LIBI86_END_EXTERN_C
 
-#endif /* ! _LIBI86_COMPILING && _BORLANDC_SOURCE */
+#endif /* ! _LIBI86_COMPILING */
 
 #endif

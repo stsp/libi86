@@ -259,7 +259,7 @@ When using ACK:
 			* Under ACK — but not `gcc-ia16` — the C library's ``write`` function may behave differently from ``_dos_write``: it may translate LFs to CRLFs if __handle__ is ``open`` 'd in "text mode".
 |       W |    =   | ``dosexterr (``*__err-info__``);`` |
 |       B |    =   | ``_getdrive ();`` |
-|      UB |    =   | ``getswitchar ();`` .2+a| Returns the (nominal) character for command line switches — usually ``'/'`` — per `int 0x21`, `%ax` = `0x3700`.
+|      UB |    =   | ``getswitchar ();`` .2+| Returns the (nominal) character for command line switches — usually ``'/'`` — per `int 0x21`, `%ax` = `0x3700`.
 |       X |    =   | ``_getswitchar ();``
 |       X |    =   | *``_getsysvars ();`` | ``int 0x21`` function ``0x52``.
 |       X |    =   | ``_makefcb (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);`` a|
@@ -275,7 +275,7 @@ When using ACK:
 			* __cmd-line__``[]`` should end with either a null character, a carriage return (``'\r'``), or a new line (``'\n'``).
 			* In non-Borland mode, __fcb__ should point to a ``struct _fcb`` (with underscore), rather than a ``struct fcb``.
 |       B |    =   | *``parsfnm (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);``
-|      UB |    =   | ``setswitchar (``__ch__``);`` .2+a| Sets the (nominal) character for command line switches, with `int 0x21`, `%ax` = `0x3701`.
+|      UB |    =   | ``setswitchar (``__ch__``);`` .2+| Sets the (nominal) character for command line switches, with `int 0x21`, `%ax` = `0x3701`.
 |       X |    =   | ``_setswitchar (``__ch__``);``
 4+|
 |       B |    =   | ``peek (``__segment__``,`` __offset__``);`` |
@@ -288,6 +288,12 @@ When using ACK:
 |       B |    =   | ``outportb (``__port__``,`` __value__``);`` |
 |       B |    =   | ``outport (``__port__``,`` __value__``);`` | Accepts a signed value to write.
 |       B |    =   | ``outportw (``__port__``,`` __value__``);`` | Accepts an unsigned value to write.
+4+|
+|      UB |    =   | ``inp (``__port__``);`` .4+| In non-Borland mode, these functions are declared only in `<conio.h>`.
+|      UB |    =   | ``inpw (``__port__``);`` |
+|      UB |    =   | ``outp (``__port__``,`` __value__``);`` |
+|      UB |    =   | ``outpw (``__port__``,`` __value__``);`` |
+
 4+|
 2+|             2+a| **``▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖``**
 

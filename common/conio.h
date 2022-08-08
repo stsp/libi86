@@ -33,6 +33,7 @@
 #include <libi86/internal/cdefs.h>
 #include <libi86/internal/portio.h>
 #include <libi86/internal/bc-portio.h>
+#include <libi86/internal/inp-portio.h>
 
 _LIBI86_BEGIN_EXTERN_C
 
@@ -104,21 +105,6 @@ _LIBI86_BC_REDIRECT_2 (int, vcscanf, const char *, __libi86_va_list_t)
 extern int cprintf (const char *, ...);
 extern int cscanf (const char *, ...);
 #endif  /* ! __GNUC__ */
-
-#ifndef _LIBI86_COMPILING_
-_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, inp, unsigned, __libi86_inp)
-_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, _inp, unsigned, __libi86_inp)
-_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, inpw, unsigned, __libi86_inpw)
-_LIBI86_REDIRECT_AND_INLINE_1 (unsigned, _inpw, unsigned, __libi86_inpw)
-_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outp, unsigned, unsigned,
-			       __libi86_outp)
-_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, _outp, unsigned, unsigned,
-			       __libi86_outp)
-_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, outpw, unsigned, unsigned,
-			       __libi86_outpw)
-_LIBI86_REDIRECT_AND_INLINE_2 (unsigned, _outpw, unsigned, unsigned,
-			       __libi86_outpw)
-#endif /* ! _LIBI86_COMPILING */
 
 /* These functions & constants are from Borland C++, & are not in Watcom. */
 #ifdef _BORLANDC_SOURCE
