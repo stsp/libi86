@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021--2022 TK Chia
+ * Copyright (c) 2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,16 +27,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define _LIBI86_COMPILING_
-#include "libi86/internal/cdefs.h"
-#include "dos.h"
+#include "libi86/internal/call-cvt.h"
 
-void
-_dos_setvect (unsigned intr_no, __libi86_isr_t isr)
-{
-  __asm volatile ("int $0x21"
-		  : /* no output operands */
-		  : "a" (0x2500u | (unsigned char) intr_no),
-		    "Rds" (FP_SEG (isr)), "d" (FP_OFF (isr))
-		  : "cc", "memory");
-}
+	.code16
+	.att_syntax prefix
+
+	TEXT_ (dos_getvect.S.LIBI86)
+	.global	_dos_getvect
+	.global	__libi86_bc_getvect
+_dos_getvect:
+__libi86_bc_getvect:
+	ENTER_BX_ (2)
+	pushw	%es
+	MOV_ARG0B_BX_ (%al)
+	movb	$0x35,	%ah
+	int	$0x21
+	movw	%es,	%dx
+	xchgw	%ax,	%bx
+	popw	%es
+	RET_ (2)

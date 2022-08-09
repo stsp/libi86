@@ -1,6 +1,6 @@
 #
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2021--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -32,7 +32,9 @@
 
 #ifdef __MSDOS__
 	.define	__dos_getvect
+	.define	___libi86_bc_getvect
 __dos_getvect:
+___libi86_bc_getvect:
 	push	si
 	mov	si, sp
 	push	es

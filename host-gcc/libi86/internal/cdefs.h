@@ -96,6 +96,8 @@ __libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
 	_LIBI86_REDIRECT_0(void, name, alias_to)
 #define _LIBI86_REDIRECT_VOID_1(name, type1, alias_to) \
 	_LIBI86_REDIRECT_1(void, name, type1, alias_to)
+#define _LIBI86_REDIRECT_VOID_2(name, type1, type2, alias_to) \
+	_LIBI86_REDIRECT_2(void, name, type1, type2, alias_to)
 #define _LIBI86_ASM_NAME(c_name) \
 	_LIBI86_ASM_NAME_P2(__USER_LABEL_PREFIX__, #c_name)
 #define _LIBI86_ASM_NAME_P2(prefix, c_name) _LIBI86_ASM_NAME_P3(prefix, c_name)
@@ -120,6 +122,8 @@ __libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
 # define _LIBI86_BC_REDIRECT_4(ret_type, name, type1, type2, type3, type4) \
 	 _LIBI86_REDIRECT_4 (ret_type, name, type1, type2, type3, type4, \
 			     __libi86_bc_ ## name)
+# define _LIBI86_BC_REDIRECT_VOID_2(name, type1, type2) \
+	 _LIBI86_REDIRECT_VOID_2 (name, type1, type2, __libi86_bc_ ## name)
 /*
  * This macro is for corner cases which require special handling under GCC ---
  * e.g. variadic arguments, extra function attributes.
@@ -142,6 +146,8 @@ __libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
 	 extern ret_type name (type1, type2, type3);
 # define _LIBI86_BC_REDIRECT_4(ret_type, name, type1, type2, type3, type4) \
 	 extern ret_type name (type1, type2, type3, type4);
+# define _LIBI86_BC_REDIRECT_VOID_2(name, type1, type2) \
+	 extern void name (type1, type2);
 # define _LIBI86_BC_REDIRECT_X(name, proto) name proto
 #endif
 

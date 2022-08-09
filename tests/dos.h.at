@@ -735,7 +735,7 @@ main (int argc, char **argv)
 }]],[[]])
 AT_CLEANUP
 
-AT_SETUP([[_dos_getvect]])
+AT_SETUP([[_dos_getvect, _dos_setvect]])
 AT_LIBI86_CHECK_FOR_NONDOSX(dnl
 [[#include <dos.h>
 void abort (void);
@@ -747,8 +747,18 @@ main (void)
    * Check that the interrupt 0x30 vector "address" is the start of a far
    * jump instruction.  This only works in real or V86 mode.
    */
-  unsigned long vec_0x30 = (unsigned long) _dos_getvect (0x30);
-  if ((unsigned char) vec_0x30 != 0xea)
+  __libi86_isr_t vec_0x30 = _dos_getvect (0x30),
+		 bogus = (__libi86_isr_t) MK_FP (0xf6f6, 0xf6f6);
+  if ((unsigned char) FP_OFF (vec_0x30) != 0xea)
+    abort ();
+# ifdef __INTERRUPT
+  /* Temporary set the int 0x30 vector to something else.  Then restore it. */
+  _dos_setvect (0x30, bogus);
+  if (! _FP_EQ (_dos_getvect (0x30), bogus))
+    abort ();
+  _dos_setvect (0x30, vec_0x30);
+# endif
+  if (! _FP_EQ (_dos_getvect (0x30), vec_0x30))
     abort ();
   return 0;
 #else

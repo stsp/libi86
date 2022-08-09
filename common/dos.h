@@ -242,7 +242,7 @@ typedef void __interrupt __far (*__libi86_isr_t) (/* ... */);
 # pragma GCC diagnostic pop
 extern __libi86_isr_t _dos_getvect (unsigned __intr_no);
 extern void _dos_setvect (unsigned __intr_no, __libi86_isr_t __isr);
-#else
+#else  /* ! __INTERRUPT */
 typedef __libi86_fpcv_t __libi86_isr_t;
 extern __libi86_isr_t _dos_getvect (unsigned __intr_no)
 		      _LIBI86_WARNING ("_dos_getvect (.) not fully supported: "
@@ -250,7 +250,20 @@ extern __libi86_isr_t _dos_getvect (unsigned __intr_no)
 extern void _dos_setvect (unsigned __intr_no, __libi86_isr_t __isr)
 	    _LIBI86_ERROR ("_dos_setvect (.) not supported: "
 			   "__interrupt unrecognized");
-#endif
+#endif  /* ! __INTERRUPT */
+#ifdef _BORLANDC_SOURCE
+_LIBI86_BC_REDIRECT_1 (__libi86_isr_t, getvect, int)
+# if defined __INTERRUPT
+_LIBI86_BC_REDIRECT_VOID_2 (setvect, int, __libi86_isr_t)
+# elif defined __GNUC__  /* ! __INTERRUPT */
+extern __libi86_isr_t getvect (int __intr_no)
+		      _LIBI86_WARNING ("getvect (.) not fully supported: "
+				       "__interrupt unrecognized");
+extern void setvect (int __intr_no, __libi86_isr_t __isr)
+	    _LIBI86_ERROR ("setvect (.) not supported: "
+			   "__interrupt unrecognized");
+# endif  /* __GNUC__ && ! __INTERRUPT */
+#endif  /* _BORLANDC_SOURCE */
 
 _LIBI86_ALT_INLINE unsigned
 _dos_findclose (struct find_t *__buf)

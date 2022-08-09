@@ -145,6 +145,7 @@ __libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
 #define _LIBI86_REDIRECT_4	_LIBI86_REDIRECT_AND_INLINE_4
 #define _LIBI86_REDIRECT_VOID_0	_LIBI86_REDIRECT_AND_INLINE_VOID_0
 #define _LIBI86_REDIRECT_VOID_1	_LIBI86_REDIRECT_AND_INLINE_VOID_1
+#define _LIBI86_REDIRECT_VOID_2	_LIBI86_REDIRECT_AND_INLINE_VOID_2
 /*
  * If _BORLANDC_SOURCE is in effect, define a local 0-, 1-, 2-, 3- or
  * 4-argument function function NAME which calls __libi86_bc_NAME. 
@@ -166,6 +167,9 @@ __libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
 					  type4) \
 	 _LIBI86_REDIRECT_AND_INLINE_4(ret_type, name, type1, type2, type3, \
 				       type4, __libi86_bc_ ## name)
+# define _LIBI86_BC_REDIRECT_AND_INLINE_VOID_2(name, type1, type2) \
+	 _LIBI86_REDIRECT_AND_INLINE_VOID_2(name, type1, type2, \
+					    __libi86_bc_ ## name)
 #else  /* ! _BORLANDC_SOURCE */
 # define _LIBI86_BC_REDIRECT_AND_INLINE_0(ret_type, name) \
 	 extern ret_type name (void);
@@ -178,12 +182,15 @@ __libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
 # define _LIBI86_BC_REDIRECT_AND_INLINE_4(ret_type, name, type1, type2, type3,\
 					  type4) \
 	 extern ret_type name (type1, type2, type3, type4);
+# define _LIBI86_BC_REDIRECT_AND_INLINE_VOID_2(name, type1, type2) \
+	 extern void name (type1, type2);
 #endif  /* ! _BORLANDC_SOURCE */
 #define _LIBI86_BC_REDIRECT_0	_LIBI86_BC_REDIRECT_AND_INLINE_0
 #define _LIBI86_BC_REDIRECT_1	_LIBI86_BC_REDIRECT_AND_INLINE_1
 #define _LIBI86_BC_REDIRECT_2	_LIBI86_BC_REDIRECT_AND_INLINE_2
 #define _LIBI86_BC_REDIRECT_3	_LIBI86_BC_REDIRECT_AND_INLINE_3
 #define _LIBI86_BC_REDIRECT_4	_LIBI86_BC_REDIRECT_AND_INLINE_4
+#define _LIBI86_BC_REDIRECT_VOID_2 _LIBI86_BC_REDIRECT_AND_INLINE_VOID_2
 
 /* Yep, `va_list' is a pointer-to-char on ACK for the i86 target. */
 typedef char *__libi86_va_list_t;
