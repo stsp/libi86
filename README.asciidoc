@@ -29,7 +29,7 @@ The current aim is to be compatible enough with the Open Watcom{fn-ow} runtime â
 
 :fn-borland: footnote:borland[http://cc.embarcadero.com/Item/25636.]
 :fn-borland-91: footnote:borland-91[Borland International.  Borland C{plus}{plus} 2.0 Library Reference, 1991.  https://archive.org/details/bitsavers_borlandborn2.0LibraryReference1991_17218611.]
-:fn-borland-92: footnote:borland-91[Borland International.  Borland C{plus}{plus} 3.1 Library Reference, 1991--1992.  https://archive.org/details/bitsavers_borlandborn3.1LibraryReference1992_19008612.]
+:fn-borland-92: footnote:borland-92[Borland International.  Borland C{plus}{plus} 3.1 Library Reference, 1991--1992.  https://archive.org/details/bitsavers_borlandborn3.1LibraryReference1992_19008612.]
 
 Defining the macro `_BORLANDC_SOURCE` will also enable some degree of compatibility with the Borland Turbo C{plus}{plus}{fn-borland} compiler's C library, which is described in the __Borland C{plus}{plus} 2.0 Library Reference__{fn-borland-91} and the __Borland C{plus}{plus} 3.1 Library Reference__.{fn-borland-92}
 
