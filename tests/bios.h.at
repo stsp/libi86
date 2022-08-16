@@ -135,15 +135,18 @@ AT_LIBI86_CHECK_FOR_NONDOSX(dnl
 #include <bios.h>
 #include <i86.h>
 
-#define BYTES_PER_SECT 0x200
+#define MAX_SECT_SHIFT 7
+#define BYTES_PER_SECT(shift) ((size_t) 0x80 << (shift))
+#define MIN_BYTES_PER_SECT BYTES_PER_SECT (0)
+#define MAX_BYTES_PER_SECT BYTES_PER_SECT (MAX_SECT_SHIFT)
 #define EXTRA 0x40
 
 int
 main (void)
 {
   static const unsigned char drives[] = { 0x00, 0x80, 0x01, 0x81 };
-  static unsigned char buf1[BYTES_PER_SECT + EXTRA],
-		       buf2[BYTES_PER_SECT + EXTRA];
+  static unsigned char buf1[MAX_BYTES_PER_SECT + EXTRA],
+		       buf2[MAX_BYTES_PER_SECT + EXTRA];
   unsigned i, j, k;
   unsigned char status;
   struct diskinfo_t di;
@@ -187,7 +190,7 @@ main (void)
 	    abort ();
 
 	  for (k = 0; k < EXTRA; ++k)
-	    if (buf1[BYTES_PER_SECT + k] != 0x41)
+	    if (buf1[MAX_BYTES_PER_SECT + k] != 0x41)
 	      abort ();
 
 	  if (status != 0)
@@ -208,7 +211,7 @@ main (void)
 	    abort ();
 
 	  for (k = 0; k < EXTRA; ++k)
-	    if (buf2[BYTES_PER_SECT + k] != 0xcc)
+	    if (buf2[MAX_BYTES_PER_SECT + k] != 0xcc)
 	      abort ();
 
 	  if (status != 0)
@@ -217,8 +220,39 @@ main (void)
       while (--j != 0 && status != 0);
 
       if (status != 0
-	  || memcmp(buf1, buf2, BYTES_PER_SECT) != 0)
+	  || memcmp(buf1, buf2, MIN_BYTES_PER_SECT) != 0)
 	abort ();
+
+      memset (&di, 0xf6, sizeof di);
+      di.drive = drive;
+      status = _bios_disk (_DISK_DRIVEPARAMS, &di) >> 8;
+      if (di.drive == 0)
+	abort ();
+
+      /*
+       * If int 0x13, ah = 8 returns a drive parameter table, check it for
+       * sanity: the sector size cannot exceed 16 KiB, & the "end of track"
+       * sector number cannot be 0.
+       */
+      if (! _FP_EQ (di.buffer, __libi86_fnullptr))
+	{
+#ifdef __FAR
+	  const unsigned char __far *ddpt = di.buffer;
+	  unsigned char shift = ddpt[3];
+	  if (shift > MAX_SECT_SHIFT || ddpt[4] == 0)
+	    abort ();
+#else
+	  unsigned ddpt_seg = FP_SEG (di.buffer),
+		   ddpt_off = FP_OFF (di.buffer);
+	  unsigned char shift = __libi86_peekb (ddpt_seg, ddpt_off + 3);
+	  if (shift > MAX_SECT_SHIFT
+	      || __libi86_peekb (ddpt_seg, ddpt_off + 4) == 0)
+	    abort ();
+#endif
+	  k = BYTES_PER_SECT (shift);
+	  if (memcmp (buf1, buf2, k) != 0)
+	    abort ();
+	}
     }
 
   return 0;

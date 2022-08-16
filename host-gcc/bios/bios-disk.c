@@ -74,6 +74,7 @@ _bios_disk (unsigned service, struct diskinfo_t *diskinfo)
 		      : "0" (ax), "4" (dl), "5" (__builtin_ia16_selector (0u)),
 			"6" (0u)
 		      : "bx", "cc", "memory");
+      diskinfo->buffer = MK_FP (es, di);
       diskinfo->head = dh;
       diskinfo->track = (unsigned) ch | (unsigned) (cl & 0xc0) << 2;
       diskinfo->sector = cl & 0x3f;

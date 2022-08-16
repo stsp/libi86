@@ -58,6 +58,8 @@ __bios_disk:
 	push	bx
 	int	0x13
 	pop	bx
+	mov	10(bx), di		! FP_OFF (diskinfo->buffer)
+	mov	12(bx), es		! FP_SEG (diskinfo->buffer)
 	push	ds
 	pop	es
 	xchg	di, ax
