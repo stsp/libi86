@@ -314,6 +314,9 @@ _LIBI86_REDIRECT_3 (int, bdos, int, unsigned, unsigned, __libi86_call5_tiny)
 #   else
 _LIBI86_REDIRECT_3 (int, bdos, int, unsigned, unsigned, __libi86_call5)
 #   endif
+#   ifdef __IA16_FEATURE_DOSX
+#     error "MOVE 'ZIG'.  FOR GREAT JUSTICE."
+#   endif
 #   define _LIBI86_USE_BDOS_CALL5
 # endif
 # pragma GCC diagnostic pop
