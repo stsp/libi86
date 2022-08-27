@@ -228,6 +228,49 @@ main (void)
 ]])
 AT_CLEANUP
 
+AT_SETUP([[_fstrcpy]])
+AT_LIBI86_CHECK(dnl
+[[#include <i86.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <libi86/string.h>
+const char foo[] = "hello!!!", bar[] = "world ";
+char baz[16];
+int
+main (void)
+{
+  __libi86_fpc_t res;
+  size_t i;
+  union
+    {
+      unsigned char uc;
+      char c;
+    } u;
+  memset (baz, 0xf6, sizeof baz);
+  res = _fstrcpy (_CV_FP (baz), _CV_FP (bar));
+  if (! _FP_EQ (res, _CV_FP (baz)))
+    abort ();
+  if (memcmp (baz, bar, 7) != 0)
+    abort ();
+  for (i = 7; i < sizeof baz; ++i)
+    {
+      u.c = baz[i];
+      if (u.uc != 0xf6)
+	abort ();
+    }
+  res = _fstrcpy (_CV_FP (baz + 6), _CV_FP (foo));
+  if (! _FP_EQ (res, _CV_FP (baz + 6)))
+    abort ();
+  u.c = baz[sizeof baz - 1];
+  if (u.uc != 0xf6)
+    abort ();
+  write (1, baz, strlen (baz));
+  write (1, "\n", 1);
+  return 0;
+}]],[[world hello!!!
+]])
+AT_CLEANUP
+
 AT_SETUP([[_fstrlen]])
 AT_LIBI86_CHECK(dnl
 [[#include <i86.h>

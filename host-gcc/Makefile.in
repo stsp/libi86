@@ -301,6 +301,7 @@ OBJS		= bios/bios-disk.o \
 		  string/fmemmove.o \
 		  string/fmempcpy.o \
 		  string/fmemset.o \
+		  string/fstrcpy.o \
 		  string/fstrlen.o \
 		  string/libi86-fmemmove-backward.o
 OBJ_SUBDIRS	= $(sort $(dir $(OBJS)))
