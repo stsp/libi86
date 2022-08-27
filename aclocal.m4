@@ -81,8 +81,8 @@ m4_define([_AC_COMPILER_EXEEXT_DEFAULT],dnl
 [m4_bpatsubst(m4_defn([_LIBI86_SAVE_AC_COMPILER_EXEEXT_DEFAULT]),dnl
 [a_out\.exe],dnl
 [a_out.exe cpm.com e.out linux386.exe linux68k.exe linuxmips.exe ]dnl
-[linuxppc.exe msdos86.exe osx386.exe osxppc.exe pc86.img qemuppc.img ]dnl
-[raspberrypi.bin])])dnl
+[linuxppc.exe msdos86.exe msdos86.com msdos386.exe osx386.exe osxppc.exe ]dnl
+[pc86.img qemuppc.img raspberrypi.bin])])dnl
 m4_define([_LIBI86_SAVE_AC_TYPE_UNSIGNED_LONG_LONG_INT],dnl
 m4_defn([AC_TYPE_UNSIGNED_LONG_LONG_INT]))dnl
 m4_defun([AC_TYPE_UNSIGNED_LONG_LONG_INT],dnl
