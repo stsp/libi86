@@ -276,6 +276,7 @@ sound (int __freq)
 #define MK_FP(__s, __o)	__libi86_MK_FP ((__s), (__o))
 #define _CV_FP(__p)	__libi86_CV_FP (__p)
 #define _FP_EQ(__p, __q) __libi86_FP_EQ ((__p), (__q))
+#define _FP_EQ_NULL(__p) __libi86_FP_EQ_NULL (__p)
 
 #define _FP_SEG(__p)	FP_SEG (__p)
 #define _FP_OFF(__p)	FP_OFF (__p)

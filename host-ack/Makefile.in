@@ -282,6 +282,7 @@ OBJS		= bios/bios-disk.o \
 		  string/fmemmove.o \
 		  string/fmempcpy.o \
 		  string/fmemset.o \
+		  string/fstpcpy.o \
 		  string/fstrcpy.o \
 		  string/fstrlen.o \
 		  stdlib/fullpath.o \

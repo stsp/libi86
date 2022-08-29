@@ -37,16 +37,16 @@ __fmempcpy:
 	push	si
 	push	di
 	push	ds
-	mov	cx, 12(bx)		/* n */
-	les	di, 4(bx)		/* dest */
+	mov	cx, 12(bx)		/* N */
+	les	di, 4(bx)		/* DEST */
 	mov	ax, 2(bx)		/* return value */
-	lds	si, 8(bx)		/* src */
+	lds	si, 8(bx)		/* SRC */
 	shr	cx, 1
 	rep movsw
 	adc	cx, cx
 	rep movsb
 	pop	ds
-	mov	si, ax			/* return value := dest + n */
+	mov	si, ax			/* return value := DEST + N */
 	mov	(si), di
 	mov	2(si), es
 	pop	di

@@ -1,6 +1,6 @@
 #
 /*
- * Copyright (c) 2018--2022[B TK Chia
+ * Copyright (c) 2018--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -37,12 +37,12 @@ __fstrcpy:
 	push	es
 	push	si
 	push	di
-	les	di, 4(bx)		/* dest */
-	mov	si, 2(bx)		/* return value := dest */
+	les	di, 4(bx)		/* DEST */
+	mov	si, 2(bx)		/* return value := DEST */
 	mov	(si), di
 	mov	2(si), es
 	mov	cx, si
-	lds	si, 8(bx)		/* src */
+	lds	si, 8(bx)		/* SRC */
 .0:
 	lodsb
 	stosb

@@ -56,6 +56,12 @@ __libi86_FP_EQ (const volatile void __far *__p, const volatile void __far *__q)
   return __p == __q;
 }
 
+static inline int
+__libi86_FP_EQ_NULL (const volatile void __far *__p)
+{
+  return ! __p;
+}
+
 _LIBI86_ALT_INLINE int
 __libi86_peek (unsigned __s, unsigned __o)
 {
@@ -95,6 +101,7 @@ __libi86_pokefpb (volatile void __far *__p, char __v)
 # define __libi86_CV_FP(__p)	(__libi86_fpv_t (__p))
 # define __libi86_FP_EQ(__p, __q) (__libi86_fpcvv_t (__p) \
 				   == __libi86_fpcvv_t (__q))
+# define __libi86_FP_EQ_NULL(__p) (! __libi86_fpcvv_t (__p))
 # define __libi86_fnullptr	(__libi86_MK_FP (0, 0))
 
 extern int __libi86_peek (unsigned __s, unsigned __o);
@@ -121,6 +128,12 @@ _LIBI86_ALT_INLINE int
 __libi86_FP_EQ (__libi86_fpcvv_t __p, __libi86_fpcvv_t __q)
 {
   return __p.__off_ == __q.__off_ && __p.__seg_ == __q.__seg_;
+}
+
+_LIBI86_ALT_INLINE int
+__libi86_FP_EQ_NULL (__libi86_fpcvv_t __p)
+{
+  return ! __p.__off_ && ! __p.__seg_;
 }
 
 extern int __libi86_peek (unsigned __s, unsigned __o);

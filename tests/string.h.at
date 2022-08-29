@@ -228,7 +228,7 @@ main (void)
 ]])
 AT_CLEANUP
 
-AT_SETUP([[_fstrcpy]])
+AT_SETUP([[_fstrcpy, _fstpcpy]])
 AT_LIBI86_CHECK(dnl
 [[#include <i86.h>
 #include <stdlib.h>
@@ -258,8 +258,8 @@ main (void)
       if (u.uc != 0xf6)
 	abort ();
     }
-  res = _fstrcpy (_CV_FP (baz + 6), _CV_FP (foo));
-  if (! _FP_EQ (res, _CV_FP (baz + 6)))
+  res = _fstpcpy (_CV_FP (baz + 6), _CV_FP (foo));
+  if (! _FP_EQ (res, _CV_FP (baz + 14)))
     abort ();
   u.c = baz[sizeof baz - 1];
   if (u.uc != 0xf6)

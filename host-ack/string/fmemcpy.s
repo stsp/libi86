@@ -39,13 +39,13 @@ ___libi86_fmemmove_forward:
 	push	es
 	push	si
 	push	di
-	mov	cx, 12(bx)		/* n */
-	les	di, 4(bx)		/* dest */
-	mov	si, 2(bx)		/* return value := dest */
+	mov	cx, 12(bx)		/* N */
+	les	di, 4(bx)		/* DEST */
+	mov	si, 2(bx)		/* return value := DEST */
 	mov	(si), di
 	mov	2(si), es
 	xchg	si, ax
-	lds	si, 8(bx)		/* src */
+	lds	si, 8(bx)		/* SRC */
 	shr	cx, 1
 	rep movsw
 	adc	cx, cx

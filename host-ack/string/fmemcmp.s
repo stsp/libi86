@@ -37,9 +37,9 @@ __fmemcmp:
 	push	es
 	push	si
 	push	di
-	mov	cx, 10(bx)		/* n */
-	les	di, 6(bx)		/* s2 */
-	lds	si, 2(bx)		/* s1 */
+	mov	cx, 10(bx)		/* N */
+	les	di, 6(bx)		/* S2 */
+	lds	si, 2(bx)		/* S1 */
 	shr	cx, 1
 	sbb	ax, ax
 	jcxz	.done_words

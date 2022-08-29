@@ -160,6 +160,12 @@ public:
   {
     return reinterpret_cast<unsigned> (__off_);
   }
+
+  bool
+  operator ! ()
+  {
+    return ! __seg_ && ! __off_;
+  }
 };
 
 } /* namespace __libi86 */

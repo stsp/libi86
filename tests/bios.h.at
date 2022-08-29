@@ -234,7 +234,7 @@ main (void)
        * sanity: the sector size cannot exceed 16 KiB, & the "end of track"
        * sector number cannot be 0.
        */
-      if (! _FP_EQ (di.buffer, __libi86_fnullptr))
+      if (! _FP_EQ_NULL (di.buffer))
 	{
 #ifdef __FAR
 	  const unsigned char __far *ddpt = di.buffer;

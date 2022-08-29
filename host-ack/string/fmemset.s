@@ -35,10 +35,10 @@ __fmemset:
 	push	di
 	mov	di, sp
 	push	es
-	movb	al, 10(di)		/* c */
-	mov	cx, 12(di)		/* n */
-	mov	bx, 4(di)		/* return value := dest */
-	les	di, 6(di)		/* dest */
+	movb	al, 10(di)		/* C */
+	mov	cx, 12(di)		/* N */
+	mov	bx, 4(di)		/* return value := DEST */
+	les	di, 6(di)		/* DEST */
 	mov	(bx), di
 	mov	2(bx), es
 	movb	ah, al
