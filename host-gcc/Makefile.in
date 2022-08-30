@@ -296,6 +296,7 @@ OBJS		= bios/bios-disk.o \
 		  stdlib/splitpath.o \
 		  stdlib/ulltoa.o \
 		  stdlib/ultoa.o \
+		  string/fmemchr.o \
 		  string/fmemcmp.o \
 		  string/fmemcpy.o \
 		  string/fmemmove.o \

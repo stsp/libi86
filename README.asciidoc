@@ -421,6 +421,7 @@ When using ACK:
 			* **``<libi86/string.h>`` also includes the underlying C library's ``<string.h>``.**
 			* **Under newer versions of `gcc-ia16`, ``<string.h>`` will also automatically include ``<libi86/string.h>``, unless GCC is in "strict ANSI" mode.**
 
+|       W |    =   | *``_fmemchr (``*__s__``,`` __c__``,`` __n__``);`` |
 |       W |    =   | ``_fmemcmp (``*__s1__``,`` *__s2__``,`` __n__``);`` |
 |       W |    =   | *``_fmemcpy (``*__dest__``,`` *__src__``,`` __n__``);`` |
 |       W |    =   | *``_fmemmove (``*__dest__``,`` *__src__``,`` __n__``);`` |

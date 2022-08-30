@@ -228,6 +228,32 @@ main (void)
 ]])
 AT_CLEANUP
 
+AT_SETUP([[_fmemchr]])
+AT_LIBI86_CHECK(dnl
+[[#include <i86.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <libi86/string.h>
+const char foo[11] = "!hello!!!\n\n";
+int
+main (void)
+{
+  __libi86_fpv_t res = _fmemchr (_CV_FP (foo), 'a', 11);
+  if (! _FP_EQ_NULL (res))
+    abort ();
+  res = _fmemchr (_CV_FP (foo + 1), 'o', 5);
+  if (! _FP_EQ (res, _CV_FP (foo + 5)))
+    abort ();
+  res = _fmemchr (_CV_FP (foo), 'l', 3);
+  if (! _FP_EQ_NULL (res))
+    abort ();
+  res = _fmemchr (_CV_FP (foo + 2), '!', 9);
+  if (! _FP_EQ (res, _CV_FP (foo + 6)))
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP
+
 AT_SETUP([[_fstrcpy, _fstpcpy]])
 AT_LIBI86_CHECK(dnl
 [[#include <i86.h>
