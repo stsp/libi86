@@ -82,19 +82,22 @@ int main (void)
 }]],[])
 AT_CLEANUP
 
-AT_SETUP([[_FP_EQ]])
+AT_SETUP([[_FP_EQ, _fptr_t]])
 AT_LIBI86_CHECK(dnl
 [[#include <stdlib.h>
 #include <i86.h>
 volatile int x = 1, y = 1;
 int main (void)
 {
-  if (_FP_EQ (_CV_FP (&x), _CV_FP (&y)))
+  _fptr_t px = _CV_FP (&x);
+  if (_FP_EQ (px, _CV_FP (&y)))
     abort ();
-  if (! _FP_EQ (_CV_FP (&x), _CV_FP (&x)))
+  if (! _FP_EQ (px, _CV_FP (&x)))
     abort ();
-  if (_FP_EQ (_CV_FP (&x), MK_FP (0x0040, 0x006c)))
+#ifndef __IA16_FEATURE_DOSX
+  if (_FP_EQ (px, MK_FP (0x0040, 0x006c)))
     abort ();
+#endif
   return 0;
 }]],[])
 AT_CLEANUP

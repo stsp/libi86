@@ -480,6 +480,11 @@ When using ACK:
 |       W |    =   | ``struct rccoord`` |
 4+|
 2+|              2+| **``▗▚▚▚▚ <i86.h> ▞▞▞▞▖``**
+|       X |    =   | ``_fptr_t`` a| "Generic" far pointer type.
+
+			* For target platforms with far pointer support, ``_fptr_t`` is equivalent to ``void __far *``.
+			* For targets which lack far pointer support (e.g. ACK), ``_fptr_t`` is an opaque structure type.
+
 |       W |    =   | ``union REGPACK`` |
 |     W/B |    =   | ``union REGS`` | In ``_BORLANDC_SOURCE`` mode, gets an additional ``.x.flags`` field.
 |       W |    =   | ``struct SREGS`` |

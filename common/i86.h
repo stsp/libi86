@@ -35,6 +35,8 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
+typedef __libi86_fpv_t _fptr_t, _far16ptr_t;
+
 /* This definition is not binary-compatible with that in Open Watcom C/C++
    --- the latter does not have a .bp field.  */
 struct WORDREGS
