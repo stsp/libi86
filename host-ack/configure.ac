@@ -81,5 +81,6 @@ AC_CONFIG_FILES([Makefile
 		 libi86/stdio.h:../common/libi86/stdio.h.in
 		 libi86/internal/types.h:../common/libi86/internal/types.h.in])
 AC_DEFINE_UNQUOTED([_LIBI86_VERSION],[${PACKAGE_VERSION}L])
-AC_CONFIG_HEADERS([libi86/internal/acconfig.h])
+AC_CONFIG_HEADERS([libi86/version.h:../common/libi86/version.h.in
+		   libi86/internal/acconfig.h])
 AC_OUTPUT

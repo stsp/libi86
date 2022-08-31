@@ -30,7 +30,7 @@
 #ifndef _LIBI86_INTERNAL_ACCONFIG_H
 #define _LIBI86_INTERNAL_ACCONFIG_H
 
-#undef _LIBI86_VERSION
+#include <libi86/version.h>
 
 #undef _LIBI86_INTERNAL_HAVE__SYS_SETERRNO
 

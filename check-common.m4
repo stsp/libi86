@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018--2021 TK Chia
+dnl Copyright (c) 2018--2022 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are

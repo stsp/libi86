@@ -99,6 +99,7 @@ CLEAN_HEADERS	= libi86/config.h \
 CLEAN_SPECS	= r-msdos.d/libi86.spec
 DISTCLEAN_HEADERS = direct.h \
 		    process.h \
+		    libi86/version.h \
 		    libi86/internal/acconfig.h \
 		    libi86/internal/types.h
 

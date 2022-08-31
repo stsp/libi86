@@ -5257,7 +5257,7 @@ ac_config_files="$ac_config_files direct.h:../common/direct.h.in process.h:../co
 
 printf "%s\n" "#define _LIBI86_VERSION ${PACKAGE_VERSION}L" >>confdefs.h
 
-ac_config_headers="$ac_config_headers libi86/internal/acconfig.h"
+ac_config_headers="$ac_config_headers libi86/version.h:../common/libi86/version.h.in libi86/internal/acconfig.h"
 
 if test NONE = "$exec_prefix"; then
   exec_prefix='${prefix}/ia16-elf'
@@ -5970,6 +5970,7 @@ do
     "process.h") CONFIG_FILES="$CONFIG_FILES process.h:../common/process.h.in" ;;
     "libi86/stdio.h") CONFIG_FILES="$CONFIG_FILES libi86/stdio.h:../common/libi86/stdio.h.in" ;;
     "libi86/internal/types.h") CONFIG_FILES="$CONFIG_FILES libi86/internal/types.h:../common/libi86/internal/types.h.in" ;;
+    "libi86/version.h") CONFIG_HEADERS="$CONFIG_HEADERS libi86/version.h:../common/libi86/version.h.in" ;;
     "libi86/internal/acconfig.h") CONFIG_HEADERS="$CONFIG_HEADERS libi86/internal/acconfig.h" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
