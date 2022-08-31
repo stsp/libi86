@@ -443,3 +443,44 @@ When using ACK:
 |       W |   (=)  | ``_osminor`` | Implemented as a function call on ACK.
 |       W |   (=)  | ``_psp`` | Implemented as a function call on ACK.
 |===
+
+=== Types
+
+[cols=">1,>1,4,4"]
+|===
+| Compat. | Avail. | Type | Notes
+
+2+|              2+| **``▗▚▚▚▚ <bios.h> ▞▞▞▞▖``**
+|       W |    =   | ``struct diskinfo_t`` |
+|       X |    =   | ``union _joyinfo_t`` | Used by ``_bios_joystick``.
+4+|
+2+|              2+| **``▗▚▚▚▚ <conio.h> ▞▞▞▞▖``**
+|       B |    =   | ``enum COLORS`` |
+|       B |    =   | ``struct text_info`` |
+|       B |    =   | ``enum text_modes`` |
+4+|
+2+|              2+| **``▗▚▚▚▚ <dos.h> ▞▞▞▞▖``**
+|       W |    =   | ``struct diskfree_t`` |
+|       W |    =   | ``struct dosdate_t`` |
+|       X |    =   | ``union _dosspawn_t`` | Used by ``_dos_spawn``.
+|       W |    =   | ``struct dostime_t`` |
+|       B |    =   | ``struct fcb`` |
+|       X |    =   | ``struct _fcb`` | Used by ``_makefcb`` and ``_parsfnm``.
+|       W |    =   | ``struct find_t`` |
+|       X |    =   | ``struct _makefcb_t`` | Returned by ``_makefcb``.
+4+|
+2+|              2+| **``▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖``**
+|      IW |    G   | ``descriptor`` | Structure of a GDT or LDT entry, used by ``_DPMIGetDescriptor`` and ``_DPMISetDescriptor``.
+|      IW |    G   | ``dpmi_dos_block`` | Returned by ``_DPMIAllocateDOSMemoryBlock``.
+|       X |    G   | ``dpmi_host_info`` | Used by ``_DPMIGetCapabilities``.
+|      IW |    G   | ``rm_call_struct`` | Used by ``_DPMISimulateRealModeInterrupt``.
+4+|
+2+|              2+| **``▗▚▚▚▚ <graph.h> ▞▞▞▞▖``**
+|       W |    =   | ``grcolor`` |
+|       W |    =   | ``struct rccoord`` |
+4+|
+2+|              2+| **``▗▚▚▚▚ <i86.h> ▞▞▞▞▖``**
+|       W |    =   | ``union REGPACK`` |
+|     W/B |    =   | ``union REGS`` | In ``_BORLANDC_SOURCE`` mode, gets an additional ``.x.flags`` field.
+|       W |    =   | ``struct SREGS`` |
+|===
