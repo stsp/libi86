@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,32 +27,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_LIBI86_STRING_H_
-#define _LIBI86_LIBI86_STRING_H_
+#define _LIBI86_COMPILING_
+#include <stdlib.h>
+#include "i86.h"
+#include "libi86/string.h"
 
-#include <string.h>
-
-#include <libi86/internal/cdefs.h>
-
-_LIBI86_BEGIN_EXTERN_C
-
-extern int _fmemcmp (__libi86_fpcv_t __s1, __libi86_fpcv_t __s2,
-		     __libi86_size_t __n);
-extern __libi86_fpv_t _fmemchr (__libi86_fpcv_t __s, int __c,
-				__libi86_size_t __n);
-extern __libi86_fpv_t _fmemcpy (__libi86_fpv_t __dest, __libi86_fpcv_t __src,
-				__libi86_size_t __n);
-extern __libi86_fpv_t _fmemmove (__libi86_fpv_t __dest, __libi86_fpcv_t __src,
-				 __libi86_size_t __n);
-extern __libi86_fpv_t _fmempcpy (__libi86_fpv_t __dest, __libi86_fpcv_t __src,
-				 __libi86_size_t __n);
-extern __libi86_fpv_t _fmemset (__libi86_fpv_t __dest, int __c,
-				__libi86_size_t __n);
-extern __libi86_fpc_t _fstpcpy (__libi86_fpc_t __dest, __libi86_fpcc_t __src);
-extern __libi86_fpc_t _fstrcat (__libi86_fpc_t __dest, __libi86_fpcc_t __src);
-extern __libi86_fpc_t _fstrcpy (__libi86_fpc_t __dest, __libi86_fpcc_t __src);
-extern __libi86_size_t _fstrlen (__libi86_fpcc_t __s);
-
-_LIBI86_END_EXTERN_C
-
-#endif
+__libi86_fpc_t
+_fstrcat (__libi86_fpc_t dest, __libi86_fpcc_t src)
+{
+  __libi86_fpc_t d = dest + _fstrlen (dest);
+  _fstrcpy (d, src);
+  return dest;
+}

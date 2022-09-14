@@ -304,6 +304,7 @@ OBJS		= bios/bios-disk.o \
 		  string/fmempcpy.o \
 		  string/fmemset.o \
 		  string/fstpcpy.o \
+		  string/fstrcat.o \
 		  string/fstrcpy.o \
 		  string/fstrlen.o \
 		  string/libi86-fmemmove-backward.o
