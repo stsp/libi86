@@ -239,15 +239,26 @@ extern void _setswitchar (char __ch);
 # pragma GCC diagnostic push
 # pragma GCC diagnostic ignored "-Wstrict-prototypes"
 typedef void __interrupt __far (*__libi86_isr_t) (/* ... */);
+# ifndef __TINY__
+typedef __libi86_isr_t __libi86_isr_any_t;
+# else
+typedef void __interrupt __far
+	(__attribute__ ((__near_section__)) *__libi86_isr_ns_t) (/* ... */);
+typedef union __attribute__ ((__transparent_union__))
+  {
+    __libi86_isr_t __isr;
+    __libi86_isr_ns_t __ns_isr;
+  } __libi86_isr_any_t;
+# endif
 # pragma GCC diagnostic pop
 extern __libi86_isr_t _dos_getvect (unsigned __intr_no);
-extern void _dos_setvect (unsigned __intr_no, __libi86_isr_t __isr);
+extern void _dos_setvect (unsigned __intr_no, __libi86_isr_any_t __isr);
 #else  /* ! __INTERRUPT */
-typedef __libi86_fpcv_t __libi86_isr_t;
+typedef __libi86_fpcv_t __libi86_isr_t, __libi86_isr_any_t;
 extern __libi86_isr_t _dos_getvect (unsigned __intr_no)
 		      _LIBI86_WARNING ("_dos_getvect (.) not fully supported: "
 				       "__interrupt unrecognized");
-extern void _dos_setvect (unsigned __intr_no, __libi86_isr_t __isr)
+extern void _dos_setvect (unsigned __intr_no, __libi86_isr_any_t __isr)
 	    _LIBI86_ERROR ("_dos_setvect (.) not supported: "
 			   "__interrupt unrecognized");
 #endif  /* ! __INTERRUPT */
