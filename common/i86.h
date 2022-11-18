@@ -256,7 +256,7 @@ intr (int __intr_no, union REGPACK *__regs)
 }
 
 _LIBI86_ALT_INLINE void
-sound (int __freq)
+sound (unsigned __freq)
 {
   /* If the frequency is a compile-time constant, we can precompute the
      timer counter divisor value to send to the 8253/8254 PIT.  */
