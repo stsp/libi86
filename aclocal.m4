@@ -28,7 +28,7 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 dnl Set default options to build & install for MS-DOS host.  -- tkchia 20200727
 AC_DEFUN([_LIBI86_DEFAULT_OPTIONS],dnl
 [m4_divert_push([DEFAULTS])dnl
-set x --host=ia16-elf --disable-elks-libc [$]{1+"[$][@]"}
+set x --host=ia16-elf [$]{1+"[$][@]"}
 shift
 m4_divert_pop([DEFAULTS])])
 
