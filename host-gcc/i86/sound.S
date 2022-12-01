@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018--2019 TK Chia
+ * Copyright (c) 2018--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -29,6 +29,8 @@
 
 #include "libi86/internal/call-cvt.h"
 
+#define KIOCSOUND	0x4b2f
+
 	.arch	i8086, jumps
 	.code16
 	.att_syntax prefix
@@ -38,6 +40,10 @@
 	.global	sound
 __libi86_sound:
 sound:
+#ifdef __ELKS__				/* if not console tty, do nothing */
+	cmpb	$0,	__libi86_vid_is_console
+	jz	.Ldone
+#endif
 	ENTER_BX_(2)
 	MOV_ARG0W_BX_CLOBBER_(%cx)
 	movw	$0x34dd, %ax		/* 1193181 == 0x1234dd */
@@ -51,7 +57,15 @@ sound:
 	divw	%cx			/* this will never overflow */
 	xchgw	%ax,	%dx
 .Lplay:
-	pushfw
+#ifdef __ELKS__
+	movw	$54,	%ax		/* ioctl syscall */
+	movw	__libi86_con_out_fd, %bx
+	movw	$KIOCSOUND, %cx
+	int	$0x80
+	testw	%ax,	%ax		/* return if OK, otherwise... */
+	jns	.Ldone
+#endif
+	pushfw				/* do direct I/O on PC speaker */
 	cli
 	inb	$0x61,	%al
 	orb	$0x03,	%al
@@ -63,4 +77,5 @@ sound:
 	movb	%ah,	%al
 	outb	%al,	$0x42
 	popfw
+.Ldone:
 	RET_(2)

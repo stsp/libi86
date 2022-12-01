@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018--2021 TK Chia
+ * Copyright (c) 2018--2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -29,20 +29,25 @@
 
 /*
  * This module initializes the <conio.h> subsystem to make sure that there
- * is an output file descriptor which is open to the console device `CON'.
+ * is an output file descriptor which is open to the console device `CON'
+ * (MS-DOS) or the controlling terminal `/dev/tty' (ELKS).
  */
 
 #define _LIBI86_COMPILING_
 #include "libi86/internal/conio.h"
+#ifdef __ELKS__
+# include <unistd.h>
+#endif
 
-#ifdef __MSDOS__
 int __libi86_con_out_fd = 1;
 
 __attribute__ ((constructor (100))) static void
 __libi86_con_out_fd_init (void)
 {
-  unsigned dw;
   int fd;
+
+#if defined __MSDOS__
+  unsigned dw;
 
   /* If fd 1 is not the console output, open an output fd on `CON'. */
   if (__libi86_con_get_dev_info_word (1, &dw) != 0
@@ -52,5 +57,15 @@ __libi86_con_out_fd_init (void)
       if (fd != -1)
 	__libi86_con_out_fd = fd;
     }
+#elif defined __ELKS__  /* ! __MSDOS__ */
+  /* If fd 1 is not a terminal device, open an output fd on `/dev/tty'. */
+  if (! isatty (1))
+    {
+      fd = __libi86_tty_open (__libi86_con_name, O_WRONLY);
+      if (fd >= 0)
+	__libi86_con_out_fd = fd;
+    }
+#else  /* ! __MSDOS__ && ! __ELKS__ */
+# error
+#endif
 }
-#endif /* __MSDOS__ */

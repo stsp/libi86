@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018--2022 TK Chia
+ * Copyright (c) 2022 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,42 +27,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "libi86/internal/call-cvt.h"
+/*
+ * When running under ELKS, decide whether the controlling terminal is
+ * indeed a console device.
+ *
+ * Assume it is, if it supports the DCGET_GRAPH & possibly DCREL_GRAPH ioctl's.
+ */
 
-#define KIOCSOUND	0x4b2f
+#define _LIBI86_COMPILING_
+#include "libi86/internal/conio.h"
+#include <linuxmt/ntty.h>
 
-	.arch	i8086, jumps
-	.code16
-	.att_syntax prefix
+bool __libi86_vid_is_console = false;
 
-	TEXT_ (libi86_sound_by_divisor.S.LIBI86)
-	.global	__libi86_sound_by_divisor
-__libi86_sound_by_divisor:
-#ifdef __ELKS__				/* if not console tty, do nothing */
-	cmpb	$0,	__libi86_vid_is_console
-	jz	.Ldone
-#endif
-	ENTER_BX_(2)
-	MOV_ARG0W_BX_CLOBBER_(%dx)
-#ifdef __ELKS__
-	movw	$54,	%ax		/* ioctl syscall */
-	movw	__libi86_con_out_fd, %bx
-	movw	$KIOCSOUND, %cx
-	int	$0x80
-	testw	%ax,	%ax		/* return if OK, otherwise... */
-	jns	.Ldone
-#endif
-	pushfw				/* do direct I/O on PC speaker */
-	cli
-	inb	$0x61,	%al
-	orb	$0x03,	%al
-	outb	%al,	$0x61
-	movb	$0xb6,	%al
-	outb	%al,	$0x43
-	xchgw	%dx,	%ax
-	outb	%al,	$0x42
-	movb	%ah,	%al
-	outb	%al,	$0x42
-	popfw
-.Ldone:
-	RET_(2)
+__attribute__ ((constructor (101))) static void
+__libi86_vid_is_console_init (void)
+{
+  int fd = __libi86_con_out_fd;
+  int res = __libi86_tty_ioctl (fd, DCGET_GRAPH, NULL);
+  if (res >= 0)
+    {
+      if (__libi86_tty_ioctl (fd, DCREL_GRAPH, NULL) >= 0)
+	__libi86_vid_is_console = true;
+    }
+  else if (res == -EBUSY)
+    __libi86_vid_is_console = true;
+}

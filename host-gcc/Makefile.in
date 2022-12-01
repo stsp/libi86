@@ -67,45 +67,59 @@ AWK = @AWK@
 RANLIB = @RANLIB@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 
+ELKS_P		= $(filter -melks% -mr=elks%,$(CC) $(CFLAGS) $(MULTILIB))
+
 INSTALL_LIBS	= libi86.a
 INSTALL_SPECS	= $(CLEAN_SPECS)
-INSTALL_HEADERS	= bios.h \
-		  conio.h \
-		  dir.h \
-		  dos.h \
-		  dpmi.h \
-		  graph.h \
-		  i86.h \
-		  share.h \
-		  libi86/stdio.h \
-		  libi86/stdlib.h \
-		  libi86/string.h \
-		  libi86/internal/bc-portio.h \
-		  libi86/internal/bda.h \
+INSTALL_HEADERS	= i86.h \
 		  libi86/internal/cdefs.h \
-		  libi86/internal/far-cxx.h \
 		  libi86/internal/farptr.h \
-		  libi86/internal/features.h \
-		  libi86/internal/inp-portio.h \
 		  libi86/internal/libc-defer.h \
-		  libi86/internal/portio.h \
-		  libi86/internal/process.h \
 		  $(CLEAN_HEADERS) \
 		  $(DISTCLEAN_HEADERS)
-CLEAN_HEADERS	= libi86/config.h \
-		  libi86/internal/wrap/stdio.h \
-		  libi86/internal/wrap/stdlib.h \
-		  libi86/internal/wrap/string.h
-CLEAN_SPECS	= r-msdos.d/libi86.spec
-DISTCLEAN_HEADERS = direct.h \
-		    process.h \
-		    libi86/version.h \
-		    libi86/internal/acconfig.h \
-		    libi86/internal/types.h
+CLEAN_HEADERS	= libi86/config.h
+CLEAN_SPECS	=
+DISTCLEAN_HEADERS \
+		= direct.h \
+		  process.h \
+		  libi86/version.h \
+		  libi86/internal/acconfig.h \
+		  libi86/internal/types.h
+ifeq "" "$(ELKS_P)"
+  INSTALL_HEADERS \
+		+= bios.h \
+		   conio.h \
+		   dir.h \
+		   dos.h \
+		   dpmi.h \
+		   graph.h \
+		   share.h \
+		   libi86/stdio.h \
+		   libi86/stdlib.h \
+		   libi86/string.h \
+		   libi86/internal/bc-portio.h \
+		   libi86/internal/bda.h \
+		   libi86/internal/far-cxx.h \
+		   libi86/internal/features.h \
+		   libi86/internal/inp-portio.h \
+		   libi86/internal/portio.h \
+		   libi86/internal/process.h
+  CLEAN_HEADERS	+= libi86/internal/wrap/stdio.h \
+		   libi86/internal/wrap/stdlib.h \
+		   libi86/internal/wrap/string.h
+  CLEAN_SPECS	+= r-msdos.d/libi86.spec
+endif
 
-OBJS =		   i86/disable.o \
-		   i86/enable.o
-ifeq "" "$(filter -melks% -mr=elks%,$(CC) $(CFLAGS) $(MULTILIB))"
+OBJS		=  conio/libi86-con-name.o \
+		   conio/libi86-con-out-fd.o \
+		   i86/disable.o \
+		   i86/enable.o \
+		   i86/libi86-sound-by-divisor.o \
+		   i86/nosound.o \
+		   i86/sound.o
+ifneq "" "$(ELKS_P)"
+  OBJS		+= conio/libi86-vid-is-console.o
+else
   OBJS		+= bios/bios-disk.o \
 		   bios/bios-equiplist.o \
 		   bios/bios-joystick.o \
@@ -158,8 +172,6 @@ ifeq "" "$(filter -melks% -mr=elks%,$(CC) $(CFLAGS) $(MULTILIB))"
 		   conio/libi86-bc-vcprintf-autofloat.o \
 		   conio/libi86-bc-vcscanf.o \
 		   conio/libi86-con-in-fd.o \
-		   conio/libi86-con-name.o \
-		   conio/libi86-con-out-fd.o \
 		   conio/libi86-ungetch-buf.o \
 		   conio/libi86-vid-bc-insdelline.o \
 		   conio/libi86-vid-bc-outmem-do.o \
@@ -274,10 +286,7 @@ ifeq "" "$(filter -melks% -mr=elks%,$(CC) $(CFLAGS) $(MULTILIB))"
 			 i86/libi86-intr-call-0$(da)$(db)$(dc).o))) \
 		   i86/libi86-intrf-do.o \
 		   i86/libi86-intr-dispatch.o \
-		   i86/libi86-sound-by-divisor.o \
-		   i86/nosound.o \
 		   i86/segread.o \
-		   i86/sound.o \
 		   process/getpid.o \
 		   process/libi86-comspec.o \
 		   process/spawnl.o \
@@ -359,10 +368,7 @@ all: $(INSTALL_LIBS) $(INSTALL_SPECS) $(INSTALL_HEADERS)
 install: $(INSTALL_LIBS) $(INSTALL_SPECS) $(INSTALL_HEADERS)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)$(MULTISUBDIR) \
 			 $(DESTDIR)$(libdir)/rt-specs/r-msdos.d \
-			 $(DESTDIR)$(includedir) \
-			 $(DESTDIR)$(includedir)/libi86 \
-			 $(DESTDIR)$(includedir)/libi86/internal \
-			 $(DESTDIR)$(includedir)/libi86/internal/wrap
+			 $(DESTDIR)$(includedir)
 	set -e; \
 	d=$(DESTDIR)$(libdir)$(MULTISUBDIR); \
 	for f in $(INSTALL_LIBS); do \
@@ -383,19 +389,30 @@ install: $(INSTALL_LIBS) $(INSTALL_SPECS) $(INSTALL_HEADERS)
 	    fi; \
 	  done; \
 	fi
-	if [ -z "$(MULTISUBDIR)" ]; then \
-	  set -e; \
-	  d=$(DESTDIR)$(includedir); \
-	  for f in $(INSTALL_HEADERS); do \
-	    if [ -f "$$f" ]; then \
-	      $(INSTALL_DATA) "$$f" "$$d/$$f"; \
-	    elif [ -f $(srcdir)/"$$f" ]; then \
-	      $(INSTALL_DATA) $(srcdir)/"$$f" "$$d/$$f"; \
+	case "$(MULTISUBDIR)" in \
+	  ?*/*) \
+	    ;; \
+	  '' | *elks*) \
+	    set -e; \
+	    if [ -z "$(MULTISUBDIR)" ]; then \
+	      d=$(DESTDIR)$(includedir); \
+	      $(mkinstalldirs) "$$d" "$$d"/libi86 "$$d"/libi86/internal \
+			       "$$d"/libi86/internal/wrap; \
 	    else \
-	      $(INSTALL_DATA) $(srcroot)/common/"$$f" "$$d/$$f"; \
+	      d=$(DESTDIR)$(libdir)$(MULTISUBDIR)/include; \
+	      $(mkinstalldirs) "$$d" "$$d"/libi86 "$$d"/libi86/internal; \
 	    fi; \
-	  done; \
-	fi
+	    for f in $(INSTALL_HEADERS); do \
+	      if [ -f "$$f" ]; then \
+		$(INSTALL_DATA) "$$f" "$$d/$$f"; \
+	      elif [ -f $(srcdir)/"$$f" ]; then \
+		$(INSTALL_DATA) $(srcdir)/"$$f" "$$d/$$f"; \
+	      else \
+		$(INSTALL_DATA) $(srcroot)/common/"$$f" "$$d/$$f"; \
+	      fi; \
+	    done \
+	    ;; \
+	esac
 	+@$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=$@
 
 .PHONY: test doc info install-info clean-info

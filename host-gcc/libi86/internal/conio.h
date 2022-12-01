@@ -38,6 +38,11 @@
 #include <libi86/internal/cdefs.h>
 #include <i86.h>
 #include <conio.h>
+#ifdef __ELKS__
+# include <errno.h>
+# include <fcntl.h>
+# include <stdbool.h>
+#endif
 
 _LIBI86_BEGIN_EXTERN_C
 
@@ -45,11 +50,14 @@ _LIBI86_BEGIN_EXTERN_C
 
 extern unsigned __libi86_ungetch_buf;
 extern unsigned char __libi86_vid_norm_attr;
+#ifdef __ELKS__
+extern bool __libi86_vid_is_console;
+#endif
 
-#ifdef __MSDOS__
 extern int __libi86_con_in_fd, __libi86_con_out_fd;
 extern const char __libi86_con_name[];
 
+#if defined __MSDOS__
 static inline int
 __libi86_con_get_dev_info_word (int fd, unsigned *pdw)
 {
@@ -83,7 +91,29 @@ __libi86_con_open (const char *pathname, int flags)
     : "bx", "cx", "cc", "memory");
   return fd;
 }
-#endif /* __MSDOS__ */
+#elif defined __ELKS__
+static inline int
+__libi86_tty_open (const char *pathname, int flags)
+{
+  int res;
+  __asm volatile ("int $0x80"
+    : "=r" (res)
+    : "0" (5 /* open syscall */), "b" (pathname), "c" (flags)
+    : "cc", "memory");
+  return res;
+}
+
+static inline int
+__libi86_tty_ioctl (int fd, int cmd, void *arg)
+{
+  int res;
+  __asm volatile ("int $0x80"
+    : "=r" (res)
+    : "0" (54 /* ioctl syscall */), "b" (fd), "c" (cmd), "d" (arg)
+    : "cc", "memory");
+  return res;
+}
+#endif  /* __ELKS__ */
 
 _LIBI86_END_EXTERN_C
 
