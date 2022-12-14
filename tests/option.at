@@ -29,6 +29,10 @@ AT_ARG_OPTION([x-installcheck],dnl
 AS_HELP_STRING([--x-installcheck],dnl
 [test installed libi86, rather than libi86 in build tree]))
 
+AT_ARG_OPTION([x-test-common],dnl
+AS_HELP_STRING([--x-test-common],dnl
+[omit tests of less common use cases]))
+
 AT_ARG_OPTION([x-test-underlying],dnl
 AS_HELP_STRING([--x-test-underlying],dnl
 [focus more on testing underlying DOS, less on testing libi86]))
