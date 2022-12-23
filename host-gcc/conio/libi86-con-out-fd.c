@@ -41,7 +41,8 @@
 
 int __libi86_con_out_fd = 1;
 
-__attribute__ ((constructor (100))) static void
+#pragma GCC diagnostic ignored "-Wprio-ctor-dtor"
+__attribute__ ((constructor (99))) static void
 __libi86_con_out_fd_init (void)
 {
   int fd;

@@ -297,8 +297,9 @@ __libi86_con_mode_changed (unsigned mode)
  * Obtain information about the active video mode at startup.  If the video
  * mode is not a supported mode, then switch to one that is. :-)
  */
+#pragma GCC diagnostic ignored "-Wprio-ctor-dtor"
 #ifdef __GNUC__
-__attribute__ ((constructor (100))) static
+__attribute__ ((constructor (99))) static
 #endif
 void
 __libi86_vid_state_init (void)

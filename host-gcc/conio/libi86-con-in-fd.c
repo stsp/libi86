@@ -47,7 +47,8 @@
 int __libi86_con_in_fd = 0;
 static unsigned __libi86_con_in_info_word = 0;
 
-__attribute__ ((constructor (100))) static void
+#pragma GCC diagnostic ignored "-Wprio-ctor-dtor"
+__attribute__ ((constructor (99))) static void
 __libi86_con_in_fd_init (void)
 {
   unsigned dw;

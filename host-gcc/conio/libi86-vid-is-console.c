@@ -40,7 +40,8 @@
 
 bool __libi86_vid_is_console = false;
 
-__attribute__ ((constructor (101))) static void
+#pragma GCC diagnostic ignored "-Wprio-ctor-dtor"
+__attribute__ ((constructor (100))) static void
 __libi86_vid_is_console_init (void)
 {
   int fd = __libi86_con_out_fd;
