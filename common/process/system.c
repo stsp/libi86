@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include "dos.h"
 #include "process.h"
+#include "libi86/internal/process.h"
 
 extern char **environ;
 
