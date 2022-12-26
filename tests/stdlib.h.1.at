@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018--2022 TK Chia
+dnl Copyright (c) 2019--2022 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -25,34 +25,24 @@ dnl LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-m4_include([hacks.at])
+AT_BANNER([[<libi86/stdlib.h> tests (part 1)]])
 
-AT_INIT([libi86])
-AT_COPYRIGHT([Copyright (C) 2018--2022 TK Chia.
-Released under the 3-clause BSD license.])
-
-AT_COLOR_TESTS
-
-dnl Process options.
-m4_include([option.at])
-
-dnl Test that the test harness works.  Naturally, this should come first.
-m4_include([metacheck.at])
-
-dnl Then do the actual tests...
-m4_include([i86.h.1.at])
-m4_include([bios.h.at])
-m4_include([bios.h.bc.at])
-m4_include([conio.h.at])
-m4_include([conio.h.bc.at])
-m4_include([direct.h.at])
-m4_include([dos.h.at])
-m4_include([dos.h.bc.at])
-m4_include([dpmi.h.at])
-m4_include([graph.h.at])
-m4_include([i86.h.2.at])
-m4_include([i86.h.2-bc.at])
-m4_include([stdlib.h.1.at])
-m4_include([process.h.at])
-m4_include([stdlib.h.2.at])
-m4_include([string.h.at])
+AT_SETUP([[_osmajor, _osminor]])
+AT_LIBI86_CHECK(dnl
+[[#include <i86.h>
+#include <stdlib.h>
+#include <libi86/stdlib.h>
+int
+main (void)
+{
+#ifdef __MSDOS__
+  if (_osmajor < 2)
+    abort ();
+  if (_osminor > 99)
+    abort ();
+  return 0;
+#else
+# error
+#endif
+}]],[[]])
+AT_CLEANUP

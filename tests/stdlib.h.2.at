@@ -25,7 +25,7 @@ dnl LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AT_BANNER([[<libi86/stdlib.h> tests]])
+AT_BANNER([[<libi86/stdlib.h> tests (part 2)]])
 
 AT_SETUP([[_psp]])
 AT_LIBI86_CHECK(dnl
@@ -49,26 +49,6 @@ main (void)
    * what libi86 discovers.
    */
   if (_psp != __libi86_psp)
-    abort ();
-  return 0;
-#else
-# error
-#endif
-}]],[[]])
-AT_CLEANUP
-
-AT_SETUP([[_osmajor, _osminor]])
-AT_LIBI86_CHECK(dnl
-[[#include <i86.h>
-#include <stdlib.h>
-#include <libi86/stdlib.h>
-int
-main (void)
-{
-#ifdef __MSDOS__
-  if (_osmajor < 2)
-    abort ();
-  if (_osminor > 99)
     abort ();
   return 0;
 #else

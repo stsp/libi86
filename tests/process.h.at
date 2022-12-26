@@ -51,10 +51,12 @@ AT_CLEANUP
 
 AT_SETUP([[_spawnv, _spawnve]])
 AT_LIBI86_CHECK(dnl
-[[#include <process.h>
+[[#include <dos.h>
+#include <process.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <libi86/stdlib.h>
 void abort (void);
 int
 main (int argc, char **argv)
@@ -63,11 +65,22 @@ main (int argc, char **argv)
   const char *kid1_argv[] = { NULL, "/foo", "h3llo", "w0rld!", NULL };
   const char * const kid1_envp[] = { "VINCENT=van gogh", NULL };
   const char *kid2_argv[] = { NULL, "/bar", NULL };
+  const char *kid3_argv[] = { NULL, "/baz", "/qux", NULL };
+  /*
+   * Try passing an empty environment as a corner case.  This is mainly a
+   * test of the underlying libc &/or DOS extender.  If the empty
+   * environment is not parsed correctly, then either argv[0] will be bogus,
+   * or the parent or child process will crash.
+   */
+  const char * const kid3_envp[] = { NULL };
   if (argc > 1)
     {
       int i;
       char *vincent;
-
+      unsigned attr;
+      if (_osmajor >= 3)
+	if (_dos_getfileattr (argv[0], &attr) != 0)
+	  abort ();
       for (i = 1; i < argc; ++i)
 	puts (argv[i]);
       vincent = getenv ("VINCENT");
@@ -78,12 +91,14 @@ main (int argc, char **argv)
 	}
       return 0xe5;
     }
-  kid1_argv[0] = kid2_argv[0] = prog;
+  kid1_argv[0] = kid2_argv[0] = kid3_argv[0] = prog;
   if (_spawnve (_P_WAIT, prog, kid1_argv, kid1_envp) != (pid_t) 0x00e5)
     abort ();
   if (putenv ("VINCENT=lombardi") != 0)
     abort ();
   if (_spawnv (_P_WAIT, prog, kid2_argv) != (pid_t) 0x00e5)
+    abort ();
+  if (_spawnve (_P_WAIT, prog, kid3_argv, kid3_envp) != (pid_t) 0x00e5)
     abort ();
   puts ("yo");
   return 0;
@@ -93,6 +108,8 @@ w0rld!
 vincent = van gogh
 /bar
 vincent = lombardi
+/baz
+/qux
 yo
 ]])
 dnl ACK does not properly handle quoted arguments (yet).  -- tkchia 20220717
