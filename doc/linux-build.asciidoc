@@ -1,0 +1,75 @@
+=== Building and installing `libi86` from sources, on Linux, for IA-16 GCC
+
+:back-link: (link:../README.asciidoc[↵])
+:nbsp:  
+
+:fn-tkchia-22: footnote:tkchia-22[https://github.com/tkchia/build-ia16/.]
+:fn-tkchia-22b: footnote:tkchia-22b[https://launchpad.net/~tkchia/+archive/ubuntu/build-ia16/.]
+:fn-dosemu2-22: footnote:dosemu2-22[http://dosemu2.github.io/dosemu2/.]
+
+ 1. `git clone https://gitlab.com/tkchia/libi86.git`
+
+ 2. Install `gcc-ia16-elf`.
+    * If using Ubuntu, you can get `gcc-ia16-elf` from my `build-ia16` PPA.{fn-tkchia-22b}
+    * Alternatively, you can build the compiler from sources too.{fn-tkchia-22}
+
+ 3. `mkdir build-libi86`
+
+ 4. `cd build-libi86`
+
+ 5. ``../libi86/configure --prefix=``__install-path__
+
+ 6. `make`
+
+ 7. Install `dosemu2`,{fn-dosemu2-22} if you wish to run self-tests (optional).
+
+ 8. `make check` {nbsp} # optional
+
+ 9. `make install`
+
+ 10. `make installcheck` {nbsp} # optional; tests the installed copy
+
+=== Building and installing `libi86` from sources, on Linux, for the Amsterdam Compiler Kit
+
+:fn-tkchia-22c: footnote:tkchia-22c[https://launchpad.net/~tkchia/+archive/ubuntu/de-rebus/.]
+:fn-vrije-univ-amst-05: footnote:vrije-univ-amst-05[https://github.com/davidgiven/ack.]
+
+ 1. `git clone https://gitlab.com/tkchia/libi86.git`
+
+ 2. Install the ACK.
+    * If using Ubuntu, you can get a _very unofficial_ `ack-compiler` package from my `de-rebus` PPA.{fn-tkchia-22c}
+    * Alternatively, you can build the compiler from sources too.{fn-vrije-univ-amst-05}
+
+ 3. `mkdir build-libi86`
+
+ 4. `cd build-libi86`
+
+ 5. ``../libi86/configure --ack --prefix=``__install-path__
+
+ 6. `make`
+
+ 7. Install `dosemu2`,{fn-dosemu2-22} if you wish to run self-tests (optional).
+
+ 8. `make check` {nbsp} # optional
+
+ 9. `make install`
+
+ 10. `make installcheck` {nbsp} # optional; tests the installed copy
+
+### Customizing the test suite run
+
+Instead of just saying `make check` or `make installcheck`, you can specify options to the test suite to control how the tests are run, via the `$(TESTSUITEFLAGS)` makefile variable.  E.g.:
+
+  * ``make check TESTSUITEFLAGS='--x-test-underlying --x-with-dosemu=/``__path-to__``/dosemu'``
+  * `make check TESTSUITEFLAGS='16'` {nbsp} # run _only_ test #16
+  * `make installcheck TESTSUITEFLAGS='10 --x-test-underlying'`
+
+To see a complete list of test suite options you can put into `$(TESTSUITEFLAGS)`, run
+
+  * `make helpcheck`
+
+To list all the test cases and their test numbers:
+
+  * `make listcheck`
+
+{back-link}
