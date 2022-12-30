@@ -6,6 +6,7 @@
 :fn-tkchia-22: footnote:tkchia-22[https://github.com/tkchia/build-ia16/.]
 :fn-tkchia-22b: footnote:tkchia-22b[https://launchpad.net/~tkchia/+archive/ubuntu/build-ia16/.]
 :fn-dosemu2-22: footnote:dosemu2-22[http://dosemu2.github.io/dosemu2/.]
+:fn-elks-22: footnote:elks-22[https://github.com/jbruchon/elks/.]
 
  1. `git clone https://gitlab.com/tkchia/libi86.git`
 
@@ -18,6 +19,9 @@
  4. `cd build-libi86`
 
  5. ``../libi86/configure --prefix=``__install-path__
+    * (There is also some very experimental (and incomplete) support for the ELKS OS{fn-elks-22} target platform.  To try it:
+    ** install the `elks-libc-gcc-ia16-elf` package from the `build-ia16` PPA
+    ** and add a ``--enable-elks-libc`` option to ``../libi86/configure`` above.)
 
  6. `make`
 
