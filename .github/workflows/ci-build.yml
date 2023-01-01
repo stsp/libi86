@@ -30,10 +30,10 @@
 name: ci-build
 on: [push, pull_request]
 jobs:
-  test-gcc:
+  build-and-install-gcc:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: setup
         run: |
           sudo ./tests/ci-base-setup.sh
@@ -42,12 +42,132 @@ jobs:
           sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
       - name: build-and-install
         run: ./tests/ci-build-and-install.sh
+      - name: store-artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: |
+            ./tests/testsuite
+            ./build.tmp
+            ./install.tmp
+  test1-gcc:
+    needs: build-and-install-gcc
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: load-artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+      - name: setup
+        run: |
+          sudo ./tests/ci-base-setup.sh
+          sudo add-apt-repository -y ppa:tkchia/build-ia16
+          sudo apt-get update -y
+          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
+          touch -c ./tests/testsuite
+          chmod u+x ./tests/testsuite
       - name: test
-        run: ./tests/ci-check.sh -j2
+        run: |
+          n_tests="`./tests/ci-count-tests.sh`" \
+          && first=1 \
+          && last="`expr $n_tests / 5`" \
+          && ./tests/ci-check.sh -j2 $first-$last
+  test2-gcc:
+    needs: build-and-install-gcc
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: load-artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+      - name: setup
+        run: |
+          sudo ./tests/ci-base-setup.sh
+          sudo add-apt-repository -y ppa:tkchia/build-ia16
+          sudo apt-get update -y
+          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
+          touch -c ./tests/testsuite
+          chmod u+x ./tests/testsuite
+      - name: test
+        run: |
+          n_tests="`./tests/ci-count-tests.sh`" \
+          && first="`expr $n_tests / 5 + 1`" \
+          && last="`expr 2 \* $n_tests / 5`" \
+          && ./tests/ci-check.sh -j2 $first-$last
+  test3-gcc:
+    needs: build-and-install-gcc
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: load-artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+      - name: setup
+        run: |
+          sudo ./tests/ci-base-setup.sh
+          sudo add-apt-repository -y ppa:tkchia/build-ia16
+          sudo apt-get update -y
+          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
+          touch -c ./tests/testsuite
+          chmod u+x ./tests/testsuite
+      - name: test
+        run: |
+          n_tests="`./tests/ci-count-tests.sh`" \
+          && first="`expr 2 \* $n_tests / 5 + 1`" \
+          && last="`expr 3 \* $n_tests / 5`" \
+          && ./tests/ci-check.sh -j2 $first-$last
+  test4-gcc:
+    needs: build-and-install-gcc
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: load-artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+      - name: setup
+        run: |
+          sudo ./tests/ci-base-setup.sh
+          sudo add-apt-repository -y ppa:tkchia/build-ia16
+          sudo apt-get update -y
+          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
+          touch -c ./tests/testsuite
+          chmod u+x ./tests/testsuite
+      - name: test
+        run: |
+          n_tests="`./tests/ci-count-tests.sh`" \
+          && first="`expr 3 \* $n_tests / 5 + 1`" \
+          && last="`expr 4 \* $n_tests / 5`" \
+          && ./tests/ci-check.sh -j2 $first-$last
+  test5-gcc:
+    needs: build-and-install-gcc
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: load-artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+      - name: setup
+        run: |
+          sudo ./tests/ci-base-setup.sh
+          sudo add-apt-repository -y ppa:tkchia/build-ia16
+          sudo apt-get update -y
+          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
+          touch -c ./tests/testsuite
+          chmod u+x ./tests/testsuite
+      - name: test
+        run: |
+          n_tests="`./tests/ci-count-tests.sh`" \
+          && first="`expr 4 \* $n_tests / 5 + 1`" \
+          && ./tests/ci-check.sh -j2 $first-
   test-ack:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: setup
         run: |
           sudo ./tests/ci-base-setup.sh
