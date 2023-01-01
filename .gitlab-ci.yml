@@ -1,4 +1,4 @@
-# Copyright (c) 2020--2022 TK Chia
+# Copyright (c) 2020--2023 TK Chia
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -35,17 +35,8 @@ variables:
   DEBIAN_FRONTEND: noninteractive
 default:
   before_script:
-    - apt-get update -y
-    - apt-get install -y software-properties-common
-    # add-apt-repository may sometimes time out trying to download the PPA's
-    # public key.
-    - >
-        add-apt-repository -y ppa:tkchia/de-rebus ||
-        apt-key add tests/ppa-pub-key.gpg.bin
-    - apt-get update -y
-    - >
-        apt-get install -y dosemu2 fdpp dos2unix autoconf make
-        bsdutils adduser
+    - ./tests/ci-base-setup.sh
+    - apt-get install -y adduser
     - adduser user </dev/null
 stages:
   - build_and_install
@@ -89,7 +80,7 @@ test1:gcc:
         n_tests="`su user -c './tests/ci-count-tests.sh'`"
         && first=1
         && last="`expr $n_tests / 3`"
-        && su user -c "./tests/ci-check.sh --x-test-common $first-$last"
+        && su user -c "./tests/ci-check.sh -j2 --x-test-common $first-$last"
   timeout: 3h
   artifacts:
     paths:
@@ -108,7 +99,7 @@ test2:gcc:
         n_tests="`su user -c './tests/ci-count-tests.sh'`"
         && first="`expr $n_tests / 3 + 1`"
         && last="`expr 2 \* $n_tests / 3`"
-        && su user -c "./tests/ci-check.sh --x-test-common $first-$last"
+        && su user -c "./tests/ci-check.sh -j2 --x-test-common $first-$last"
   timeout: 3h
   artifacts:
     paths:
@@ -121,12 +112,12 @@ test3:gcc:
   script:
     - add-apt-repository -y ppa:tkchia/build-ia16
     - apt-get update -y
-    - apt-get install -y gcc-ia16-elf
+    - apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
     - touch -c ./tests/testsuite
     - >
         n_tests="`su user -c './tests/ci-count-tests.sh'`"
         && first="`expr 2 \* $n_tests / 3 + 1`"
-        && su user -c "./tests/ci-check.sh --x-test-common $first-"
+        && su user -c "./tests/ci-check.sh -j2 --x-test-common $first-"
   timeout: 3h
   artifacts:
     paths:

@@ -1,4 +1,5 @@
-# Copyright (c) 2022--2023 TK Chia
+#!/bin/sh
+# Copyright (c) 2018--2023 TK Chia
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -25,34 +26,15 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Configuration file for GitHub (https://github.com/) Continuous Integration.
+# Script to install dependency packages for automated building under GitLab CI
+# (https://docs.gitlab.com/ee/ci/), invoked by .gitlab-ci.yml .
 
-name: ci-build
-on: [push, pull_request]
-jobs:
-  test-gcc:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - name: setup
-        run: |
-          sudo ./tests/ci-base-setup.sh
-          sudo add-apt-repository -y ppa:tkchia/build-ia16
-          sudo apt-get update -y
-          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
-      - name: build-and-install
-        run: ./tests/ci-build-and-install.sh
-      - name: test
-        run: ./tests/ci-check.sh -j2
-  test-ack:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - name: setup
-        run: |
-          sudo ./tests/ci-base-setup.sh
-          sudo apt-get install -y ack-compiler
-      - name: build-and-install
-        run: ./tests/ci-build-and-install.sh --ack
-      - name: test
-        run: ./tests/ci-check.sh
+set -e -v
+apt-get update -y
+apt-get install -y software-properties-common
+# add-apt-repository may sometimes time out trying to download the PPA's
+# public key.
+add-apt-repository -y ppa:tkchia/de-rebus \
+ || apt-key add tests/ppa-pub-key.gpg.bin
+apt-get update -y
+apt-get install -y dosemu2 fdpp dos2unix autoconf make bsdutils
