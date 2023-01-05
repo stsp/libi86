@@ -293,19 +293,27 @@ _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=small]],a.c,,m4_shift(m4_shift($@)))
 _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mcmodel=medium]],a.c,,m4_shift(m4_shift($@)))
 fi])
 
+dnl NOTE: this may be invoked from multiple parallel jobs
 m4_define([AT_LIBI86_COMPILE_CONSOLE_CAPTURE_PROG],[dnl
-if test yes = "$ac_compiler_gnu"; then
-AT_LIBI86_COMPILE(["$abs_srcdir"/capture-gcc.S],[capture.exe],[-nostdlib])
+at_libi86_prog="$at_libi86_cachedir"/capture.exe
+if test -f "$at_libi86_prog"; then
+:
+elif test yes = "$ac_compiler_gnu"; then
+AT_LIBI86_COMPILE(["$abs_srcdir"/capture-gcc.S],$1,[-nostdlib])
+mv $1 "$at_libi86_prog" \
+ || rm -f $1
 else
-AT_CHECK([[$CC -o capture.exe "$abs_srcdir"/capture-ack.s]])
-fi])
+AT_CHECK([[$CC -o ]$1[ "$abs_srcdir"/capture-ack.s]])
+mv $1 "$at_libi86_prog" \
+ || rm -f $1
+fi
+cp "$at_libi86_prog" $1])
 
 dnl $1 = text of program to test
 dnl $2 = expected program output on console
 dnl $3 = additional options to pass to dosemu (especially -input ...)
 m4_define([AT_LIBI86_CHECK_CONSOLE],[dnl
-dnl FIXME: capture.exe is rebuilt at each call to AT_LIBI86_CHECK_CONSOLE(...).
-AT_LIBI86_COMPILE_CONSOLE_CAPTURE_PROG
+AT_LIBI86_COMPILE_CONSOLE_CAPTURE_PROG([capture.exe])
 AT_DATA([[x.bat]],dnl
 [[@echo off
 cls
@@ -322,7 +330,7 @@ AT_LIBI86_CHECK([$1],[$2],[[x.bat]],[$3 [-t >/dev/null]],dnl
 [["$abs_srcdir"/postproc-console.sh]])])
 
 m4_define([AT_LIBI86_CHECK_CONSOLE_FOR_SMALL_MODEL_OR_ABOVE],[dnl
-AT_LIBI86_COMPILE_CONSOLE_CAPTURE_PROG
+AT_LIBI86_COMPILE_CONSOLE_CAPTURE_PROG([capture.exe])
 AT_DATA([[x.bat]],dnl
 [[@echo off
 cls
@@ -339,7 +347,7 @@ AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE([$1],[$2],[[x.bat]],dnl
 [$3 [-t >/dev/null]],[["$abs_srcdir"/postproc-console.sh]])])
 
 m4_define([AT_LIBI86_CHECK_CONSOLE_FOR_NONDOSX],[dnl
-AT_LIBI86_COMPILE_CONSOLE_CAPTURE_PROG
+AT_LIBI86_COMPILE_CONSOLE_CAPTURE_PROG([capture.exe])
 AT_DATA([[x.bat]],dnl
 [[@echo off
 cls

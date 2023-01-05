@@ -102,3 +102,7 @@ if "$at_arg_x_test_underlying"; then
 fi
 
 : ${libi86_hostdir='@libi86_hostdir@'}
+
+at_libi86_cachedir="$abs_builddir"/cache
+rm -rf "$at_libi86_cachedir"
+mkdir -p "$at_libi86_cachedir"
