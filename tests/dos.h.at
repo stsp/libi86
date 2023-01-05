@@ -764,7 +764,42 @@ main (void)
 #else
 # error
 #endif
-}]],[[]])
+}]],[])
+AT_LIBI86_CHECK(dnl
+[[#include <dos.h>
+void abort(void);
+#ifndef __MEDIUM__
+static unsigned x = 0xf6f6U;
+#else
+static unsigned __far x = 0xf6f6U;
+#endif
+#ifdef __INTERRUPT
+static void __far __interrupt
+# ifdef __IA16_FEATURE_DOSX  /* FIXME: newlib-ia16 does not do relocations */
+__attribute__ ((assume_ds_data))
+# endif
+isr (void)
+{
+  x += 0xe5e5U;
+}
+#endif
+int
+main (void)
+{
+#ifdef __MSDOS__
+# ifdef __INTERRUPT
+  __libi86_isr_t orig_isr = _dos_getvect (0x28);
+  _dos_setvect (0x28, isr);
+  __asm volatile ("int {$}0x28" : : : "memory");
+  _dos_setvect (0x28, orig_isr);
+  if (x != 0xf6f6U + 0xe5e5U)
+    abort ();
+# endif
+  return 0;
+#else
+# error
+#endif
+}]],[])
 AT_CLEANUP
 
 AT_SETUP([[_dos_creat, _dos_creatnew, _dos_open]])
