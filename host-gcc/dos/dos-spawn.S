@@ -89,12 +89,42 @@ _dos_spawn:
 	/*
 	 * In DOS extender mode, %ss:%sp is preserved, & we need not worry
 	 * about any of the above silliness. :-|
+	 *
+	 * However, the DOS extender brings a different problem.  We may be
+	 * started in 32-bit DPMI mode, so the CauseWay DOS extender may
+	 * expect 16:32 segment:offset pointers, not 16:16 ones, in the
+	 * parameter block.  If so, we must convert the parameter block.
 	 */
+	cmpb	$0,	__libi86_dpmi_32bit
+	jnz	.convert
 	int	$0x21
 #endif	/* __IA16_FEATURE_DOSX */
+.done:
 	popw	%bp
 	popw	%di
 	popw	%si
 	popw	%es
 	popw	%ds
 	RET_SET_ERRNO_ (6)
+#ifdef __IA16_FEATURE_DOSX
+.convert:
+	.arch	i386
+	testb	%al,	%al		/* we only handle %ax = 0x4b00 */
+	jnz	.wut
+	pushw	0xc(%bx)		/* FCB #2 segment */
+	pushw	%cx			/* (cx = 0) */
+	pushl	0x8(%bx)		/* FCB #1 segment, FCB #2 offset */
+	pushw	%cx
+	pushl	0x4(%bx)		/* cmd. tail segment, FCB #1 offset */
+	pushw	%cx
+	pushl	(%bx)			/* env. segment, cmd. tail offset */
+	movw	%sp,	%bx
+	int	$0x21
+	leaw	0x14(%esp), %sp		/* pop away the converted parameter
+					   block without touching flags */
+	jmp	.done
+.wut:
+	movw	$1,	%ax
+	stc
+	jmp	.done
+#endif	/* __IA16_FEATURE_DOSX */

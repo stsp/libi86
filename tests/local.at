@@ -193,6 +193,9 @@ if test yes = "$ac_compiler_gnu"; then
 if test yes = "$at_libi86_cc_have_dosx"; then
 _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mdosx ]]$@)
 fi
+if test yes = "$at_libi86_cc_have_dosx32"; then
+_AT_LIBI86_DO_CHECK_EXPOUT_E([[-mdosx32 ]]$@)
+fi
 if "$at_arg_x_test_underlying"; then :; else
 if test yes = "$at_libi86_cc_have_newlib_nano_stdio"; then
 _AT_LIBI86_DO_CHECK_EXPOUT_E([[-mnewlib-nano-stdio ]]$@)

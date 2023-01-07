@@ -248,6 +248,7 @@ else
 		   dpmi/dpmisegmenttodescriptor.o \
 		   dpmi/dpmisetdescriptor.o \
 		   dpmi/dpmisimulaterealmodeint.o \
+		   dpmi/libi86-dpmi-32bit.o \
 		   graph/clearscreen.o \
 		   graph/displaycursor.o \
 		   graph/gettextposition.o \
