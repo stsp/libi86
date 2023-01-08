@@ -70,13 +70,18 @@
 
 .Lisr:
 	testb	$1,	0xc(%esp)	/* 0xc(%esp) should be caller %sp
-					   (aligned) for 16-bit frame, caller
-					   %eip (possibly unaligned) for
-					   32-bit frame */
-	jz	.16bit
+					   (aligned) for 16-bit frame, lower
+					   half of caller %eip (possibly
+					   unaligned) for 32-bit frame */
+	jz	.maybe16bit
 	incb	__libi86_dpmi_32bit
+.32bit:
 	lretl
-.16bit:
+.maybe16bit:
+	cmpw	$0,	0xe(%esp)	/* 0xe(%esp) should be caller %ss
+					   for 16-bit frame, upper half of
+					   caller %eip for 32-bit frame */
+	jz	.32bit
 	lretw
 
 	.section .ctors.65435

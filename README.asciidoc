@@ -240,7 +240,9 @@ When using ACK:
 |       W |    =   | ``_dos_getfileattr (``*__path__``,`` *__attributes__``);`` |
 |       W |    =   | ``_dos_getftime (``__handle__``,`` *__date__``,`` *__time__``);`` |
 |       W |    =   | ``_dos_gettime (``*__time__``);`` |
-|       W |    =   | *``_dos_getvect (``__intr-no__``);`` | Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will return a far data pointer.
+|       W |    =   | *``_dos_getvect (``__intr-no__``);`` a|
+			* Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will return a far data pointer.
+			* This function is not yet supported for "dual mode" programs that may run under either 16- or 32-bit DPMI (`gcc-ia16 -mdosx32`).
 |       W |    =   | ``_dos_keep (``__status__``,`` __keep-paras__``);`` |
 |       B |    =   | ``keep (``__status__``,`` __keep-paras__``);`` |
 |       W |    =   | ``_dos_open (``*__path__``,`` __mode__``,`` *__handle__``);`` |
@@ -253,7 +255,9 @@ When using ACK:
 |       W |    =   | ``_dos_setfileattr (``*__path__``,`` __attributes__``);`` |
 |       W |    =   | ``_dos_setftime (``__handle__``,`` __date__``,`` __time__``);`` |
 |       W |    =   | ``_dos_settime (``*__time__``);`` |
-|       W |    =   | ``_dos_setvect (``__intr-no__``,`` *__handler__``);`` | Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will not be supported.
+|       W |    =   | ``_dos_setvect (``__intr-no__``,`` *__handler__``);`` a|
+			* Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will not be supported.
+			* This function is not yet supported for "dual mode" programs that may run under either 16- or 32-bit DPMI (`gcc-ia16 -mdosx32`).
 |       X |    =   | ``_dos_spawn (unsigned char`` __subfunc__``,`` ``const char `` *__path__``,`` ``union _dosspawn_t`` *__params__``);`` | ``int 0x21`` function ``0x4b`` (for __subfunc__ ≠ 4) or ``0x80`` (for __subfunc__ = 4).  Returns an error code on error, 0 on success.
 |       X |    =   | ``_dos_wait (unsigned`` *__error-level__``);`` | ``int 0x21`` function ``0x4d``.
 |       W |    =   | ``_dos_write (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` a|

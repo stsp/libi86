@@ -768,12 +768,17 @@ main (void)
 AT_LIBI86_CHECK(dnl
 [[#include <dos.h>
 void abort(void);
-#ifndef __MEDIUM__
+/*
+ * FIXME:
+ * (1) hard to implement _dos_getvect (.) & _dos_setvect (, ) for -mdosx32
+ * (2) -mdosx mode does not support relocations yet, so we need assume_ds_data
+ */
+#if defined __INTERRUPT && ! defined __IA16_FEATURE_DOSX32
+# ifndef __MEDIUM__
 static unsigned x = 0xf6f6U;
-#else
+# else
 static unsigned __far x = 0xf6f6U;
-#endif
-#ifdef __INTERRUPT
+# endif
 static void __far __interrupt
 # ifdef __IA16_FEATURE_DOSX  /* FIXME: newlib-ia16 does not do relocations */
 __attribute__ ((assume_ds_data))
@@ -787,7 +792,7 @@ int
 main (void)
 {
 #ifdef __MSDOS__
-# ifdef __INTERRUPT
+# if defined __INTERRUPT && ! defined __IA16_FEATURE_DOSX32
   __libi86_isr_t orig_isr = _dos_getvect (0x28);
   _dos_setvect (0x28, isr);
   __asm volatile ("int {$}0x28" : : : "memory");

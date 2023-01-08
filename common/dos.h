@@ -251,8 +251,16 @@ typedef union __attribute__ ((__transparent_union__))
   } __libi86_isr_any_t;
 # endif
 # pragma GCC diagnostic pop
+# ifndef __IA16_FEATURE_DOSX32
 extern __libi86_isr_t _dos_getvect (unsigned __intr_no);
 extern void _dos_setvect (unsigned __intr_no, __libi86_isr_any_t __isr);
+# else  /* __IA16_FEATURE_DOSX32 */
+extern __libi86_isr_t _dos_getvect (unsigned __intr_no)
+		      _LIBI86_ERROR ("_dos_getvect (.) not supported "
+				     "in -mdosx32 mode");
+extern void _dos_setvect (unsigned __intr_no, __libi86_isr_any_t __isr)
+	    _LIBI86_ERROR ("_dos_setvect (.) not supported in -mdosx32 mode");
+# endif  /* __IA16_FEATURE_DOSX32 */
 #else  /* ! __INTERRUPT */
 typedef __libi86_fpcv_t __libi86_isr_t, __libi86_isr_any_t;
 extern __libi86_isr_t _dos_getvect (unsigned __intr_no)
