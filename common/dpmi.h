@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019--2021 TK Chia
+ * Copyright (c) 2019--2023 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -37,6 +37,24 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
+#if ! defined __IA16_FEATURE_DOSX32 && ! defined _LIBI86_COMPILING_
+# define _LIBI86_CALL_DPMI16_SHIM(opd) "int {$}0x31"
+# define _LIBI86_CALL_DPMIMUX16_SHIM(opd) "int {$}0x2f"
+#elif ! defined __IA16_CMODEL_IS_FAR_TEXT
+# define _LIBI86_CALL_DPMI16_SHIM(opd) "callw {*}%" #opd
+# define _LIBI86_CALL_DPMIMUX16_SHIM(opd) "callw {*}%" #opd
+#else
+# define _LIBI86_CALL_DPMI16_SHIM(opd) "lcallw {*}%" #opd
+# define _LIBI86_CALL_DPMIMUX16_SHIM(opd) "lcallw {*}%" #opd
+#endif
+#define _LIBI86_DPMI16_SHIM __libi86_dpmi16_shim
+#define _LIBI86_DPMIMUX16_SHIM __libi86_dpmimux16_shim
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstrict-prototypes"
+extern void (*__libi86_dpmi16_shim) (/* ... */),
+	    (*__libi86_dpmimux16_shim) (/* ... */);
+#pragma GCC diagnostic pop
+
 /*
  * __DPMI_hosted () is from Watcom's internally-used interface.
  *
@@ -63,8 +81,8 @@ __DPMI_hosted (void)
 #endif
 
 /*
- * These follow Watcom's internally-used interface, & are defined in this
- * very library.
+ * The declarations & definitions below follow Watcom's internally-used
+ * interface, & are defined in this very library.
  */
 
 typedef struct __libi86_packed
@@ -210,9 +228,10 @@ _DPMIGetDescriptor (uint16_t __sel, __libi86_fpv_t __desc)
 #endif
 {
   int __res;
-  __asm volatile ("int {$}0x31; sbb{w} %0, %0"
+  __asm volatile (_LIBI86_CALL_DPMI16_SHIM (1) "; sbb{w} %0, %0"
 		  : "=abr" (__res)
-		  : "a" (0x000bU), "b" (__sel),
+		  : "m" (_LIBI86_DPMI16_SHIM),
+		    "a" (0x000bU), "b" (__sel),
 		    "e" (FP_SEG (__desc)), "D" (FP_OFF (__desc))
 		  : "cc", "memory");
   return __res;
@@ -229,9 +248,10 @@ _DPMIGetCapabilities (uint16_t *__caps1, uint16_t *__caps2,
 {
   int __res;
   uint16_t __c1, __c2, __c3;
-  __asm volatile ("int {$}0x31; sbb{w} %0, %0"
+  __asm volatile (_LIBI86_CALL_DPMI16_SHIM (4) "; sbb{w} %0, %0"
 		  : "=br" (__res), "=a" (__c1), "=c" (__c2), "=d" (__c3)
-		  : "a" (0x0401U), "e" (FP_SEG (__host)), "D" (FP_OFF (__host))
+		  : "m" (_LIBI86_DPMI16_SHIM),
+		    "a" (0x0401U), "e" (FP_SEG (__host)), "D" (FP_OFF (__host))
 		  : "cc", "memory");
   if (! __res)
     {
@@ -265,9 +285,10 @@ _DPMIGetVendorSpecificAPI (__libi86_fpcc_t __vendor)
    *  function was not documented for DPMI 0.9, it will work under any DPMI
    *  0.9 host."	-- DPMI Specification 1.0
    */
-  __asm volatile ("int {$}0x2f"
+  __asm volatile (_LIBI86_CALL_DPMIMUX16_SHIM (3)
 		  : "=Ral" (__res), "=e" (__segm), "=D" (__offs)
-		  : "a" (0x168aU),
+		  : "m" (_LIBI86_DPMIMUX16_SHIM),
+		    "a" (0x168aU),
 		    "Rds" (FP_SEG (__vendor)), "S" (FP_OFF (__vendor)),
 		    "1" (__builtin_ia16_selector (0U)), "2" (0U)
 		  : "cc");
@@ -315,9 +336,10 @@ _DPMISetDescriptor (uint16_t __sel, __libi86_fpcv_t __desc)
 #endif
 {
   int __res;
-  __asm volatile ("int {$}0x31; sbb{w} %0, %0"
+  __asm volatile (_LIBI86_CALL_DPMI16_SHIM (1) "; sbb{w} %0, %0"
 		  : "=abr" (__res)
-		  : "a" (0x000cU), "b" (__sel),
+		  : "m" (_LIBI86_DPMI16_SHIM),
+		    "a" (0x000cU), "b" (__sel),
 		    "e" (FP_SEG (__desc)), "D" (FP_OFF (__desc))
 		  : "cc", "memory");
   return __res;
@@ -329,9 +351,10 @@ _DPMISimulateRealModeInterrupt (uint8_t __intr_no, uint8_t __flags,
 				rm_call_struct __far *__call_st)
 {
   int __res;
-  __asm volatile ("int {$}0x31; sbb{w} %0, %0"
+  __asm volatile (_LIBI86_CALL_DPMI16_SHIM (1) "; sbb{w} %0, %0"
 		  : "=abcr" (__res)
-		  : "a" (0x0300U),
+		  : "m" (_LIBI86_DPMI16_SHIM),
+		    "a" (0x0300U),
 		    "b" ((uint16_t) __flags << 8 | __intr_no),
 		    "c" (__words_to_copy),
 		    "e" (FP_SEG (__call_st)), "D" (FP_OFF (__call_st))

@@ -46,7 +46,7 @@ _DPMISimulateRealModeInterrupt:
 	MOV_ARG2B_BX_ (%ah)
 	xchgw	%ax,	%bx
 	movw	$0x0300, %ax
-	int	$0x31
+	CALLI_ (__libi86_dpmi16_shim)
 	sbbw	%ax,	%ax
 	popw	%es
 	popw	%di

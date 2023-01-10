@@ -37,14 +37,24 @@
 
 	/*
 	 * Figure out whether we were started as a 32-bit DPMI application
-	 * (even though we are running 16-bit code).
+	 * (even though we are running 16-bit code), which may happen if the
+	 * program was built in "dual mode" (-mdosx32). If so, we need to
+	 * clear the high halves of certain 32-bit registers when calling
+	 * certain DPMI functions.
+	 *
+	 * FIXME: this is all incredibly ugly.
 	 */
-.Lctor_dpmi_32bit:
+.Lctor_dpmi16_shim:
+#ifndef __IA16_FEATURE_DOSX
+	CALL_ (__DPMI_hosted)
+	decw	%ax
+	jnz	.done2
+#endif
 	movw	$0x0400, %ax		/* if the CPU is an 80286, then */
 	int	$0x31			/* we are done */
 	cmpb	$2,	%cl
 	jz	.done2
-	.arch	i386			/* not 286?  Assume 386+ */
+	.arch	i386			/* not 286?  assume 386+ */
 	movw	$0x0202, %ax		/* back up vector for exception 4 */
 	movb	$4,	%bl		/* (overflow) */
 	int	$0x31
@@ -55,7 +65,7 @@
 	movw	%cs,	%cx
 	movl	$.Lisr,	%edx
 	int	$0x31
-	jc	.done2
+	jc	.done
 	rorb	%al			/* %al was 3 */
 	into				/* trigger overflow exception */
 	into				/* trigger again; one of these
@@ -74,8 +84,10 @@
 					   half of caller %eip (possibly
 					   unaligned) for 32-bit frame */
 	jz	.maybe16bit
-	incb	__libi86_dpmi_32bit
 .32bit:
+	movb	$1,	__libi86_dpmi_32bit
+	movw	$.Ldpmi16_32, __libi86_dpmi16_shim
+	movw	$.Ldpmimux16_32, __libi86_dpmimux16_shim
 	lretl
 .maybe16bit:
 	cmpw	$0,	0xe(%esp)	/* 0xe(%esp) should be caller %ss
@@ -84,8 +96,48 @@
 	jz	.32bit
 	lretw
 
+.Ldpmi16_16:
+	int	$0x31
+	RET_ (0)
+
+.Ldpmimux16_16:
+	int	$0x2f
+	RET_ (0)
+
+.Ldpmi16_32:
+	pushl	%edi
+	popw	%di
+	movzx	%di,	%edi
+	int	$0x31
+	pushw	%di
+	popl	%edi
+	RET_ (0)
+
+.Ldpmimux16_32:
+	pushl	%esi
+	popw	%si
+	movzx	%si,	%esi
+	pushl	%edi
+	popw	%di
+	movzx	%di,	%edi
+	int	$0x2f
+	pushw	%di
+	popl	%edi
+	pushw	%si
+	popl	%esi
+	RET_ (0)
+
+	.section .data, "aw"
+
+	.global	__libi86_dpmi16_shim
+__libi86_dpmi16_shim:
+	TEXT_PTR_ (.Ldpmi16_16)
+	.global	__libi86_dpmimux16_shim
+__libi86_dpmimux16_shim:
+	TEXT_PTR_ (.Ldpmimux16_16)
+
 	.section .ctors.65435
 
-	TEXT_PTR_ (.Lctor_dpmi_32bit)
+	TEXT_PTR_ (.Lctor_dpmi16_shim)
 
 	.comm	__libi86_dpmi_32bit, 1

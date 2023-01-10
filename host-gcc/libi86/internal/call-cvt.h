@@ -29,6 +29,8 @@
  * - JMP_ (FUNC) or CALL_ (FUNC) does a jump or a call to the function FUNC.
  *   Whether the jump or call is near or far will depend on the memory model.
  *
+ * - CALLI_ (PFUNC) does an indirect call to the function PFUNC points to.
+ *
  * - TEXT_PTR_ (FUNC) emits a near or far pointer --- depending on the memory
  *   model --- to the function FUNC.
  *
@@ -131,6 +133,7 @@
 # define RET__			ret
 # define JMP_(func)		jmp func
 # define CALL_(func)		call func
+# define CALLI_(pfunc)		callw *pfunc
 # define TEXT_(tag)		.text
 # define TEXT_PTR_(func)	.hword func
 #else
@@ -139,6 +142,7 @@
 # define AUX___(aux)		#aux
 # define JMP_(func)		JMP_FAR_ (func)
 # define CALL_(func)		CALL_FAR_ (func)
+# define CALLI_(pfunc)		lcallw *pfunc
 # define TEXT_(tag)		.section AUX___(.fartext.f.##tag##$), "ax"
 # define TEXT_PTR_(func)	SEG_RELOC_ (.+2, func); \
 				.hword func, 0

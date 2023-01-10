@@ -45,7 +45,7 @@ _DPMIGetCapabilities:
 	pushw	ARG0W_BX_
 	LES_ARG6W_BX_ (%di)
 	movw	$0x0401, %ax
-	int	$0x31
+	CALLI_ (__libi86_dpmi16_shim)
 	jc	.error
 	popw	%bx
 	movw	%ax,	(%bx)

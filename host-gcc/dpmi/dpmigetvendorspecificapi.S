@@ -46,7 +46,7 @@ _DPMIGetVendorSpecificAPI:
 	xorw	%di,	%di
 	movw	%di,	%es
 	movw	$0x168a, %ax
-	int	$0x31
+	CALLI_ (%ss:__libi86_dpmimux16_shim)
 	testb	%al,	%al
 	jnz	.error
 	xchgw	%ax,	%di

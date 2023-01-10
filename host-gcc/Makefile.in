@@ -1,4 +1,4 @@
-# Copyright (c) 2018--2022 TK Chia
+# Copyright (c) 2018--2023 TK Chia
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -248,7 +248,7 @@ else
 		   dpmi/dpmisegmenttodescriptor.o \
 		   dpmi/dpmisetdescriptor.o \
 		   dpmi/dpmisimulaterealmodeint.o \
-		   dpmi/libi86-dpmi-32bit.o \
+		   dpmi/libi86-dpmi16-shim.o \
 		   graph/clearscreen.o \
 		   graph/displaycursor.o \
 		   graph/gettextposition.o \

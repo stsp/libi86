@@ -43,7 +43,7 @@ _DPMISetDescriptor:
 	LES_ARG2W_BX_ (%di)
 	MOV_ARG0W_BX_ (%bx)
 	movw	$0x000c, %ax
-	int	$0x31
+	CALLI_ (__libi86_dpmi16_shim)
 	sbbw	%ax,	%ax
 	popw	%es
 	popw	%di
