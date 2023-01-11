@@ -63,7 +63,7 @@ main (void)
   if (__DPMI_hosted () != 1)
     return 0;
   res = _DPMISegmentToDescriptor (0);
-  if (res < 0)
+  if (res <= 0)
     abort ();
   if (res > (int32_t) 0xffff)
     abort ();
@@ -90,7 +90,7 @@ main (void)
   if (__DPMI_hosted () != 1)
     return 0;
   res = _DPMISegmentToDescriptor (0x0040);
-  if (res < 0)
+  if (res <= 0)
     abort ();
   if (res > (int32_t) 0xffff)
     abort ();
@@ -212,5 +212,99 @@ main (void)
       return 0;
   abort ();
   return 1;
+}]],[])
+AT_CLEANUP
+
+AT_SETUP([[_DPMIGetNextSelectorIncrementValue]])
+AT_LIBI86_SKIP_IF_NO_DOSX
+AT_LIBI86_CHECK(dnl
+[[#include <dpmi.h>
+#include <i86.h>
+#include <conio.h>
+extern void abort (void);
+int
+main (void)
+{
+  uint16_t incr;
+  if (__DPMI_hosted () != 1)
+    return 0;
+  incr = _DPMIGetNextSelectorIncrementValue ();
+  /*
+   * Both DPMI 0.9 & DPMI 1.0 say the increment will be "a power of two".
+   * Also, an increment of 1 or 2 does not make sense.
+   */
+  if (incr <= 2)
+    abort ();
+  if ((incr & (incr - 1)) != 0)
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP
+
+AT_SETUP([[_DPMIAllocateLDTDescriptors, _DPMIFreeLDTDescriptor]])
+AT_LIBI86_SKIP_IF_NO_DOSX
+AT_LIBI86_CHECK(dnl
+[[#include <dpmi.h>
+#include <i86.h>
+#include <conio.h>
+extern void abort (void);
+int
+main (void)
+{
+  int32_t res;
+  uint16_t sel, incr;
+  unsigned n, i;
+  if (__DPMI_hosted () != 1)
+    return 0;
+  incr = _DPMIGetNextSelectorIncrementValue ();
+  for (n = 1; n <= 10; ++n)
+    {
+      res = _DPMIAllocateLDTDescriptors (n);
+      if (res <= 0)
+	abort ();
+      sel = (uint16_t) res;
+      for (i = 0; i < n; ++i)
+	if (_DPMIFreeLDTDescriptor (sel + i * incr) != 0)
+	  {
+	    printf ("sel = %#x, n = %#x, i = %#x\n", (unsigned) sel, n, i);
+	    abort ();
+	  }
+    }
+  return 0;
+}]],[])
+AT_CLEANUP
+
+AT_SETUP([[_DPMICreateCodeSegmentAliasDescriptor]])
+AT_LIBI86_SKIP_IF_NO_DOSX
+AT_LIBI86_CHECK(dnl
+[[#include <dpmi.h>
+#include <i86.h>
+extern void abort (void);
+int
+main (void)
+{
+  int32_t res;
+  uint16_t code_sel, data_sel;
+  unsigned i;
+  unsigned char b;
+  if (__DPMI_hosted () != 1)
+    return 0;
+  for (i = 0; i < 5; ++i)
+    {
+      code_sel = __libi86_get_cs ();
+      res = _DPMICreateCodeSegmentAliasDescriptor (code_sel);
+      if (res <= 0)
+	abort ();
+      data_sel = (uint16_t) res;
+      if (_DPMIGetSegmentBaseAddress (code_sel)
+	  != _DPMIGetSegmentBaseAddress (data_sel))
+	abort ();
+      b = __libi86_peekb (data_sel, FP_OFF (main));
+      if (b == 0xc3 || b == 0xcb)
+	abort ();
+      if (_DPMIFreeLDTDescriptor (data_sel) != 0)
+	abort ();
+    }
+  return 0;
 }]],[])
 AT_CLEANUP

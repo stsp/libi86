@@ -237,10 +237,12 @@ else
 		   dpmi/dpmi-hosted.o \
 		   dpmi/dpmiallocatedosmemoryblock.o \
 		   dpmi/dpmiallocateldtdescriptors.o \
+		   dpmi/dpmicreatecsaliasdesc.o \
 		   dpmi/dpmifreedosmemoryblock.o \
 		   dpmi/dpmifreeldtdescriptor.o \
 		   dpmi/dpmigetcapabilities.o \
 		   dpmi/dpmigetdescriptor.o \
+		   dpmi/dpmigetnextselectorincrval.o \
 		   dpmi/dpmigetsegmentbaseaddress.o \
 		   dpmi/dpmigetvendorspecificapi.o \
 		   dpmi/dpmigetvirtualintstate.o \

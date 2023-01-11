@@ -310,11 +310,13 @@ When using ACK:
 
 |      IW |    G   | ``__DPMI_hosted ();`` | Returns 1 if running in protected mode under DPMI, -1 otherwise.  If the underlying C library has an implementation of this function, ``libi86`` will use that instead.
 |      IW |    G   | ``_DPMIAllocateDOSMemoryBlock (``__paras__``);`` | ``int 0x31`` function ``0x0100``.  Returns a structure giving the real mode segment and protected mode selector for the DOS memory block.  On failure, returns ``{ 0, 0 }``.
-|      IW |    G   | ``_DPMIAllocateLDTDescriptors (``__count__``);`` | ``int 0x31`` function ``0x0000``.  Returns a starting protected-mode selector, case to an ``int32_t``.  On failure, returns a negative value.
+|      IW |    G   | ``_DPMIAllocateLDTDescriptors (``__count__``);`` | ``int 0x31`` function ``0x0000``.  Returns a starting protected-mode selector, cast to an ``int32_t``.  On failure, returns a negative value.
+|      IW |    G   | ``_DPMICreateCodeSegmentAliasDescriptor (``__sel__``);`` | ``int 0x31`` function ``0x000a``.  Returns a data selector, cast to an ``int32_t``.  On failure, returns a negative value.
 |      IW |    G   | ``_DPMIFreeDOSMemoryBlock (``__sel__``);`` | ``int 0x31`` function ``0x0101``.  Returns 0 on success, -1 on error.
 |      IW |    G   | ``_DPMIFreeLDTDescriptor (``__sel__``);`` | ``int 0x31`` function ``0x0001``.  Returns 0 on success, -1 on error.
 |       X |    G   | ``_DPMIGetCapabilities (uint16_t`` *__capabilities-1__``,`` ``uint16_t`` *__reserved-2__``,`` ``uint16_t`` *__reserved-3__``,`` ``dpmi_host_info {lowline}{lowline}far`` *__host-info__``);`` | ``int 0x31`` function ``0x0401``.  Returns 0 on success, -1 on error.
 |      IW |    G   | ``_DPMIGetDescriptor (``__sel__``,`` *__desc__``);`` | ``int 0x31`` function ``0x000b``.  Returns 0 on success, -1 on error.
+|      IW |    G   | ``_DPMIGetNextSelectorIncrementValue ();`` | ``int 0x31`` function ``0x0003``.
 |      IW |    G   | ``_DPMIGetSegmentBaseAddress (``__sel__``);`` | ``int 0x31`` function ``0x0006``.  Returns _sel_'s base address on success; return value is undefined on error.
 |      IW |    G   | *``_DPMIGetVendorSpecificAPI (``*__vendor__``);`` | ``int 0x2f`` function ``0x168a``.  Returns a far null pointer on error.
 |       X |    G   | ``_DPMIGetVirtualInterruptState ();`` | ``int 0x31`` function ``0x0902``.  Returns ``true`` if virtual interrupts enabled, ``false`` otherwise.

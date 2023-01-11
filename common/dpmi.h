@@ -198,6 +198,18 @@ _DPMIAllocateLDTDescriptors (uint16_t __count)
   return (int32_t) __res << 16 | __sel;
 }
 
+_LIBI86_ALT_INLINE int32_t
+_DPMICreateCodeSegmentAliasDescriptor (uint16_t __code_sel)
+{
+  uint16_t __data_sel;
+  int __res;
+  __asm volatile ("int {$}0x31; sbb{w} %1, %1"
+		  : "=a" (__data_sel), "=br" (__res)
+		  : "0" (0x000aU), "b" (__code_sel)
+		  : "cc", "memory");
+  return (int32_t) __res << 16 | __data_sel;
+}
+
 _LIBI86_ALT_INLINE int
 _DPMIFreeDOSMemoryBlock (uint16_t __sel)
 {
@@ -260,6 +272,14 @@ _DPMIGetCapabilities (uint16_t *__caps1, uint16_t *__caps2,
       *__caps3 = __c3;
     }
   return __res;
+}
+
+_LIBI86_ALT_INLINE uint16_t
+_DPMIGetNextSelectorIncrementValue (void)
+{
+  uint16_t __incr;
+  __asm volatile ("int {$}0x31" : "=a" (__incr) : "0" (0x0003U) : "cc");
+  return __incr;
 }
 
 _LIBI86_ALT_INLINE uint32_t
