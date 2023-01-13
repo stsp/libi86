@@ -237,9 +237,11 @@ else
 		   dpmi/dpmi-hosted.o \
 		   dpmi/dpmiallocatedosmemoryblock.o \
 		   dpmi/dpmiallocateldtdescriptors.o \
+		   dpmi/dpmiallocatememoryblock.o \
 		   dpmi/dpmicreatecsaliasdesc.o \
 		   dpmi/dpmifreedosmemoryblock.o \
 		   dpmi/dpmifreeldtdescriptor.o \
+		   dpmi/dpmifreememoryblock.o \
 		   dpmi/dpmigetcapabilities.o \
 		   dpmi/dpmigetdescriptor.o \
 		   dpmi/dpmigetnextselectorincrval.o \

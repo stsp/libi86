@@ -170,6 +170,12 @@ typedef struct
   }
 dpmi_host_info;
 
+typedef struct
+  {
+    uint32_t linear, handle;
+  }
+dpmi_mem_block;
+
 _LIBI86_ALT_INLINE dpmi_dos_block
 _DPMIAllocateDOSMemoryBlock (uint16_t __paras)
 {
@@ -184,6 +190,25 @@ _DPMIAllocateDOSMemoryBlock (uint16_t __paras)
 		  : "0" (0x0100U), "2" (__paras)
 		  : "cc", "memory");
   return __blk;
+}
+
+_LIBI86_ALT_INLINE int
+_DPMIAllocateMemoryBlock (dpmi_mem_block *__blk, uint32_t __size)
+{
+  int __res;
+  uint16_t __sz_hi = (uint16_t) (__size >> 16), __sz_lo = (uint16_t) __size;
+  uint16_t __lin_hi, __lin_lo, __hnd_hi, __hnd_lo;
+  __asm volatile ("int {$}0x31; sbb{w} %0, %0"
+		  : "=ar" (__res), "=b" (__lin_hi), "=c" (__lin_lo),
+		    "=S" (__hnd_hi), "=D" (__hnd_lo)
+		  : "a" (0x0501U), "1" (__sz_hi), "2" (__sz_lo)
+		  : "cc", "memory");
+  if (! __res)
+    {
+      __blk->linear = (uint32_t) __lin_hi << 16 | __lin_lo;
+      __blk->handle = (uint32_t) __hnd_hi << 16 | __hnd_lo;
+    }
+  return __res;
 }
 
 _LIBI86_ALT_INLINE int32_t
@@ -229,6 +254,18 @@ _DPMIFreeLDTDescriptor (uint16_t __sel)
 		  : "=abr" (__res)
 		  : "a" (0x0001U), "b" (__sel)
 		  : "cc", "memory");
+  return __res;
+}
+
+_LIBI86_ALT_INLINE int
+_DPMIFreeMemoryBlock (uint32_t __handle)
+{
+  int __res;
+  uint16_t __hnd_hi = (uint16_t) (__handle >> 16),
+	   __hnd_lo = (uint16_t) __handle;
+  __asm volatile ("int {$}0x31; sbb{w} %0, %0"
+		  : "=aSDr" (__res)
+		  : "a" (0x0502U), "S" (__hnd_hi), "D" (__hnd_lo));
   return __res;
 }
 

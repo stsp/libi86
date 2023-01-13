@@ -367,3 +367,27 @@ main (void)
   return 0;
 }]],[])
 AT_CLEANUP
+
+AT_SETUP([[_DPMIAllocateMemoryBlock, _DPMIFreeMemoryBlock]])
+AT_LIBI86_SKIP_IF_NO_DOSX
+AT_LIBI86_CHECK(dnl
+[[#include <dpmi.h>
+#include <string.h>
+int
+main (void)
+{
+  uint32_t size;
+  dpmi_mem_block blk;
+  if (__DPMI_hosted () != 1)
+    return 0;
+  for (size = 0x800; size <= 0x14000; size += 0x800)
+    {
+      memset (&blk, 0xf6, sizeof blk);
+      if (_DPMIAllocateMemoryBlock (&blk, size) != 0)
+	abort ();
+      if (_DPMIFreeMemoryBlock (blk.handle) != 0)
+	abort ();
+    }
+  return 0;
+}]],[])
+AT_CLEANUP
