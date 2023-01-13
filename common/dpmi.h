@@ -366,6 +366,30 @@ _DPMISetDescriptor (uint16_t __sel, __libi86_fpcv_t __desc)
 }
 
 _LIBI86_ALT_INLINE int
+_DPMISetSegmentBaseAddress (uint16_t __sel, uint32_t __addr)
+{
+  uint16_t __hi = (uint16_t) (__addr >> 16), __lo = (uint16_t) __addr;
+  int __res;
+  __asm volatile ("int {$}0x31; sbb{w} %0, %0"
+		  : "=abcdr" (__res)
+		  : "a" (0x0007U), "b" (__sel), "c" (__hi), "d" (__lo)
+		  : "cc", "memory");
+  return __res;
+}
+
+_LIBI86_ALT_INLINE int
+_DPMISetSegmentLimit (uint16_t __sel, uint32_t __lim)
+{
+  uint16_t __hi = (uint16_t) (__lim >> 16), __lo = (uint16_t) __lim;
+  int __res;
+  __asm volatile ("int {$}0x31; sbb{w} %0, %0"
+		  : "=abcdr" (__res)
+		  : "a" (0x0008U), "b" (__sel), "c" (__hi), "d" (__lo)
+		  : "cc", "memory");
+  return __res;
+}
+
+_LIBI86_ALT_INLINE int
 _DPMISimulateRealModeInterrupt (uint8_t __intr_no, uint8_t __flags,
 				uint16_t __words_to_copy,
 				rm_call_struct __far *__call_st)

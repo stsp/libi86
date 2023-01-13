@@ -308,3 +308,62 @@ main (void)
   return 0;
 }]],[])
 AT_CLEANUP
+
+AT_SETUP([[_DPMISetSegmentBaseAddress, _DPMISetSegmentLimit]])
+AT_LIBI86_SKIP_IF_NO_DOSX
+AT_LIBI86_CHECK(dnl
+[[#include <dpmi.h>
+#include <i86.h>
+extern void abort (void);
+unsigned x[] = { 0x461a, 0xbc57, 0x0fb1, 0x4ae9, 0x0649, 0xeaa7 };
+int
+main (void)
+{
+  int32_t res;
+  uint16_t sel;
+  unsigned i;
+  volatile unsigned expect;
+  uint32_t base;
+  if (__DPMI_hosted () != 1)
+    return 0;
+  for (i = 0; i < sizeof (x) / sizeof (x[0]); ++i)
+    {
+      res = _DPMIAllocateLDTDescriptors (1);
+      if (res <= 0)
+	abort ();
+      sel = (uint16_t) res;
+      base = _DPMIGetSegmentBaseAddress (FP_SEG (&x[i])) + FP_OFF (&x[i]);
+      if (_DPMISetSegmentBaseAddress (sel, base) != 0
+	  || _DPMISetSegmentLimit (sel, 1UL))
+	abort ();
+      switch (i)
+	{
+	case 0:
+	  expect = 0x461a ^ 0x3782;
+	  break;
+	case 1:
+	  expect = 0xbc57 ^ 0x3782;
+	  break;
+	case 2:
+	  expect = 0x0fb1 ^ 0x3782;
+	  break;
+	case 3:
+	  expect = 0x4ae9 ^ 0x3782;
+	  break;
+	case 4:
+	  expect = 0x0649 ^ 0x3782;
+	  break;
+	case 5:
+	  expect = 0xeaa7 ^ 0x3782;
+	  break;
+	default:
+	  abort ();
+	}
+      if ((__libi86_peek (sel, 0) ^ 0x3782) != expect)
+	abort ();
+      if (_DPMIFreeLDTDescriptor (sel) != 0)
+	abort ();
+    }
+  return 0;
+}]],[])
+AT_CLEANUP

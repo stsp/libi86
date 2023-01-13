@@ -249,6 +249,8 @@ else
 		   dpmi/dpmiidle.o \
 		   dpmi/dpmisegmenttodescriptor.o \
 		   dpmi/dpmisetdescriptor.o \
+		   dpmi/dpmisetsegmentbaseaddress.o \
+		   dpmi/dpmisetsegmentlimit.o \
 		   dpmi/dpmisimulaterealmodeint.o \
 		   dpmi/libi86-dpmi16-shim.o \
 		   graph/clearscreen.o \
