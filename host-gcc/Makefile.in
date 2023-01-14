@@ -250,6 +250,7 @@ else
 		   dpmi/dpmigetvirtualintstate.o \
 		   dpmi/dpmiidle.o \
 		   dpmi/dpmisegmenttodescriptor.o \
+		   dpmi/dpmisetdescaccrights.o \
 		   dpmi/dpmisetdescriptor.o \
 		   dpmi/dpmisetsegmentbaseaddress.o \
 		   dpmi/dpmisetsegmentlimit.o \

@@ -403,6 +403,17 @@ _DPMISetDescriptor (uint16_t __sel, __libi86_fpcv_t __desc)
 }
 
 _LIBI86_ALT_INLINE int
+_DPMISetDescriptorAccessRights (uint16_t __sel, uint16_t __ar)
+{
+  int __res;
+  __asm volatile ("int {$}0x31; sbb{w} %0, %0"
+		  : "=abcr" (__res)
+		  : "a" (0x0009U), "b" (__sel), "c" (__ar)
+		  : "cc", "memory");
+  return __res;
+}
+
+_LIBI86_ALT_INLINE int
 _DPMISetSegmentBaseAddress (uint16_t __sel, uint32_t __addr)
 {
   uint16_t __hi = (uint16_t) (__addr >> 16), __lo = (uint16_t) __addr;

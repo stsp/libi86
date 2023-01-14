@@ -325,6 +325,7 @@ When using ACK:
 |      IW |    G   | ``_DPMIIdle ();`` | ``int 0x2f`` function ``0x1680``.  This implementation also returns a byte value saying whether this function call is actually supported (``0x00``), or not (``0x80``).  It is OK to ignore this value.
 |      IW |    G   | ``_DPMISegmentToDescriptor (``__seg-para__``);`` | ``int 0x31`` function ``0x0002``.  On success, returns a protected-mode selector value for the real-mode segment _seg-para__``:0``.  On failure, returns a negative value.
 |      IW |    G   | ``_DPMISetDescriptor (``__sel__``,`` *__desc__``);`` | ``int 0x31`` function ``0x000c``.  Returns 0 on success, -1 on error.
+|      IW |    G   | ``_DPMISetDescriptorAccessRights (``__sel__``,`` __ar__``);`` | ``int 0x31`` function ``0x0009``.  Returns 0 on success, -1 on error.
 |      IW |    G   | ``_DPMISetSegmentBaseAddress (``__sel__``,`` __addr__``);`` | ``int 0x31`` function ``0x0007``.  Returns 0 on success, -1 on error.
 |      IW |    G   | ``_DPMISetSegmentLimit (``__sel__``,`` __lim__``);`` | ``int 0x31`` function ``0x0008``.  Returns 0 on success, -1 on error.
 |      IW |    G   | ``_DPMISimulateRealModeInterrupt (``__inter-no__``,`` __reset__``,`` __words-to-copy__``,`` *__call-struct__``);`` | ``int 0x31`` function ``0x0300``.  Returns 0 on success, -1 on error.  _words-to-copy_ should probably be 0.
