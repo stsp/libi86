@@ -128,12 +128,12 @@ AT_CHECK([AT_LIBI86_RUN($4,,$5,$6,$7)],,[[expout]],[[ignore]])])
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_B],[dnl
 if test yes = "$ac_compiler_gnu"; then
 _AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os ]]$@)
-_AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os -std=gnu89 ]]$@)
 if "$at_arg_x_test_underlying"; then :; else
+_AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os -std=gnu89 ]]$@)
 if "$at_arg_x_test_common"; then :; else
 _AT_LIBI86_DO_CHECK_EXPOUT_A([[-O0 ]]$@)
-fi
 _AT_LIBI86_DO_CHECK_EXPOUT_A([[-Os -masm=intel ]]$@)
+fi
 fi
 else
 _AT_LIBI86_DO_CHECK_EXPOUT_A([[-O6 -S ]]$@)
@@ -149,8 +149,8 @@ _AT_LIBI86_DO_CHECK_CXX_EXPOUT_A([[-Os ]]$@)
 if "$at_arg_x_test_underlying"; then :; else
 if "$at_arg_x_test_common"; then :; else
 _AT_LIBI86_DO_CHECK_CXX_EXPOUT_A([[-O0 ]]$@)
-fi
 _AT_LIBI86_DO_CHECK_CXX_EXPOUT_A([[-Os -masm=intel ]]$@)
+fi
 fi])
 
 m4_define([_AT_LIBI86_DO_CHECK_EXPOUT_C],[dnl
