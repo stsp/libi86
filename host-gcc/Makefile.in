@@ -111,6 +111,7 @@ ifeq "" "$(ELKS_P)"
 endif
 
 OBJS		=  conio/libi86-con-name.o \
+		   conio/libi86-con-in-fd.o \
 		   conio/libi86-con-out-fd.o \
 		   i86/disable.o \
 		   i86/enable.o \
@@ -171,7 +172,6 @@ else
 		   conio/libi86-bc-vcprintf.o \
 		   conio/libi86-bc-vcprintf-autofloat.o \
 		   conio/libi86-bc-vcscanf.o \
-		   conio/libi86-con-in-fd.o \
 		   conio/libi86-ungetch-buf.o \
 		   conio/libi86-vid-bc-insdelline.o \
 		   conio/libi86-vid-bc-outmem-do.o \

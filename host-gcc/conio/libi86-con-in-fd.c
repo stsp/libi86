@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018--2021 TK Chia
+ * Copyright (c) 2018--2023 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -29,7 +29,8 @@
 
 /*
  * This module initializes the <conio.h> subsystem to make sure that there
- * is an input file descriptor which is open to the console device `CON'.
+ * is an input file descriptor which is open to the console device `CON'
+ * (MS-DOS) or the controlling terminal `/dev/tty' (ELKS).
  *
  * This is (in a way) an improvement over the classical Turbo C and Open
  * Watcom C/C++'s <conio.h> code: they implement kbhit (), getch (), etc.,
@@ -42,17 +43,30 @@
 
 #define _LIBI86_COMPILING_
 #include "libi86/internal/conio.h"
+#ifdef __ELKS__
+# include <stdbool.h>
+# include <termios.h>
+# include <unistd.h>
+#endif
 
-#ifdef __MSDOS__
 int __libi86_con_in_fd = 0;
+#if defined __MSDOS__
 static unsigned __libi86_con_in_info_word = 0;
+#elif defined __ELKS__
+static bool __libi86_con_in_reset_termios = false;
+static struct termios __libi86_con_in_startup_termios;
+#else
+# error
+#endif
 
 #pragma GCC diagnostic ignored "-Wprio-ctor-dtor"
 __attribute__ ((constructor (99))) static void
 __libi86_con_in_fd_init (void)
 {
-  unsigned dw;
   int fd;
+
+#if defined __MSDOS__
+  unsigned dw;
 
   /*
    * If fd 0 is not the console input, open an input fd on `CON'.  Set the
@@ -85,14 +99,42 @@ __libi86_con_in_fd_init (void)
 	    }
 	}
     }
+#elif defined __ELKS__  /* !__MSDOS__ */
+  /*
+   * If fd 0 is not a terminal device, open an input fd on `/dev/tty'.  Set
+   * the input fd to use raw mode.
+   */
+  fd = 0;
+  if (! isatty (0))
+    {
+      fd = __libi86_tty_open (__libi86_con_name, O_RDONLY);
+      if (fd >= 0)
+	__libi86_con_in_fd = fd;
+      else
+	fd = 0;
+    }
+
+  if (tcgetattr (fd, &__libi86_con_in_startup_termios) == 0)
+    {
+      struct termios raw_mode = __libi86_con_in_startup_termios;
+      cfmakeraw (&raw_mode);
+      if (tcsetattr (fd, TCSAFLUSH, &raw_mode) == 0)
+	__libi86_con_in_reset_termios = true;
+    }
+#endif  /* __ELKS__ */
 }
 
 __attribute__ ((destructor (100))) static void
 __libi86_con_in_fd_fini (void)
 {
+#if defined __MSDOS__
   if (__libi86_con_in_fd != 0
       && (__libi86_con_in_info_word & 0x0080u) != 0)
     __libi86_con_set_dev_info_word (__libi86_con_in_fd,
 				    __libi86_con_in_info_word);
+#elif defined __ELKS__  /* ! __MSDOS__ */
+  if (__libi86_con_in_reset_termios)
+    tcsetattr (__libi86_con_in_fd, TCSAFLUSH,
+	       &__libi86_con_in_startup_termios);
+#endif  /* __ELKS__ */
 }
-#endif /* __MSDOS__ */
