@@ -371,6 +371,15 @@ _DPMIIdle (void)
   return (uint8_t) __res;
 }
 
+_LIBI86_ALT_INLINE int16_t
+_DPMIModeDetect (void)
+{
+  int16_t __res;
+  __asm volatile ("int {$}0x2f" : "=a" (__res) : "0" (0x1686U)
+				: "cc", "memory");
+  return __res;
+}
+
 _LIBI86_ALT_INLINE int32_t
 _DPMISegmentToDescriptor (uint16_t __para)
 {

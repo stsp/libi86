@@ -27,7 +27,7 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 AT_BANNER([[<dpmi.h> tests]])
 
-AT_SETUP([[__DPMI_hosted]])
+AT_SETUP([[__DPMI_hosted, _DPMIModeDetect]])
 AT_LIBI86_SKIP_IF_NO_DOSX
 AT_LIBI86_CHECK(dnl
 [[#include <stdlib.h>
@@ -42,6 +42,21 @@ main (void)
    */
   if (__libi86_DPMI_hosted () != __DPMI_hosted ())
     abort ();
+  /*
+   * Also make sure _DPMIModeDetect () returns the right result, at least
+   * in DPMI mode.
+   */
+  switch (__DPMI_hosted ())
+    {
+    case 1:
+      if (_DPMIModeDetect () != 0)
+	abort ();
+      break;
+    case -1:
+      break;
+    default:
+      abort ();
+    }
   return 0;
 }]],[])
 AT_CLEANUP
