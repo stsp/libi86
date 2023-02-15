@@ -27,8 +27,9 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Given libi86.a, automatically generate a header file which defines macros
-# for routines implemented in the current libi86.
+# Create a header file <FOO.h> (for some FOO) which "extends" the underlying
+# C library's <FOO.h>, by also including <libi86/FOO.h> when not in strict
+# ISO C mode.
 
 set -e
 
