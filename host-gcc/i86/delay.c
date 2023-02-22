@@ -30,6 +30,11 @@
 #define _LIBI86_COMPILING_
 #include <unistd.h>
 #include "i86.h"
+#include "libi86/internal/acconfig.h"
+
+#ifndef _LIBI86_INTERNAL_HAVE_USECONDS_T
+typedef unsigned long useconds_t;
+#endif
 
 void
 delay (unsigned ms)

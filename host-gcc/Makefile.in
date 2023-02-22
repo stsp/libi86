@@ -113,6 +113,7 @@ endif
 OBJS		=  conio/libi86-con-name.o \
 		   conio/libi86-con-in-fd.o \
 		   conio/libi86-con-out-fd.o \
+		   i86/delay.o \
 		   i86/disable.o \
 		   i86/enable.o \
 		   i86/libi86-sound-by-divisor.o \
@@ -278,7 +279,6 @@ else
 		   graph/settextposition.o \
 		   graph/settextwindow.o \
 		   graph/setvideomode.o \
-		   i86/delay.o \
 		   i86/int86.o \
 		   i86/int86x.o \
 		   i86/intr.o \
