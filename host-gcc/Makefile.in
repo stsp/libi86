@@ -116,6 +116,23 @@ OBJS		=  conio/libi86-con-name.o \
 		   i86/delay.o \
 		   i86/disable.o \
 		   i86/enable.o \
+		   i86/int86.o \
+		   i86/int86x.o \
+		   i86/intr.o \
+		   i86/intrf.o \
+		   i86/libi86-bc-int86.o \
+		   i86/libi86-bc-int86-do.o \
+		   i86/libi86-bc-int86x.o \
+		   i86/libi86-bc-int86x-do.o \
+		   i86/libi86-int86-do.o \
+		   i86/libi86-int86x-do.o \
+		   $(foreach da,0 1 2 3, \
+		     $(foreach db,0 1 2 3 4 5 6 7, \
+		       $(foreach dc,0 1 2 3 4 5 6 7, \
+			 i86/libi86-intr-call-0$(da)$(db)$(dc).o))) \
+		   i86/libi86-intrf-do.o \
+		   i86/libi86-intr-dispatch.o \
+		   i86/segread.o \
 		   i86/libi86-sound-by-divisor.o \
 		   i86/nosound.o \
 		   i86/sound.o
@@ -279,23 +296,6 @@ else
 		   graph/settextposition.o \
 		   graph/settextwindow.o \
 		   graph/setvideomode.o \
-		   i86/int86.o \
-		   i86/int86x.o \
-		   i86/intr.o \
-		   i86/intrf.o \
-		   i86/libi86-bc-int86.o \
-		   i86/libi86-bc-int86-do.o \
-		   i86/libi86-bc-int86x.o \
-		   i86/libi86-bc-int86x-do.o \
-		   i86/libi86-int86-do.o \
-		   i86/libi86-int86x-do.o \
-		   $(foreach da,0 1 2 3, \
-		     $(foreach db,0 1 2 3 4 5 6 7, \
-		       $(foreach dc,0 1 2 3 4 5 6 7, \
-			 i86/libi86-intr-call-0$(da)$(db)$(dc).o))) \
-		   i86/libi86-intrf-do.o \
-		   i86/libi86-intr-dispatch.o \
-		   i86/segread.o \
 		   process/getpid.o \
 		   process/libi86-comspec.o \
 		   process/spawnl.o \
