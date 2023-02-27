@@ -40,5 +40,7 @@ _ltoa (long value, char *buffer, int radix)
     return _ulltoa ((unsigned long long) (unsigned long) value, buffer, radix);
 }
 
+#ifndef __ELKS__
 _LIBI86_WEAK_ALIAS (_ltoa) char *
 ltoa (long, char *, int);
+#endif

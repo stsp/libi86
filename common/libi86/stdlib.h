@@ -129,7 +129,7 @@ extern void _splitpath (const char *__path, char __drive[_MAX_DRIVE],
 			char __ext[_MAX_EXT]);
 extern char *_ultoa (unsigned long __value, char *__buffer, int __radix);
 #ifndef _LIBI86_COMPILING_
-# ifndef __STRICT_ANSI__
+# if ! defined __STRICT_ANSI__ && ! defined __ELKS__
 #   ifdef _LIBI86_INTERNAL_HAVE_LONG_LONG_INT
 _LIBI86_REDIRECT_3 (char *, lltoa, long long, char *, int, _lltoa)
 _LIBI86_REDIRECT_3 (char *, ulltoa, unsigned long long, char *, int, _ulltoa)

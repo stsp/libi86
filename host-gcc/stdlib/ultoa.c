@@ -36,5 +36,7 @@ _ultoa (unsigned long value, char *buffer, int radix)
   return _ulltoa ((unsigned long long) value, buffer, radix);
 }
 
+#ifndef __ELKS__
 _LIBI86_WEAK_ALIAS (_ultoa) char *
 ultoa (unsigned long, char *, int);
+#endif

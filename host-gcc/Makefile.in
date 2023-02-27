@@ -135,7 +135,22 @@ OBJS		=  conio/libi86-con-name.o \
 		   i86/segread.o \
 		   i86/libi86-sound-by-divisor.o \
 		   i86/nosound.o \
-		   i86/sound.o
+		   i86/sound.o \
+		   stdlib/lltoa.o \
+		   stdlib/ltoa.o \
+		   stdlib/ulltoa.o \
+		   stdlib/ultoa.o \
+		   string/fmemchr.o \
+		   string/fmemcmp.o \
+		   string/fmemcpy.o \
+		   string/fmemmove.o \
+		   string/fmempcpy.o \
+		   string/fmemset.o \
+		   string/fstpcpy.o \
+		   string/fstrcat.o \
+		   string/fstrcpy.o \
+		   string/fstrlen.o \
+		   string/libi86-fmemmove-backward.o
 ifneq "" "$(ELKS_P)"
   OBJS		+= conio/libi86-vid-is-console.o
 else
@@ -308,25 +323,10 @@ else
 		   process/spawnvpe.o \
 		   process/system.o \
 		   stdlib/fullpath.o \
-		   stdlib/lltoa.o \
-		   stdlib/ltoa.o \
 		   stdlib/makepath.o \
 		   stdlib/osmajor-osminor.o \
 		   stdlib/psp.o \
-		   stdlib/splitpath.o \
-		   stdlib/ulltoa.o \
-		   stdlib/ultoa.o \
-		   string/fmemchr.o \
-		   string/fmemcmp.o \
-		   string/fmemcpy.o \
-		   string/fmemmove.o \
-		   string/fmempcpy.o \
-		   string/fmemset.o \
-		   string/fstpcpy.o \
-		   string/fstrcat.o \
-		   string/fstrcpy.o \
-		   string/fstrlen.o \
-		   string/libi86-fmemmove-backward.o
+		   stdlib/splitpath.o
   ifeq "" "$(filter-out -mcmodel=tiny -mcmodel=small, \
 			$(filter -mcmodel=%,$(CC) $(CFLAGS) $(MULTILIB)))"
     OBJS	+= dos/libi86-call5-tiny.o

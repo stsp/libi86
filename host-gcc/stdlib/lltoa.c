@@ -45,5 +45,7 @@ _lltoa (long long value, char *buffer, int radix)
   return buffer;
 }
 
+#ifndef __ELKS__
 _LIBI86_WEAK_ALIAS (_lltoa) char *
 lltoa (long long, char *, int);
+#endif
