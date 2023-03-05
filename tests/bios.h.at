@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018 TK Chia
+dnl Copyright (c) 2018--2023 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -28,7 +28,7 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 AT_BANNER([[<bios.h> tests]])
 
 AT_SETUP([[_bios_memsize]])
-AT_LIBI86_CHECK_CXX(dnl
+AT_LIBI86_CHECK_DOS_CXX(dnl
 [[#include <stdlib.h>
 #include <bios.h>
 #ifndef __cplusplus
@@ -44,7 +44,7 @@ int main (void)
     abort ();
   return 0;
 }]],[])
-AT_LIBI86_CHECK_FOR_NONDOSX(dnl
+AT_LIBI86_CHECK_DOS_FOR_NONDOSX(dnl
 [[#include <stdlib.h>
 #include <bios.h>
 #ifdef __GNUC__
@@ -81,7 +81,7 @@ int main (void)
 AT_CLEANUP
 
 AT_SETUP([[_bios_equiplist]])
-AT_LIBI86_CHECK_FOR_NONDOSX(dnl
+AT_LIBI86_CHECK_DOS_FOR_NONDOSX(dnl
 [[#include <stdlib.h>
 #include <bios.h>
 int main (void)
@@ -100,7 +100,7 @@ dnl FIXME: dosemu 1.4.0.8 with `-input ...' and a DPMI program crashes with
 dnl "ERROR: do_call_back() executed within the signal context!", and it
 dnl seems non-trivial to work around this problem.  For now, turn off the
 dnl _bios_keybrd (.) tests that involve DPMI.  -- tkchia 20190519
-AT_LIBI86_CHECK_CONSOLE_FOR_NONDOSX(dnl
+AT_LIBI86_CHECK_DOS_CONSOLE_FOR_NONDOSX(dnl
 [[#include <stdlib.h>
 #include <unistd.h>
 #include <bios.h>
@@ -128,7 +128,7 @@ int main (void)
 AT_CLEANUP
 
 AT_SETUP([[_bios_disk]])
-AT_LIBI86_CHECK_FOR_NONDOSX(dnl
+AT_LIBI86_CHECK_DOS_FOR_NONDOSX(dnl
 [[#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -260,7 +260,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_bios_timeofday]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <stdlib.h>
 #include <bios.h>
 int
@@ -285,7 +285,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_bios_joystick]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <stdlib.h>
 #include <bios.h>
 int

@@ -65,6 +65,8 @@ else
   fi
 fi
 
+: ${ELKSEMU='@ELKSEMU@'}
+
 : ${CC='@CC@'}
 : ${ac_compiler_gnu='@ac_compiler_gnu@'}
 : ${ac_cv_type_long_long_int='@ac_cv_type_long_long_int@'}

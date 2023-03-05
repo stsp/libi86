@@ -66,6 +66,7 @@ AC_PROG_INSTALL
 AC_PROG_CC
 AC_PROG_CXX
 AC_PATH_PROG(DOSEMU, dosemu, /bin/false)
+AC_PATH_PROG(ELKSEMU, elksemu, /bin/false)
 AC_TYPE_LONG_LONG_INT
 
 AC_SUBST(ac_compiler_gnu)

@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018--2020 TK Chia
+dnl Copyright (c) 2018--2023 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -38,7 +38,7 @@ AT_CLEANUP
 AT_SETUP([[dosemu]])
 
 AT_CHECK([["$DOSEMU" $DOSEMU_OPTS --version]],,[[ignore]],[[ignore]])
-AT_CHECK([AT_LIBI86_RUN(hello.com,"$abs_srcdir")]dnl
+AT_CHECK([AT_LIBI86_RUN_DOS(hello.com,"$abs_srcdir")]dnl
 ,,[[Hello world!
 ]],[[ignore]])
 

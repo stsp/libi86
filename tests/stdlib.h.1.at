@@ -1,4 +1,4 @@
-dnl Copyright (c) 2019--2022 TK Chia
+dnl Copyright (c) 2019--2023 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -28,7 +28,7 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 AT_BANNER([[<libi86/stdlib.h> tests (part 1)]])
 
 AT_SETUP([[_osmajor, _osminor]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <i86.h>
 #include <stdlib.h>
 #include <libi86/stdlib.h>

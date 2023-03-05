@@ -113,6 +113,10 @@ endif
 OBJS		=  conio/libi86-con-name.o \
 		   conio/libi86-con-in-fd.o \
 		   conio/libi86-con-out-fd.o \
+		   dos/peek.o \
+		   dos/peekb.o \
+		   dos/poke.o \
+		   dos/pokeb.o \
 		   i86/delay.o \
 		   i86/disable.o \
 		   i86/enable.o \
@@ -260,10 +264,6 @@ else
 		   dos/libi86-ret-set-errno.o \
 		   dos/makefcb.o \
 		   dos/parsfnm.o \
-		   dos/peek.o \
-		   dos/peekb.o \
-		   dos/poke.o \
-		   dos/pokeb.o \
 		   dos/setswitchar.o \
 		   dos-dbcs/dos-get-dbcs-lead-table.o \
 		   dos-dbcs/libi86-msdos-dbcs-lead-p.o \
