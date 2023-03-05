@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021--2022 TK Chia
+ * Copyright (c) 2021--2023 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -39,8 +39,10 @@ _LIBI86_BEGIN_EXTERN_C
 _LIBI86_LIBC_DEFER_1 (int, chdir, const char*, @ac_cv_func_chdir@)
 _LIBI86_LIBC_DEFER_2 (char *, getcwd, char *, __libi86_size_t,
 		      @ac_cv_func_getcwd@)
+#ifdef __MSDOS__
 extern char *_getdcwd (int __drive, char *__buf, __libi86_size_t __size);
 extern int _getdrive (void);
+#endif
 _LIBI86_LIBC_DEFER_1 (int, rmdir, const char*, @ac_cv_func_rmdir@)
 
 _LIBI86_END_EXTERN_C
