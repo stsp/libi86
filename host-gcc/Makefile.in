@@ -140,6 +140,7 @@ OBJS		=  conio/libi86-con-name.o \
 		   i86/libi86-sound-by-divisor.o \
 		   i86/nosound.o \
 		   i86/sound.o \
+		   process/getpid.o \
 		   stdlib/lltoa.o \
 		   stdlib/ltoa.o \
 		   stdlib/ulltoa.o \
@@ -311,7 +312,6 @@ else
 		   graph/settextposition.o \
 		   graph/settextwindow.o \
 		   graph/setvideomode.o \
-		   process/getpid.o \
 		   process/libi86-comspec.o \
 		   process/spawnl.o \
 		   process/spawnle.o \
