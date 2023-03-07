@@ -45,6 +45,9 @@ AT_ARG_OPTION_ARG([x-with-elksemu],dnl
 AS_HELP_STRING([--x-with-elksemu=PATH],[run tests with specified elksemu]),dnl
 [ELKSEMU="$at_optarg"],[unset ELKSEMU])
 
+AT_ARG_OPTION([x-without-elksemu],dnl
+AS_HELP_STRING([--x-without-elksemu],[skip ELKS tests]))
+
 AT_ARG_OPTION_ARG([x-with-dosemu-options],dnl
 AS_HELP_STRING([--x-with-dosemu-options=OPTS],dnl
 [pass options OPTS to dosemu]),dnl

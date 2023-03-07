@@ -44,6 +44,13 @@ AT_CHECK([AT_LIBI86_RUN_DOS(hello.com,"$abs_srcdir")]dnl
 
 AT_CLEANUP
 
+AT_SETUP([[elksemu]])
+
+AT_SKIP_IF(["$at_arg_x_without_elksemu"])
+AT_CHECK([["$ELKSEMU" $ELKSEMU_OPTS -t]],,[[ignore]],[[ignore]])
+
+AT_CLEANUP
+
 AT_SETUP([[C compiler toolchain]])
 
 AT_CHECK([[$CC --version -v]],,[[ignore]],[[ignore]])

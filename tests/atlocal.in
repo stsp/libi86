@@ -66,6 +66,9 @@ else
 fi
 
 : ${ELKSEMU='@ELKSEMU@'}
+if test /bin/false = "$ELKSEMU"; then
+  at_arg_x_without_elksemu=:
+fi
 
 : ${CC='@CC@'}
 : ${ac_compiler_gnu='@ac_compiler_gnu@'}
