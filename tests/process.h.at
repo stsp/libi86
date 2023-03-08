@@ -1,4 +1,4 @@
-dnl Copyright (c) 2022 TK Chia
+dnl Copyright (c) 2022--2023 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -50,7 +50,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_spawnv, _spawnve]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dos.h>
 #include <process.h>
 #include <stdio.h>
@@ -114,7 +114,7 @@ yo
 ]])
 dnl ACK does not properly handle quoted arguments (yet).  -- tkchia 20220717
 if test yes = "$ac_compiler_gnu"; then
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <process.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -154,7 +154,7 @@ vincent = van gogh
 yo
 ]])
 fi
-AT_LIBI86_CHECK_WITH_BAT_FILE(dnl
+AT_LIBI86_CHECK_DOS_WITH_BAT_FILE(dnl
 [[#include <process.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -190,7 +190,7 @@ yo
 AT_CLEANUP
 
 AT_SETUP([[_spawnvp]])
-AT_LIBI86_CHECK_WITH_BAT_FILE(dnl
+AT_LIBI86_CHECK_DOS_WITH_BAT_FILE(dnl
 [[#include <direct.h>
 #include <process.h>
 #include <stdio.h>
@@ -224,7 +224,7 @@ yo
 AT_CLEANUP
 
 AT_SETUP([[_spawnvpe]])
-AT_LIBI86_CHECK_WITH_BAT_FILE(dnl
+AT_LIBI86_CHECK_DOS_WITH_BAT_FILE(dnl
 [[#include <direct.h>
 #include <process.h>
 #include <stdio.h>
@@ -282,7 +282,7 @@ yo
 AT_CLEANUP
 
 AT_SETUP([[_spawnl, _spawnle]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <process.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -328,7 +328,7 @@ yo
 AT_CLEANUP
 
 AT_SETUP([[_spawnlp]])
-AT_LIBI86_CHECK_WITH_BAT_FILE(dnl
+AT_LIBI86_CHECK_DOS_WITH_BAT_FILE(dnl
 [[#include <direct.h>
 #include <process.h>
 #include <stdio.h>
@@ -364,7 +364,7 @@ yo
 AT_CLEANUP
 
 AT_SETUP([[_spawnlpe]])
-AT_LIBI86_CHECK_WITH_BAT_FILE(dnl
+AT_LIBI86_CHECK_DOS_WITH_BAT_FILE(dnl
 [[#include <direct.h>
 #include <process.h>
 #include <stdio.h>
@@ -397,7 +397,7 @@ yo
 AT_CLEANUP
 
 AT_SETUP([[system]])
-AT_LIBI86_CHECK_WITH_BAT_FILE(dnl
+AT_LIBI86_CHECK_DOS_WITH_BAT_FILE(dnl
 [[#include <process.h>
 #include <stdlib.h>
 void abort (void);

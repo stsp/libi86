@@ -1,4 +1,4 @@
-dnl Copyright (c) 2020--2022 TK Chia
+dnl Copyright (c) 2020--2023 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -41,7 +41,19 @@ AT_ARG_OPTION_ARG([x-with-dosemu],dnl
 AS_HELP_STRING([--x-with-dosemu=PATH],[run tests with specified dosemu]),dnl
 [DOSEMU="$at_optarg"],[unset DOSEMU])
 
+AT_ARG_OPTION_ARG([x-with-elksemu],dnl
+AS_HELP_STRING([--x-with-elksemu=PATH],[run tests with specified elksemu]),dnl
+[ELKSEMU="$at_optarg"],[unset ELKSEMU])
+
+AT_ARG_OPTION([x-without-elksemu],dnl
+AS_HELP_STRING([--x-without-elksemu],[skip ELKS tests]))
+
 AT_ARG_OPTION_ARG([x-with-dosemu-options],dnl
 AS_HELP_STRING([--x-with-dosemu-options=OPTS],dnl
 [pass options OPTS to dosemu]),dnl
 [DOSEMU_OPTS="$at_optarg"],[unset DOSEMU_OPTS])
+
+AT_ARG_OPTION_ARG([x-with-elksemu-options],dnl
+AS_HELP_STRING([--x-with-elksemu-options=OPTS],dnl
+[pass options OPTS to elksemu]),dnl
+[ELKSEMU_OPTS="$at_optarg"],[unset ELKSEMU_OPTS])

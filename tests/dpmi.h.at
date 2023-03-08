@@ -1,4 +1,4 @@
-dnl Copyright (c) 2020--2021 TK Chia
+dnl Copyright (c) 2020--2023 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -29,7 +29,7 @@ AT_BANNER([[<dpmi.h> tests]])
 
 AT_SETUP([[__DPMI_hosted, _DPMIModeDetect]])
 AT_LIBI86_SKIP_IF_NO_DOSX
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <stdlib.h>
 #include <dpmi.h>
 int
@@ -63,7 +63,7 @@ AT_CLEANUP
 
 AT_SETUP([[_DPMISegmentToDescriptor]])
 AT_LIBI86_SKIP_IF_NO_DOSX
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <stdint.h>
 #include <stdlib.h>
 #include <bios.h>
@@ -93,7 +93,7 @@ AT_CLEANUP
 
 AT_SETUP([[_DPMIGetSegmentBaseAddress]])
 AT_LIBI86_SKIP_IF_NO_DOSX
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <stdint.h>
 #include <stdlib.h>
 #include <dpmi.h>
@@ -118,7 +118,7 @@ AT_CLEANUP
 
 AT_SETUP([[_DPMISimulateRealModeInterrupt]])
 AT_LIBI86_SKIP_IF_NO_DOSX
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -144,7 +144,7 @@ AT_CLEANUP
 
 AT_SETUP([[_DPMIIdle, _DPMIGetVirtualInterruptState]])
 AT_LIBI86_SKIP_IF_NO_DOSX
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -202,7 +202,7 @@ AT_CLEANUP
 
 AT_SETUP([[_DPMIGetCapabilities]])
 AT_LIBI86_SKIP_IF_NO_DOSX
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dpmi.h>
 #include <stddef.h>
 #include <string.h>
@@ -232,7 +232,7 @@ AT_CLEANUP
 
 AT_SETUP([[_DPMIGetNextSelectorIncrementValue]])
 AT_LIBI86_SKIP_IF_NO_DOSX
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dpmi.h>
 #include <i86.h>
 #include <conio.h>
@@ -258,7 +258,7 @@ AT_CLEANUP
 
 AT_SETUP([[_DPMIAllocateLDTDescriptors, _DPMIFreeLDTDescriptor]])
 AT_LIBI86_SKIP_IF_NO_DOSX
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dpmi.h>
 #include <i86.h>
 #include <conio.h>
@@ -291,7 +291,7 @@ AT_CLEANUP
 
 AT_SETUP([[_DPMICreateCodeSegmentAliasDescriptor]])
 AT_LIBI86_SKIP_IF_NO_DOSX
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dpmi.h>
 #include <i86.h>
 extern void abort (void);
@@ -326,7 +326,7 @@ AT_CLEANUP
 
 AT_SETUP([[_DPMISetSegmentBaseAddress, _DPMISetSegmentLimit]])
 AT_LIBI86_SKIP_IF_NO_DOSX
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dpmi.h>
 #include <i86.h>
 extern void abort (void);
@@ -385,7 +385,7 @@ AT_CLEANUP
 
 AT_SETUP([[_DPMISetDescriptorAccessRights]])
 AT_LIBI86_SKIP_IF_NO_DOSX
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dpmi.h>
 #include <i86.h>
 extern void abort (void);
@@ -457,7 +457,7 @@ AT_CLEANUP
 
 AT_SETUP([[_DPMIAllocateMemoryBlock, _DPMIFreeMemoryBlock]])
 AT_LIBI86_SKIP_IF_NO_DOSX
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dpmi.h>
 #include <string.h>
 int

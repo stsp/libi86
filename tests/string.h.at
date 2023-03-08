@@ -1,4 +1,4 @@
-dnl Copyright (c) 2019--2021 TK Chia
+dnl Copyright (c) 2019--2023 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -28,7 +28,7 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 AT_BANNER([[<libi86/string.h> tests]])
 
 AT_SETUP([[_fmemcmp]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <i86.h>
 #include <stdint.h>
 #include <libi86/stdlib.h>
@@ -98,7 +98,7 @@ main (void)
   return 0;
 }]],[[world hello!!!
 ]])
-AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX(dnl
+AT_LIBI86_CHECK_DOS_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX(dnl
 [[#include <dos.h>
 #include <stdlib.h>
 #include <unistd.h>

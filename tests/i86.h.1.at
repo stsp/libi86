@@ -48,7 +48,7 @@ main (void)
     abort ();
   return 0;
 }]],[])
-AT_LIBI86_CHECK_FOR_NONDOSX(dnl
+AT_LIBI86_CHECK_DOS_FOR_NONDOSX(dnl
 [[#include <stdlib.h>
 #include <i86.h>
 #if !defined __IA16_CMODEL_TINY__ && defined __FAR

@@ -46,8 +46,8 @@ build_and_install:gcc:
   script:
     - add-apt-repository -y ppa:tkchia/build-ia16
     - apt-get update -y
-    - apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
-    - su user -c './tests/ci-build-and-install.sh'
+    - apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf elksemu
+    - su user -c './tests/ci-build-and-install.sh --enable-elks-libc'
   timeout: 3h
   artifacts:
     paths:
@@ -74,7 +74,7 @@ test1:gcc:
   script:
     - add-apt-repository -y ppa:tkchia/build-ia16
     - apt-get update -y
-    - apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
+    - apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf elksemu
     - touch -c ./tests/testsuite
     - >
         n_tests="`su user -c './tests/ci-count-tests.sh'`"
@@ -93,7 +93,7 @@ test2:gcc:
   script:
     - add-apt-repository -y ppa:tkchia/build-ia16
     - apt-get update -y
-    - apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
+    - apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf elksemu
     - touch -c ./tests/testsuite
     - >
         n_tests="`su user -c './tests/ci-count-tests.sh'`"
@@ -112,7 +112,7 @@ test3:gcc:
   script:
     - add-apt-repository -y ppa:tkchia/build-ia16
     - apt-get update -y
-    - apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
+    - apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf elksemu
     - touch -c ./tests/testsuite
     - >
         n_tests="`su user -c './tests/ci-count-tests.sh'`"

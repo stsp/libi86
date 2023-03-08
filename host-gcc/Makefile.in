@@ -71,10 +71,16 @@ ELKS_P		= $(filter -melks% -mr=elks%,$(CC) $(CFLAGS) $(MULTILIB))
 
 INSTALL_LIBS	= libi86.a
 INSTALL_SPECS	= $(CLEAN_SPECS)
-INSTALL_HEADERS	= i86.h \
+INSTALL_HEADERS	= dos.h \
+		  i86.h \
+		  libi86/stdlib.h \
+		  libi86/string.h \
+		  libi86/internal/bc-portio.h \
 		  libi86/internal/cdefs.h \
 		  libi86/internal/farptr.h \
+		  libi86/internal/inp-portio.h \
 		  libi86/internal/libc-defer.h \
+		  libi86/internal/portio.h \
 		  $(CLEAN_HEADERS) \
 		  $(DISTCLEAN_HEADERS)
 CLEAN_HEADERS	= libi86/config.h
@@ -90,19 +96,13 @@ ifeq "" "$(ELKS_P)"
 		+= bios.h \
 		   conio.h \
 		   dir.h \
-		   dos.h \
 		   dpmi.h \
 		   graph.h \
 		   share.h \
 		   libi86/stdio.h \
-		   libi86/stdlib.h \
-		   libi86/string.h \
-		   libi86/internal/bc-portio.h \
 		   libi86/internal/bda.h \
 		   libi86/internal/far-cxx.h \
 		   libi86/internal/features.h \
-		   libi86/internal/inp-portio.h \
-		   libi86/internal/portio.h \
 		   libi86/internal/process.h
   CLEAN_HEADERS	+= libi86/internal/wrap/stdio.h \
 		   libi86/internal/wrap/stdlib.h \
@@ -113,6 +113,10 @@ endif
 OBJS		=  conio/libi86-con-name.o \
 		   conio/libi86-con-in-fd.o \
 		   conio/libi86-con-out-fd.o \
+		   dos/peek.o \
+		   dos/peekb.o \
+		   dos/poke.o \
+		   dos/pokeb.o \
 		   i86/delay.o \
 		   i86/disable.o \
 		   i86/enable.o \
@@ -136,6 +140,7 @@ OBJS		=  conio/libi86-con-name.o \
 		   i86/libi86-sound-by-divisor.o \
 		   i86/nosound.o \
 		   i86/sound.o \
+		   process/getpid.o \
 		   stdlib/lltoa.o \
 		   stdlib/ltoa.o \
 		   stdlib/ulltoa.o \
@@ -260,10 +265,6 @@ else
 		   dos/libi86-ret-set-errno.o \
 		   dos/makefcb.o \
 		   dos/parsfnm.o \
-		   dos/peek.o \
-		   dos/peekb.o \
-		   dos/poke.o \
-		   dos/pokeb.o \
 		   dos/setswitchar.o \
 		   dos-dbcs/dos-get-dbcs-lead-table.o \
 		   dos-dbcs/libi86-msdos-dbcs-lead-p.o \
@@ -311,7 +312,6 @@ else
 		   graph/settextposition.o \
 		   graph/settextwindow.o \
 		   graph/setvideomode.o \
-		   process/getpid.o \
 		   process/libi86-comspec.o \
 		   process/spawnl.o \
 		   process/spawnle.o \

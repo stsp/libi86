@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018--2020 TK Chia
+dnl Copyright (c) 2018--2023 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -111,7 +111,7 @@ main (int argc, char **argv)
 AT_CLEANUP
 
 AT_SETUP([[inp, outp]])
-AT_LIBI86_CHECK_FOR_NONDOSX(dnl
+AT_LIBI86_CHECK_DOS_FOR_NONDOSX(dnl
 [[#include <conio.h>
 #include <stdio.h>
 #include <stdlib.h>

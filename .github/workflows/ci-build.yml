@@ -39,9 +39,9 @@ jobs:
           sudo ./tests/ci-base-setup.sh
           sudo add-apt-repository -y ppa:tkchia/build-ia16
           sudo apt-get update -y
-          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
+          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf elksemu
       - name: build-and-install
-        run: ./tests/ci-build-and-install.sh
+        run: ./tests/ci-build-and-install.sh --enable-elks-libc
       - name: store-artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -64,7 +64,7 @@ jobs:
           sudo ./tests/ci-base-setup.sh
           sudo add-apt-repository -y ppa:tkchia/build-ia16
           sudo apt-get update -y
-          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
+          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf elksemu
           touch -c ./tests/testsuite
           chmod u+x ./tests/testsuite
       - name: test
@@ -87,7 +87,7 @@ jobs:
           sudo ./tests/ci-base-setup.sh
           sudo add-apt-repository -y ppa:tkchia/build-ia16
           sudo apt-get update -y
-          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
+          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf elksemu
           touch -c ./tests/testsuite
           chmod u+x ./tests/testsuite
       - name: test
@@ -110,7 +110,7 @@ jobs:
           sudo ./tests/ci-base-setup.sh
           sudo add-apt-repository -y ppa:tkchia/build-ia16
           sudo apt-get update -y
-          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
+          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf elksemu
           touch -c ./tests/testsuite
           chmod u+x ./tests/testsuite
       - name: test
@@ -133,7 +133,7 @@ jobs:
           sudo ./tests/ci-base-setup.sh
           sudo add-apt-repository -y ppa:tkchia/build-ia16
           sudo apt-get update -y
-          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
+          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf elksemu
           touch -c ./tests/testsuite
           chmod u+x ./tests/testsuite
       - name: test
@@ -156,7 +156,7 @@ jobs:
           sudo ./tests/ci-base-setup.sh
           sudo add-apt-repository -y ppa:tkchia/build-ia16
           sudo apt-get update -y
-          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf
+          sudo apt-get install -y gcc-ia16-elf elks-libc-gcc-ia16-elf elksemu
           touch -c ./tests/testsuite
           chmod u+x ./tests/testsuite
       - name: test

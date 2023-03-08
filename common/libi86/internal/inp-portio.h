@@ -28,10 +28,10 @@
  */
 
 /*
- * inp (.) inpw (.), outp (, ), & outpw (, ) is declared by both <dos.h> & 
- * <conio.h> in _BORLANDC_SOURCE mode, but is only declared by <conio.h>
- * in non-Borland mode.  This file is included by both <dos.h> & <conio.h>
- * as appropriate.
+ * inp (.), inpw (.), outp (, ), & outpw (, ) are declared by both <dos.h> &
+ * <conio.h> in _BORLANDC_SOURCE mode, but is only declared by <conio.h> in
+ * non-Borland mode.  This file is included by both <dos.h> & <conio.h> as
+ * appropriate.
  */
 
 #ifndef _LIBI86_LIBI86_INTERNAL_INP_PORTIO_H_

@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018--2022 TK Chia
+dnl Copyright (c) 2018--2023 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -28,7 +28,7 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 AT_BANNER([[<dos.h> tests]])
 
 AT_SETUP([[bdos]])
-AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL(dnl
+AT_LIBI86_CHECK_DOS_FOR_NEAR_DATA_MODEL(dnl
 [[#include <dos.h>
 int
 main (void)
@@ -49,7 +49,7 @@ main (void)
 }]],[[Hello $from$ bdos!
 ]])
 if "$at_arg_x_test_underlying" && test yes = "$ac_compiler_gnu"; then
-AT_LIBI86_CHECK_CONSOLE_FOR_NONDOSX(dnl
+AT_LIBI86_CHECK_DOS_CONSOLE_FOR_NONDOSX(dnl
 [[
 /*
  * A little test to see if the underlying DOS handles CP/M `call 5'...
@@ -98,7 +98,7 @@ fi
 AT_CLEANUP
 
 AT_SETUP([[intdos]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <libi86/internal/acconfig.h>
 #include <dos.h>
 #include <string.h>
@@ -129,7 +129,7 @@ main (void)
 #endif
 }]],[[yo
 ]])
-AT_LIBI86_CHECK_FOR_NEAR_DATA_MODEL(dnl
+AT_LIBI86_CHECK_DOS_FOR_NEAR_DATA_MODEL(dnl
 [[#include <dos.h>
 void abort (void);
 int
@@ -156,7 +156,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[intdosx]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <libi86/internal/acconfig.h>
 #include <dos.h>
 #include <unistd.h>
@@ -191,7 +191,7 @@ main (void)
 #endif
 }]],[[yo
 ]])
-AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX(dnl
+AT_LIBI86_CHECK_DOS_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX(dnl
 [[#include <dos.h>
 #include <string.h>
 #include <time.h>
@@ -289,7 +289,7 @@ so you can hello world while you hello world
 AT_CLEANUP
 
 AT_SETUP([[_dos_close]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dos.h>
 #include <errno.h>
 void abort (void);
@@ -309,7 +309,7 @@ main (int argc, char **argv)
 AT_CLEANUP
 
 AT_SETUP([[_dos_getdate, _dos_gettime]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dos.h>
 void abort (void);
 int
@@ -342,7 +342,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_dos_setdate]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dos.h>
 void abort (void);
 int
@@ -387,7 +387,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_dos_getdiskfree]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dos.h>
 #include <errno.h>
 void abort (void);
@@ -419,7 +419,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_dos_getdrive, _dos_setdrive]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <direct.h>
 #include <dos.h>
 void abort (void);
@@ -468,7 +468,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_dos_getfileattr]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dos.h>
 #include <errno.h>
 #include <stdio.h>
@@ -523,7 +523,7 @@ main (int argc, char **argv)
 AT_CLEANUP
 
 AT_SETUP([[_dos_setfileattr]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dos.h>
 #include <errno.h>
 #include <stdio.h>
@@ -591,7 +591,7 @@ main (int argc, char **argv)
 AT_CLEANUP
 
 AT_SETUP([[_dos_allocmem, _dos_freemem, _dos_setblock]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dos.h>
 #include <errno.h>
 #include <stdio.h>
@@ -708,7 +708,7 @@ main (int argc, char **argv)
 AT_CLEANUP
 
 AT_SETUP([[_dos_findfirst, _dos_findnext, _dos_findclose]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dos.h>
 #include <errno.h>
 #include <string.h>
@@ -736,7 +736,7 @@ main (int argc, char **argv)
 AT_CLEANUP
 
 AT_SETUP([[_dos_getvect, _dos_setvect]])
-AT_LIBI86_CHECK_FOR_NONDOSX(dnl
+AT_LIBI86_CHECK_DOS_FOR_NONDOSX(dnl
 [[#include <dos.h>
 void abort (void);
 int
@@ -765,7 +765,7 @@ main (void)
 # error
 #endif
 }]],[])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dos.h>
 void abort(void);
 /*
@@ -893,7 +893,7 @@ main (int argc, char **argv)
 AT_CLEANUP
 
 AT_SETUP([[_dos_read, _dos_getftime, _dos_setftime]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dos.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -977,7 +977,7 @@ main (int argc, char **argv)
 AT_CLEANUP
 
 AT_SETUP([[_dos_keep]])
-AT_LIBI86_CHECK_FOR_NONDOSX(dnl
+AT_LIBI86_CHECK_DOS_FOR_NONDOSX(dnl
 [[#include <dos.h>
 void abort (void);
 int
@@ -1038,7 +1038,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_parsfnm]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dos.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -1105,7 +1105,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_makefcb]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dos.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -1186,7 +1186,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_dos_spawn, _dos_wait]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dos.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -1254,7 +1254,7 @@ yo
 AT_CLEANUP
 
 AT_SETUP([[_getsysvars]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dos.h>
 #include <stdlib.h>
 int
@@ -1283,7 +1283,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_getswitchar, _setswitchar]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <dos.h>
 #include <stdlib.h>
 int

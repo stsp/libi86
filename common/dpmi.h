@@ -30,6 +30,10 @@
 #ifndef _LIBI86_DPMI_H_
 #define _LIBI86_DPMI_H_
 
+#ifndef __MSDOS__
+# error "<dpmi.h> is not supported for non-MS-DOS target!"
+#endif
+
 #include <libi86/internal/cdefs.h>
 #include <stdbool.h>
 #include <stdint.h>

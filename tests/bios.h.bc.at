@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018 TK Chia
+dnl Copyright (c) 2018--2023 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -28,7 +28,7 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 AT_BANNER([[<bios.h> tests (Borland compatibility)]])
 
 AT_SETUP([[biosmemory, biosequip, bioskey]])
-AT_LIBI86_CHECK_CONSOLE_FOR_NONDOSX(dnl
+AT_LIBI86_CHECK_DOS_CONSOLE_FOR_NONDOSX(dnl
 [[#define _BORLANDC_SOURCE
 #include <stdlib.h>
 #include <bios.h>

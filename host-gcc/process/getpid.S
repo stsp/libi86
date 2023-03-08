@@ -33,39 +33,43 @@
  * running under both European MS-DOS and CauseWay, combine the pid from
  * MS-DOS with the current CauseWay "PSP" to form a 32-bit pid.  Do not do
  * this though if the CauseWay PSP is not the child of any parent PSP.
+ *
+ * For ELKS OS, assume that the libc already has getpid ().  We define only
+ * __libi86_getpid (), which is used for testing.
  */
 
 #define epsp_parent	0x100
 
-	TEXT_ (dos_getpid.S.LIBI86)
+	TEXT_ (process_getpid.S.LIBI86)
 
 /* If in DOS extender mode, force linking in libi86-init-causeway.S. */
 #ifdef __IA16_FEATURE_DOSX
 	.reloc	., R_386_NONE, __libi86_have_init_causeway
 #endif
 
+#if defined __MSDOS__
 	.global	__libi86_getpid
 __libi86_getpid:
-#ifndef _LIBI86_INTERNAL_HAVE__GETPID
+# ifndef _LIBI86_INTERNAL_HAVE__GETPID
 	.global	_getpid
 _getpid:
-#endif
-#ifndef _LIBI86_INTERNAL_HAVE_GETPID
+# endif
+# ifndef _LIBI86_INTERNAL_HAVE_GETPID
 	.global	getpid
 getpid:
-#endif
+# endif
 	movb	$0x87,	%ah
 	stc
 	int	$0x21
 	jnc	.eur_dos
 	movw	_psp,	%ax
-#ifndef __IA16_FEATURE_DOSX
+# ifndef __IA16_FEATURE_DOSX
 .eur_dos:
-#endif
+# endif
 .norm_dos:
 	xorw	%dx,	%dx
 	RET_ (0)
-#ifdef __IA16_FEATURE_DOSX
+# ifdef __IA16_FEATURE_DOSX
 .eur_dos:
 	movw	_psp,	%dx
 	pushw	%ds
@@ -75,4 +79,16 @@ getpid:
 	jz	.norm_dos
 	shrw	$2,	%dx		/* try to ensure pid is positive... */
 	RET_ (0)
+# endif
+#elif defined __ELKS__  /* ! __MSDOS__ */
+	.global	__libi86_getpid
+__libi86_getpid:
+	pushw	%ax
+	movw	%sp,	%bx
+	movw	$20,	%ax
+	int	$0x80
+	pop	%ax
+	RET_ (0)
+#else  /* ! __MSDOS__ && ! __ELKS__ */
+# warning "unknown target OS; __libi86_getpid () not implemented"
 #endif

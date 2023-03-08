@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019--2022 TK Chia
+ * Copyright (c) 2019--2023 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -37,6 +37,7 @@
 
 _LIBI86_BEGIN_EXTERN_C
 
+#ifdef __MSDOS__
 /*
  * Try to defer to the underlying C runtime's idea of the maximum length of
  * file name paths.
@@ -47,50 +48,50 @@ _LIBI86_BEGIN_EXTERN_C
  * Otherwise, follow Open Watcom in defining a maximum length of 144. 
  * (FIXME: why 144?).
  */
-#if defined _LIBI86_INTERNAL_HAVE__PATH_MAX
+# if defined _LIBI86_INTERNAL_HAVE__PATH_MAX
 /*
  * Try to coax <sys/syslimits.h> into giving us _only_ _PATH_MAX.  If
  * <sys/syslimits.h> does not honour __need__PATH_MAX, then too bad.  :-|
  */
-# define __need__PATH_MAX
-# ifdef PATH_MAX
-#   include <sys/syslimits.h>
-# else
-#   include <sys/syslimits.h>
+#   define __need__PATH_MAX
 #   ifdef PATH_MAX
-#     pragma GCC warning \
-		 "<libi86/stdlib.h> pollutes user namespace with PATH_MAX"
+#     include <sys/syslimits.h>
+#   else
+#     include <sys/syslimits.h>
+#     ifdef PATH_MAX
+#	pragma GCC warning \
+		   "<libi86/stdlib.h> pollutes user namespace with PATH_MAX"
+#     endif
 #   endif
+#   undef __need_PATH_MAX
+#   define _MAX_PATH	_PATH_MAX
+# elif defined _LIBI86_INTERNAL_HAVE_PATH_MAX
+#   include <limits.h>
+#   pragma GCC warning \
+	   "<libi86/stdlib.h> pollutes user namespace with <limits.h> stuff"
+#   define _MAX_PATH	PATH_MAX
+# else
+#   define _MAX_PATH	144
 # endif
-# undef __need_PATH_MAX
-# define _MAX_PATH	_PATH_MAX
-#elif defined _LIBI86_INTERNAL_HAVE_PATH_MAX
-# include <limits.h>
-# pragma GCC warning \
-	     "<libi86/stdlib.h> pollutes user namespace with <limits.h> stuff"
-# define _MAX_PATH	PATH_MAX
-#else
-# define _MAX_PATH	144
-#endif
-#define _MAX_DRIVE	3
-#define _MAX_DIR	_MAX_PATH
-#define _MAX_FNAME	9
-#define _MAX_EXT	5
+# define _MAX_DRIVE	3
+# define _MAX_DIR	_MAX_PATH
+# define _MAX_FNAME	9
+# define _MAX_EXT	5
 
-#ifndef __ACK
-# ifndef _LIBI86_INTERNAL_HAVE__PSP
+# ifndef __ACK
+#   ifndef _LIBI86_INTERNAL_HAVE__PSP
 extern unsigned _psp;
-# endif
-# ifndef _LIBI86_INTERNAL_HAVE__OSMAJOR
+#   endif
+#   ifndef _LIBI86_INTERNAL_HAVE__OSMAJOR
 extern unsigned char _osmajor;
-# endif
-# ifndef _LIBI86_INTERNAL_HAVE__OSMINOR
+#   endif
+#   ifndef _LIBI86_INTERNAL_HAVE__OSMINOR
 extern unsigned char _osminor;
-# endif
+#   endif
 /* For testing purposes. */
 extern unsigned __libi86_psp;
 extern unsigned char __libi86_osmajor, __libi86_osminor;
-#else  /* __ACK */
+# else  /* __ACK */
 /*
  * The Amsterdam Compiler Kit does not (yet) allow library modules to insert
  * initialization functions that are to be invoked before main (...).  This is
@@ -99,45 +100,48 @@ extern unsigned char __libi86_osmajor, __libi86_osminor;
  */
 extern unsigned __libi86_get_psp (void), __libi86_get_osmajor_osminor (void);
 
-# define __libi86_psp	(__libi86_get_psp ())
-# define __libi86_osmajor ((unsigned char) __libi86_get_osmajor_osminor ())
-# define __libi86_osminor ((unsigned char) \
-			   (__libi86_get_osmajor_osminor () >> 8))
-# ifndef _LIBI86_INTERNAL_HAVE__PSP
-#   define _psp		__libi86_psp
-# endif
-# ifndef _LIBI86_INTERNAL_HAVE__OSMAJOR
-#   define _osmajor	__libi86_osmajor
-# endif
-# ifndef _LIBI86_INTERNAL_HAVE__OSMINOR
-#   define _osminor	__libi86_osminor
-# endif
-#endif  /* __ACK */
+#   define __libi86_psp	(__libi86_get_psp ())
+#   define __libi86_osmajor ((unsigned char) __libi86_get_osmajor_osminor ())
+#   define __libi86_osminor ((unsigned char) \
+			     (__libi86_get_osmajor_osminor () >> 8))
+#   ifndef _LIBI86_INTERNAL_HAVE__PSP
+#     define _psp	__libi86_psp
+#   endif
+#   ifndef _LIBI86_INTERNAL_HAVE__OSMAJOR
+#     define _osmajor	__libi86_osmajor
+#   endif
+#   ifndef _LIBI86_INTERNAL_HAVE__OSMINOR
+#     define _osminor	__libi86_osminor
+#   endif
+# endif  /* __ACK */
+#endif  /* __MSDOS__ */
 
 #ifdef _LIBI86_INTERNAL_HAVE_LONG_LONG_INT
 extern char *_lltoa (long long __value, char *__buffer, int __radix);
 extern char *_ulltoa (unsigned long long __value, char *__buffer, int __radix);
-#endif
+#endif  /* long long int */
+extern char *_ltoa (long __value, char *__buffer, int __radix);
+extern char *_ultoa (unsigned long __value, char *__buffer, int __radix);
+#ifdef __MSDOS__
 extern char *_fullpath (char *__buffer, const char *__path,
 			__libi86_size_t __size);
-extern char *_ltoa (long __value, char *__buffer, int __radix);
 extern int _makepath (char __path[_MAX_PATH], const char *__drive,
 		      const char *__dir, const char *__fname,
 		      const char *__ext);
 extern void _splitpath (const char *__path, char __drive[_MAX_DRIVE],
 			char __dir[_MAX_DIR], char __fname[_MAX_FNAME],
 			char __ext[_MAX_EXT]);
-extern char *_ultoa (unsigned long __value, char *__buffer, int __radix);
+#endif  /* __MSDOS__ */
 #ifndef _LIBI86_COMPILING_
 # if ! defined __STRICT_ANSI__ && ! defined __ELKS__
 #   ifdef _LIBI86_INTERNAL_HAVE_LONG_LONG_INT
 _LIBI86_REDIRECT_3 (char *, lltoa, long long, char *, int, _lltoa)
 _LIBI86_REDIRECT_3 (char *, ulltoa, unsigned long long, char *, int, _ulltoa)
-#   endif
+#   endif  /* long long int */
 _LIBI86_REDIRECT_3 (char *, ltoa, long, char *, int, _ltoa)
 _LIBI86_REDIRECT_3 (char *, ultoa, unsigned long, char *, int, _ultoa)
-# endif
-#endif
+# endif  /* ! __STRICT_ANSI__ && ! __ELKS__ */
+#endif  /* ! _LIBI86_COMPILING_ */
 
 _LIBI86_END_EXTERN_C
 

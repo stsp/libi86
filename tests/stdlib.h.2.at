@@ -1,4 +1,4 @@
-dnl Copyright (c) 2019--2022 TK Chia
+dnl Copyright (c) 2019--2023 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -28,7 +28,7 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 AT_BANNER([[<libi86/stdlib.h> tests (part 2)]])
 
 AT_SETUP([[_psp]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <i86.h>
 #include <stdlib.h>
 #include <libi86/stdlib.h>
@@ -2919,7 +2919,7 @@ strcasecmp (const char *s1, const char *s2)
 
 AT_SETUP([[(internal) _dos_get_dbcs_lead_table]])
 AT_LIBI86_SKIP_IF_NO_DOSX
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <stdint.h>
 #include <stdlib.h>
 typedef const unsigned short __attribute__ ((__aligned__ (1)))
@@ -2975,7 +2975,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_makepath]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -3080,7 +3080,7 @@ main (void)
 AT_CLEANUP
 
 AT_SETUP([[_splitpath]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <stdio.h>
 #include <stdlib.h>
 #include <libi86/stdlib.h>

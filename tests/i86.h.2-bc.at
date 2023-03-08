@@ -1,4 +1,4 @@
-dnl Copyright (c) 2021 TK Chia
+dnl Copyright (c) 2021--2023 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -28,7 +28,7 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 AT_BANNER([[<i86.h> tests (part 2, Borland compatibility)]])
 
 AT_SETUP([[int86 (Borland)]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#define _BORLANDC_SOURCE
 #include <i86.h>
 #include <stdio.h>
@@ -58,7 +58,7 @@ int main (void)
   return 0;
 }]],[[Hello from int86!
 ]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#define _BORLANDC_SOURCE
 #include <bios.h>
 #include <i86.h>
@@ -102,7 +102,7 @@ int main (void)
 AT_CLEANUP
 
 AT_SETUP([[int86x (Borland)]])
-AT_LIBI86_CHECK(dnl
+AT_LIBI86_CHECK_DOS(dnl
 [[#define _BORLANDC_SOURCE
 #include <stdlib.h>
 #include <i86.h>
