@@ -559,7 +559,8 @@ fi
 AT_CLEANUP
 
 AT_SETUP([[delay]])
-AT_LIBI86_CHECK(dnl
+dnl FIXME: elksemu does not emulate select (...) yet
+AT_LIBI86_CHECK_DOS(dnl
 [[#include <i86.h>
 #include <stdio.h>
 #include <stdlib.h>
