@@ -113,6 +113,7 @@ endif
 OBJS		=  conio/libi86-con-name.o \
 		   conio/libi86-con-in-fd.o \
 		   conio/libi86-con-out-fd.o \
+		   conio/ungetch.o \
 		   dos/peek.o \
 		   dos/peekb.o \
 		   dos/poke.o \
@@ -193,7 +194,6 @@ else
 		   conio/textbackground.o \
 		   conio/textcolor.o \
 		   conio/textmode.o \
-		   conio/ungetch.o \
 		   conio/vcprintf.o \
 		   conio/vcprintf-autofloat.o \
 		   conio/vcscanf.o \

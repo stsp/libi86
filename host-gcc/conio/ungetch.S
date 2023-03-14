@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018--2019 TK Chia
+ * Copyright (c) 2018--2023 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -34,7 +34,6 @@
 	.att_syntax prefix
 
 	TEXT_ (ungetch.S.LIBI86)
-#ifdef __MSDOS__
 	.global	_ungetch
 	.weak	ungetch
 _ungetch:
@@ -52,6 +51,3 @@ ungetch:
 .Lerr:
 	movw	$-1,	%ax
 	RET_(2)
-#else
-# warning "unknown target OS; ungetch (.) not implemented"
-#endif
