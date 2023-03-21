@@ -10,7 +10,7 @@
 :bopt: [
 :eopt: ]
 
-https://gitlab.com/tkchia/libi86/-/commits/master[image:https://gitlab.com/tkchia/libi86/badges/master/pipeline.svg["GitLab pipeline status"]] · https://github.com/tkchia/libi86/actions/workflows/ci-build.yml[image:https://github.com/tkchia/libi86/actions/workflows/ci-build.yml/badge.svg["GitHub pipeline status"]]
+https://gitlab.com/tkchia/libi86/-/commits/master[image:https://gitlab.com/tkchia/libi86/badges/master/pipeline.svg["GitLab pipeline status"]]
 
 This is a code library which attempts to reimplement non-standard C library facilities (e.g. `<conio.h>`) commonly used in classical MS-DOS programs.  The library also implements a few standard facilities which are part of newer C language standards, where the underlying C library lacks them.
 
