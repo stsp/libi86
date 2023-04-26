@@ -100,14 +100,14 @@ main (int argc, char **argv)
   if (memcmp (buf, expect_buf, sizeof expect_buf) != 0)
     abort ();
   putch ('\n');
-  if (cscanf ("%d %ld", &a, &b) != 2)
+  if (cscanf ("%d/%ld", &a, &b) != 2)
     abort ();
   if (a != 12345 || b != -67890L)
     abort ();
   return 0;
 }]],[[fobaz
-12345 -67890
-]],[[-input '\p200;\bfoobarr\b\b\b\bbaz\r\b12345 -5\b678901\b\r']])
+12345/-67890
+]],[[-input '\p200;\bfoobarr\b\b\b\bbaz\r\b12345/-5\b678901\b\r']])
 AT_CLEANUP
 
 AT_SETUP([[inp, outp]])
