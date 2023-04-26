@@ -50,6 +50,7 @@ AC_CHECK_DECL([vsscanf],
 AC_CHECK_FUNC([system],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_SYSTEM],[1])])
 AC_CHECK_FUNC([getcwd],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_GETCWD],[1])])
 AC_CHECK_FUNC([_getcwd],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__GETCWD],[1])])
+AC_CHECK_FUNC([flockfile],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_FLOCKFILE],[1])])
 AC_CHECK_FUNC([_dos_get_dbcs_lead_table],
   [AC_DEFINE([_LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE],[1])])
 AC_CHECK_HEADER([sys/syslimits.h],
@@ -93,6 +94,12 @@ AC_CHECK_DECL([_osmajor],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__OSMAJOR],[1])],,dnl
 	      [#include <stdlib.h>])
 AC_CHECK_DECL([_osminor],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__OSMINOR],[1])],,dnl
 	      [#include <stdlib.h>])
+AC_CHECK_DECL([__argv],[AC_DEFINE([_LIBI86_INTERNAL_HAVE___ARGV],[1])],,dnl
+	      [#ifdef __ELKS__
+	       # include <unistd.h>
+	       #else
+	       # include <stdlib.h>
+	       #endif])
 
 dnl We want to define types __libi86_mode_t & __libi86_pid_t to be the same
 dnl as the types mode_t & pid_t, but without actually bringing in all the

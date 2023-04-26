@@ -46,12 +46,13 @@ typedef struct
 __libi86_fpv_t, __libi86_fpcv_t, __libi86_fpvv_t, __libi86_fpcvv_t,
 __libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
 
-#define _LIBI86_DEPRECATED(msg)
-#define _LIBI86_WARNING(msg)
-#define _LIBI86_ERROR(msg)
+#define _LIBI86_DEPRECATED(__msg)
+#define _LIBI86_WARNING(__msg)
+#define _LIBI86_ERROR(__msg)
 #define _LIBI86_NORETURN
 #define _LIBI86_SENTINEL0
 #define _LIBI86_SENTINEL1
+#define _LIBI86_FORMAT(__archetype, __index, __first)
 
 /*
  * ACK lacks support for post-C89 C language features and C extensions,
@@ -146,6 +147,7 @@ __libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
 #define _LIBI86_REDIRECT_VOID_0	_LIBI86_REDIRECT_AND_INLINE_VOID_0
 #define _LIBI86_REDIRECT_VOID_1	_LIBI86_REDIRECT_AND_INLINE_VOID_1
 #define _LIBI86_REDIRECT_VOID_2	_LIBI86_REDIRECT_AND_INLINE_VOID_2
+#define _LIBI86_REDIRECT_VOID_3	_LIBI86_REDIRECT_AND_INLINE_VOID_3
 /*
  * If _BORLANDC_SOURCE is in effect, define a local 0-, 1-, 2-, 3- or
  * 4-argument function function NAME which calls __libi86_bc_NAME. 

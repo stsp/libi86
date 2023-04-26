@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2023 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,69 +27,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_INTERNAL_ACCONFIG_H
-#define _LIBI86_INTERNAL_ACCONFIG_H
+#ifndef _LIBI86_ERR_H_
+#define _LIBI86_ERR_H_
 
-#include <libi86/version.h>
+#include <libi86/internal/cdefs.h>
+#include <libi86/internal/farptr.h>
 
-#undef _LIBI86_INTERNAL_HAVE_ASM_N_CONSTRAINT
+_LIBI86_BEGIN_EXTERN_C
 
-#undef _LIBI86_INTERNAL_HAVE_USECONDS_T
+#ifdef _LIBI86_COMPILING_
+# ifndef __ACK
+extern const char *__libi86_progname;
+# else
+extern const char *__libi86_get_progname (void);
+#   define __libi86_progname (__libi86_get_progname ())
+# endif
+#endif
 
-#undef _LIBI86_INTERNAL_HAVE___DPMI_HOSTED
+extern void err (int, const char *, ...)
+	    _LIBI86_NORETURN _LIBI86_FORMAT (__printf__, 2, 3);
+extern void warn (const char *, ...) _LIBI86_FORMAT (__printf__, 1, 2);
 
-#undef _LIBI86_INTERNAL_HAVE_LONG_LONG_INT
+extern void _verr (int, const char *, __libi86_va_list_t)
+	    _LIBI86_NORETURN _LIBI86_FORMAT (__printf__, 2, 0);
+extern void _vwarn (const char *, __libi86_va_list_t)
+	    _LIBI86_FORMAT (__printf__, 1, 0);
+#ifndef _LIBI86_COMPILING_
+_LIBI86_REDIRECT_VOID_3 (verr, int, const char *, __libi86_va_list_t, _verr)
+_LIBI86_REDIRECT_VOID_2 (vwarn, const char *, __libi86_va_list_t, _vwarn)
+#endif
 
-#undef _LIBI86_INTERNAL_HAVE_O_TEXT
-
-#undef _LIBI86_INTERNAL_HAVE_O_BINARY
-
-#undef _LIBI86_INTERNAL_HAVE_ENAMETOOLONG
-
-#undef _LIBI86_INTERNAL_HAVE_VSSCANF
-
-#undef _LIBI86_INTERNAL_HAVE_SYSTEM
-
-#undef _LIBI86_INTERNAL_HAVE_GETCWD
-
-#undef _LIBI86_INTERNAL_HAVE__GETCWD
-
-#undef _LIBI86_INTERNAL_HAVE_FLOCKFILE
-
-#undef _LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE
-
-#undef _LIBI86_INTERNAL_HAVE_SYS_SYSLIMITS_H
-
-#undef _LIBI86_INTERNAL_HAVE__PATH_MAX
-
-#undef _LIBI86_INTERNAL_HAVE_PATH_MAX
-
-#undef _LIBI86_INTERNAL_HAVE_MKDIR2
-
-#undef _LIBI86_INTERNAL_HAVE_MKDIR1
-
-#undef _LIBI86_INTERNAL_HAVE__MKDIR
-
-#undef _LIBI86_INTERNAL_HAVE_GETPID
-
-#undef _LIBI86_INTERNAL_HAVE__GETPID
-
-#undef _LIBI86_INTERNAL_HAVE_RMDIR
-
-#undef _LIBI86_INTERNAL_HAVE__RMDIR
-
-#undef _LIBI86_INTERNAL_HAVE_CHDIR
-
-#undef _LIBI86_INTERNAL_HAVE__CHDIR
-
-#undef _LIBI86_INTERNAL_HAVE__SETMODE
-
-#undef _LIBI86_INTERNAL_HAVE__PSP
-
-#undef _LIBI86_INTERNAL_HAVE__OSMAJOR
-
-#undef _LIBI86_INTERNAL_HAVE__OSMINOR
-
-#undef _LIBI86_INTERNAL_HAVE___ARGV
+_LIBI86_END_EXTERN_C
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2023 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,69 +27,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_INTERNAL_ACCONFIG_H
-#define _LIBI86_INTERNAL_ACCONFIG_H
+#define _LIBI86_COMPILING_
+#include <errno.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include "err.h"
+#include "libi86/internal/acconfig.h"
 
-#include <libi86/version.h>
+void
+_vwarn (const char *fmt, va_list ap)
+{
+  int errn = errno;
+#ifdef _LIBI86_INTERNAL_HAVE_FLOCKFILE
+  flockfile (stderr);
+#endif
+  fputs (__libi86_progname, stderr);
+  fputs (": ", stderr);
+  if (fmt)
+    {
+      vfprintf (stderr, fmt, ap);
+      fputs (": ", stderr);
+    }
+  fputs (strerror (errn), stderr);
+  fputc ('\n', stderr);
+#ifdef _LIBI86_INTERNAL_HAVE_FLOCKFILE
+  funlockfile (stderr);
+#endif
+}
 
-#undef _LIBI86_INTERNAL_HAVE_ASM_N_CONSTRAINT
-
-#undef _LIBI86_INTERNAL_HAVE_USECONDS_T
-
-#undef _LIBI86_INTERNAL_HAVE___DPMI_HOSTED
-
-#undef _LIBI86_INTERNAL_HAVE_LONG_LONG_INT
-
-#undef _LIBI86_INTERNAL_HAVE_O_TEXT
-
-#undef _LIBI86_INTERNAL_HAVE_O_BINARY
-
-#undef _LIBI86_INTERNAL_HAVE_ENAMETOOLONG
-
-#undef _LIBI86_INTERNAL_HAVE_VSSCANF
-
-#undef _LIBI86_INTERNAL_HAVE_SYSTEM
-
-#undef _LIBI86_INTERNAL_HAVE_GETCWD
-
-#undef _LIBI86_INTERNAL_HAVE__GETCWD
-
-#undef _LIBI86_INTERNAL_HAVE_FLOCKFILE
-
-#undef _LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE
-
-#undef _LIBI86_INTERNAL_HAVE_SYS_SYSLIMITS_H
-
-#undef _LIBI86_INTERNAL_HAVE__PATH_MAX
-
-#undef _LIBI86_INTERNAL_HAVE_PATH_MAX
-
-#undef _LIBI86_INTERNAL_HAVE_MKDIR2
-
-#undef _LIBI86_INTERNAL_HAVE_MKDIR1
-
-#undef _LIBI86_INTERNAL_HAVE__MKDIR
-
-#undef _LIBI86_INTERNAL_HAVE_GETPID
-
-#undef _LIBI86_INTERNAL_HAVE__GETPID
-
-#undef _LIBI86_INTERNAL_HAVE_RMDIR
-
-#undef _LIBI86_INTERNAL_HAVE__RMDIR
-
-#undef _LIBI86_INTERNAL_HAVE_CHDIR
-
-#undef _LIBI86_INTERNAL_HAVE__CHDIR
-
-#undef _LIBI86_INTERNAL_HAVE__SETMODE
-
-#undef _LIBI86_INTERNAL_HAVE__PSP
-
-#undef _LIBI86_INTERNAL_HAVE__OSMAJOR
-
-#undef _LIBI86_INTERNAL_HAVE__OSMINOR
-
-#undef _LIBI86_INTERNAL_HAVE___ARGV
-
+#ifdef __GNUC__
+_LIBI86_WEAK_ALIAS (_vwarn) void
+vwarn (const char *, va_list);
 #endif

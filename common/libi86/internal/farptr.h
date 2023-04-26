@@ -150,6 +150,12 @@ __libi86_peekfpbi (__libi86_fpcc_t *__pp)
   return __libi86_peekb (__s, __o);
 }
 
+static char
+__libi86_incfpb (__libi86_fpcc_t *__pp)
+{
+  ++__pp->__off_;
+}
+
 static void
 __libi86_pokefpb (__libi86_fpc_t __p, char __v)
 {

@@ -208,6 +208,11 @@ OBJS		= bios/bios-disk.o \
 		  dos/setswitchar.o \
 		  dos-dbcs/dos-get-dbcs-lead-table.o \
 		  dos-dbcs/libi86-msdos-dbcs-lead-p.o \
+		  err/err.o \
+		  err/libi86-progname.o \
+		  err/verr.o \
+		  err/vwarn.o \
+		  err/warn.o \
 		  graph/clearscreen.o \
 		  graph/displaycursor.o \
 		  graph/gettextposition.o \

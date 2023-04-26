@@ -98,6 +98,8 @@ __libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
 	_LIBI86_REDIRECT_1(void, name, type1, alias_to)
 #define _LIBI86_REDIRECT_VOID_2(name, type1, type2, alias_to) \
 	_LIBI86_REDIRECT_2(void, name, type1, type2, alias_to)
+#define _LIBI86_REDIRECT_VOID_3(name, type1, type2, type3, alias_to) \
+	_LIBI86_REDIRECT_3(void, name, type1, type2, type3, alias_to)
 #define _LIBI86_ASM_NAME(c_name) \
 	_LIBI86_ASM_NAME_P2(__USER_LABEL_PREFIX__, #c_name)
 #define _LIBI86_ASM_NAME_P2(prefix, c_name) _LIBI86_ASM_NAME_P3(prefix, c_name)
@@ -168,19 +170,21 @@ __libi86_fpc_t, __libi86_fpuc_t, __libi86_fpcc_t;
  * deprecated.
  */
 #ifdef _LIBI86_COMPILING_
-# define _LIBI86_DEPRECATED(msg)
-# define _LIBI86_WARNING(msg)
-# define _LIBI86_ERROR(msg)
+# define _LIBI86_DEPRECATED(__msg)
+# define _LIBI86_WARNING(__msg)
+# define _LIBI86_ERROR(__msg)
 #else
-# define _LIBI86_DEPRECATED(msg) __attribute__ ((__deprecated__ (msg)))
-# define _LIBI86_WARNING(msg)	__attribute__ ((__warning__ (msg)))
-# define _LIBI86_ERROR(msg)	__attribute__ ((__error__ (msg)))
+# define _LIBI86_DEPRECATED(__msg) __attribute__ ((__deprecated__ (__msg)))
+# define _LIBI86_WARNING(__msg)	__attribute__ ((__warning__ (__msg)))
+# define _LIBI86_ERROR(__msg)	__attribute__ ((__error__ (__msg)))
 #endif
 /* Various other useful function properties. */
 #define _LIBI86_STATIC_INLINE	static inline
 #define _LIBI86_NORETURN	__attribute__ ((__noreturn__))
 #define _LIBI86_SENTINEL0	__attribute__ ((__sentinel__))
 #define _LIBI86_SENTINEL1	__attribute__ ((__sentinel__ (1)))
+#define _LIBI86_FORMAT(__archetype, __index, __first) \
+	__attribute__ ((__format__ (__archetype, __index, __first)))
 /*
  * Many of the header files have `extern inline' versions of functions which
  * can be used instead of the out-of-line versions, and they require this
