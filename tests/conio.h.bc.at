@@ -83,7 +83,7 @@ main (int argc, char **argv)
   return 0;
 }]],[[fobaz
 12345/-67890
-]],[[-input '\p200;\bfoobarr\b\b\b\bbaz\r\b12345/-5\b678901\b\r']])
+]],[AT_LIBI86_PRESTROKE([\bfoobarr\b\b\b\bbaz\r\b12345/-5\b678901\b\r])])
 AT_CLEANUP
 
 AT_SETUP([[textmode]])
@@ -272,7 +272,7 @@ hello:
 world 6
 hello:
 world 4
-]],[[-input '\p200;foo\r\p50;blurfl\r\p50;quux\r']])
+]],[AT_LIBI86_PRESTROKE([foo\r\p50;blurfl\r\p50;quux\r])])
 AT_CLEANUP
 
 AT_SETUP([[gettextinfo, textattr]])

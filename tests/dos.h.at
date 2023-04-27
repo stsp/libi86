@@ -93,7 +93,7 @@ main (void)
     abort ();
   return 0;
 }]],[[+Hello $world
-]],[[-input '\p200;+']])
+]],[AT_LIBI86_PRESTROKE([+])])
 fi
 AT_CLEANUP
 

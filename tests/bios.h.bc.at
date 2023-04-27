@@ -47,5 +47,5 @@ int main (void)
   if (bioskey (0) != 0x3f00u)
     abort ();
   return 0;
-}]],[],[[-input '\p200;\F5;']])
+}]],[],[AT_LIBI86_PRESTROKE([\F5;])])
 AT_CLEANUP

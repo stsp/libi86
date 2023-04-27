@@ -80,7 +80,7 @@ getch () = 0x3f
 kbhit () = true
 @getche () = 0x40
 kbhit () = false
-]],[[-input '\p200;\F5;!']])
+]],[AT_LIBI86_PRESTROKE([\F5;!])])
 AT_CLEANUP
 
 AT_SETUP([cgets, cscanf])
@@ -107,7 +107,7 @@ main (int argc, char **argv)
   return 0;
 }]],[[fobaz
 12345/-67890
-]],[[-input '\p200;\bfoobarr\b\b\b\bbaz\r\b12345/-5\b678901\b\r']])
+]],[AT_LIBI86_PRESTROKE([\bfoobarr\b\b\b\bbaz\r\b12345/-5\b678901\b\r])])
 AT_CLEANUP
 
 AT_SETUP([[inp, outp]])

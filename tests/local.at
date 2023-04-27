@@ -81,13 +81,18 @@ AT_CHECK([[$CXX -o ]m4_default($2,a.exe)[ $CPPFLAGS ]]dnl
 ,[[ignore]],[[ignore]])
 fi])
 
+dnl option to pass to dosemu to simulate key strokes given by $1 etc.
+dnl FIXME: by right `-input ...' should work, but dosemu2 circa April 2023
+dnl	   occasionally weirds out with `-input ...'
+m4_define([AT_LIBI86_PRESTROKE],[[-I 'keystroke "\p200;]$@["']])
+
 dnl $1 = program to run on dosemu (default a.exe)
 dnl $2 = Unix path which $1 resides in (defaults to current directory)
 dnl $3 = options to pass to dosemu (default -dumb [-tde] >a.log)
 dnl $4 = Unix program to run to postprocess dosemu output (default
 dnl	 postproc-stdout.sh in this file's source directory)
 dnl $5 = command to prepare a.log before running dosemu (default rm -f)
-dnl Note: GitLab sets $TERM to `dumb'.  This causes video memory (0xb800:0)
+dnl NOTE: GitLab sets $TERM to `dumb'.  This causes video memory (0xb800:0)
 dnl	  reads within dosemu to return all zeroes, which is not good for
 dnl	  tests that need to capture "screen contents".  Set $TERM to
 dnl	  something more reasonable in this case.
@@ -398,7 +403,8 @@ cp "$at_libi86_prog" $1])
 
 dnl $1 = text of program to test
 dnl $2 = expected program output on console
-dnl $3 = additional options to pass to dosemu (especially -input ...)
+dnl $3 = additional options to pass to dosemu (especially
+dnl	 AT_LIBI86_PRESTROKE(...))
 m4_define([AT_LIBI86_CHECK_DOS_CONSOLE],[dnl
 AT_LIBI86_COMPILE_DOS_CONSOLE_CAPTURE_PROG([capture.exe])
 AT_DATA([[x.bat]],dnl

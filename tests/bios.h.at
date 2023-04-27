@@ -124,7 +124,7 @@ int main (void)
       || _bios_keybrd (_NKEYBRD_READY))
     abort ();
   return 0;
-}]],[],[[-input '\p200;\F5;\F7;\p30;a\p30;A!\Ah']])
+}]],[],[AT_LIBI86_PRESTROKE([\F5;\F7;\p30;a\p30;A!\Ah])])
 AT_CLEANUP
 
 AT_SETUP([[_bios_disk]])
