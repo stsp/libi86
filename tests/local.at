@@ -186,7 +186,9 @@ fi])
 m4_define([_AT_LIBI86_DO_CHECK_ELKS_EXPOUT_C],[dnl
 _AT_LIBI86_DO_CHECK_ELKS_EXPOUT_B($@)
 if "$at_arg_x_test_underlying"; then :; else
+if "$at_arg_x_test_common"; then :; else
 _AT_LIBI86_DO_CHECK_ELKS_EXPOUT_B([[-march=any_186 ]]$@)
+fi
 fi])
 
 m4_define([_AT_LIBI86_DO_CHECK_DOS_EXPOUT_D],[dnl
@@ -204,7 +206,9 @@ m4_define([_AT_LIBI86_DO_CHECK_ELKS_EXPOUT_D],[dnl
 if test yes = "$ac_compiler_gnu"; then
 if "$at_arg_x_test_underlying"; then :; else
 _AT_LIBI86_DO_CHECK_ELKS_EXPOUT_B($@)
+if "$at_arg_x_test_common"; then :; else
 _AT_LIBI86_DO_CHECK_ELKS_EXPOUT_B([[-mrtd ]]$@)
+fi
 fi
 _AT_LIBI86_DO_CHECK_ELKS_EXPOUT_C([[-mregparmcall ]]$@)
 else
