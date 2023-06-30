@@ -41,13 +41,13 @@ Defining the macro `_BORLANDC_SOURCE` will also enable some degree of compatibil
 
 When using IA-16 GCC:
 
-  * `ia16-elf-gcc` [..._gcc-options_...] `-li86` [...]
-  * On a MS-DOS host: `i16gcc` [..._gcc-options_...] `-li86` [...]
+  * `ia16-elf-gcc` [..._gcc-options_... ..._input-files_...] `-li86` [...]
+  * On a MS-DOS host: `i16gcc` [..._gcc-options_... ..._input-files_...] `-li86` [...]
 
 When using ACK:
 
-  * `ack-cc -mmsdos86 -.c` [..._ack-options_...] `-li86.a` [...]
-  * Or (if compiler is installed as `ack`): `ack -mmsdos86 -.c` [..._ack-options_...] `-li86.a` [...]
+  * `ack-cc -mmsdos86 -.c` [..._ack-options_... ..._input-files_...] `-li86.a` [...]
+  * Or (if compiler is installed as `ack`): `ack -mmsdos86 -.c` [..._ack-options_... ..._input-files_...] `-li86.a` [...]
 
 === Installing from pre-compiled Ubuntu Linux packages, for cross development
 
