@@ -162,7 +162,8 @@ OBJS		=  conio/libi86-con-name.o \
 		   string/fstrcat.o \
 		   string/fstrcpy.o \
 		   string/fstrlen.o \
-		   string/libi86-fmemmove-backward.o
+		   string/libi86-fmemmove-backward.o \
+		   string/stricmp.o
 ifneq "" "$(ELKS_P)"
   OBJS		+= conio/libi86-vid-is-console.o
 else

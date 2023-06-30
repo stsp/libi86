@@ -293,7 +293,8 @@ OBJS		= bios/bios-disk.o \
 		  string/fstrcpy.o \
 		  string/fstrlen.o \
 		  stdlib/fullpath.o \
-		  string/libi86-fmemmove-backward.o
+		  string/libi86-fmemmove-backward.o \
+		  string/stricmp.o
 OBJ_SUBDIRS	= $(sort $(dir $(OBJS)))
 CFLAGS		= -O6 -S
 ASFLAGS		=

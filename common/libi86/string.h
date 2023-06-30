@@ -52,6 +52,13 @@ extern __libi86_fpc_t _fstpcpy (__libi86_fpc_t __dest, __libi86_fpcc_t __src);
 extern __libi86_fpc_t _fstrcat (__libi86_fpc_t __dest, __libi86_fpcc_t __src);
 extern __libi86_fpc_t _fstrcpy (__libi86_fpc_t __dest, __libi86_fpcc_t __src);
 extern __libi86_size_t _fstrlen (__libi86_fpcc_t __s);
+extern int _stricmp (const char *__s1, const char *__s2);
+
+#ifndef _LIBI86_COMPILING_
+# ifndef __STRICT_ANSI__
+_LIBI86_REDIRECT_2 (int, stricmp, const char *, const char *, _stricmp)
+# endif
+#endif
 
 _LIBI86_END_EXTERN_C
 

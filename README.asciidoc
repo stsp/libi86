@@ -447,6 +447,8 @@ When using ACK:
 |         W | = |   |   | *``_fstrcat (``*__dest__``,`` *__src__``);`` |
 |         W | = |   | = | *``_fstrcpy (``*__dest__``,`` *__src__``);`` |
 |         W | = |   | = | ``_fstrlen (``*__s__``);`` |
+|         W | = | = | = | ``stricmp (``*__s1__``,`` *__s2__``);`` .2+a| Calls ``strcasecmp (``__s1__``,`` __s2__``)`` if the C library defines it.
+|         W | = | = | = | ``_stricmp (``*__s1__``,`` *__s2__``);``
 |===
 
 === Variables
