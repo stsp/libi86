@@ -161,6 +161,7 @@ OBJS		=  conio/libi86-con-name.o \
 		   string/fstpcpy.o \
 		   string/fstrcat.o \
 		   string/fstrcpy.o \
+		   string/fstricmp.o \
 		   string/fstrlen.o \
 		   string/libi86-fmemmove-backward.o \
 		   string/stricmp.o

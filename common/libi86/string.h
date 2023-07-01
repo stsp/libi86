@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 TK Chia
+ * Copyright (c) 2018--2023 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -51,6 +51,7 @@ extern __libi86_fpv_t _fmemset (__libi86_fpv_t __dest, int __c,
 extern __libi86_fpc_t _fstpcpy (__libi86_fpc_t __dest, __libi86_fpcc_t __src);
 extern __libi86_fpc_t _fstrcat (__libi86_fpc_t __dest, __libi86_fpcc_t __src);
 extern __libi86_fpc_t _fstrcpy (__libi86_fpc_t __dest, __libi86_fpcc_t __src);
+extern int _fstricmp (__libi86_fpcc_t __s1, __libi86_fpcc_t __s2);
 extern __libi86_size_t _fstrlen (__libi86_fpcc_t __s);
 extern int _stricmp (const char *__s1, const char *__s2);
 

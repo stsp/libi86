@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021--2023 TK Chia
+ * Copyright (c) 2023 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,71 +27,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_INTERNAL_ACCONFIG_H
-#define _LIBI86_INTERNAL_ACCONFIG_H
+#define _LIBI86_COMPILING_
+#include <ctype.h>
+#include "libi86/internal/cdefs.h"
+#include "libi86/internal/farptr.h"
+#include "libi86/string.h"
 
-#include <libi86/version.h>
-
-#undef _LIBI86_INTERNAL_HAVE_ASM_N_CONSTRAINT
-
-#undef _LIBI86_INTERNAL_HAVE_USECONDS_T
-
-#undef _LIBI86_INTERNAL_HAVE___DPMI_HOSTED
-
-#undef _LIBI86_INTERNAL_HAVE_LONG_LONG_INT
-
-#undef _LIBI86_INTERNAL_HAVE_O_TEXT
-
-#undef _LIBI86_INTERNAL_HAVE_O_BINARY
-
-#undef _LIBI86_INTERNAL_HAVE_ENAMETOOLONG
-
-#undef _LIBI86_INTERNAL_HAVE_VSSCANF
-
-#undef _LIBI86_INTERNAL_HAVE_SYSTEM
-
-#undef _LIBI86_INTERNAL_HAVE_STRCASECMP
-
-#undef _LIBI86_INTERNAL_HAVE_GETCWD
-
-#undef _LIBI86_INTERNAL_HAVE__GETCWD
-
-#undef _LIBI86_INTERNAL_HAVE_FLOCKFILE
-
-#undef _LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE
-
-#undef _LIBI86_INTERNAL_HAVE_SYS_SYSLIMITS_H
-
-#undef _LIBI86_INTERNAL_HAVE__PATH_MAX
-
-#undef _LIBI86_INTERNAL_HAVE_PATH_MAX
-
-#undef _LIBI86_INTERNAL_HAVE_MKDIR2
-
-#undef _LIBI86_INTERNAL_HAVE_MKDIR1
-
-#undef _LIBI86_INTERNAL_HAVE__MKDIR
-
-#undef _LIBI86_INTERNAL_HAVE_GETPID
-
-#undef _LIBI86_INTERNAL_HAVE__GETPID
-
-#undef _LIBI86_INTERNAL_HAVE_RMDIR
-
-#undef _LIBI86_INTERNAL_HAVE__RMDIR
-
-#undef _LIBI86_INTERNAL_HAVE_CHDIR
-
-#undef _LIBI86_INTERNAL_HAVE__CHDIR
-
-#undef _LIBI86_INTERNAL_HAVE__SETMODE
-
-#undef _LIBI86_INTERNAL_HAVE__PSP
-
-#undef _LIBI86_INTERNAL_HAVE__OSMAJOR
-
-#undef _LIBI86_INTERNAL_HAVE__OSMINOR
-
-#undef _LIBI86_INTERNAL_HAVE___ARGV
-
-#endif
+int
+_fstricmp (__libi86_fpcc_t s1, __libi86_fpcc_t s2)
+{
+  __libi86_fpcc_t p = s1, q = s2;
+  unsigned char c1, c2;
+  int lc1, lc2;
+  do
+    {
+#ifdef __FAR
+      c1 = *p++;
+      lc1 = tolower (c1);
+      c2 = *q++;
+      lc2 = tolower (c2);
+#else  /* ! __FAR */
+      c1 = (unsigned char) __libi86_peekfpbi (&p);
+      lc1 = tolower (c1);
+      c2 = (unsigned char) __libi86_peekfpbi (&q);
+      lc2 = tolower (c2);
+#endif  /* ! __FAR */
+      if (lc1 != lc2)
+	return lc1 - lc2;
+    }
+  while (c1 != 0);
+  return 0;
+}

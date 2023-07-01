@@ -331,3 +331,41 @@ main (void)
   return 0;
 }]],[])
 AT_CLEANUP
+
+AT_SETUP([[_stricmp, _fstricmp]])
+AT_LIBI86_CHECK(dnl
+[[#include <i86.h>
+#include <stdlib.h>
+#include <libi86/string.h>
+int
+main (void)
+{
+  if (_stricmp ("fOO", "FOo") != 0)
+    abort ();
+  if (_stricmp ("foO", "FoO") != 0)
+    abort ();
+  if (_stricmp ("Foo", "bAR") <= 0)
+    abort ();
+  if (_stricmp ("FOo", "BaR") <= 0)
+    abort ();
+  if (_stricmp ("BAR", "Baz") >= 0)
+    abort ();
+  if (_stricmp ("bAR", "BAZ") >= 0)
+    abort ();
+  if (_stricmp ("QuX", "QUuX") <= 0)
+    abort ();
+  if (_stricmp ("quX", "Quux") <= 0)
+    abort ();
+  if (_stricmp ("QUx", "QuUx") <= 0)
+    abort ();
+  if (_fstricmp (_CV_FP ("fOo"), _CV_FP ("FOo")) != 0)
+    abort ();
+  if (_fstricmp (_CV_FP ("fOo"), _CV_FP ("bAr")) <= 0)
+    abort ();
+  if (_fstricmp (_CV_FP ("Bar"), _CV_FP ("BAZ")) >= 0)
+    abort ();
+  if (_fstricmp (_CV_FP ("Qux"), _CV_FP ("quuX")) <= 0)
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP
