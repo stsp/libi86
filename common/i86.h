@@ -82,6 +82,19 @@ union REGPACK
   struct REGPACKW x;
 };
 
+enum __libi86_intr_flags
+{
+  INTR_OF = 1u << 11,
+  INTR_DF = 1u << 10,
+  INTR_IF = 1u <<  9,
+  INTR_TF = 1u <<  8,
+  INTR_SF = 1u <<  7,
+  INTR_ZF = 1u <<  6,
+  INTR_AF = 1u <<  4,
+  INTR_PF = 1u <<  2,
+  INTR_CF = 1u <<  0
+};
+
 extern void delay (unsigned);
 extern void nosound (void);
 extern void segread (struct SREGS *__seg_regs);

@@ -241,6 +241,8 @@ int main (void)
     abort ();
   if (regs.w.es != 0xf6f6u)
     abort ();
+  if ((regs.w.flags & INTR_IF) == 0)
+    abort ();
 #else
 # error
 #endif
@@ -263,6 +265,8 @@ int main (void)
     abort ();
   if (regs.w.es != 0xf6f6u)
     abort ();
+  if ((regs.w.flags & INTR_IF) == 0)
+    abort ();
   memset (&regs, 0xf6, sizeof (regs));
   intr (0x11, &regs);
   if (regs.w.ax != _bios_equiplist ())
@@ -270,6 +274,8 @@ int main (void)
   if (regs.w.ds != 0xf6f6u)
     abort ();
   if (regs.w.es != 0xf6f6u)
+    abort ();
+  if ((regs.w.flags & INTR_IF) == 0)
     abort ();
   return 0;
 }]],[])
