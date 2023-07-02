@@ -49,4 +49,4 @@
 
 == ``<libi86/stdlib.h>``
 
-**``_fullpath``, ``_makepath``, ``_splitpath``**: See link:#dirh[notes on ``searchpath`` and ``_searchpath``].  {back-link}
+**``_fullpath``, ``_makepath``, ``_searchenv``, ``_splitpath``**: See link:#dirh[notes on ``searchpath`` and ``_searchpath``].  {back-link}

@@ -426,6 +426,7 @@ When using ACK:
 				* Upon an error, the return value is non-zero, ``errno`` is set, and __path__``[]`` holds either an empty string or a truncated path.
 				* Network __drive__``[]`` values starting with two backslashes (``\\``) are not supported.
 |  W {im-stdlib-h} | = |   | = | ``_splitpath (``*__path__``,`` *__drive__``,`` *__dir__``,`` *__fname__``,`` *__ext__``);`` | Long filenames, and network paths starting with two backslashes (``\\``), are not supported.
+|  W {im-stdlib-h} | = |   | = | ``_searchenv (``*__name__``,`` *__env-var__``,`` *__buf__``);`` |
 |       P01 |(=)|   |(=)| ``system (``*__command__``);`` |
 |         W | = |   |   | *``ulltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
 |         W | = |   |   | *``_ulltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.

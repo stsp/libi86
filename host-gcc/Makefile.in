@@ -267,7 +267,9 @@ else
 		   dos/libi86-bc-intdos.o \
 		   dos/libi86-bc-intdosx.o \
 		   dos/libi86-call5.o \
-		   dos/libi86-msdos-pathed.o \
+		   dos/libi86-msdos-pathed-first.o \
+		   dos/libi86-msdos-pathed-next.o \
+		   dos/libi86-msdos-searchenv-first.o \
 		   dos/libi86-ret-einval.o \
 		   dos/libi86-ret-really-set-errno.o \
 		   dos/libi86-ret-set-errno.o \
@@ -334,6 +336,7 @@ else
 		   stdlib/makepath.o \
 		   stdlib/osmajor-osminor.o \
 		   stdlib/psp.o \
+		   stdlib/searchenv.o \
 		   stdlib/splitpath.o
   ifeq "" "$(filter-out -mcmodel=tiny -mcmodel=small, \
 			$(filter -mcmodel=%,$(CC) $(CFLAGS) $(MULTILIB)))"

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021--2022 TK Chia
+ * Copyright (c) 2021--2023 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -226,6 +226,17 @@ __libi86_bdos_dsdxsz (unsigned char dos_func, const char *dsdx)
 						       &(itr)); \
 	     (pathname); \
 	     (pathname) = __libi86_msdos_pathed_next (&(itr)))
+/*
+ * Similar to _LIBI86_FOR_EACH_PATHED_PATHNAME (...), but instead of
+ * searching in %PATH% as given by ENVP or environ[], search in the
+ * environment variable named by ENV_VAR as defined in environ[].
+ */
+#define _LIBI86_FOR_EACH_SEARCHENV_PATHNAME(pathname, name, env_var, \
+					    dbcs, itr) \
+	for ((pathname) = __libi86_msdos_searchenv_first ((name), (env_var), \
+							  (dbcs), &(itr)); \
+	     (pathname); \
+	     (pathname) = __libi86_msdos_pathed_next (&(itr)))
 
 typedef struct
 {
@@ -238,5 +249,8 @@ extern char *__libi86_msdos_pathed_first (const char *, const char * const *,
 					  _dos_dbcs_lead_table_t,
 					  __libi86_msdos_path_itr_t *);
 extern char *__libi86_msdos_pathed_next (__libi86_msdos_path_itr_t *);
+extern char *__libi86_msdos_searchenv_first (const char *, const char *,
+					     _dos_dbcs_lead_table_t,
+					     __libi86_msdos_path_itr_t *);
 
 #endif

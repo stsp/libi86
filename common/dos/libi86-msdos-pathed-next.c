@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 TK Chia
+ * Copyright (c) 2021--2023 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,7 +27,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* Internal routines for iterating over the PATH environment variable. */
+/* Internal routine for iterating over the PATH environment variable. */
 
 #define _LIBI86_COMPILING_
 #include <errno.h>
@@ -38,33 +38,9 @@
 #include "libi86/internal/dos-dbcs.h"
 
 char *
-__libi86_msdos_pathed_first (const char *name, const char * const *envp,
-			     _dos_dbcs_lead_table_t dbcs,
-			     __libi86_msdos_path_itr_t *itr)
-{
-  itr->__name_ = name;
-  itr->__dbcs_ = dbcs;
-  if (! envp)
-    itr->__next_path_ = getenv ("PATH");
-  else
-    {
-      const char *p, * const *pp = envp;
-      while ((p = *pp++) != NULL)
-	if (p[0] == 'P' && strncmp (p, "PATH=", 5) == 0)
-	  {
-	    p += 5;
-	    break;
-	  }
-      itr->__next_path_ = p;
-    }
-
-  return __libi86_msdos_pathed_next (itr);
-}
-
-char *
 __libi86_msdos_pathed_next (__libi86_msdos_path_itr_t *itr)
 {
-  bool last_c_lead_p = false, last_c_path_sep_p = false;
+  bool last_c_lead_p = false, last_c_path_sep_p = true;
   char c, last_path_sep = '\\', *q = itr->__pathname_,
        *e = itr->__pathname_ + sizeof itr->__pathname_ - 1;
   const char *next_path = itr->__next_path_, *p;
@@ -82,6 +58,7 @@ __libi86_msdos_pathed_next (__libi86_msdos_path_itr_t *itr)
       if (q == e)
 	goto too_long;
       *q++ = c;
+      last_c_path_sep_p = false;
       if (last_c_lead_p)
 	last_c_lead_p = false;
 #ifdef __FAR
@@ -95,8 +72,6 @@ __libi86_msdos_pathed_next (__libi86_msdos_path_itr_t *itr)
 	  last_c_path_sep_p = true;
 	  last_path_sep = c;
 	}
-      else
-	last_c_path_sep_p = false;
     }
 
   if (last_c_lead_p)

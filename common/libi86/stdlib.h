@@ -128,6 +128,8 @@ extern char *_fullpath (char *__buffer, const char *__path,
 extern int _makepath (char __path[_MAX_PATH], const char *__drive,
 		      const char *__dir, const char *__fname,
 		      const char *__ext);
+extern void _searchenv (const char *__name, const char *__env_var,
+			char __full_pathname[_MAX_PATH]);
 extern void _splitpath (const char *__path, char __drive[_MAX_DRIVE],
 			char __dir[_MAX_DIR], char __fname[_MAX_FNAME],
 			char __ext[_MAX_EXT]);

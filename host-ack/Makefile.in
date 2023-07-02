@@ -196,7 +196,9 @@ OBJS		= bios/bios-disk.o \
 		  dos/libi86-msdos-do-findnext.o \
 		  dos/libi86-msdos-do-open.o \
 		  dos/libi86-msdos-do-truename.o \
-		  dos/libi86-msdos-pathed.o \
+		  dos/libi86-msdos-pathed-first.o \
+		  dos/libi86-msdos-pathed-next.o \
+		  dos/libi86-msdos-searchenv-first.o \
 		  dos/libi86-msdos-set-dta.o \
 		  dos/libi86-ret-einval.o \
 		  dos/libi86-ret-really-set-errno.o \
@@ -281,6 +283,7 @@ OBJS		= bios/bios-disk.o \
 		  stdlib/libi86-ultoa-uldiv.o \
 		  stdlib/ltoa.o \
 		  stdlib/makepath.o \
+		  stdlib/searchenv.o \
 		  stdlib/splitpath.o \
 		  stdlib/ultoa.o \
 		  string/fmemchr.o \

@@ -3223,3 +3223,104 @@ main (void)
 3 OK
 ]])
 AT_CLEANUP
+
+AT_SETUP([[_searchenv]])
+AT_LIBI86_CHECK_DOS(dnl
+[[#include <direct.h>
+#include <dos.h>
+#include <fcntl.h>
+#include <process.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <libi86/stdlib.h>
+int
+main (int argc, char **argv)
+{
+  const char * const kid_envp[]
+    = { "QUIDDITCH=;savings;nearly;squiggle", NULL };
+  const char *prog = argv[0];
+  const char *kid_argv[] = { NULL, "synergy", NULL };
+  unsigned char byte1 = 0xa1, byte2 = 0x4f, byte3 = 0xba, in_byte;
+  unsigned n;
+  char out_path[_MAX_PATH];
+  int fd;
+
+  if (argc == 1)
+    {
+      kid_argv[0] = prog;
+      if (_spawnve (_P_WAIT, prog, kid_argv, kid_envp) != (pid_t) 0)
+	abort ();
+      return 0;
+    }
+
+  _mkdir ("savings");
+  _mkdir ("nearly");
+  _mkdir ("squiggle");
+
+  if (_dos_creatnew ("savings/elliptic", _A_NORMAL, &fd) != 0)
+    abort ();
+  _dos_write (fd, _CV_FP (&byte1), 1, &n);
+  _dos_close (fd);
+
+  if (_dos_creatnew ("nearly/juniper", _A_NORMAL, &fd) != 0)
+    abort ();
+  _dos_write (fd, _CV_FP (&byte2), 1, &n);
+  _dos_close (fd);
+
+  if (_dos_creatnew ("squiggle/platonic", _A_NORMAL, &fd) != 0)
+    abort ();
+  _dos_write (fd, _CV_FP (&byte3), 1, &n);
+  _dos_close (fd);
+
+  memset (out_path, 0xf6, _MAX_PATH);
+  _searchenv ("ninja", "QUIDDITCH", out_path);
+  if (out_path[0])
+    abort ();
+  puts ("1 OK");
+
+  memset (out_path, 0xf6, _MAX_PATH);
+  _searchenv ("platonic", "QUIDDITCH", out_path);
+  if (! out_path[0])
+    abort ();
+  puts ("2 OK");
+
+  if (_dos_open (out_path, O_RDONLY | O_NOINHERIT, &fd) != 0)
+    abort ();
+  in_byte = 0xf6;
+  _dos_read (fd, _CV_FP (&in_byte), 1, &n);
+  if (in_byte != 0xba)
+    abort ();
+  _dos_close (fd);
+  puts ("3 OK");
+
+  memset (out_path, 0xf6, _MAX_PATH);
+  _searchenv ("juniper", "QUIDDITCH", out_path);
+  if (! out_path[0])
+    abort ();
+  puts ("4 OK");
+
+  if (_dos_open (out_path, O_RDONLY | O_NOINHERIT, &fd) != 0)
+    abort ();
+  in_byte = 0xf6;
+  _dos_read (fd, _CV_FP (&in_byte), 1, &n);
+  if (in_byte != 0x4f)
+    abort ();
+  _dos_close (fd);
+  puts ("5 OK");
+
+  unlink ("savings/elliptic");
+  unlink ("nearly/juniper");
+  unlink ("squiggle/platonic");
+  _rmdir ("savings");
+  _rmdir ("nearly");
+  _rmdir ("squiggle");
+
+  return 0;
+}]],[[1 OK
+2 OK
+3 OK
+4 OK
+5 OK
+]])
+AT_CLEANUP
