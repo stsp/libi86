@@ -87,6 +87,7 @@ When using ACK:
 :fn-iso-iec-99: footnote:iso-iec-99[International Organization for Standardization, and International Electrotechnical Commission.  ISO/IEC 9899:1999: Programming Languages: C, 1999.]
 :fn-iso-iec-07: footnote:iso-iec-07[International Organization for Standardization, and International Electrotechnical Commission.  ISO/IEC 9899:TC3: Committee Draft — September 7, 2007.  WG14/N1256, 2007.  http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf.]
 :fn-ieee-04: footnote:ieee-04[Institute of Electrical and Electronics Engineers, and The Open Group.  IEEE Std 1003.1, 2004 Edition, 2004.  https://pubs.opengroup.org/onlinepubs/009695399/.]
+:fn-freebsd-23: footnote:freebsd-23[See e.g.: FreeBSD Project.  FreeBSD Manual Pages, 2023.  https://man.freebsd.org/cgi/man.cgi.]
 
 [cols=">1,9"]
 |===
@@ -99,6 +100,7 @@ When using ACK:
 |   B | From Borland Turbo C{plus}{plus} — enable with `_BORLANDC_SOURCE`.
 |  UB | Undocumented (?) functionality from Borland Turbo C{plus}{plus} — enable with `_BORLANDC_SOURCE`.
 | W/B | By default, behaves as in Open Watcom; if `_BORLANDC_SOURCE` is defined, behaves as in Borland C{plus}{plus}.
+| BSD | From the Berkeley Standard Distribution's C library (BSD `libc`) and its derivatives.{fn-freebsd-23}
 |  IW | From internal interfaces in Open Watcom's library code.
 |   X | `libi86`-specific extension; not in Open Watcom or Borland C{plus}{plus}.  Enabled even if the macros `_BORLANDC_SOURCE` and `_ISOC99_SOURCE` are not defined.
 |  XB | `libi86`-specific extension.  Behaves slightly differently if `_BORLANDC_SOURCE` is defined.
@@ -334,6 +336,12 @@ When using ACK:
 |        IW | = |   |   | ``_DPMISetSegmentBaseAddress (``__sel__``,`` __addr__``);`` | ``int 0x31`` function ``0x0007``.  Returns 0 on success, -1 on error.
 |        IW | = |   |   | ``_DPMISetSegmentLimit (``__sel__``,`` __lim__``);`` | ``int 0x31`` function ``0x0008``.  Returns 0 on success, -1 on error.
 |        IW | = |   |   | ``_DPMISimulateRealModeInterrupt (``__inter-no__``,`` __reset__``,`` __words-to-copy__``,`` *__call-struct__``);`` | ``int 0x31`` function ``0x0300``.  Returns 0 on success, -1 on error.  _words-to-copy_ should probably be 0.
+6+|
+|           | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <err.h> ▞▞▞▞▖``**
+|       BSD | = | = | = | ``err (``__error-level__``,`` *__fmt__``, ...);`` |
+|       BSD | = | = | = | ``verr (``__error-level__``,`` *__fmt__``,`` __ap__``);`` |
+|       BSD | = | = | = | ``warn (``*__fmt__``, ...);`` |
+|       BSD | = | = | = | ``vwarn (``*__fmt__``,`` __ap__``);`` |
 6+|
 |           | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <graph.h> ▞▞▞▞▖``**
 
