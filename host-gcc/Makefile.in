@@ -120,10 +120,14 @@ OBJS		=  conio/libi86-con-name.o \
 		   dos/poke.o \
 		   dos/pokeb.o \
 		   err/err.o \
+		   err/errx.o \
 		   err/libi86-progname.o \
 		   err/verr.o \
+		   err/verrx.o \
 		   err/vwarn.o \
+		   err/vwarnx.o \
 		   err/warn.o \
+		   err/warnx.o \
 		   i86/delay.o \
 		   i86/disable.o \
 		   i86/enable.o \

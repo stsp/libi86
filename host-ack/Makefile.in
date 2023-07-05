@@ -211,10 +211,14 @@ OBJS		= bios/bios-disk.o \
 		  dos-dbcs/dos-get-dbcs-lead-table.o \
 		  dos-dbcs/libi86-msdos-dbcs-lead-p.o \
 		  err/err.o \
+		  err/errx.o \
 		  err/libi86-progname.o \
 		  err/verr.o \
+		  err/verrx.o \
 		  err/vwarn.o \
+		  err/vwarnx.o \
 		  err/warn.o \
+		  err/warnx.o \
 		  graph/clearscreen.o \
 		  graph/displaycursor.o \
 		  graph/gettextposition.o \

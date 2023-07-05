@@ -339,9 +339,13 @@ When using ACK:
 6+|
 |           | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <err.h> ▞▞▞▞▖``**
 |       BSD | = | = | = | ``err (``__error-level__``,`` *__fmt__``, ...);`` |
+|       BSD | = | = | = | ``errx (``__error-level__``,`` *__fmt__``, ...);`` |
 |       BSD | = | = | = | ``verr (``__error-level__``,`` *__fmt__``,`` __ap__``);`` |
-|       BSD | = | = | = | ``warn (``*__fmt__``, ...);`` |
+|       BSD | = | = | = | ``verrx (``__error-level__``,`` *__fmt__``,`` __ap__``);`` |
 |       BSD | = | = | = | ``vwarn (``*__fmt__``,`` __ap__``);`` |
+|       BSD | = | = | = | ``vwarnx (``*__fmt__``,`` __ap__``);`` |
+|       BSD | = | = | = | ``warn (``*__fmt__``, ...);`` |
+|       BSD | = | = | = | ``warnx (``*__fmt__``, ...);`` |
 6+|
 |           | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <graph.h> ▞▞▞▞▖``**
 

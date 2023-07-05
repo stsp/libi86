@@ -27,45 +27,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_ERR_H_
-#define _LIBI86_ERR_H_
+#define _LIBI86_COMPILING_
+#include <stdarg.h>
+#include "err.h"
 
-#include <libi86/internal/cdefs.h>
-#include <libi86/internal/farptr.h>
-
-_LIBI86_BEGIN_EXTERN_C
-
-#ifdef _LIBI86_COMPILING_
-# ifndef __ACK
-extern const char *__libi86_progname;
-# else
-extern const char *__libi86_get_progname (void);
-#   define __libi86_progname (__libi86_get_progname ())
-# endif
-#endif
-
-extern void err (int, const char *, ...)
-	    _LIBI86_NORETURN _LIBI86_FORMAT (__printf__, 2, 3);
-extern void errx (int, const char *, ...)
-	    _LIBI86_NORETURN _LIBI86_FORMAT (__printf__, 2, 3);
-extern void warn (const char *, ...) _LIBI86_FORMAT (__printf__, 1, 2);
-extern void warnx (const char *, ...) _LIBI86_FORMAT (__printf__, 1, 2);
-
-extern void _verr (int, const char *, __libi86_va_list_t)
-	    _LIBI86_NORETURN _LIBI86_FORMAT (__printf__, 2, 0);
-extern void _verrx (int, const char *, __libi86_va_list_t)
-	    _LIBI86_NORETURN _LIBI86_FORMAT (__printf__, 2, 0);
-extern void _vwarn (const char *, __libi86_va_list_t)
-	    _LIBI86_FORMAT (__printf__, 1, 0);
-extern void _vwarnx (const char *, __libi86_va_list_t)
-	    _LIBI86_FORMAT (__printf__, 1, 0);
-#ifndef _LIBI86_COMPILING_
-_LIBI86_REDIRECT_VOID_3 (verr, int, const char *, __libi86_va_list_t, _verr)
-_LIBI86_REDIRECT_VOID_3 (verrx, int, const char *, __libi86_va_list_t, _verrx)
-_LIBI86_REDIRECT_VOID_2 (vwarn, const char *, __libi86_va_list_t, _vwarn)
-_LIBI86_REDIRECT_VOID_2 (vwarnx, const char *, __libi86_va_list_t, _vwarnx)
-#endif
-
-_LIBI86_END_EXTERN_C
-
-#endif
+void
+errx (int error, const char *fmt, ...)
+{
+  va_list ap;
+  va_start (ap, fmt);
+  _verrx (error, fmt, ap);
+  va_end (ap);
+}
