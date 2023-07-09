@@ -1,3 +1,4 @@
+#
 /*
  * Copyright (c) 2023 TK Chia
  *
@@ -27,73 +28,69 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "libi86/internal/call-cvt.h"
+#include "libi86/internal/sect.h"
 
-	.arch	i8086, jumps
-	.code16
-	.att_syntax prefix
-
-	TEXT_ (lz4cpy.S.LIBI86)
-	.global	_lz4cpy
-	.weak	lz4cpy
-_lz4cpy:
-lz4cpy:
-	ENTER2_BX_ (10)
-	pushw	%si
-	pushw	%di
-	pushw	%bp
-	pushw	%es
-	LES_ARG0W_BX_ (%di)		/* %es:%di := DEST */
-	MOV_ARG8W2_BX_ (%bp)		/* %bp := BLK_SZ */
-	LDS_ARG4W2_BX_ (%si)		/* %si := FP_OFF (BLK_SRC) */
-	movw	%ds,	%bx		/* %bx := FP_SEG (BLK_SRC) */
-	addw	%si,	%bp		/* %bp := FP_OFF (BLK_SRC + BLK_SZ) */
+	.define	__lz4cpy
+__lz4cpy:
+	mov	bx, sp
+	push	si
+	push	di
+	push	bp
+	push	es
+	les	di, 4(bx)		/* es:di := DEST */
+	mov	bp, 12(bx)		/* bp := BLK_SZ */
+	lds	si, 8(bx)		/* si := FP_OFF (BLK_SRC) */
+	mov	bx, ds			/* bx := FP_SEG (BLK_SRC) */
+	add	bp, si			/* bp := FP_OFF (BLK_SRC + BLK_SZ) */
 	jmp	.chk
 .loopy:
 	lodsb
-	xchgw	%ax,	%dx
-	mov	%dl,	%ch
-	mov	$12,	%cl
-	shrw	%cl,	%cx
+	xchg	dx, ax
+	movb	ch, dl
+	movb	cl, 12
+	shr	cx, cl
 	call	.full_len
 	rep movsb
-	cmpw	%bp,	%si
+	cmp	si, bp
 	jnb	.done
 	lodsw
-	movb	%dl,	%cl
-	movw	%di,	%dx
-	subw	%ax,	%dx
-	andw	$0x0f,	%cx
+	movb	cl, dl
+	mov	dx, di
+	sub	dx, ax
+	and	cx, 0x0f
 	call	.full_len
-	addw	$4,	%cx
-	pushw	%es
-	popw	%ds
-	xchgw	%dx,	%si
+	add	cx, 4
+	push	es
+	pop	ds
+	xchg	si, dx
 	rep movsb
-	movw	%dx,	%si
-	movw	%bx,	%ds
+	mov	si, dx
+	mov	ds, bx
 .chk:
-	cmpw	%bp,	%si
+	cmp	si, bp
 	jb	.loopy
 .done:
-	xchgw	%di,	%ax
-	movw	%es,	%dx
-	pushw	%ss
-	popw	%ds
-	popw	%es
-	popw	%bp
-	popw	%di
-	popw	%si
-	RET2_ (10)
+	push	ss
+	pop	ds
+	mov	bx, sp
+	mov	bx, 8+2(bx)		/* return value := updated DEST */
+	mov	(bx), di
+	mov	2(bx), es
+	xchg	bx, ax
+	pop	es
+	pop	bp
+	pop	di
+	pop	si
+	ret
 
 .full_len:
-	cmpb	$0x0f,	%cl
-	jnz	9f
-	movb	$0,	%ah
-1:
+	cmpb	cl, 0x0f
+	jnz	.9
+	movb	ah, 0
+.1:
 	lodsb
-	addw	%ax,	%cx
-	cmp	$0xff,	%al
-	jz	1b
-9:
+	add	cx, ax
+	cmpb	al, 0xff
+	jz	.1
+.9:
 	ret
