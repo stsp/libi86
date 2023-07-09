@@ -12,7 +12,12 @@
 
 https://gitlab.com/tkchia/libi86/-/commits/master[image:https://gitlab.com/tkchia/libi86/badges/master/pipeline.svg["GitLab pipeline status"]]
 
-This is a code library which attempts to reimplement non-standard C library facilities (e.g. `<conio.h>`) commonly used in classical MS-DOS programs.  The library also implements a few standard facilities which are part of newer C language standards, where the underlying C library lacks them.
+:fn-collet-22: footnote:collet-22[Yann Collet, et al.  LZ4 1.9.4 Manual, 2022.  LZ4 block format description.  https://github.com/lz4/lz4/blob/dev/doc/lz4_Frame_format.md.]
+
+This is a code library which attempts to reimplement non-standard C library facilities (e.g. `<conio.h>`) commonly used in classical MS-DOS programs.  The library also implements
+
+  * a few standard facilities which are part of newer C language standards, where the underlying C library lacks them;
+  * and extra routines for LZ4{fn-collet-22} data decompression.
 
 :fn-tkchia-22: footnote:tkchia-22[https://github.com/tkchia/build-ia16/.]
 :fn-given-21: footnote:given-21[https://github.com/davidgiven/ack.]
@@ -84,10 +89,11 @@ When using ACK:
 === Legend
 
 :fn-elks-22: footnote:elks-22[https://github.com/jbruchon/elks/.]
+:fn-freebsd-23: footnote:freebsd-23[See e.g.: FreeBSD Project.  FreeBSD Manual Pages, 2023.  https://man.freebsd.org/cgi/man.cgi.]
 :fn-iso-iec-99: footnote:iso-iec-99[International Organization for Standardization, and International Electrotechnical Commission.  ISO/IEC 9899:1999: Programming Languages: C, 1999.]
 :fn-iso-iec-07: footnote:iso-iec-07[International Organization for Standardization, and International Electrotechnical Commission.  ISO/IEC 9899:TC3: Committee Draft — September 7, 2007.  WG14/N1256, 2007.  http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf.]
 :fn-ieee-04: footnote:ieee-04[Institute of Electrical and Electronics Engineers, and The Open Group.  IEEE Std 1003.1, 2004 Edition, 2004.  https://pubs.opengroup.org/onlinepubs/009695399/.]
-:fn-freebsd-23: footnote:freebsd-23[See e.g.: FreeBSD Project.  FreeBSD Manual Pages, 2023.  https://man.freebsd.org/cgi/man.cgi.]
+:fn-tunney-23: footnote:tunney-23[https://github.com/jart/cosmopolitan.]
 
 [cols=">1,9"]
 |===
@@ -101,6 +107,7 @@ When using ACK:
 |  UB | Undocumented (?) functionality from Borland Turbo C{plus}{plus} — enable with `_BORLANDC_SOURCE`.
 | W/B | By default, behaves as in Open Watcom; if `_BORLANDC_SOURCE` is defined, behaves as in Borland C{plus}{plus}.
 | BSD | From the Berkeley Standard Distribution's C library (BSD `libc`) and its derivatives.{fn-freebsd-23}
+|  IC | From internal interfaces in Cosmopolitan `libc` by Justine Tunney.{fn-tunney-23}
 |  IW | From internal interfaces in Open Watcom's library code.
 |   X | `libi86`-specific extension; not in Open Watcom or Borland C{plus}{plus}.  Enabled even if the macros `_BORLANDC_SOURCE` and `_ISOC99_SOURCE` are not defined.
 |  XB | `libi86`-specific extension.  Behaves slightly differently if `_BORLANDC_SOURCE` is defined.
@@ -211,10 +218,10 @@ When using ACK:
 |         W | = |   | = | ``_getdcwd (``__drive__``,`` *__buffer__``,`` __size__``);`` |
 |         W | = |   | = | ``_getdrive ();`` |
 | P01 {im-direct-h} |(=)| : |(=)| ``mkdir (``*__path__``,`` __mode__``);`` .4+a|
-				* In Watcom, both `mkdir` and ``_mkdir`` take only a single __path__ argument.
-				* POSIX however says that `mkdir` (placed in `<sys/stat.h>`) takes two arguments; the second argument gives Unix-style permission bits.
-				* For compatibility with both, `libi86` under `gcc-ia16` allows both `mkdir` and ``_mkdir`` to be called with either one or two arguments.
-				* Under ACK, however, ``_mkdir`` will always only take one argument, and `mkdir` will take two (unless ACK's C library says otherwise).
+			* In Watcom, both `mkdir` and ``_mkdir`` take only a single __path__ argument.
+			* POSIX however says that `mkdir` (placed in `<sys/stat.h>`) takes two arguments; the second argument gives Unix-style permission bits.
+			* For compatibility with both, `libi86` under `gcc-ia16` allows both `mkdir` and ``_mkdir`` to be called with either one or two arguments.
+			* Under ACK, however, ``_mkdir`` will always only take one argument, and `mkdir` will take two (unless ACK's C library says otherwise).
 | X {im-direct-h} |   |   | = | ``_mkdir (``*__path__``,`` __mode__``);``
 |         W |   |   |(=)| ``mkdir (``*__path__``);``
 |         W | = |   | = | ``_mkdir (``*__path__``);``
@@ -412,6 +419,10 @@ When using ACK:
 | W+ {im-process-h} | = |   | = | ``spawnvpe (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);``
 | W+ {im-process-h} | = |   | = | ``_spawnvpe (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);``
 |       P01 |(=)|   |(=)| ``system (``*__command__``);`` | (POSIX and C89 (ISO/IEC 9899:1990) place this function in ``<stdlib.h>``.)
+6+|
+|           | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <libi86/kompress.h> ▞▞▞▞▖``**
+|        IC | = | = |   | *``lz4cpy (``*__dest__``,`` *__blk-src__``,`` __blk-size__``);`` .2+a| Unpacks an LZ4-compressed block.  Returns the address of the byte after the unpacked data.
+|         X | = | = |   | *``_lz4cpy (``*__dest__``,`` *__blk-src__``,`` __blk-size__``);``
 6+|
 |           | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖``**
 

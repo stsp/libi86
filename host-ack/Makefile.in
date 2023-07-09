@@ -70,6 +70,7 @@ INSTALL_HEADERS	= bios.h \
 		  graph.h \
 		  i86.h \
 		  share.h \
+		  libi86/kompress.h \
 		  libi86/stdio.h \
 		  libi86/stdlib.h \
 		  libi86/string.h \

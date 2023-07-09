@@ -74,6 +74,7 @@ INSTALL_SPECS	= $(CLEAN_SPECS)
 INSTALL_HEADERS	= dos.h \
 		  err.h \
 		  i86.h \
+		  libi86/kompress.h \
 		  libi86/stdlib.h \
 		  libi86/string.h \
 		  libi86/internal/bc-portio.h \
@@ -151,6 +152,7 @@ OBJS		=  conio/libi86-con-name.o \
 		   i86/libi86-sound-by-divisor.o \
 		   i86/nosound.o \
 		   i86/sound.o \
+		   kompress/lz4cpy.o \
 		   process/getpid.o \
 		   stdlib/lltoa.o \
 		   stdlib/ltoa.o \
