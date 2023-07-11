@@ -106,7 +106,7 @@ fi
 : ${CXX='@CXX@'}
 (test yes = $ac_compiler_gnu \
  && $CXX -mmsdos -mregparmcall --version -v >/dev/null 2>/dev/null) \
-  || CXX=false
+  || CXX=/bin/false
 
 : ${CPPFLAGS='@CPPFLAGS@'}
 if "$at_arg_x_test_underlying"; then

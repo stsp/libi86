@@ -73,7 +73,7 @@ AT_CLEANUP
 
 AT_SETUP([[C++ compiler toolchain]])
 
-AT_SKIP_IF([test false = "$CXX"])
+AT_SKIP_IF([test /bin/false = "$CXX"])
 AT_LIBI86_CHECK_CXX(dnl
 [[#if (! defined __ia16__ && ! defined __i86) || ! defined __cplusplus
 # error

@@ -300,7 +300,7 @@ fi])
 m4_define([AT_LIBI86_CHECK_DOS_CXX_FOR_NEAR_DATA_MODEL],[dnl
 dnl (1) if ia16-elf-g++ does not exist or does not work, just skip test(s)
 dnl (2) ia16-elf-g++ simply does not support medium model yet
-if test false != "$CXX"; then
+if test /bin/false != "$CXX"; then
 AT_DATA([[a.cc]],[$1
 ])
 AT_DATA([[expout]],[$2])
