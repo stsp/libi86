@@ -1,3 +1,4 @@
+#
 /*
  * Copyright (c) 2023 TK Chia
  *
@@ -27,59 +28,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "libi86/internal/call-cvt.h"
+#include "libi86/internal/sect.h"
 
-	.arch	i8086, jumps
-	.code16
-	.att_syntax prefix
-
-	TEXT_ (lz4cpy_lz4len.S.LIBI86)
-	.global	_lz4cpy
-	.weak	lz4cpy
-_lz4cpy:
-lz4cpy:
-	ENTER2_BX_ (10)
-	pushw	%si
-	pushw	%di
-	pushw	%es
-	LES_ARG0W_BX_ (%di)		/* %es:%di := DEST */
-	LDS_ARG4W2_BX_ (%si)		/* %ds:%si := BLK_SRC */
-	MOV_ARG8W2_SSBX_ (%bx)		/* %bx := BLK_SZ */
-	addw	%si,	%bx		/* %bx := FP_OFF (BLK_SRC + BLK_SZ) */
+	.define	__lz4len
+__lz4len:
+	mov	bx, sp
+	push	si
+	push	di
+	lds	si, 2(bx)		/* ds:si := BLK_SRC */
+	sseg mov bx, 6(bx)		/* bx := BLK_SZ */
+	add	bx, si			/* bx := FP_OFF (BLK_SRC + BLK_SZ) */
+	xor	di, di			/* di := UNPACKLEN */
 	jmp	.chk
 .loopy:
 	lodsb
-	xchgw	%ax,	%dx
-	mov	%dl,	%ch
-	mov	$12,	%cl
-	shrw	%cl,	%cx
-	call	__libi86_lz4_full_len
-	rep movsb
-	cmpw	%bx,	%si
+	xchg	dx, ax
+	movb	ch, dl
+	movb	cl, 12
+	shr	cx, cl
+	call	.__libi86_lz4_full_len
+	add	si, cx
+	add	di, cx
+	cmp	si, bx
 	jnb	.done
 	lodsw
-	movb	%dl,	%cl
-	movw	%di,	%dx
-	subw	%ax,	%dx
-	andw	$0x0f,	%cx
-	call	__libi86_lz4_full_len
-	addw	$4,	%cx
-	pushw	%ds
-	pushw	%es
-	popw	%ds
-	xchgw	%dx,	%si
-	rep movsb
-	movw	%dx,	%si
-	popw	%ds
+	movb	cl, dl
+	and	cx, 0x0f
+	call	.__libi86_lz4_full_len
+	add	cx, 4
+	add	di, cx
 .chk:
-	cmpw	%bx,	%si
+	cmp	si, bx
 	jb	.loopy
 .done:
-	xchgw	%ax,	%di
-	movw	%es,	%dx
-	pushw	%ss
-	popw	%ds
-	popw	%es
-	popw	%di
-	popw	%si
-	RET2_ (10)
+	xchg	di, ax
+	push	ss
+	pop	ds
+	pop	di
+	pop	si
+	ret

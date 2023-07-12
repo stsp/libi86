@@ -53,6 +53,10 @@
  *   third, fourth, or fifth argument shortword into REG, respectively, if
  *   necessary.  Each of these macros should be used only after ENTER_BX_.
  *
+ * - MOV_ARG4W_SSBX_ (REG) does the same as MOV_ARG4W_BX_ (REG), but does
+ *   not assume that %ds = %ss, i.e. it adds an explicit `ss' segment
+ *   override if needed.
+ *
  * - MOV_ARG0W_BX_CLOBBER_ (REG), MOV_ARG2W_BX_CLOBBER_ (REG), or
  *   MOV_ARG4W_BX_CLOBBER_ (REG) moves the first, second, or third argument
  *   shortword into REG.  If the `regparmcall' convention is in effect, and
@@ -64,6 +68,10 @@
  * - MOV_ARG8W2_BX_(REG) does the same as MOV_ARG8W_BX_ (REG), except that
  *   for the `regparmcall' convention, it assumes that the function uses
  *   only two registers (%ax and %dx) to hold parameters.
+ *
+ * - MOV_ARG8W2_SSBX_ (REG) does the same as MOV_ARG8W2_BX_ (REG), but does
+ *   not assume that %ds = %ss, i.e. it adds an explicit `ss' segment
+ *   override.
  *
  * - MOV_ARG0B_BX_ (REG), MOV_ARG2B_BX_ (REG), MOV_ARG4B_BX_ (REG), or
  *   MOV_ARG6B_BX_ (REG), or MOV_ARG8B_BX_ (REG) moves the low byte of the
@@ -172,9 +180,11 @@
 # define MOV_ARG4W_BX_(reg)	.ifnc %cx, reg; \
 				movw %cx, reg; \
 				.endif
+# define MOV_ARG4W_SSBX_(reg)	MOV_ARG4W_BX_ (reg)
 # define MOV_ARG6W_BX_(reg)	movw FAR_ADJ__+2(%bx), reg
 # define MOV_ARG8W_BX_(reg)	movw FAR_ADJ__+4(%bx), reg
 # define MOV_ARG8W2_BX_(reg)	movw FAR_ADJ__+6(%bx), reg
+# define MOV_ARG8W2_SSBX_(reg)	movw %ss:FAR_ADJ__+6(%bx), reg
 # ifdef __OPTIMIZE_SIZE__
 #   define MOV_ARG0W_BX_CLOBBER_(reg) \
 				.ifnc %ax, reg; \
@@ -265,9 +275,11 @@
 # define MOV_ARG0W_BX_(reg)	movw FAR_ADJ__+2(%bx), reg
 # define MOV_ARG2W_BX_(reg)	movw FAR_ADJ__+4(%bx), reg
 # define MOV_ARG4W_BX_(reg)	movw FAR_ADJ__+6(%bx), reg
+# define MOV_ARG4W_SSBX_(reg)	movw %ss:FAR_ADJ__+6(%bx), reg
 # define MOV_ARG6W_BX_(reg)	movw FAR_ADJ__+8(%bx), reg
 # define MOV_ARG8W_BX_(reg)	movw FAR_ADJ__+10(%bx), reg
 # define MOV_ARG8W2_BX_(reg)	movw FAR_ADJ__+10(%bx), reg
+# define MOV_ARG8W2_SSBX_(reg)	movw %ss:FAR_ADJ__+10(%bx), reg
 # define MOV_ARG0W_BX_CLOBBER_(reg) MOV_ARG0W_BX_(reg)
 # define MOV_ARG2W_BX_CLOBBER_(reg) MOV_ARG2W_BX_(reg)
 # define MOV_ARG4W_BX_CLOBBER_(reg) MOV_ARG4W_BX_(reg)

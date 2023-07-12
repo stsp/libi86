@@ -421,8 +421,9 @@ When using ACK:
 |       P01 |(=)|   |(=)| ``system (``*__command__``);`` | (POSIX and C89 (ISO/IEC 9899:1990) place this function in ``<stdlib.h>``.)
 6+|
 |           | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <libi86/kompress.h> ▞▞▞▞▖``**
-|        IC | = | = | = | *``lz4cpy (``*__dest__``,`` *__blk-src__``,`` __blk-size__``);`` .2+a| Unpacks an LZ4-compressed block.  Returns the address of the byte after the unpacked data.
+|        IC | = | = | = | *``lz4cpy (``*__dest__``,`` *__blk-src__``,`` __blk-size__``);`` .2+a| Unpacks an LZ4-compressed block.  Returns the address of the byte after the unpacked data.  It is best to use this function only on trusted input.
 |         X | = | = | = | *``_lz4cpy (``*__dest__``,`` *__blk-src__``,`` __blk-size__``);``
+|         X | = | = | = | ``_lz4len (``*__blk-src__``,`` __blk-size__``);`` | Parses an LZ4-compressed block and returns its uncompressed size, without actually unpacking it.  It is best to use this function only on trusted input.
 6+|
 |           | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖``**
 
