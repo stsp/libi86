@@ -138,151 +138,151 @@ When using ACK:
 
 [cols=">1,>1,>1,>1,4,4"]
 |===
-| Compat. 3+| Avail.    | Function | Notes
+| Compat. 3+<| Avail.  <| Function <| Notes
 
-|           | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <bios.h> ▞▞▞▞▖``**
-|        W+ | = |   | = | ``_bios_disk (``__service__``,`` *__diskinfo__``);`` | As an extension, also accepts _service_ = ``_DISK_DRIVEPARAMS``, which returns drive parameters in *__diskinfo__.
-|         W | = |   | = | ``_bios_equiplist ();`` |
-|         B | = |   | = | ``biosequip ();`` |
-|         W | = |   | = | ``_bios_memsize ();`` |
-|         B | = |   | = | ``biosmemory ();`` |
-|         W | = |   | = | ``_bios_keybrd (``__service__``);`` |
-|         B | = |   | = | ``bioskey (``__service__``);`` |
-|         W | = |   | = | ``_bios_printer (``__service__``,`` __port__``,`` __data__``);`` |
-|         W | = |   | = | ``_bios_serialcom (``__service__``,`` __port__``,`` __data__``);`` |
-|         W | = |   | = | ``_bios_timeofday (``__service__``,`` *__timeval__``);`` |
-|         X | = |   | = | ``_bios_joystick (unsigned`` __service__``,`` ``union _joyinfo_t`` *__joyinfo__``);`` | Reads joystick status via ``int 0x15`` function ``0x84``.
+|            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <bios.h> ▞▞▞▞▖``**
+|         W+ | = |   | = | ``_bios_disk (``__service__``,`` *__diskinfo__``);`` | As an extension, also accepts _service_ = ``_DISK_DRIVEPARAMS``, which returns drive parameters in *__diskinfo__.
+|          W | = |   | = | ``_bios_equiplist ();`` |
+|          B | = |   | = | ``biosequip ();`` |
+|          W | = |   | = | ``_bios_memsize ();`` |
+|          B | = |   | = | ``biosmemory ();`` |
+|          W | = |   | = | ``_bios_keybrd (``__service__``);`` |
+|          B | = |   | = | ``bioskey (``__service__``);`` |
+|          W | = |   | = | ``_bios_printer (``__service__``,`` __port__``,`` __data__``);`` |
+|          W | = |   | = | ``_bios_serialcom (``__service__``,`` __port__``,`` __data__``);`` |
+|          W | = |   | = | ``_bios_timeofday (``__service__``,`` *__timeval__``);`` |
+|          X | = |   | = | ``_bios_joystick (unsigned`` __service__``,`` ``union _joyinfo_t`` *__joyinfo__``);`` | Reads joystick status via ``int 0x15`` function ``0x84``.
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <conio.h> ▞▞▞▞▖``**
+|            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <conio.h> ▞▞▞▞▖``**
 
 			* **If `_BORLANDC_SOURCE` is defined, ``<conio.h>`` switches to an alternate implementation of the console output routines which is based on ``<graph.h>`` facilities.**
 
-|       W/B | = |   | = | *``cgets (``*__buf__``);`` |
-|       W/B | = |   | = | ``cprintf (``*__fmt__``, ...);`` |
-|       W/B | = |   | = | ``cputs (``*__buf__``);`` |
-|       W/B | = |   | = | ``cscanf (``*__fmt__``, ...);`` |
-|         W | = |   | = | ``getch ();`` |
-|         W | = |   | = | ``_getch ();`` |
-|       W/B | = |   | = | ``getche ();`` |
-|         W | = |   | = | ``_getche ();`` |
-|         W | = |   | = | ``kbhit ();`` |
-|         W | = |   | = | ``_kbhit ();`` |
-|         W | = | = | = | ``ungetch (``__ch__``);`` |
-|         W | = |   | = | ``_ungetch (``__ch__``);`` |
-|       W/B | = |   | = | ``putch (``__ch__``);`` |
-|       W/B | = |   | = | ``vcprintf (``*__fmt__``,`` __ap__``);`` |
-|       W/B | = |   | = | ``vcscanf (``*__fmt__``,`` __ap__``);`` |
+|        W/B | = |   | = | *``cgets (``*__buf__``);`` |
+|        W/B | = |   | = | ``cprintf (``*__fmt__``, ...);`` |
+|        W/B | = |   | = | ``cputs (``*__buf__``);`` |
+|        W/B | = |   | = | ``cscanf (``*__fmt__``, ...);`` |
+|          W | = |   | = | ``getch ();`` |
+|          W | = |   | = | ``_getch ();`` |
+|        W/B | = |   | = | ``getche ();`` |
+|          W | = |   | = | ``_getche ();`` |
+|          W | = |   | = | ``kbhit ();`` |
+|          W | = |   | = | ``_kbhit ();`` |
+|          W | = | = | = | ``ungetch (``__ch__``);`` |
+|          W | = |   | = | ``_ungetch (``__ch__``);`` |
+|        W/B | = |   | = | ``putch (``__ch__``);`` |
+|        W/B | = |   | = | ``vcprintf (``*__fmt__``,`` __ap__``);`` |
+|        W/B | = |   | = | ``vcscanf (``*__fmt__``,`` __ap__``);`` |
 6+|
-|         B | = |   | = | ``clreol ();`` |
-|         B | = |   | = | ``clrscr ();`` |
-|         B | = |   | = | ``delline ();`` |
-|         B | = |   | = | *``getpass (``*__prompt__``);`` |
-|         B | = |   | = | ``gettextinfo (``*__text-info__``);`` | If the active video mode is a SuperVGA mode, __text-info__``\->currmode`` may be invalid.
-|         B | = |   | = | ``gotoxy (``__x__``,`` __y__``);`` |
-|         B | = |   | = | ``highvideo ();`` |
-|         B | = |   | = | ``insline ();`` |
-|         B | = |   | = | ``lowvideo ();`` |
-|         B | = |   | = | ``normvideo ();`` |
-|         B | = |   | = | ``textattr (``__new-attr__``);`` |
-|         B | = |   | = | ``textbackground (``__new-color__``);`` |
-|         B | = |   | = | ``textcolor (``__new-color__``);`` |
-|         B | = |   | = | ``textmode (``__mode__``);`` | Does not support _mode_ = ``LASTMODE`` yet.
-|         B | = |   | = | ``wherex ();`` |
-|         B | = |   | = | ``wherey ();`` |
-|         B | = |   | = | ``window (``__left__``,`` __top__``,`` __right__``,`` __bottom__``);`` |
+|          B | = |   | = | ``clreol ();`` |
+|          B | = |   | = | ``clrscr ();`` |
+|          B | = |   | = | ``delline ();`` |
+|          B | = |   | = | *``getpass (``*__prompt__``);`` |
+|          B | = |   | = | ``gettextinfo (``*__text-info__``);`` | If the active video mode is a SuperVGA mode, __text-info__``\->currmode`` may be invalid.
+|          B | = |   | = | ``gotoxy (``__x__``,`` __y__``);`` |
+|          B | = |   | = | ``highvideo ();`` |
+|          B | = |   | = | ``insline ();`` |
+|          B | = |   | = | ``lowvideo ();`` |
+|          B | = |   | = | ``normvideo ();`` |
+|          B | = |   | = | ``textattr (``__new-attr__``);`` |
+|          B | = |   | = | ``textbackground (``__new-color__``);`` |
+|          B | = |   | = | ``textcolor (``__new-color__``);`` |
+|          B | = |   | = | ``textmode (``__mode__``);`` | Does not support _mode_ = ``LASTMODE`` yet.
+|          B | = |   | = | ``wherex ();`` |
+|          B | = |   | = | ``wherey ();`` |
+|          B | = |   | = | ``window (``__left__``,`` __top__``,`` __right__``,`` __bottom__``);`` |
 6+|
-|         W | = |   | = | ``inp (``__port__``);`` |
-|         W | = |   | = | ``_inp (``__port__``);`` |
-|         B | = |   | = | ``inportb (``__port__``);`` |
-|         W | = |   | = | ``inpw (``__port__``);`` |
-|         W | = |   | = | ``_inpw (``__port__``);`` |
-|         B | = |   | = | ``inport (``__port__``);`` | Returns a signed value.
-|         B | = |   | = | ``inportw (``__port__``);`` | Returns an unsigned value.
-|         W | = |   | = | ``outp (``__port__``,`` __value__``);`` |
-|         W | = |   | = | ``_outp (``__port__``,`` __value__``);`` |
-|         B | = |   | = | ``outportb (``__port__``,`` __value__``);`` |
-|         W | = |   | = | ``outpw (``__port__``,`` __value__``);`` |
-|         W | = |   | = | ``_outpw (``__port__``,`` __value__``);`` |
-|         B | = |   | = | ``outport (``__port__``,`` __value__``);`` | Accepts a signed value to write.
-|         B | = |   | = | ``outportw (``__port__``,`` __value__``);`` | Accepts an unsigned value to write.
+|          W | = |   | = | ``inp (``__port__``);`` |
+|          W | = |   | = | ``_inp (``__port__``);`` |
+|          B | = |   | = | ``inportb (``__port__``);`` |
+|          W | = |   | = | ``inpw (``__port__``);`` |
+|          W | = |   | = | ``_inpw (``__port__``);`` |
+|          B | = |   | = | ``inport (``__port__``);`` | Returns a signed value.
+|          B | = |   | = | ``inportw (``__port__``);`` | Returns an unsigned value.
+|          W | = |   | = | ``outp (``__port__``,`` __value__``);`` |
+|          W | = |   | = | ``_outp (``__port__``,`` __value__``);`` |
+|          B | = |   | = | ``outportb (``__port__``,`` __value__``);`` |
+|          W | = |   | = | ``outpw (``__port__``,`` __value__``);`` |
+|          W | = |   | = | ``_outpw (``__port__``,`` __value__``);`` |
+|          B | = |   | = | ``outport (``__port__``,`` __value__``);`` | Accepts a signed value to write.
+|          B | = |   | = | ``outportw (``__port__``,`` __value__``);`` | Accepts an unsigned value to write.
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <dir.h> ▞▞▞▞▖``**
+|            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <dir.h> ▞▞▞▞▖``**
 | B {im-dir-h} | = |   | = | ``searchpath (``__file__``);`` |
 | X {im-dir-h} | = |   | = | ``_searchpath (``__file__``);`` |
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <direct.h> ▞▞▞▞▖``**
-|    P01, W |(=)|   |(=)| ``chdir (``*__path__``);`` | (POSIX places this function in ``<unistd.h>``.)
-|         W |:= |   |:= | ``_chdir (``*__path__``);`` |
-|    P01, W |(=)|   |(=)| ``getcwd (``*__buffer__``,`` __size__``);`` | (POSIX places this function in ``<unistd.h>``.)
-|         W |:= |   |:= | ``_getcwd (``*__buffer__``,`` __size__``);`` |
-|         W | = |   | = | ``_getdcwd (``__drive__``,`` *__buffer__``,`` __size__``);`` |
-|         W | = |   | = | ``_getdrive ();`` |
+|            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <direct.h> ▞▞▞▞▖``**
+|     P01, W |(=)|   |(=)| ``chdir (``*__path__``);`` | (POSIX places this function in ``<unistd.h>``.)
+|          W |:= |   |:= | ``_chdir (``*__path__``);`` |
+|     P01, W |(=)|   |(=)| ``getcwd (``*__buffer__``,`` __size__``);`` | (POSIX places this function in ``<unistd.h>``.)
+|          W |:= |   |:= | ``_getcwd (``*__buffer__``,`` __size__``);`` |
+|          W | = |   | = | ``_getdcwd (``__drive__``,`` *__buffer__``,`` __size__``);`` |
+|          W | = |   | = | ``_getdrive ();`` |
 | P01 {im-direct-h} |(=)| : |(=)| ``mkdir (``*__path__``,`` __mode__``);`` .4+a|
 			* In Watcom, both `mkdir` and ``_mkdir`` take only a single __path__ argument.
 			* POSIX however says that `mkdir` (placed in `<sys/stat.h>`) takes two arguments; the second argument gives Unix-style permission bits.
 			* For compatibility with both, `libi86` under `gcc-ia16` allows both `mkdir` and ``_mkdir`` to be called with either one or two arguments.
 			* Under ACK, however, ``_mkdir`` will always only take one argument, and `mkdir` will take two (unless ACK's C library says otherwise).
 | X {im-direct-h} |   |   | = | ``_mkdir (``*__path__``,`` __mode__``);``
-|         W |   |   |(=)| ``mkdir (``*__path__``);``
-|         W | = |   | = | ``_mkdir (``*__path__``);``
-|    P01, W |(=)| : |(=)| ``rmdir (``*__path__``);`` | (POSIX places this function in ``<unistd.h>``.)
-|         W |:= |   |:= | ``_rmdir (``*__path__``);`` |
+|          W |   |   |(=)| ``mkdir (``*__path__``);``
+|          W | = |   | = | ``_mkdir (``*__path__``);``
+|     P01, W |(=)| : |(=)| ``rmdir (``*__path__``);`` | (POSIX places this function in ``<unistd.h>``.)
+|          W |:= |   |:= | ``_rmdir (``*__path__``);`` |
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <dos.h> ▞▞▞▞▖``**
+|            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <dos.h> ▞▞▞▞▖``**
 
 			* **``<dos.h>`` also includes ``<i86.h>``, described below.**
 			* **If `_BORLANDC_SOURCE` is defined, the ``union REGS`` type gets an additional ``.x.flags`` field, and ``<dos.h>`` switches accordingly to a different version of the ``intdos`` and ``intdosx`` routines.**
 
 |  W {im-dos-h} | = |   | = | ``bdos (``__dos-func__``,`` __dx__``,`` __al__``);`` |
-|         B | = |   | = | ``bdosptr (``__dos-func__``,`` *__dx__``,`` __al__``);`` |
-|       W/B | = |   | = | ``intdos (``*__in-regs__``,`` *__out-regs__``);`` |
-|       W/B | = |   | = | ``intdosx (``*__in-regs__``,`` *__out-regs__``,`` *__seg-regs__``);`` |
+|          B | = |   | = | ``bdosptr (``__dos-func__``,`` *__dx__``,`` __al__``);`` |
+|        W/B | = |   | = | ``intdos (``*__in-regs__``,`` *__out-regs__``);`` |
+|        W/B | = |   | = | ``intdosx (``*__in-regs__``,`` *__out-regs__``,`` *__seg-regs__``);`` |
 6+|
-|        W+ | = |   | = | ``_dos_allocmem (``__size__``,`` *__segment__``);`` | Also works under DPMI; yields a starting protected-mode selector.
-|         W | = |   | = | ``_dos_close (``__handle__``);`` |
-|         W | = |   | = | ``_dos_commit (``__handle__``);`` |
-|         W | = |   | = | ``_dos_creat (``*__path__``,`` __attr__``,`` *__handle__``);`` |
-|         W | = |   | = | ``_dos_creatnew (``*__path__``,`` __attr__``,`` *__handle__``);`` |
-|         W | = |   | = | ``_dos_findfirst (``*__path__``,`` __attributes__``,`` *__buffer__``);`` |
-|         W | = |   | = | ``_dos_findnext (``*__buffer__``);`` |
-|         W | = |   | = | ``_dos_findclose (``*__buffer__``);`` |
-|        W+ | = |   | = | ``_dos_freemem (``__segment__``);`` | Also works under DPMI; accepts a starting protected-mode selector.
-|         W | = |   | = | ``_dos_getdate (``*__date__``);`` |
-|         W | = |   | = | ``_dos_getdiskfree (``__drive__``,`` *__disk-space__``);`` |
-|         W | = |   | = | ``_dos_getdrive (``*__drive__``);`` |
-|         W | = |   | = | ``_dos_getfileattr (``*__path__``,`` *__attributes__``);`` |
-|         W | = |   | = | ``_dos_getftime (``__handle__``,`` *__date__``,`` *__time__``);`` |
-|         W | = |   | = | ``_dos_gettime (``*__time__``);`` |
-|         W | = |   | = | *``_dos_getvect (``__intr-no__``);`` a|
+|         W+ | = |   | = | ``_dos_allocmem (``__size__``,`` *__segment__``);`` | Also works under DPMI; yields a starting protected-mode selector.
+|          W | = |   | = | ``_dos_close (``__handle__``);`` |
+|          W | = |   | = | ``_dos_commit (``__handle__``);`` |
+|          W | = |   | = | ``_dos_creat (``*__path__``,`` __attr__``,`` *__handle__``);`` |
+|          W | = |   | = | ``_dos_creatnew (``*__path__``,`` __attr__``,`` *__handle__``);`` |
+|          W | = |   | = | ``_dos_findfirst (``*__path__``,`` __attributes__``,`` *__buffer__``);`` |
+|          W | = |   | = | ``_dos_findnext (``*__buffer__``);`` |
+|          W | = |   | = | ``_dos_findclose (``*__buffer__``);`` |
+|         W+ | = |   | = | ``_dos_freemem (``__segment__``);`` | Also works under DPMI; accepts a starting protected-mode selector.
+|          W | = |   | = | ``_dos_getdate (``*__date__``);`` |
+|          W | = |   | = | ``_dos_getdiskfree (``__drive__``,`` *__disk-space__``);`` |
+|          W | = |   | = | ``_dos_getdrive (``*__drive__``);`` |
+|          W | = |   | = | ``_dos_getfileattr (``*__path__``,`` *__attributes__``);`` |
+|          W | = |   | = | ``_dos_getftime (``__handle__``,`` *__date__``,`` *__time__``);`` |
+|          W | = |   | = | ``_dos_gettime (``*__time__``);`` |
+|          W | = |   | = | *``_dos_getvect (``__intr-no__``);`` a|
 			* Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will return a far data pointer.
 			* This function is not yet supported for "dual mode" programs that may run under either 16- or 32-bit DPMI (`gcc-ia16 -mdosx32`).
-|         W | = |   | = | ``_dos_keep (``__status__``,`` __keep-paras__``);`` |
-|         B | = |   | = | ``keep (``__status__``,`` __keep-paras__``);`` |
-|         W | = |   | = | ``_dos_open (``*__path__``,`` __mode__``,`` *__handle__``);`` |
-|         W | = |   | = | ``_dos_read (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` a|
+|          W | = |   | = | ``_dos_keep (``__status__``,`` __keep-paras__``);`` |
+|          B | = |   | = | ``keep (``__status__``,`` __keep-paras__``);`` |
+|          W | = |   | = | ``_dos_open (``*__path__``,`` __mode__``,`` *__handle__``);`` |
+|          W | = |   | = | ``_dos_read (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` a|
 			* ``_dos_read`` __always__ directly invokes the relevant syscall (`int 0x21` function `0x3f`), without transforming the input bytes.
 			* Under ACK — but not `gcc-ia16` — the C library's ``read`` function may behave differently from ``_dos_read``: it may translate CRLFs to LFs, and handle end-of-file indicators (ASCII 26), if __handle__ is ``open`` 'd in "text mode".
-|         W | = |   | = | ``_dos_setblock (``__size__``,`` __seg__``,`` *__max-size__``);`` |
-|         W | = |   | = | ``_dos_setdate (``*__date__``);`` |
-|         W | = |   | = | ``_dos_setdrive (``__drive__``,`` *__total__``);`` |
-|         W | = |   | = | ``_dos_setfileattr (``*__path__``,`` __attributes__``);`` |
-|         W | = |   | = | ``_dos_setftime (``__handle__``,`` __date__``,`` __time__``);`` |
-|         W | = |   | = | ``_dos_settime (``*__time__``);`` |
-|         W | = |   | = | ``_dos_setvect (``__intr-no__``,`` *__handler__``);`` a|
+|          W | = |   | = | ``_dos_setblock (``__size__``,`` __seg__``,`` *__max-size__``);`` |
+|          W | = |   | = | ``_dos_setdate (``*__date__``);`` |
+|          W | = |   | = | ``_dos_setdrive (``__drive__``,`` *__total__``);`` |
+|          W | = |   | = | ``_dos_setfileattr (``*__path__``,`` __attributes__``);`` |
+|          W | = |   | = | ``_dos_setftime (``__handle__``,`` __date__``,`` __time__``);`` |
+|          W | = |   | = | ``_dos_settime (``*__time__``);`` |
+|          W | = |   | = | ``_dos_setvect (``__intr-no__``,`` *__handler__``);`` a|
 			* Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will not be supported.
 			* This function is not yet supported for "dual mode" programs that may run under either 16- or 32-bit DPMI (`gcc-ia16 -mdosx32`).
-|         X | = |   | = | ``_dos_spawn (unsigned char`` __subfunc__``,`` ``const char `` *__path__``,`` ``union _dosspawn_t`` *__params__``);`` | ``int 0x21`` function ``0x4b`` (for __subfunc__ ≠ 4) or ``0x80`` (for __subfunc__ = 4).  Returns an error code on error, 0 on success.
-|         X | = |   | = | ``_dos_wait (unsigned`` *__error-level__``);`` | ``int 0x21`` function ``0x4d``.
-|         W | = |   | = | ``_dos_write (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` a|
+|          X | = |   | = | ``_dos_spawn (unsigned char`` __subfunc__``,`` ``const char `` *__path__``,`` ``union _dosspawn_t`` *__params__``);`` | ``int 0x21`` function ``0x4b`` (for __subfunc__ ≠ 4) or ``0x80`` (for __subfunc__ = 4).  Returns an error code on error, 0 on success.
+|          X | = |   | = | ``_dos_wait (unsigned`` *__error-level__``);`` | ``int 0x21`` function ``0x4d``.
+|          W | = |   | = | ``_dos_write (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` a|
 			* ``_dos_write`` __always__ directly invokes the relevant syscall (`int 0x21` function `0x40`), without transforming the output bytes.
 			* Under ACK — but not `gcc-ia16` — the C library's ``write`` function may behave differently from ``_dos_write``: it may translate LFs to CRLFs if __handle__ is ``open`` 'd in "text mode".
-|         W | = |   | = | ``dosexterr (``*__err-info__``);`` |
-|         B | = |   | = | ``_getdrive ();`` |
-|        UB | = |   | = | ``getswitchar ();`` .2+| Returns the (nominal) character for command line switches — usually ``'/'`` — per `int 0x21`, `%ax` = `0x3700`.
-|         X | = |   | = | ``_getswitchar ();``
-|         B | = |   | = | *``getvect (``__intr-no__``);`` | Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will return a far data pointer.
-|         X | = |   | = | *``_getsysvars ();`` | ``int 0x21`` function ``0x52``.
-|         X | = |   | = | ``_makefcb (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);`` a|
+|          W | = |   | = | ``dosexterr (``*__err-info__``);`` |
+|          B | = |   | = | ``_getdrive ();`` |
+|         UB | = |   | = | ``getswitchar ();`` .2+| Returns the (nominal) character for command line switches — usually ``'/'`` — per `int 0x21`, `%ax` = `0x3700`.
+|          X | = |   | = | ``_getswitchar ();``
+|          B | = |   | = | *``getvect (``__intr-no__``);`` | Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will return a far data pointer.
+|          X | = |   | = | *``_getsysvars ();`` | ``int 0x21`` function ``0x52``.
+|          X | = |   | = | ``_makefcb (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);`` a|
 			* Parses __cmd-line__``[]`` into a DOS 1.x-style File Control Block (FCB) — via `int 0x21`, `%ah` = `0x29`.
 			* Returns a ``struct _makefcb_t`` structure (__result__):
 			** __result__``._status`` is either 0 (parse successful, no wildcards), 1 (parse successful, found wildcards), or -1 (invalid drive);
@@ -290,119 +290,119 @@ When using ACK:
 			* __cmd-line__``[]`` should end with either a null character, a carriage return (``'\r'``), or a new line (``'\n'``).
 			* In non-Borland mode, __fcb__ should point to a ``struct _fcb`` (with underscore), rather than a ``struct fcb``.
 			* This function provides more detailed information on the parse than the more "standardized" ``parsfnm`` function below.
-|         X | = |   | = | *``_parsfnm (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);`` .2+a|
+|          X | = |   | = | *``_parsfnm (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);`` .2+a|
 			* Parses __cmd-line__``[]`` into a DOS 1.x-style File Control Block (FCB) — via `int 0x21`, `%ah` = `0x29`.
 			* __cmd-line__``[]`` should end with either a null character, a carriage return (``'\r'``), or a new line (``'\n'``).
 			* In non-Borland mode, __fcb__ should point to a ``struct _fcb`` (with underscore), rather than a ``struct fcb``.
-|         B | = |   | = | *``parsfnm (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);``
-|        UB | = |   | = | ``setswitchar (``__ch__``);`` .2+| Sets the (nominal) character for command line switches, with `int 0x21`, `%ax` = `0x3701`.
-|         X | = |   | = | ``_setswitchar (``__ch__``);``
-|         B | = |   | = | ``setvect (``__intr-no__``,`` *__handler__``);`` | Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will not be supported.
+|          B | = |   | = | *``parsfnm (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);``
+|         UB | = |   | = | ``setswitchar (``__ch__``);`` .2+| Sets the (nominal) character for command line switches, with `int 0x21`, `%ax` = `0x3701`.
+|          X | = |   | = | ``_setswitchar (``__ch__``);``
+|          B | = |   | = | ``setvect (``__intr-no__``,`` *__handler__``);`` | Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will not be supported.
 6+|
-|         B | = | = | = | ``peek (``__segment__``,`` __offset__``);`` |
-|         B | = | = | = | ``peekb (``__segment__``,`` __offset__``);`` |
-|         B | = | = | = | ``poke (``__segment__``,`` __offset__``,`` __word-value__``);`` |
-|         B | = | = | = | ``pokeb (``__segment__``,`` __offset__``,`` __byte-value__``);`` |
-|         B | = |   | = | ``inportb (``__port__``);`` |
-|         B | = |   | = | ``inport (``__port__``);`` | Returns a signed value.
-|         B | = |   | = | ``inportw (``__port__``);`` | Returns an unsigned value.
-|         B | = |   | = | ``outportb (``__port__``,`` __value__``);`` |
-|         B | = |   | = | ``outport (``__port__``,`` __value__``);`` | Accepts a signed value to write.
-|         B | = |   | = | ``outportw (``__port__``,`` __value__``);`` | Accepts an unsigned value to write.
+|          B | = | = | = | ``peek (``__segment__``,`` __offset__``);`` |
+|          B | = | = | = | ``peekb (``__segment__``,`` __offset__``);`` |
+|          B | = | = | = | ``poke (``__segment__``,`` __offset__``,`` __word-value__``);`` |
+|          B | = | = | = | ``pokeb (``__segment__``,`` __offset__``,`` __byte-value__``);`` |
+|          B | = |   | = | ``inportb (``__port__``);`` |
+|          B | = |   | = | ``inport (``__port__``);`` | Returns a signed value.
+|          B | = |   | = | ``inportw (``__port__``);`` | Returns an unsigned value.
+|          B | = |   | = | ``outportb (``__port__``,`` __value__``);`` |
+|          B | = |   | = | ``outport (``__port__``,`` __value__``);`` | Accepts a signed value to write.
+|          B | = |   | = | ``outportw (``__port__``,`` __value__``);`` | Accepts an unsigned value to write.
 6+|
-|        UB | = |   | = | ``inp (``__port__``);`` .4+| In non-Borland mode, these functions are declared only in `<conio.h>`.
-|        UB | = |   | = | ``inpw (``__port__``);``
-|        UB | = |   | = | ``outp (``__port__``,`` __value__``);``
-|        UB | = |   | = | ``outpw (``__port__``,`` __value__``);``
+|         UB | = |   | = | ``inp (``__port__``);`` .4+| In non-Borland mode, these functions are declared only in `<conio.h>`.
+|         UB | = |   | = | ``inpw (``__port__``);``
+|         UB | = |   | = | ``outp (``__port__``,`` __value__``);``
+|         UB | = |   | = | ``outpw (``__port__``,`` __value__``);``
 
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖``**
+|            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖``**
 
 				* **Except for ``__DPMI_hosted ()`` and ``_DPMIIdle ()``, functions in ``<dpmi.h>`` should only be called when the caller knows it is running in DPMI mode.**
 				* **``<dpmi.h>`` is not supported for GCC for ELKS, or for ACK for MS-DOS.**
 
-|        IW | = |   |   | ``__DPMI_hosted ();`` | Returns 1 if running in protected mode under DPMI, -1 otherwise.  If the underlying C library has an implementation of this function, ``libi86`` will use that instead.
-|        IW | = |   |   | ``_DPMIAllocateDOSMemoryBlock (``__paras__``);`` | ``int 0x31`` function ``0x0100``.  Returns a structure giving the real mode segment and protected mode selector for the DOS memory block.  On failure, returns ``{ 0, 0 }``.
-|        IW | = |   |   | ``_DPMIAllocateLDTDescriptors (``__count__``);`` | ``int 0x31`` function ``0x0000``.  Returns a starting protected-mode selector, cast to an ``int32_t``.  On failure, returns a negative value.
-|        IW | = |   |   | ``_DPMIAllocateMemoryBlock (``*__blk__``,`` __bytes__``);`` | ``int 0x31`` function ``0x0500``.  On success, returns 0, and fills *__blk__ with the linear address and handle for the new memory block.  On failure, returns -1; *__blk__ is undefined.
-|        IW | = |   |   | ``_DPMICreateCodeSegmentAliasDescriptor (``__sel__``);`` | ``int 0x31`` function ``0x000a``.  Returns a data selector, cast to an ``int32_t``.  On failure, returns a negative value.
-|        IW | = |   |   | ``_DPMIFreeDOSMemoryBlock (``__sel__``);`` | ``int 0x31`` function ``0x0101``.  Returns 0 on success, -1 on error.
-|        IW | = |   |   | ``_DPMIFreeLDTDescriptor (``__sel__``);`` | ``int 0x31`` function ``0x0001``.  Returns 0 on success, -1 on error.
-|        IW | = |   |   | ``_DPMIFreeMemoryBlock (``__handle__``);`` | ``int 0x31`` function ``0x0502``.  Returns 0 on success, -1 on error.
-|         X | = |   |   | ``_DPMIGetCapabilities (uint16_t`` *__capabilities-1__``,`` ``uint16_t`` *__reserved-2__``,`` ``uint16_t`` *__reserved-3__``,`` ``dpmi_host_info {lowline}{lowline}far`` *__host-info__``);`` | ``int 0x31`` function ``0x0401``.  Returns 0 on success, -1 on error.
-|        IW | = |   |   | ``_DPMIGetDescriptor (``__sel__``,`` *__desc__``);`` | ``int 0x31`` function ``0x000b``.  Returns 0 on success, -1 on error.
-|        IW | = |   |   | ``_DPMIGetNextSelectorIncrementValue ();`` | ``int 0x31`` function ``0x0003``.
-|        IW | = |   |   | ``_DPMIGetSegmentBaseAddress (``__sel__``);`` | ``int 0x31`` function ``0x0006``.  Returns _sel_'s base address on success; return value is undefined on error.
-|        IW | = |   |   | *``_DPMIGetVendorSpecificAPI (``*__vendor__``);`` | ``int 0x2f`` function ``0x168a``.  Returns a far null pointer on error.
-|         X | = |   |   | ``_DPMIGetVirtualInterruptState ();`` | ``int 0x31`` function ``0x0902``.  Returns ``true`` if virtual interrupts enabled, ``false`` otherwise.
-|        IW | = |   |   | ``_DPMIIdle ();`` | ``int 0x2f`` function ``0x1680``.  This implementation also returns a byte value saying whether this function call is actually supported (``0x00``), or not (``0x80``).  It is OK to ignore this value.
-|        IW | = |   |   | ``_DPMIModeDetect ();`` | ``int 0x2f`` function ``0x1686``.  Returns 0 if running in protected mode, non-zero otherwise.  Unlike ``__DPMI_hosted ()``, this function only returns valid results if a DPMI host is known to be present.
-|        IW | = |   |   | ``_DPMISegmentToDescriptor (``__seg-para__``);`` | ``int 0x31`` function ``0x0002``.  On success, returns a protected-mode selector value for the real-mode segment _seg-para__``:0``.  On failure, returns a negative value.
-|        IW | = |   |   | ``_DPMISetDescriptor (``__sel__``,`` *__desc__``);`` | ``int 0x31`` function ``0x000c``.  Returns 0 on success, -1 on error.
-|        IW | = |   |   | ``_DPMISetDescriptorAccessRights (``__sel__``,`` __ar__``);`` | ``int 0x31`` function ``0x0009``.  Returns 0 on success, -1 on error.
-|        IW | = |   |   | ``_DPMISetSegmentBaseAddress (``__sel__``,`` __addr__``);`` | ``int 0x31`` function ``0x0007``.  Returns 0 on success, -1 on error.
-|        IW | = |   |   | ``_DPMISetSegmentLimit (``__sel__``,`` __lim__``);`` | ``int 0x31`` function ``0x0008``.  Returns 0 on success, -1 on error.
-|        IW | = |   |   | ``_DPMISimulateRealModeInterrupt (``__inter-no__``,`` __reset__``,`` __words-to-copy__``,`` *__call-struct__``);`` | ``int 0x31`` function ``0x0300``.  Returns 0 on success, -1 on error.  _words-to-copy_ should probably be 0.
+|         IW | = |   |   | ``__DPMI_hosted ();`` | Returns 1 if running in protected mode under DPMI, -1 otherwise.  If the underlying C library has an implementation of this function, ``libi86`` will use that instead.
+|         IW | = |   |   | ``_DPMIAllocateDOSMemoryBlock (``__paras__``);`` | ``int 0x31`` function ``0x0100``.  Returns a structure giving the real mode segment and protected mode selector for the DOS memory block.  On failure, returns ``{ 0, 0 }``.
+|         IW | = |   |   | ``_DPMIAllocateLDTDescriptors (``__count__``);`` | ``int 0x31`` function ``0x0000``.  Returns a starting protected-mode selector, cast to an ``int32_t``.  On failure, returns a negative value.
+|         IW | = |   |   | ``_DPMIAllocateMemoryBlock (``*__blk__``,`` __bytes__``);`` | ``int 0x31`` function ``0x0500``.  On success, returns 0, and fills *__blk__ with the linear address and handle for the new memory block.  On failure, returns -1; *__blk__ is undefined.
+|         IW | = |   |   | ``_DPMICreateCodeSegmentAliasDescriptor (``__sel__``);`` | ``int 0x31`` function ``0x000a``.  Returns a data selector, cast to an ``int32_t``.  On failure, returns a negative value.
+|         IW | = |   |   | ``_DPMIFreeDOSMemoryBlock (``__sel__``);`` | ``int 0x31`` function ``0x0101``.  Returns 0 on success, -1 on error.
+|         IW | = |   |   | ``_DPMIFreeLDTDescriptor (``__sel__``);`` | ``int 0x31`` function ``0x0001``.  Returns 0 on success, -1 on error.
+|         IW | = |   |   | ``_DPMIFreeMemoryBlock (``__handle__``);`` | ``int 0x31`` function ``0x0502``.  Returns 0 on success, -1 on error.
+|          X | = |   |   | ``_DPMIGetCapabilities (uint16_t`` *__capabilities-1__``,`` ``uint16_t`` *__reserved-2__``,`` ``uint16_t`` *__reserved-3__``,`` ``dpmi_host_info {lowline}{lowline}far`` *__host-info__``);`` | ``int 0x31`` function ``0x0401``.  Returns 0 on success, -1 on error.
+|         IW | = |   |   | ``_DPMIGetDescriptor (``__sel__``,`` *__desc__``);`` | ``int 0x31`` function ``0x000b``.  Returns 0 on success, -1 on error.
+|         IW | = |   |   | ``_DPMIGetNextSelectorIncrementValue ();`` | ``int 0x31`` function ``0x0003``.
+|         IW | = |   |   | ``_DPMIGetSegmentBaseAddress (``__sel__``);`` | ``int 0x31`` function ``0x0006``.  Returns _sel_'s base address on success; return value is undefined on error.
+|         IW | = |   |   | *``_DPMIGetVendorSpecificAPI (``*__vendor__``);`` | ``int 0x2f`` function ``0x168a``.  Returns a far null pointer on error.
+|          X | = |   |   | ``_DPMIGetVirtualInterruptState ();`` | ``int 0x31`` function ``0x0902``.  Returns ``true`` if virtual interrupts enabled, ``false`` otherwise.
+|         IW | = |   |   | ``_DPMIIdle ();`` | ``int 0x2f`` function ``0x1680``.  This implementation also returns a byte value saying whether this function call is actually supported (``0x00``), or not (``0x80``).  It is OK to ignore this value.
+|         IW | = |   |   | ``_DPMIModeDetect ();`` | ``int 0x2f`` function ``0x1686``.  Returns 0 if running in protected mode, non-zero otherwise.  Unlike ``__DPMI_hosted ()``, this function only returns valid results if a DPMI host is known to be present.
+|         IW | = |   |   | ``_DPMISegmentToDescriptor (``__seg-para__``);`` | ``int 0x31`` function ``0x0002``.  On success, returns a protected-mode selector value for the real-mode segment _seg-para__``:0``.  On failure, returns a negative value.
+|         IW | = |   |   | ``_DPMISetDescriptor (``__sel__``,`` *__desc__``);`` | ``int 0x31`` function ``0x000c``.  Returns 0 on success, -1 on error.
+|         IW | = |   |   | ``_DPMISetDescriptorAccessRights (``__sel__``,`` __ar__``);`` | ``int 0x31`` function ``0x0009``.  Returns 0 on success, -1 on error.
+|         IW | = |   |   | ``_DPMISetSegmentBaseAddress (``__sel__``,`` __addr__``);`` | ``int 0x31`` function ``0x0007``.  Returns 0 on success, -1 on error.
+|         IW | = |   |   | ``_DPMISetSegmentLimit (``__sel__``,`` __lim__``);`` | ``int 0x31`` function ``0x0008``.  Returns 0 on success, -1 on error.
+|         IW | = |   |   | ``_DPMISimulateRealModeInterrupt (``__inter-no__``,`` __reset__``,`` __words-to-copy__``,`` *__call-struct__``);`` | ``int 0x31`` function ``0x0300``.  Returns 0 on success, -1 on error.  _words-to-copy_ should probably be 0.
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <err.h> ▞▞▞▞▖``**
-|       BSD | = | = | = | ``err (``__error-level__``,`` *__fmt__``, ...);`` |
-|       BSD | = | = | = | ``errx (``__error-level__``,`` *__fmt__``, ...);`` |
-|       BSD | = | = | = | ``verr (``__error-level__``,`` *__fmt__``,`` __ap__``);`` |
-|       BSD | = | = | = | ``verrx (``__error-level__``,`` *__fmt__``,`` __ap__``);`` |
-|       BSD | = | = | = | ``vwarn (``*__fmt__``,`` __ap__``);`` |
-|       BSD | = | = | = | ``vwarnx (``*__fmt__``,`` __ap__``);`` |
-|       BSD | = | = | = | ``warn (``*__fmt__``, ...);`` |
-|       BSD | = | = | = | ``warnx (``*__fmt__``, ...);`` |
+|            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <err.h> ▞▞▞▞▖``**
+|        BSD | = | = | = | ``err (``__error-level__``,`` *__fmt__``, ...);`` |
+|        BSD | = | = | = | ``errx (``__error-level__``,`` *__fmt__``, ...);`` |
+|        BSD | = | = | = | ``verr (``__error-level__``,`` *__fmt__``,`` __ap__``);`` |
+|        BSD | = | = | = | ``verrx (``__error-level__``,`` *__fmt__``,`` __ap__``);`` |
+|        BSD | = | = | = | ``vwarn (``*__fmt__``,`` __ap__``);`` |
+|        BSD | = | = | = | ``vwarnx (``*__fmt__``,`` __ap__``);`` |
+|        BSD | = | = | = | ``warn (``*__fmt__``, ...);`` |
+|        BSD | = | = | = | ``warnx (``*__fmt__``, ...);`` |
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <graph.h> ▞▞▞▞▖``**
+|            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <graph.h> ▞▞▞▞▖``**
 
 				* **Unlike in Open Watcom, where all functions in ``<graph.h>`` are far, in ``libi86`` the far-ness of functions follows the chosen memory model.  Thus, in a small-memory-model program, ``_setvideomode`` is a near function.  However, pointers to data are still far.**
 
-|         W | = |   | = | ``_clearscreen (``__area__``);`` |
-|         W | = |   | = | ``_displaycursor (``__curs-mode__``);`` |
-|         W | = |   | = | ``_gettextposition ();`` |
-|         X | = |   | = | ``_getvideomode ();`` |
-|         W | = |   | = | ``_outmem (``*__text__``,`` __length__``);`` |
-|         W | = |   | = | ``_outtext (``*__text__``);`` |
-|         W | = |   | = | ``_scrolltextwindow (``__rows__``);`` |
-|         W | = |   | = | ``_setbkcolor (``__color__``);`` |
-|         W | = |   | = | ``_settextcolor (``__pix-val__``);`` |
-|         W | = |   | = | ``_settextposition (``__row__``,`` __col__``);`` |
-|         W | = |   | = | ``_settextwindow (``__row1__``,`` __col1__``,`` __row2__``,`` __col2__``);`` |
-|         W | = |   | = | ``_setvideomode (``__mode__``);`` | In the case of SuperVGA screen modes, only works with VESA interface.
+|          W | = |   | = | ``_clearscreen (``__area__``);`` |
+|          W | = |   | = | ``_displaycursor (``__curs-mode__``);`` |
+|          W | = |   | = | ``_gettextposition ();`` |
+|          X | = |   | = | ``_getvideomode ();`` |
+|          W | = |   | = | ``_outmem (``*__text__``,`` __length__``);`` |
+|          W | = |   | = | ``_outtext (``*__text__``);`` |
+|          W | = |   | = | ``_scrolltextwindow (``__rows__``);`` |
+|          W | = |   | = | ``_setbkcolor (``__color__``);`` |
+|          W | = |   | = | ``_settextcolor (``__pix-val__``);`` |
+|          W | = |   | = | ``_settextposition (``__row__``,`` __col__``);`` |
+|          W | = |   | = | ``_settextwindow (``__row1__``,`` __col1__``,`` __row2__``,`` __col2__``);`` |
+|          W | = |   | = | ``_setvideomode (``__mode__``);`` | In the case of SuperVGA screen modes, only works with VESA interface.
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <i86.h> ▞▞▞▞▖``**
+|            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <i86.h> ▞▞▞▞▖``**
 
 				* **If `_BORLANDC_SOURCE` is defined, the ``union REGS`` type gets an additional ``.x.flags`` field, and ``<i86.h>`` switches accordingly to a different version of the ``int86``, ``int86x``, ``_int86f``, and ``_int86xf`` routines.**
 
-|         W | = | = | = | ``delay (``__ms__``);`` |
-|         W | = | = | = | ``nosound ();`` |
-|         W | = | = | = | ``sound (``__freq__``);`` |
-|         W | = | = | = | ``segread (``*__seg-regs__``);`` |
-|         W | = | = | = | ``_disable ();`` |
-|         W | = | = | = | ``_enable ();`` |
+|          W | = | = | = | ``delay (``__ms__``);`` |
+|          W | = | = | = | ``nosound ();`` |
+|          W | = | = | = | ``sound (``__freq__``);`` |
+|          W | = | = | = | ``segread (``*__seg-regs__``);`` |
+|          W | = | = | = | ``_disable ();`` |
+|          W | = | = | = | ``_enable ();`` |
 6+|
-|       W/B | = | = | = | ``int86 (``__inter-no__``,`` *__in-regs__``,`` *__out-regs__``);`` |
-|       W/B | = | = | = | ``int86x (``__inter-no__``,`` *__in-regs__``,`` *__out-regs__``,`` *__seg-regs__``);`` |
-|         W | = | = | = | ``intr (``__inter-no__``,`` *__regs__``);`` | Clears ``SZAPC`` flags to 0 before issuing interrupt.  (This follows a documentation change in Open Watcom versions after Oct 2018.)
-|        XB | = | = | = | ``_int86f (``__inter-no__``,`` *__in-regs__``,`` *__out-regs__``);`` | Loads carry flag before issuing interrupt.
-|        XB | = | = | = | ``_int86xf (``__inter-no__``,`` *__in-regs__``,`` *__out-regs__``,`` *__seg-regs__``);`` | Loads carry flag before issuing interrupt.
-|         W | = | = | = | ``intrf (``__inter-no__``,`` *__regs__``);`` | Loads ``SZAPC`` flags before issuing interrupt.
-|         X | = | = | = | ``_intrf (``__inter-no__``,`` *__regs__``);`` | Loads ``SZAPC`` flags before issuing interrupt.
+|        W/B | = | = | = | ``int86 (``__inter-no__``,`` *__in-regs__``,`` *__out-regs__``);`` |
+|        W/B | = | = | = | ``int86x (``__inter-no__``,`` *__in-regs__``,`` *__out-regs__``,`` *__seg-regs__``);`` |
+|          W | = | = | = | ``intr (``__inter-no__``,`` *__regs__``);`` | Clears ``SZAPC`` flags to 0 before issuing interrupt.  (This follows a documentation change in Open Watcom versions after Oct 2018.)
+|         XB | = | = | = | ``_int86f (``__inter-no__``,`` *__in-regs__``,`` *__out-regs__``);`` | Loads carry flag before issuing interrupt.
+|         XB | = | = | = | ``_int86xf (``__inter-no__``,`` *__in-regs__``,`` *__out-regs__``,`` *__seg-regs__``);`` | Loads carry flag before issuing interrupt.
+|          W | = | = | = | ``intrf (``__inter-no__``,`` *__regs__``);`` | Loads ``SZAPC`` flags before issuing interrupt.
+|          X | = | = | = | ``_intrf (``__inter-no__``,`` *__regs__``);`` | Loads ``SZAPC`` flags before issuing interrupt.
 6+|
-|         W | = | = | = | ``FP_OFF (``*__ptr__``);`` | Macro.
-|         W | = | = | = | ``_FP_OFF (``*__ptr__``);`` | Macro.
-|         W | = | = | = | ``FP_SEG (``*__ptr__``);`` | Macro.
-|         W | = | = | = | ``_FP_SEG (``*__ptr__``);`` | Macro.
-|         W | = | = | = | *``MK_FP (``__seg__``,`` __off__``);`` | Macro.
-|         W | = | = | = | *``_MK_FP (``__seg__``,`` __off__``);`` | Macro.
-|         X | = | = | = | *``_CV_FP (``{bopt}``const volatile void`` *{eopt}__ptr__``);`` | Convert a default-sized pointer to a far pointer.  This is mainly useful for ACK, which lacks built-in far pointer support.
-|         X | = | = | = | ``_FP_EQ (``{bopt}``const volatile void {lowline}{lowline}far`` *{eopt}__ptr1__``,`` {bopt}``const volatile void {lowline}{lowline}far`` *{eopt}__ptr2__``);`` | Test whether two far pointers are exactly equal.  This is mainly useful for ACK, which lacks built-in far pointer support.
-|         X | = | = | = | ``_FP_EQ_NULL (``{bopt}``const volatile void {lowline}{lowline}far`` *{eopt}__ptr__``);`` | Test whether a far pointer is null.  This is mainly useful for ACK, which lacks built-in far pointer support.
+|          W | = | = | = | ``FP_OFF (``*__ptr__``);`` | Macro.
+|          W | = | = | = | ``_FP_OFF (``*__ptr__``);`` | Macro.
+|          W | = | = | = | ``FP_SEG (``*__ptr__``);`` | Macro.
+|          W | = | = | = | ``_FP_SEG (``*__ptr__``);`` | Macro.
+|          W | = | = | = | *``MK_FP (``__seg__``,`` __off__``);`` | Macro.
+|          W | = | = | = | *``_MK_FP (``__seg__``,`` __off__``);`` | Macro.
+|          X | = | = | = | *``_CV_FP (``{bopt}``const volatile void`` *{eopt}__ptr__``);`` | Convert a default-sized pointer to a far pointer.  This is mainly useful for ACK, which lacks built-in far pointer support.
+|          X | = | = | = | ``_FP_EQ (``{bopt}``const volatile void {lowline}{lowline}far`` *{eopt}__ptr1__``,`` {bopt}``const volatile void {lowline}{lowline}far`` *{eopt}__ptr2__``);`` | Test whether two far pointers are exactly equal.  This is mainly useful for ACK, which lacks built-in far pointer support.
+|          X | = | = | = | ``_FP_EQ_NULL (``{bopt}``const volatile void {lowline}{lowline}far`` *{eopt}__ptr__``);`` | Test whether a far pointer is null.  This is mainly useful for ACK, which lacks built-in far pointer support.
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <process.h> ▞▞▞▞▖``**
-|    P01, W |(=)| : |(=)| ``getpid ();`` | (POSIX places this function in ``<unistd.h>``.)
-|         W |:= |   |:= | ``_getpid ();`` |
+|            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <process.h> ▞▞▞▞▖``**
+|     P01, W |(=)| : |(=)| ``getpid ();`` | (POSIX places this function in ``<unistd.h>``.)
+|          W |:= |   |:= | ``_getpid ();`` |
 | W+ {im-process-h} | = |   | = | ``_spawnl (``__mode__``,`` *__path__``,`` *__arg__``, ... {bcmt}NULL{ecmt});`` .12+a|
 				* For these functions, `libi86` purposely deviates from Open Watcom's documented behaviour in a few ways.
 				* `libi86` currently only implements the `P_WAIT` spawning mode (and a special ``P_WAIT {or} _P_RESTRICT_EXT`` submode).
@@ -418,31 +418,31 @@ When using ACK:
 | W+ {im-process-h} | = |   | = | ``_spawnvp (``__mode__``,`` *__path__``,`` *__argv__``);``
 | W+ {im-process-h} | = |   | = | ``spawnvpe (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);``
 | W+ {im-process-h} | = |   | = | ``_spawnvpe (``__mode__``,`` *__path__``,`` *__argv__``,`` *__envp__``);``
-|       P01 |(=)|   |(=)| ``system (``*__command__``);`` | (POSIX and C89 (ISO/IEC 9899:1990) place this function in ``<stdlib.h>``.)
+|        P01 |(=)|   |(=)| ``system (``*__command__``);`` | (POSIX and C89 (ISO/IEC 9899:1990) place this function in ``<stdlib.h>``.)
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <libi86/kompress.h> ▞▞▞▞▖``**
-|        IC | = | = | = | *``lz4cpy (``*__dest__``,`` *__blk-src__``,`` __blk-size__``);`` .2+a| Unpacks an LZ4-compressed block.  Returns the address of the byte after the unpacked data.  It is best to use this function only on trusted input.
-|         X | = | = | = | *``_lz4cpy (``*__dest__``,`` *__blk-src__``,`` __blk-size__``);``
-|         X | = | = | = | ``_lz4len (``*__blk-src__``,`` __blk-size__``);`` | Parses an LZ4-compressed block and returns its uncompressed size, without actually unpacking it.  It is best to use this function only on trusted input.
+|            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <libi86/kompress.h> ▞▞▞▞▖``**
+|         IC | = | = | = | *``lz4cpy (``*__dest__``,`` *__blk-src__``,`` __blk-size__``);`` .2+a| Unpacks an LZ4-compressed block.  Returns the address of the byte after the unpacked data.  It is best to use this function only on trusted input.
+|          X | = | = | = | *``_lz4cpy (``*__dest__``,`` *__blk-src__``,`` __blk-size__``);``
+|          X | = | = | = | ``_lz4len (``*__blk-src__``,`` __blk-size__``);`` | Parses an LZ4-compressed block and returns its uncompressed size, without actually unpacking it.  It is best to use this function only on trusted input.
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖``**
+|            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖``**
 
 				* **``<libi86/stdio.h>`` also includes the underlying C library's ``<stdio.h>``.**
 				* **Under newer versions of `gcc-ia16`, ``<stdio.h>`` will also automatically include ``<libi86/stdio.h>``, unless GCC is in "strict ANSI" mode.**
 
-|    C99, W |(=)| : |   | ``vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` | (C99 places this function in ``<stdio.h>``.)
-|         X |:= |   |   | ``_vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` |
+|     C99, W |(=)| : |   | ``vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` | (C99 places this function in ``<stdio.h>``.)
+|          X |:= |   |   | ``_vsscanf (``*__s__``,`` *__fmt__``,`` __ap__``);`` |
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
+|            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
 
 				* **``<libi86/stdlib.h>`` also includes the underlying C library's ``<stdlib.h>``.**
 				* **Under newer versions of `gcc-ia16`, ``<stdlib.h>`` will also automatically include ``<libi86/stdlib.h>``, unless GCC is in "strict ANSI" mode.**
 
 |  W {im-stdlib-h} | = |   | = | *``_fullpath (``*__out-path__``,`` *__path__``,`` __size__``);`` |
-|         W | = |   |   | *``lltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
-|         W | = |   |   | *``_lltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
-|         W | = |   | = | *``ltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
-|         W | = |   | = | *``_ltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
+|          W | = |   |   | *``lltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
+|          W | = |   |   | *``_lltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
+|          W | = |   | = | *``ltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
+|          W | = |   | = | *``_ltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
 | W+ {im-stdlib-h} | = |   | = | ``_makepath (``*__path__``,`` *__drive__``,`` *__dir__``,`` *__fname__``,`` *__ext__``);`` a|
 				* As extensions, this function
 				** checks for buffer overflow, and
@@ -451,86 +451,86 @@ When using ACK:
 				* Network __drive__``[]`` values starting with two backslashes (``\\``) are not supported.
 |  W {im-stdlib-h} | = |   | = | ``_splitpath (``*__path__``,`` *__drive__``,`` *__dir__``,`` *__fname__``,`` *__ext__``);`` | Long filenames, and network paths starting with two backslashes (``\\``), are not supported.
 |  W {im-stdlib-h} | = |   | = | ``_searchenv (``*__name__``,`` *__env-var__``,`` *__buf__``);`` |
-|       P01 |(=)|   |(=)| ``system (``*__command__``);`` |
-|         W | = |   |   | *``ulltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
-|         W | = |   |   | *``_ulltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
-|         W | = |   | = | *``ultoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
-|         W | = |   | = | *``_ultoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
+|        P01 |(=)|   |(=)| ``system (``*__command__``);`` |
+|          W | = |   |   | *``ulltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
+|          W | = |   |   | *``_ulltoa (``__value__``,`` *__buffer__``,`` __radix__``);`` | Not yet supported on ACK — it lacks ``long long`` support for IA-16.
+|          W | = |   | = | *``ultoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
+|          W | = |   | = | *``_ultoa (``__value__``,`` *__buffer__``,`` __radix__``);`` |
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖``**
+|            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <libi86/string.h> ▞▞▞▞▖``**
 
 				* **``<libi86/string.h>`` also includes the underlying C library's ``<string.h>``.**
 				* **Under newer versions of `gcc-ia16`, ``<string.h>`` will also automatically include ``<libi86/string.h>``, unless GCC is in "strict ANSI" mode.**
 
-|         W | = |   | = | *``_fmemchr (``*__s__``,`` __c__``,`` __n__``);`` |
-|         W | = |   | = | ``_fmemcmp (``*__s1__``,`` *__s2__``,`` __n__``);`` |
-|         W | = |   | = | *``_fmemcpy (``*__dest__``,`` *__src__``,`` __n__``);`` |
-|         W | = |   | = | *``_fmemmove (``*__dest__``,`` *__src__``,`` __n__``);`` |
-|         X | = |   | = | *``_fmempcpy (``*__dest__``,`` *__src__``,`` __n__``);`` | Like ``_fmemcpy``, but returns __dest__ + __n__.
-|         W | = |   | = | *``_fmemset (``*__s__``,`` __c__``,`` __n__``);`` |
-|         X | = |   | = | *``_fstpcpy (``*__dest__``,`` *__src__``);`` | Like ``_fstrcpy``, but returns __dest__ + ``_fstrlen (``__src__``)``.
-|         W | = |   |   | *``_fstrcat (``*__dest__``,`` *__src__``);`` |
-|         W | = |   | = | *``_fstrcpy (``*__dest__``,`` *__src__``);`` |
-|         W | = | = | = | ``_fstricmp (``*__s1__``,`` *__s2__``);`` |
-|         W | = |   | = | ``_fstrlen (``*__s__``);`` |
-|         W | = | = | = | ``stricmp (``*__s1__``,`` *__s2__``);`` .2+a| Calls ``strcasecmp (``__s1__``,`` __s2__``)`` if the C library defines it.
-|         W | = | = | = | ``_stricmp (``*__s1__``,`` *__s2__``);``
+|          W | = |   | = | *``_fmemchr (``*__s__``,`` __c__``,`` __n__``);`` |
+|          W | = |   | = | ``_fmemcmp (``*__s1__``,`` *__s2__``,`` __n__``);`` |
+|          W | = |   | = | *``_fmemcpy (``*__dest__``,`` *__src__``,`` __n__``);`` |
+|          W | = |   | = | *``_fmemmove (``*__dest__``,`` *__src__``,`` __n__``);`` |
+|          X | = |   | = | *``_fmempcpy (``*__dest__``,`` *__src__``,`` __n__``);`` | Like ``_fmemcpy``, but returns __dest__ + __n__.
+|          W | = |   | = | *``_fmemset (``*__s__``,`` __c__``,`` __n__``);`` |
+|          X | = |   | = | *``_fstpcpy (``*__dest__``,`` *__src__``);`` | Like ``_fstrcpy``, but returns __dest__ + ``_fstrlen (``__src__``)``.
+|          W | = |   |   | *``_fstrcat (``*__dest__``,`` *__src__``);`` |
+|          W | = |   | = | *``_fstrcpy (``*__dest__``,`` *__src__``);`` |
+|          W | = | = | = | ``_fstricmp (``*__s1__``,`` *__s2__``);`` |
+|          W | = |   | = | ``_fstrlen (``*__s__``);`` |
+|          W | = | = | = | ``stricmp (``*__s1__``,`` *__s2__``);`` .2+a| Calls ``strcasecmp (``__s1__``,`` __s2__``)`` if the C library defines it.
+|          W | = | = | = | ``_stricmp (``*__s1__``,`` *__s2__``);``
 |===
 
 === Variables
 
 [cols=">1,>1,>1,>1,4,4"]
 |===
-| Compat. 3+| Avail.    | Variable | Notes
+| Compat. 3+<| Avail.  <| Variable <| Notes
 
-|           | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
-|       W |(=)|   |(=)| ``_osmajor`` | Implemented as a function call on ACK.
-|       W |(=)|   |(=)| ``_osminor`` | Implemented as a function call on ACK.
-|       W |(=)|   |(=)| ``_psp`` | Implemented as a function call on ACK.
+|            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
+|          W |(=)|   |(=)| ``_osmajor`` | Implemented as a function call on ACK.
+|          W |(=)|   |(=)| ``_osminor`` | Implemented as a function call on ACK.
+|          W |(=)|   |(=)| ``_psp`` | Implemented as a function call on ACK.
 |===
 
 === Types
 
 [cols=">1,>1,>1,>1,4,4"]
 |===
-| Compat. 3+| Avail.    | Type | Notes
+| Compat. 3+<| Avail.  <| Type <| Notes
 
-|           | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <bios.h> ▞▞▞▞▖``**
-|       W | = |   | = | ``struct diskinfo_t`` |
-|       X | = |   | = | ``union _joyinfo_t`` | Used by ``_bios_joystick``.
+|            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <bios.h> ▞▞▞▞▖``**
+|          W | = |   | = | ``struct diskinfo_t`` |
+|          X | = |   | = | ``union _joyinfo_t`` | Used by ``_bios_joystick``.
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <conio.h> ▞▞▞▞▖``**
-|       B | = |   | = | ``enum COLORS`` |
-|       B | = |   | = | ``struct text_info`` |
-|       B | = |   | = | ``enum text_modes`` |
+|            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <conio.h> ▞▞▞▞▖``**
+|          B | = |   | = | ``enum COLORS`` |
+|          B | = |   | = | ``struct text_info`` |
+|          B | = |   | = | ``enum text_modes`` |
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <dos.h> ▞▞▞▞▖``**
-|       W | = |   | = | ``struct diskfree_t`` |
-|       W | = |   | = | ``struct dosdate_t`` |
-|       X | = |   | = | ``union _dosspawn_t`` | Used by ``_dos_spawn``.
-|       W | = |   | = | ``struct dostime_t`` |
-|       B | = |   | = | ``struct fcb`` |
-|       X | = |   | = | ``struct _fcb`` | Used by ``_makefcb`` and ``_parsfnm``.
-|       W | = |   | = | ``struct find_t`` |
-|       X | = |   | = | ``struct _makefcb_t`` | Returned by ``_makefcb``.
+|            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <dos.h> ▞▞▞▞▖``**
+|          W | = |   | = | ``struct diskfree_t`` |
+|          W | = |   | = | ``struct dosdate_t`` |
+|          X | = |   | = | ``union _dosspawn_t`` | Used by ``_dos_spawn``.
+|          W | = |   | = | ``struct dostime_t`` |
+|          B | = |   | = | ``struct fcb`` |
+|          X | = |   | = | ``struct _fcb`` | Used by ``_makefcb`` and ``_parsfnm``.
+|          W | = |   | = | ``struct find_t`` |
+|          X | = |   | = | ``struct _makefcb_t`` | Returned by ``_makefcb``.
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖``**
-|      IW | = |   |   | ``descriptor`` | Structure of a GDT or LDT entry, used by ``_DPMIGetDescriptor`` and ``_DPMISetDescriptor``.
-|      IW | = |   |   | ``dpmi_dos_block`` | Returned by ``_DPMIAllocateDOSMemoryBlock``.
-|       X | = |   |   | ``dpmi_host_info`` | Used by ``_DPMIGetCapabilities``.
-|      IW | = |   |   | ``rm_call_struct`` | Used by ``_DPMISimulateRealModeInterrupt``.
+|            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖``**
+|         IW | = |   |   | ``descriptor`` | Structure of a GDT or LDT entry, used by ``_DPMIGetDescriptor`` and ``_DPMISetDescriptor``.
+|         IW | = |   |   | ``dpmi_dos_block`` | Returned by ``_DPMIAllocateDOSMemoryBlock``.
+|          X | = |   |   | ``dpmi_host_info`` | Used by ``_DPMIGetCapabilities``.
+|         IW | = |   |   | ``rm_call_struct`` | Used by ``_DPMISimulateRealModeInterrupt``.
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <graph.h> ▞▞▞▞▖``**
-|       W | = |   | = | ``grcolor`` |
-|       W | = |   | = | ``struct rccoord`` |
+|            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <graph.h> ▞▞▞▞▖``**
+|          W | = |   | = | ``grcolor`` |
+|          W | = |   | = | ``struct rccoord`` |
 6+|
-|           | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <i86.h> ▞▞▞▞▖``**
-|       X | = | = | = | ``_fptr_t`` a| "Generic" far pointer type.
+|            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <i86.h> ▞▞▞▞▖``**
+|          X | = | = | = | ``_fptr_t`` a| "Generic" far pointer type.
 
 				* For target platforms with far pointer support, ``_fptr_t`` is equivalent to ``void __far *``.
 				* For targets which lack far pointer support (e.g. ACK), ``_fptr_t`` is an opaque structure type.
 
-|       W | = | = | = | ``union REGPACK`` |
-|     W/B | = | = | = | ``union REGS`` | In ``_BORLANDC_SOURCE`` mode, gets an additional ``.x.flags`` field.
-|       W | = | = | = | ``struct SREGS`` |
+|          W | = | = | = | ``union REGPACK`` |
+|        W/B | = | = | = | ``union REGS`` | In ``_BORLANDC_SOURCE`` mode, gets an additional ``.x.flags`` field.
+|          W | = | = | = | ``struct SREGS`` |
 |===
