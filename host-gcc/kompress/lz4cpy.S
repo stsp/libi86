@@ -41,13 +41,11 @@ lz4cpy:
 	ENTER2_BX_ (10)
 	pushw	%si
 	pushw	%di
-	pushw	%bp
 	pushw	%es
 	LES_ARG0W_BX_ (%di)		/* %es:%di := DEST */
-	MOV_ARG8W2_BX_ (%bp)		/* %bp := BLK_SZ */
-	LDS_ARG4W2_BX_ (%si)		/* %si := FP_OFF (BLK_SRC) */
-	movw	%ds,	%bx		/* %bx := FP_SEG (BLK_SRC) */
-	addw	%si,	%bp		/* %bp := FP_OFF (BLK_SRC + BLK_SZ) */
+	LDS_ARG4W2_BX_ (%si)		/* %ds:%si := BLK_SRC */
+	ss MOV_ARG8W2_BX_ (%bx)		/* %bx := BLK_SZ */
+	addw	%si,	%bx		/* %bx := FP_OFF (BLK_SRC + BLK_SZ) */
 	jmp	.chk
 .loopy:
 	lodsb
@@ -57,7 +55,7 @@ lz4cpy:
 	shrw	%cl,	%cx
 	call	.full_len
 	rep movsb
-	cmpw	%bp,	%si
+	cmpw	%bx,	%si
 	jnb	.done
 	lodsw
 	movb	%dl,	%cl
@@ -66,14 +64,15 @@ lz4cpy:
 	andw	$0x0f,	%cx
 	call	.full_len
 	addw	$4,	%cx
+	pushw	%ds
 	pushw	%es
 	popw	%ds
 	xchgw	%dx,	%si
 	rep movsb
 	movw	%dx,	%si
-	movw	%bx,	%ds
+	popw	%ds
 .chk:
-	cmpw	%bp,	%si
+	cmpw	%bx,	%si
 	jb	.loopy
 .done:
 	xchgw	%di,	%ax
@@ -81,7 +80,6 @@ lz4cpy:
 	pushw	%ss
 	popw	%ds
 	popw	%es
-	popw	%bp
 	popw	%di
 	popw	%si
 	RET2_ (10)

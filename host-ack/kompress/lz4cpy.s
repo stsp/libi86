@@ -35,13 +35,11 @@ __lz4cpy:
 	mov	bx, sp
 	push	si
 	push	di
-	push	bp
 	push	es
 	les	di, 4(bx)		/* es:di := DEST */
-	mov	bp, 12(bx)		/* bp := BLK_SZ */
-	lds	si, 8(bx)		/* si := FP_OFF (BLK_SRC) */
-	mov	bx, ds			/* bx := FP_SEG (BLK_SRC) */
-	add	bp, si			/* bp := FP_OFF (BLK_SRC + BLK_SZ) */
+	lds	si, 8(bx)		/* ds:si := BLK_SRC */
+	sseg mov bx, 12(bx)		/* bx := BLK_SZ */
+	add	bx, si			/* bx := FP_OFF (BLK_SRC + BLK_SZ) */
 	jmp	.chk
 .loopy:
 	lodsb
@@ -51,7 +49,7 @@ __lz4cpy:
 	shr	cx, cl
 	call	.full_len
 	rep movsb
-	cmp	si, bp
+	cmp	si, bx
 	jnb	.done
 	lodsw
 	movb	cl, dl
@@ -60,25 +58,25 @@ __lz4cpy:
 	and	cx, 0x0f
 	call	.full_len
 	add	cx, 4
+	push	ds
 	push	es
 	pop	ds
 	xchg	si, dx
 	rep movsb
 	mov	si, dx
-	mov	ds, bx
+	pop	ds
 .chk:
-	cmp	si, bp
+	cmp	si, bx
 	jb	.loopy
 .done:
 	push	ss
 	pop	ds
 	mov	bx, sp
-	mov	bx, 8+2(bx)		/* return value := updated DEST */
+	mov	bx, 6+2(bx)		/* return value := updated DEST */
 	mov	(bx), di
 	mov	2(bx), es
 	xchg	bx, ax
 	pop	es
-	pop	bp
 	pop	di
 	pop	si
 	ret
