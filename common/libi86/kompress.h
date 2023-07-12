@@ -37,6 +37,8 @@ _LIBI86_BEGIN_EXTERN_C
 extern __libi86_fpv_t _lz4cpy (__libi86_fpv_t __dest,
 			       __libi86_fpcv_t __blk_src,
 			       __libi86_size_t __blk_sz);
+extern __libi86_size_t _lz4len (__libi86_fpcv_t __blk_src,
+				__libi86_size_t __blk_sz);
 
 #ifndef _LIBI86_COMPILING_
 # ifndef __STRICT_ANSI__

@@ -271,6 +271,7 @@ OBJS		= bios/bios-disk.o \
 		  i86/nosound.o \
 		  i86/segread.o \
 		  i86/sound.o \
+		  kompress/libi86-lz4-full-len.o \
 		  kompress/lz4cpy.o \
 		  process/getpid.o \
 		  process/libi86-comspec.o \

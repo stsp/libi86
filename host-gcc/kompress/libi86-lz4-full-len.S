@@ -34,52 +34,15 @@
 	.att_syntax prefix
 
 	TEXT_ (lz4cpy_lz4len.S.LIBI86)
-	.global	_lz4cpy
-	.weak	lz4cpy
-_lz4cpy:
-lz4cpy:
-	ENTER2_BX_ (10)
-	pushw	%si
-	pushw	%di
-	pushw	%es
-	LES_ARG0W_BX_ (%di)		/* %es:%di := DEST */
-	LDS_ARG4W2_BX_ (%si)		/* %ds:%si := BLK_SRC */
-	ss MOV_ARG8W2_BX_ (%bx)		/* %bx := BLK_SZ */
-	addw	%si,	%bx		/* %bx := FP_OFF (BLK_SRC + BLK_SZ) */
-	jmp	.chk
-.loopy:
+	.global	__libi86_lz4_full_len
+__libi86_lz4_full_len:
+	cmpb	$0x0f,	%cl
+	jnz	9f
+	movb	$0,	%ah
+1:
 	lodsb
-	xchgw	%ax,	%dx
-	mov	%dl,	%ch
-	mov	$12,	%cl
-	shrw	%cl,	%cx
-	call	__libi86_lz4_full_len
-	rep movsb
-	cmpw	%bx,	%si
-	jnb	.done
-	lodsw
-	movb	%dl,	%cl
-	movw	%di,	%dx
-	subw	%ax,	%dx
-	andw	$0x0f,	%cx
-	call	__libi86_lz4_full_len
-	addw	$4,	%cx
-	pushw	%ds
-	pushw	%es
-	popw	%ds
-	xchgw	%dx,	%si
-	rep movsb
-	movw	%dx,	%si
-	popw	%ds
-.chk:
-	cmpw	%bx,	%si
-	jb	.loopy
-.done:
-	xchgw	%di,	%ax
-	movw	%es,	%dx
-	pushw	%ss
-	popw	%ds
-	popw	%es
-	popw	%di
-	popw	%si
-	RET2_ (10)
+	addw	%ax,	%cx
+	cmp	$0xff,	%al
+	jz	1b
+9:
+	ret
