@@ -49,8 +49,8 @@ AC_CANONICAL_HOST
 AC_ARG_PROGRAM
 
 AC_PROG_CC
-AC_CHECK_TOOL(AS, as, false)
-AC_CHECK_TOOL(LD, ld, false)
+AC_CHECK_TOOL(AS, as, /bin/false)
+AC_CHECK_TOOL(LD, ld, /bin/false)
 
 host_makefile_frag_path=
 host_makefile_frag=

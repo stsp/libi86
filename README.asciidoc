@@ -126,6 +126,7 @@ When using ACK:
 |   (=)    | Facility is available if this platform does not already define this facility itself.
 |    :     | This platform already defines this facility.
 |   :=     | Facility is available for this platform.  If the C library already defines the corresponding standard library function — usually without a leading underscore — then this function is defined as an alias of the standard function; otherwise, `libi86` provides its own definition.  For example, ``_getpid ()`` is an alias of ``getpid ()`` if the C library already defines the latter.
+|    /     | Facility is not applicable to this platform.
 |===
 
 === Functions
@@ -141,17 +142,17 @@ When using ACK:
 | Compat. 3+<| Avail.  <| Function <| Notes
 
 |            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <bios.h> ▞▞▞▞▖``**
-|         W+ | = |   | = | ``_bios_disk (``__service__``,`` *__diskinfo__``);`` | As an extension, also accepts _service_ = ``_DISK_DRIVEPARAMS``, which returns drive parameters in *__diskinfo__.
-|          W | = |   | = | ``_bios_equiplist ();`` |
-|          B | = |   | = | ``biosequip ();`` |
-|          W | = |   | = | ``_bios_memsize ();`` |
-|          B | = |   | = | ``biosmemory ();`` |
-|          W | = |   | = | ``_bios_keybrd (``__service__``);`` |
-|          B | = |   | = | ``bioskey (``__service__``);`` |
-|          W | = |   | = | ``_bios_printer (``__service__``,`` __port__``,`` __data__``);`` |
-|          W | = |   | = | ``_bios_serialcom (``__service__``,`` __port__``,`` __data__``);`` |
-|          W | = |   | = | ``_bios_timeofday (``__service__``,`` *__timeval__``);`` |
-|          X | = |   | = | ``_bios_joystick (unsigned`` __service__``,`` ``union _joyinfo_t`` *__joyinfo__``);`` | Reads joystick status via ``int 0x15`` function ``0x84``.
+|         W+ | = | / | = | ``_bios_disk (``__service__``,`` *__diskinfo__``);`` | As an extension, also accepts _service_ = ``_DISK_DRIVEPARAMS``, which returns drive parameters in *__diskinfo__.
+|          W | = | / | = | ``_bios_equiplist ();`` |
+|          B | = | / | = | ``biosequip ();`` |
+|          W | = | / | = | ``_bios_memsize ();`` |
+|          B | = | / | = | ``biosmemory ();`` |
+|          W | = | / | = | ``_bios_keybrd (``__service__``);`` |
+|          B | = | / | = | ``bioskey (``__service__``);`` |
+|          W | = | / | = | ``_bios_printer (``__service__``,`` __port__``,`` __data__``);`` |
+|          W | = | / | = | ``_bios_serialcom (``__service__``,`` __port__``,`` __data__``);`` |
+|          W | = | / | = | ``_bios_timeofday (``__service__``,`` *__timeval__``);`` |
+|          X | = | / | = | ``_bios_joystick (unsigned`` __service__``,`` ``union _joyinfo_t`` *__joyinfo__``);`` | Reads joystick status via ``int 0x15`` function ``0x84``.
 6+|
 |            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <conio.h> ▞▞▞▞▖``**
 
@@ -235,54 +236,54 @@ When using ACK:
 
 |  W {im-dos-h} | = |   | = | ``bdos (``__dos-func__``,`` __dx__``,`` __al__``);`` |
 |          B | = |   | = | ``bdosptr (``__dos-func__``,`` *__dx__``,`` __al__``);`` |
-|        W/B | = |   | = | ``intdos (``*__in-regs__``,`` *__out-regs__``);`` |
-|        W/B | = |   | = | ``intdosx (``*__in-regs__``,`` *__out-regs__``,`` *__seg-regs__``);`` |
+|        W/B | = | / | = | ``intdos (``*__in-regs__``,`` *__out-regs__``);`` |
+|        W/B | = | / | = | ``intdosx (``*__in-regs__``,`` *__out-regs__``,`` *__seg-regs__``);`` |
 6+|
-|         W+ | = |   | = | ``_dos_allocmem (``__size__``,`` *__segment__``);`` | Also works under DPMI; yields a starting protected-mode selector.
-|          W | = |   | = | ``_dos_close (``__handle__``);`` |
-|          W | = |   | = | ``_dos_commit (``__handle__``);`` |
-|          W | = |   | = | ``_dos_creat (``*__path__``,`` __attr__``,`` *__handle__``);`` |
-|          W | = |   | = | ``_dos_creatnew (``*__path__``,`` __attr__``,`` *__handle__``);`` |
-|          W | = |   | = | ``_dos_findfirst (``*__path__``,`` __attributes__``,`` *__buffer__``);`` |
-|          W | = |   | = | ``_dos_findnext (``*__buffer__``);`` |
-|          W | = |   | = | ``_dos_findclose (``*__buffer__``);`` |
-|         W+ | = |   | = | ``_dos_freemem (``__segment__``);`` | Also works under DPMI; accepts a starting protected-mode selector.
-|          W | = |   | = | ``_dos_getdate (``*__date__``);`` |
-|          W | = |   | = | ``_dos_getdiskfree (``__drive__``,`` *__disk-space__``);`` |
-|          W | = |   | = | ``_dos_getdrive (``*__drive__``);`` |
-|          W | = |   | = | ``_dos_getfileattr (``*__path__``,`` *__attributes__``);`` |
-|          W | = |   | = | ``_dos_getftime (``__handle__``,`` *__date__``,`` *__time__``);`` |
-|          W | = |   | = | ``_dos_gettime (``*__time__``);`` |
-|          W | = |   | = | *``_dos_getvect (``__intr-no__``);`` a|
+|         W+ | = | / | = | ``_dos_allocmem (``__size__``,`` *__segment__``);`` | Also works under DPMI; yields a starting protected-mode selector.
+|          W | = | / | = | ``_dos_close (``__handle__``);`` |
+|          W | = | / | = | ``_dos_commit (``__handle__``);`` |
+|          W | = | / | = | ``_dos_creat (``*__path__``,`` __attr__``,`` *__handle__``);`` |
+|          W | = | / | = | ``_dos_creatnew (``*__path__``,`` __attr__``,`` *__handle__``);`` |
+|          W | = | / | = | ``_dos_findfirst (``*__path__``,`` __attributes__``,`` *__buffer__``);`` |
+|          W | = | / | = | ``_dos_findnext (``*__buffer__``);`` |
+|          W | = | / | = | ``_dos_findclose (``*__buffer__``);`` |
+|         W+ | = | / | = | ``_dos_freemem (``__segment__``);`` | Also works under DPMI; accepts a starting protected-mode selector.
+|          W | = | / | = | ``_dos_getdate (``*__date__``);`` |
+|          W | = | / | = | ``_dos_getdiskfree (``__drive__``,`` *__disk-space__``);`` |
+|          W | = | / | = | ``_dos_getdrive (``*__drive__``);`` |
+|          W | = | / | = | ``_dos_getfileattr (``*__path__``,`` *__attributes__``);`` |
+|          W | = | / | = | ``_dos_getftime (``__handle__``,`` *__date__``,`` *__time__``);`` |
+|          W | = | / | = | ``_dos_gettime (``*__time__``);`` |
+|          W | = | / | = | *``_dos_getvect (``__intr-no__``);`` a|
 			* Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will return a far data pointer.
 			* This function is not yet supported for "dual mode" programs that may run under either 16- or 32-bit DPMI (`gcc-ia16 -mdosx32`).
-|          W | = |   | = | ``_dos_keep (``__status__``,`` __keep-paras__``);`` |
-|          B | = |   | = | ``keep (``__status__``,`` __keep-paras__``);`` |
-|          W | = |   | = | ``_dos_open (``*__path__``,`` __mode__``,`` *__handle__``);`` |
-|          W | = |   | = | ``_dos_read (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` a|
+|          W | = | / | = | ``_dos_keep (``__status__``,`` __keep-paras__``);`` |
+|          B | = | / | = | ``keep (``__status__``,`` __keep-paras__``);`` |
+|          W | = | / | = | ``_dos_open (``*__path__``,`` __mode__``,`` *__handle__``);`` |
+|          W | = | / | = | ``_dos_read (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` a|
 			* ``_dos_read`` __always__ directly invokes the relevant syscall (`int 0x21` function `0x3f`), without transforming the input bytes.
 			* Under ACK — but not `gcc-ia16` — the C library's ``read`` function may behave differently from ``_dos_read``: it may translate CRLFs to LFs, and handle end-of-file indicators (ASCII 26), if __handle__ is ``open`` 'd in "text mode".
-|          W | = |   | = | ``_dos_setblock (``__size__``,`` __seg__``,`` *__max-size__``);`` |
-|          W | = |   | = | ``_dos_setdate (``*__date__``);`` |
-|          W | = |   | = | ``_dos_setdrive (``__drive__``,`` *__total__``);`` |
-|          W | = |   | = | ``_dos_setfileattr (``*__path__``,`` __attributes__``);`` |
-|          W | = |   | = | ``_dos_setftime (``__handle__``,`` __date__``,`` __time__``);`` |
-|          W | = |   | = | ``_dos_settime (``*__time__``);`` |
-|          W | = |   | = | ``_dos_setvect (``__intr-no__``,`` *__handler__``);`` a|
+|          W | = | / | = | ``_dos_setblock (``__size__``,`` __seg__``,`` *__max-size__``);`` |
+|          W | = | / | = | ``_dos_setdate (``*__date__``);`` |
+|          W | = | / | = | ``_dos_setdrive (``__drive__``,`` *__total__``);`` |
+|          W | = | / | = | ``_dos_setfileattr (``*__path__``,`` __attributes__``);`` |
+|          W | = | / | = | ``_dos_setftime (``__handle__``,`` __date__``,`` __time__``);`` |
+|          W | = | / | = | ``_dos_settime (``*__time__``);`` |
+|          W | = | / | = | ``_dos_setvect (``__intr-no__``,`` *__handler__``);`` a|
 			* Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will not be supported.
 			* This function is not yet supported for "dual mode" programs that may run under either 16- or 32-bit DPMI (`gcc-ia16 -mdosx32`).
-|          X | = |   | = | ``_dos_spawn (unsigned char`` __subfunc__``,`` ``const char `` *__path__``,`` ``union _dosspawn_t`` *__params__``);`` | ``int 0x21`` function ``0x4b`` (for __subfunc__ ≠ 4) or ``0x80`` (for __subfunc__ = 4).  Returns an error code on error, 0 on success.
-|          X | = |   | = | ``_dos_wait (unsigned`` *__error-level__``);`` | ``int 0x21`` function ``0x4d``.
-|          W | = |   | = | ``_dos_write (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` a|
+|          X | = | / | = | ``_dos_spawn (unsigned char`` __subfunc__``,`` ``const char `` *__path__``,`` ``union _dosspawn_t`` *__params__``);`` | ``int 0x21`` function ``0x4b`` (for __subfunc__ ≠ 4) or ``0x80`` (for __subfunc__ = 4).  Returns an error code on error, 0 on success.
+|          X | = | / | = | ``_dos_wait (unsigned`` *__error-level__``);`` | ``int 0x21`` function ``0x4d``.
+|          W | = | / | = | ``_dos_write (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` a|
 			* ``_dos_write`` __always__ directly invokes the relevant syscall (`int 0x21` function `0x40`), without transforming the output bytes.
 			* Under ACK — but not `gcc-ia16` — the C library's ``write`` function may behave differently from ``_dos_write``: it may translate LFs to CRLFs if __handle__ is ``open`` 'd in "text mode".
-|          W | = |   | = | ``dosexterr (``*__err-info__``);`` |
-|          B | = |   | = | ``_getdrive ();`` |
-|         UB | = |   | = | ``getswitchar ();`` .2+| Returns the (nominal) character for command line switches — usually ``'/'`` — per `int 0x21`, `%ax` = `0x3700`.
-|          X | = |   | = | ``_getswitchar ();``
-|          B | = |   | = | *``getvect (``__intr-no__``);`` | Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will return a far data pointer.
-|          X | = |   | = | *``_getsysvars ();`` | ``int 0x21`` function ``0x52``.
-|          X | = |   | = | ``_makefcb (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);`` a|
+|          W | = | / | = | ``dosexterr (``*__err-info__``);`` |
+|          B | = | / | = | ``_getdrive ();`` |
+|         UB | = | / | = | ``getswitchar ();`` .2+| Returns the (nominal) character for command line switches — usually ``'/'`` — per `int 0x21`, `%ax` = `0x3700`.
+|          X | = | / | = | ``_getswitchar ();``
+|          B | = | / | = | *``getvect (``__intr-no__``);`` | Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will return a far data pointer.
+|          X | = | / | = | *``_getsysvars ();`` | ``int 0x21`` function ``0x52``.
+|          X | = | / | = | ``_makefcb (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);`` a|
 			* Parses __cmd-line__``[]`` into a DOS 1.x-style File Control Block (FCB) — via `int 0x21`, `%ah` = `0x29`.
 			* Returns a ``struct _makefcb_t`` structure (__result__):
 			** __result__``._status`` is either 0 (parse successful, no wildcards), 1 (parse successful, found wildcards), or -1 (invalid drive);
@@ -290,14 +291,14 @@ When using ACK:
 			* __cmd-line__``[]`` should end with either a null character, a carriage return (``'\r'``), or a new line (``'\n'``).
 			* In non-Borland mode, __fcb__ should point to a ``struct _fcb`` (with underscore), rather than a ``struct fcb``.
 			* This function provides more detailed information on the parse than the more "standardized" ``parsfnm`` function below.
-|          X | = |   | = | *``_parsfnm (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);`` .2+a|
+|          X | = | / | = | *``_parsfnm (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);`` .2+a|
 			* Parses __cmd-line__``[]`` into a DOS 1.x-style File Control Block (FCB) — via `int 0x21`, `%ah` = `0x29`.
 			* __cmd-line__``[]`` should end with either a null character, a carriage return (``'\r'``), or a new line (``'\n'``).
 			* In non-Borland mode, __fcb__ should point to a ``struct _fcb`` (with underscore), rather than a ``struct fcb``.
-|          B | = |   | = | *``parsfnm (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);``
-|         UB | = |   | = | ``setswitchar (``__ch__``);`` .2+| Sets the (nominal) character for command line switches, with `int 0x21`, `%ax` = `0x3701`.
-|          X | = |   | = | ``_setswitchar (``__ch__``);``
-|          B | = |   | = | ``setvect (``__intr-no__``,`` *__handler__``);`` | Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will not be supported.
+|          B | = | / | = | *``parsfnm (``*__cmd-line__``,`` *__fcb__``,`` __opt__``);``
+|         UB | = | / | = | ``setswitchar (``__ch__``);`` .2+| Sets the (nominal) character for command line switches, with `int 0x21`, `%ax` = `0x3701`.
+|          X | = | / | = | ``_setswitchar (``__ch__``);``
+|          B | = | / | = | ``setvect (``__intr-no__``,`` *__handler__``);`` | Some versions of ``gcc-ia16`` and ACK may not understand the ``interrupt`` function attribute.  In that case, this function will not be supported.
 6+|
 |          B | = | = | = | ``peek (``__segment__``,`` __offset__``);`` |
 |          B | = | = | = | ``peekb (``__segment__``,`` __offset__``);`` |
@@ -321,28 +322,28 @@ When using ACK:
 				* **Except for ``__DPMI_hosted ()`` and ``_DPMIIdle ()``, functions in ``<dpmi.h>`` should only be called when the caller knows it is running in DPMI mode.**
 				* **``<dpmi.h>`` is not supported for GCC for ELKS, or for ACK for MS-DOS.**
 
-|         IW | = |   |   | ``__DPMI_hosted ();`` | Returns 1 if running in protected mode under DPMI, -1 otherwise.  If the underlying C library has an implementation of this function, ``libi86`` will use that instead.
-|         IW | = |   |   | ``_DPMIAllocateDOSMemoryBlock (``__paras__``);`` | ``int 0x31`` function ``0x0100``.  Returns a structure giving the real mode segment and protected mode selector for the DOS memory block.  On failure, returns ``{ 0, 0 }``.
-|         IW | = |   |   | ``_DPMIAllocateLDTDescriptors (``__count__``);`` | ``int 0x31`` function ``0x0000``.  Returns a starting protected-mode selector, cast to an ``int32_t``.  On failure, returns a negative value.
-|         IW | = |   |   | ``_DPMIAllocateMemoryBlock (``*__blk__``,`` __bytes__``);`` | ``int 0x31`` function ``0x0500``.  On success, returns 0, and fills *__blk__ with the linear address and handle for the new memory block.  On failure, returns -1; *__blk__ is undefined.
-|         IW | = |   |   | ``_DPMICreateCodeSegmentAliasDescriptor (``__sel__``);`` | ``int 0x31`` function ``0x000a``.  Returns a data selector, cast to an ``int32_t``.  On failure, returns a negative value.
-|         IW | = |   |   | ``_DPMIFreeDOSMemoryBlock (``__sel__``);`` | ``int 0x31`` function ``0x0101``.  Returns 0 on success, -1 on error.
-|         IW | = |   |   | ``_DPMIFreeLDTDescriptor (``__sel__``);`` | ``int 0x31`` function ``0x0001``.  Returns 0 on success, -1 on error.
-|         IW | = |   |   | ``_DPMIFreeMemoryBlock (``__handle__``);`` | ``int 0x31`` function ``0x0502``.  Returns 0 on success, -1 on error.
-|          X | = |   |   | ``_DPMIGetCapabilities (uint16_t`` *__capabilities-1__``,`` ``uint16_t`` *__reserved-2__``,`` ``uint16_t`` *__reserved-3__``,`` ``dpmi_host_info {lowline}{lowline}far`` *__host-info__``);`` | ``int 0x31`` function ``0x0401``.  Returns 0 on success, -1 on error.
-|         IW | = |   |   | ``_DPMIGetDescriptor (``__sel__``,`` *__desc__``);`` | ``int 0x31`` function ``0x000b``.  Returns 0 on success, -1 on error.
-|         IW | = |   |   | ``_DPMIGetNextSelectorIncrementValue ();`` | ``int 0x31`` function ``0x0003``.
-|         IW | = |   |   | ``_DPMIGetSegmentBaseAddress (``__sel__``);`` | ``int 0x31`` function ``0x0006``.  Returns _sel_'s base address on success; return value is undefined on error.
-|         IW | = |   |   | *``_DPMIGetVendorSpecificAPI (``*__vendor__``);`` | ``int 0x2f`` function ``0x168a``.  Returns a far null pointer on error.
-|          X | = |   |   | ``_DPMIGetVirtualInterruptState ();`` | ``int 0x31`` function ``0x0902``.  Returns ``true`` if virtual interrupts enabled, ``false`` otherwise.
-|         IW | = |   |   | ``_DPMIIdle ();`` | ``int 0x2f`` function ``0x1680``.  This implementation also returns a byte value saying whether this function call is actually supported (``0x00``), or not (``0x80``).  It is OK to ignore this value.
-|         IW | = |   |   | ``_DPMIModeDetect ();`` | ``int 0x2f`` function ``0x1686``.  Returns 0 if running in protected mode, non-zero otherwise.  Unlike ``__DPMI_hosted ()``, this function only returns valid results if a DPMI host is known to be present.
-|         IW | = |   |   | ``_DPMISegmentToDescriptor (``__seg-para__``);`` | ``int 0x31`` function ``0x0002``.  On success, returns a protected-mode selector value for the real-mode segment _seg-para__``:0``.  On failure, returns a negative value.
-|         IW | = |   |   | ``_DPMISetDescriptor (``__sel__``,`` *__desc__``);`` | ``int 0x31`` function ``0x000c``.  Returns 0 on success, -1 on error.
-|         IW | = |   |   | ``_DPMISetDescriptorAccessRights (``__sel__``,`` __ar__``);`` | ``int 0x31`` function ``0x0009``.  Returns 0 on success, -1 on error.
-|         IW | = |   |   | ``_DPMISetSegmentBaseAddress (``__sel__``,`` __addr__``);`` | ``int 0x31`` function ``0x0007``.  Returns 0 on success, -1 on error.
-|         IW | = |   |   | ``_DPMISetSegmentLimit (``__sel__``,`` __lim__``);`` | ``int 0x31`` function ``0x0008``.  Returns 0 on success, -1 on error.
-|         IW | = |   |   | ``_DPMISimulateRealModeInterrupt (``__inter-no__``,`` __reset__``,`` __words-to-copy__``,`` *__call-struct__``);`` | ``int 0x31`` function ``0x0300``.  Returns 0 on success, -1 on error.  _words-to-copy_ should probably be 0.
+|         IW | = | / |   | ``__DPMI_hosted ();`` | Returns 1 if running in protected mode under DPMI, -1 otherwise.  If the underlying C library has an implementation of this function, ``libi86`` will use that instead.
+|         IW | = | / |   | ``_DPMIAllocateDOSMemoryBlock (``__paras__``);`` | ``int 0x31`` function ``0x0100``.  Returns a structure giving the real mode segment and protected mode selector for the DOS memory block.  On failure, returns ``{ 0, 0 }``.
+|         IW | = | / |   | ``_DPMIAllocateLDTDescriptors (``__count__``);`` | ``int 0x31`` function ``0x0000``.  Returns a starting protected-mode selector, cast to an ``int32_t``.  On failure, returns a negative value.
+|         IW | = | / |   | ``_DPMIAllocateMemoryBlock (``*__blk__``,`` __bytes__``);`` | ``int 0x31`` function ``0x0500``.  On success, returns 0, and fills *__blk__ with the linear address and handle for the new memory block.  On failure, returns -1; *__blk__ is undefined.
+|         IW | = | / |   | ``_DPMICreateCodeSegmentAliasDescriptor (``__sel__``);`` | ``int 0x31`` function ``0x000a``.  Returns a data selector, cast to an ``int32_t``.  On failure, returns a negative value.
+|         IW | = | / |   | ``_DPMIFreeDOSMemoryBlock (``__sel__``);`` | ``int 0x31`` function ``0x0101``.  Returns 0 on success, -1 on error.
+|         IW | = | / |   | ``_DPMIFreeLDTDescriptor (``__sel__``);`` | ``int 0x31`` function ``0x0001``.  Returns 0 on success, -1 on error.
+|         IW | = | / |   | ``_DPMIFreeMemoryBlock (``__handle__``);`` | ``int 0x31`` function ``0x0502``.  Returns 0 on success, -1 on error.
+|          X | = | / |   | ``_DPMIGetCapabilities (uint16_t`` *__capabilities-1__``,`` ``uint16_t`` *__reserved-2__``,`` ``uint16_t`` *__reserved-3__``,`` ``dpmi_host_info {lowline}{lowline}far`` *__host-info__``);`` | ``int 0x31`` function ``0x0401``.  Returns 0 on success, -1 on error.
+|         IW | = | / |   | ``_DPMIGetDescriptor (``__sel__``,`` *__desc__``);`` | ``int 0x31`` function ``0x000b``.  Returns 0 on success, -1 on error.
+|         IW | = | / |   | ``_DPMIGetNextSelectorIncrementValue ();`` | ``int 0x31`` function ``0x0003``.
+|         IW | = | / |   | ``_DPMIGetSegmentBaseAddress (``__sel__``);`` | ``int 0x31`` function ``0x0006``.  Returns _sel_'s base address on success; return value is undefined on error.
+|         IW | = | / |   | *``_DPMIGetVendorSpecificAPI (``*__vendor__``);`` | ``int 0x2f`` function ``0x168a``.  Returns a far null pointer on error.
+|          X | = | / |   | ``_DPMIGetVirtualInterruptState ();`` | ``int 0x31`` function ``0x0902``.  Returns ``true`` if virtual interrupts enabled, ``false`` otherwise.
+|         IW | = | / |   | ``_DPMIIdle ();`` | ``int 0x2f`` function ``0x1680``.  This implementation also returns a byte value saying whether this function call is actually supported (``0x00``), or not (``0x80``).  It is OK to ignore this value.
+|         IW | = | / |   | ``_DPMIModeDetect ();`` | ``int 0x2f`` function ``0x1686``.  Returns 0 if running in protected mode, non-zero otherwise.  Unlike ``__DPMI_hosted ()``, this function only returns valid results if a DPMI host is known to be present.
+|         IW | = | / |   | ``_DPMISegmentToDescriptor (``__seg-para__``);`` | ``int 0x31`` function ``0x0002``.  On success, returns a protected-mode selector value for the real-mode segment _seg-para__``:0``.  On failure, returns a negative value.
+|         IW | = | / |   | ``_DPMISetDescriptor (``__sel__``,`` *__desc__``);`` | ``int 0x31`` function ``0x000c``.  Returns 0 on success, -1 on error.
+|         IW | = | / |   | ``_DPMISetDescriptorAccessRights (``__sel__``,`` __ar__``);`` | ``int 0x31`` function ``0x0009``.  Returns 0 on success, -1 on error.
+|         IW | = | / |   | ``_DPMISetSegmentBaseAddress (``__sel__``,`` __addr__``);`` | ``int 0x31`` function ``0x0007``.  Returns 0 on success, -1 on error.
+|         IW | = | / |   | ``_DPMISetSegmentLimit (``__sel__``,`` __lim__``);`` | ``int 0x31`` function ``0x0008``.  Returns 0 on success, -1 on error.
+|         IW | = | / |   | ``_DPMISimulateRealModeInterrupt (``__inter-no__``,`` __reset__``,`` __words-to-copy__``,`` *__call-struct__``);`` | ``int 0x31`` function ``0x0300``.  Returns 0 on success, -1 on error.  _words-to-copy_ should probably be 0.
 6+|
 |            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <err.h> ▞▞▞▞▖``**
 |        BSD | = | = | = | ``err (``__error-level__``,`` *__fmt__``, ...);`` |
@@ -484,9 +485,9 @@ When using ACK:
 | Compat. 3+<| Avail.  <| Variable <| Notes
 
 |            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <libi86/stdlib.h> ▞▞▞▞▖``**
-|          W |(=)|   |(=)| ``_osmajor`` | Implemented as a function call on ACK.
-|          W |(=)|   |(=)| ``_osminor`` | Implemented as a function call on ACK.
-|          W |(=)|   |(=)| ``_psp`` | Implemented as a function call on ACK.
+|          W |(=)| / |(=)| ``_osmajor`` | Implemented as a function call on ACK.
+|          W |(=)| / |(=)| ``_osminor`` | Implemented as a function call on ACK.
+|          W |(=)| / |(=)| ``_psp`` | Implemented as a function call on ACK.
 |===
 
 === Types
@@ -496,8 +497,8 @@ When using ACK:
 | Compat. 3+<| Avail.  <| Type <| Notes
 
 |            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <bios.h> ▞▞▞▞▖``**
-|          W | = |   | = | ``struct diskinfo_t`` |
-|          X | = |   | = | ``union _joyinfo_t`` | Used by ``_bios_joystick``.
+|          W | = | / | = | ``struct diskinfo_t`` |
+|          X | = | / | = | ``union _joyinfo_t`` | Used by ``_bios_joystick``.
 6+|
 |            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <conio.h> ▞▞▞▞▖``**
 |          B | = |   | = | ``enum COLORS`` |
@@ -505,20 +506,20 @@ When using ACK:
 |          B | = |   | = | ``enum text_modes`` |
 6+|
 |            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <dos.h> ▞▞▞▞▖``**
-|          W | = |   | = | ``struct diskfree_t`` |
-|          W | = |   | = | ``struct dosdate_t`` |
-|          X | = |   | = | ``union _dosspawn_t`` | Used by ``_dos_spawn``.
-|          W | = |   | = | ``struct dostime_t`` |
-|          B | = |   | = | ``struct fcb`` |
-|          X | = |   | = | ``struct _fcb`` | Used by ``_makefcb`` and ``_parsfnm``.
-|          W | = |   | = | ``struct find_t`` |
-|          X | = |   | = | ``struct _makefcb_t`` | Returned by ``_makefcb``.
+|          W | = | / | = | ``struct diskfree_t`` |
+|          W | = | / | = | ``struct dosdate_t`` |
+|          X | = | / | = | ``union _dosspawn_t`` | Used by ``_dos_spawn``.
+|          W | = | / | = | ``struct dostime_t`` |
+|          B | = | / | = | ``struct fcb`` |
+|          X | = | / | = | ``struct _fcb`` | Used by ``_makefcb`` and ``_parsfnm``.
+|          W | = | / | = | ``struct find_t`` |
+|          X | = | / | = | ``struct _makefcb_t`` | Returned by ``_makefcb``.
 6+|
 |            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <dpmi.h> ▞▞▞▞▖``**
 |         IW | = |   |   | ``descriptor`` | Structure of a GDT or LDT entry, used by ``_DPMIGetDescriptor`` and ``_DPMISetDescriptor``.
-|         IW | = |   |   | ``dpmi_dos_block`` | Returned by ``_DPMIAllocateDOSMemoryBlock``.
-|          X | = |   |   | ``dpmi_host_info`` | Used by ``_DPMIGetCapabilities``.
-|         IW | = |   |   | ``rm_call_struct`` | Used by ``_DPMISimulateRealModeInterrupt``.
+|         IW | = | / |   | ``dpmi_dos_block`` | Returned by ``_DPMIAllocateDOSMemoryBlock``.
+|          X | = | / |   | ``dpmi_host_info`` | Used by ``_DPMIGetCapabilities``.
+|         IW | = | / |   | ``rm_call_struct`` | Used by ``_DPMISimulateRealModeInterrupt``.
 6+|
 |            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <graph.h> ▞▞▞▞▖``**
 |          W | = |   | = | ``grcolor`` |
