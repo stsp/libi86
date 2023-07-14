@@ -134,6 +134,7 @@ When using ACK:
 :im-dir-h: link:doc/implem-notes.asciidoc#user-content-dir-h[(❧)]
 :im-direct-h: link:doc/implem-notes.asciidoc#user-content-direct-h[(❧)]
 :im-dos-h: link:doc/implem-notes.asciidoc#user-content-dos-h[(❧)]
+:im-malloc-h: link:doc/implem-notes.asciidoc#user-content-libi86malloc-h[(❧)]
 :im-process-h: link:doc/implem-notes.asciidoc#user-content-process-h[(❧)]
 :im-stdlib-h: link:doc/implem-notes.asciidoc#user-content-libi86stdlib-h[(❧)]
 
@@ -425,6 +426,14 @@ When using ACK:
 |         IC | = | = | = | *``lz4cpy (``*__dest__``,`` *__blk-src__``,`` __blk-size__``);`` .2+a| Unpacks an LZ4-compressed block.  Returns the address of the byte after the unpacked data.  It is best to use this function only on trusted input.
 |          X | = | = | = | *``_lz4cpy (``*__dest__``,`` *__blk-src__``,`` __blk-size__``);``
 |          X | = | = | = | ``_lz4len (``*__blk-src__``,`` __blk-size__``);`` | Parses an LZ4-compressed block and returns its uncompressed size, without actually unpacking it.  It is best to use this function only on trusted input.
+6+|
+|            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <libi86/malloc.h> ▞▞▞▞▖``**
+
+				* **``<libi86/malloc.h>`` also includes the underlying C library's ``<malloc.h>``.**
+				* **Under newer versions of `gcc-ia16`, ``<malloc.h>`` will also automatically include ``<libi86/malloc.h>``, unless GCC is in "strict ANSI" mode.**
+
+| W {im-malloc-h} | = |   | = | *``_ffree (``*__ptr__``);`` |
+| W {im-malloc-h} | = |   | = | *``_fmalloc (``__size__``);`` |
 6+|
 |            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <libi86/stdio.h> ▞▞▞▞▖``**
 

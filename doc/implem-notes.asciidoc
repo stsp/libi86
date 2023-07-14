@@ -47,6 +47,10 @@
   * the program that runs has an file extension, and
   * the extension is for a type of executable file that ``libi86`` knows about.  {back-link}
 
+== ``<libi86/malloc.h>``
+
+**``_ffree``, ``_fmalloc``**: these are currently implemented directly in terms of ``_dos_freemem`` and ``_dos_allocmem``.  However, the implementation may change in the future.  {back-link}
+
 == ``<libi86/stdlib.h>``
 
 **``_fullpath``, ``_makepath``, ``_searchenv``, ``_splitpath``**: See link:#dirh[notes on ``searchpath`` and ``_searchpath``].  {back-link}

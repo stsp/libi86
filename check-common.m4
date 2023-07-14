@@ -54,6 +54,7 @@ AC_CHECK_FUNC([_getcwd],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__GETCWD],[1])])
 AC_CHECK_FUNC([flockfile],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_FLOCKFILE],[1])])
 AC_CHECK_FUNC([_dos_get_dbcs_lead_table],
   [AC_DEFINE([_LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE],[1])])
+AC_CHECK_HEADER([malloc.h],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_MALLOC_H],[1])])
 AC_CHECK_HEADER([sys/syslimits.h],
 		[AC_DEFINE([_LIBI86_INTERNAL_HAVE_SYS_SYSLIMITS_H],[1])])
 if test yes = "$ac_cv_header_sys_syslimits_h"; then
@@ -144,8 +145,8 @@ _LIBI86_TYPE([mode_t],[#include <sys/types.h>])
 AC_SUBST(ac_cv_have_decl_vsscanf)
 AC_SUBST(ac_cv_func_system)
 AC_SUBST(ac_cv_func_getcwd)
+AC_SUBST(ac_cv_header_malloc_h)
 AC_SUBST(ac_cv_func_getpid)
-AC_SUBST(ac_cv_func_getppid)
 AC_SUBST(ac_cv_func_rmdir)
 AC_SUBST(ac_cv_func_chdir)
 AC_SUBST(ac_cv_have_decl__psp)

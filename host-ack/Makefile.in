@@ -71,6 +71,7 @@ INSTALL_HEADERS	= bios.h \
 		  i86.h \
 		  share.h \
 		  libi86/kompress.h \
+		  libi86/malloc.h \
 		  libi86/stdio.h \
 		  libi86/stdlib.h \
 		  libi86/string.h \
@@ -92,6 +93,10 @@ DISTCLEAN_HEADERS = direct.h \
 		    libi86/version.h \
 		    libi86/internal/acconfig.h \
 		    libi86/internal/types.h
+ifeq "no" "@ac_cv_header_malloc_h"
+  INSTALL_HEADERS \
+		+= malloc.h
+endif
 
 OBJS		= bios/bios-disk.o \
 		  bios/bios-equiplist.o \
@@ -274,6 +279,8 @@ OBJS		= bios/bios-disk.o \
 		  kompress/libi86-lz4-full-len.o \
 		  kompress/lz4cpy.o \
 		  kompress/lz4len.o \
+		  malloc/ffree.o \
+		  malloc/fmalloc.o \
 		  process/getpid.o \
 		  process/libi86-comspec.o \
 		  process/spawnl.o \

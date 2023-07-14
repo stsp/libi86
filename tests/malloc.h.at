@@ -1,0 +1,127 @@
+dnl Copyright (c) 2023 TK Chia
+dnl
+dnl Redistribution and use in source and binary forms, with or without
+dnl modification, are permitted provided that the following conditions are
+dnl met:
+dnl
+dnl   * Redistributions of source code must retain the above copyright
+dnl     notice, this list of conditions and the following disclaimer.
+dnl   * Redistributions in binary form must reproduce the above copyright
+dnl     notice, this list of conditions and the following disclaimer in the
+dnl     documentation and/or other materials provided with the distribution.
+dnl   * Neither the name of the developer(s) nor the names of its
+dnl     contributors may be used to endorse or promote products derived from
+dnl     this software without specific prior written permission.
+dnl
+dnl THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+dnl IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+dnl TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+dnl PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+dnl HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+dnl SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+dnl TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+dnl PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+dnl LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+AT_BANNER([[<libi86/malloc.h> tests]])
+
+AT_SETUP([[_fmalloc, _ffree]])
+AT_LIBI86_CHECK_DOS(dnl
+[[#include <i86.h>
+#include <stdio.h>
+#include <libi86/malloc.h>
+#include <libi86/string.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+  static const unsigned char expect[0x10]
+    = {
+	0xf6, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6,
+	0xf6, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6, 0xf6,
+      };
+  unsigned char buf[sizeof (expect)];
+#ifdef __FAR
+  __far unsigned char *ptr1, *ptr2, *ptr3;
+#else
+  _fptr_t ptr1, ptr2, ptr3;
+#endif
+#ifdef __MSDOS__
+  ptr1 = _fmalloc (0);
+  puts ("1 OK");
+  _ffree (ptr1);
+  puts ("2 OK");
+
+  ptr1 = _fmalloc (1);
+  if (_FP_EQ_NULL (ptr1))
+    abort ();
+  puts ("3 OK");
+
+  _fmemset (ptr1, 0xe5, 1);
+
+  ptr2 = _fmalloc (0xffff);
+  if (_FP_EQ_NULL (ptr2))
+    abort ();
+  _fmemset (ptr2, 0xf6, 0xffff);
+  puts ("4 OK");
+
+  memset (buf, 0, sizeof (expect));
+  _fmemcpy (_CV_FP (buf), ptr1, 1);
+  if (buf[0] != 0xe5)
+    abort ();
+  puts ("5 OK");
+
+  memset (buf, 0, sizeof (expect));
+  _fmemcpy (_CV_FP (buf), ptr2, sizeof (expect));
+  if (memcmp (buf, expect, sizeof (expect)) != 0)
+    abort ();
+  puts ("6 OK");
+
+#ifdef __FAR
+  ptr3 = ptr2 + 0xffff - sizeof (expect);
+#else
+  ptr3 = MK_FP (FP_SEG (ptr2), FP_OFF (ptr2) + 0xffff - sizeof (expect));
+#endif
+  memset (buf, 0, sizeof (expect));
+  _fmemcpy (_CV_FP (buf), ptr3, sizeof (expect));
+  if (memcmp (buf, expect, sizeof (expect)) != 0)
+    abort ();
+  puts ("7 OK");
+
+  _ffree (ptr1);
+  puts ("8 OK");
+
+  memset (buf, 0, sizeof (expect));
+  _fmemcpy (_CV_FP (buf), ptr2, sizeof (expect));
+  if (memcmp (buf, expect, sizeof (expect)) != 0)
+    abort ();
+  puts ("9 OK");
+
+  memset (buf, 0, sizeof (expect));
+  _fmemcpy (_CV_FP (buf), ptr3, sizeof (expect));
+  if (memcmp (buf, expect, sizeof (expect)) != 0)
+    abort ();
+  puts ("10 OK");
+
+  _ffree (ptr2);
+  puts ("11 OK");
+
+  return 0;
+#else
+# error
+#endif
+}]],[[1 OK
+2 OK
+3 OK
+4 OK
+5 OK
+6 OK
+7 OK
+8 OK
+9 OK
+10 OK
+11 OK
+]])
+AT_CLEANUP

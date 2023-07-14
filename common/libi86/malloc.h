@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021--2023 TK Chia
+ * Copyright (c) 2023 TK Chia
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,69 +27,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LIBI86_INTERNAL_ACCONFIG_H
-#define _LIBI86_INTERNAL_ACCONFIG_H
+#ifndef _LIBI86_LIBI86_MALLOC_H_
+#define _LIBI86_LIBI86_MALLOC_H_
 
-#include <libi86/version.h>
+#include <malloc.h>
 
-#undef _LIBI86_INTERNAL_HAVE__SYS_SETERRNO
+#include <libi86/internal/cdefs.h>
+#include <libi86/internal/farptr.h>
 
-#undef _LIBI86_INTERNAL_HAVE_LONG_LONG_INT
+_LIBI86_BEGIN_EXTERN_C
 
-#undef _LIBI86_INTERNAL_HAVE_O_TEXT
+extern void _ffree (__libi86_fpv_t __ptr);
+extern __libi86_fpv_t _fmalloc (__libi86_size_t __size);
 
-#undef _LIBI86_INTERNAL_HAVE_O_BINARY
-
-#undef _LIBI86_INTERNAL_HAVE_ENAMETOOLONG
-
-#undef _LIBI86_INTERNAL_HAVE_VSSCANF
-
-#undef _LIBI86_INTERNAL_HAVE_SYSTEM
-
-#undef _LIBI86_INTERNAL_HAVE_STRCASECMP
-
-#undef _LIBI86_INTERNAL_HAVE_GETCWD
-
-#undef _LIBI86_INTERNAL_HAVE__GETCWD
-
-#undef _LIBI86_INTERNAL_HAVE_FLOCKFILE
-
-#undef _LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE
-
-#undef _LIBI86_INTERNAL_HAVE_MALLOC_H
-
-#undef _LIBI86_INTERNAL_HAVE_SYS_SYSLIMITS_H
-
-#undef _LIBI86_INTERNAL_HAVE__PATH_MAX
-
-#undef _LIBI86_INTERNAL_HAVE_PATH_MAX
-
-#undef _LIBI86_INTERNAL_HAVE_MKDIR2
-
-#undef _LIBI86_INTERNAL_HAVE_MKDIR1
-
-#undef _LIBI86_INTERNAL_HAVE__MKDIR
-
-#undef _LIBI86_INTERNAL_HAVE_GETPID
-
-#undef _LIBI86_INTERNAL_HAVE__GETPID
-
-#undef _LIBI86_INTERNAL_HAVE_RMDIR
-
-#undef _LIBI86_INTERNAL_HAVE__RMDIR
-
-#undef _LIBI86_INTERNAL_HAVE_CHDIR
-
-#undef _LIBI86_INTERNAL_HAVE__CHDIR
-
-#undef _LIBI86_INTERNAL_HAVE__SETMODE
-
-#undef _LIBI86_INTERNAL_HAVE__PSP
-
-#undef _LIBI86_INTERNAL_HAVE__OSMAJOR
-
-#undef _LIBI86_INTERNAL_HAVE__OSMINOR
-
-#undef _LIBI86_INTERNAL_HAVE___ARGV
+_LIBI86_END_EXTERN_C
 
 #endif

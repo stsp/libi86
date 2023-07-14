@@ -1,0 +1,114 @@
+dnl Copyright (c) 2019--2023 TK Chia
+dnl
+dnl Redistribution and use in source and binary forms, with or without
+dnl modification, are permitted provided that the following conditions are
+dnl met:
+dnl
+dnl   * Redistributions of source code must retain the above copyright
+dnl     notice, this list of conditions and the following disclaimer.
+dnl   * Redistributions in binary form must reproduce the above copyright
+dnl     notice, this list of conditions and the following disclaimer in the
+dnl     documentation and/or other materials provided with the distribution.
+dnl   * Neither the name of the developer(s) nor the names of its
+dnl     contributors may be used to endorse or promote products derived from
+dnl     this software without specific prior written permission.
+dnl
+dnl THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+dnl IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+dnl TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+dnl PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+dnl HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+dnl SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+dnl TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+dnl PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+dnl LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+AT_BANNER([[<libi86/string.h> tests (part 1)]])
+
+AT_SETUP([[_fmemcmp]])
+AT_LIBI86_CHECK_DOS(dnl
+[[#include <i86.h>
+#include <stdint.h>
+#include <libi86/stdlib.h>
+#include <libi86/string.h>
+extern void abort (void);
+int
+main (void)
+{
+  static const uint8_t psp_sig[] = { 0xcd, 0x20 },
+		       blah1[] = { 0xff, 0x00 }, blah2[] = { 0x00, 0xff },
+		       blah3[] = { 0x80, 0x80 },
+		       blah4[] = { 0xcd, 0x20, 0x00 },
+		       blah5[] = { 0xcd, 0x20, 0xff },
+		       blah6[] = { 0x80, 0x80, 0x80 },
+		       blah7[] = { 0xff }, blah8[] = { 0x00 },
+		       blah9[] = { 0xcd };
+  if (_fmemcmp (MK_FP (_psp, 0), _CV_FP (psp_sig), sizeof psp_sig) != 0)
+    abort ();
+  if (_fmemcmp (MK_FP (_psp, 0), _CV_FP (blah1), sizeof blah1) >= 0)
+    abort ();
+  if (_fmemcmp (MK_FP (_psp, 0), _CV_FP (blah2), sizeof blah2) <= 0)
+    abort ();
+  if (_fmemcmp (MK_FP (_psp, 0), _CV_FP (blah3), sizeof blah3) <= 0)
+    abort ();
+  if (_fmemcmp (_CV_FP (blah4), MK_FP (_psp, 0), sizeof blah4) > 0)
+    abort ();
+  if (_fmemcmp (_CV_FP (blah5), MK_FP (_psp, 0), sizeof blah5) < 0)
+    abort ();
+  if (_fmemcmp (_CV_FP (blah6), MK_FP (_psp, 0), sizeof blah6) >= 0)
+    abort ();
+  if (_fmemcmp (MK_FP (_psp, 0), _CV_FP (blah7), sizeof blah7) >= 0)
+    abort ();
+  if (_fmemcmp (MK_FP (_psp, 0), _CV_FP (blah8), sizeof blah8) <= 0)
+    abort ();
+  if (_fmemcmp (MK_FP (_psp, 0), _CV_FP (blah9), sizeof blah9) != 0)
+    abort ();
+  /* Beware of corner cases... */
+  if (_fmemcmp (_CV_FP (blah1), MK_FP (_psp, 0), 0) != 0)
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP
+
+AT_SETUP([[_fmemset]])
+AT_LIBI86_CHECK(dnl
+[[#include <i86.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <libi86/string.h>
+char foo[] = "!hello!!!\n\n";
+char bar[11];
+int
+main (void)
+{
+  __libi86_fpv_t res = _fmemset (_CV_FP (foo + 2), 'a', 8);
+  if (! _FP_EQ (res, _CV_FP (foo + 2)))
+    abort ();
+  _fmemset (_CV_FP (foo + 9), '.', 1);
+  _fmemset (_CV_FP (foo + 10), '?', 0);
+  _fmemcpy (_CV_FP (bar), _CV_FP (foo), 11);
+  write (1, bar, 11);
+  return 0;
+}]],[[!haaaaaaa.
+]])
+AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX(dnl
+[[#include <stdlib.h>
+#include <unistd.h>
+#include <libi86/string.h>
+char __far foo[] = "!hello!!!\n\n";
+char bar[11];
+int
+main (void)
+{
+  if (_fmemset (foo + 2, 'a', 8) != foo + 2)
+    abort ();
+  _fmemset (foo + 9, '.', 1);
+  _fmemset (foo + 10, '?', 0);
+  _fmemcpy (bar, foo, 11);
+  write (1, bar, 11);
+  return 0;
+}]],[[!haaaaaaa.
+]])
+AT_CLEANUP

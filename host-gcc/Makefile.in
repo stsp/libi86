@@ -75,6 +75,7 @@ INSTALL_HEADERS	= dos.h \
 		  err.h \
 		  i86.h \
 		  libi86/kompress.h \
+		  libi86/malloc.h \
 		  libi86/stdlib.h \
 		  libi86/string.h \
 		  libi86/internal/bc-portio.h \
@@ -93,6 +94,10 @@ DISTCLEAN_HEADERS \
 		  libi86/version.h \
 		  libi86/internal/acconfig.h \
 		  libi86/internal/types.h
+ifeq "no" "@ac_cv_header_malloc_h"
+  INSTALL_HEADERS \
+		+= malloc.h
+endif
 ifeq "" "$(ELKS_P)"
   INSTALL_HEADERS \
 		+= bios.h \
@@ -106,7 +111,8 @@ ifeq "" "$(ELKS_P)"
 		   libi86/internal/far-cxx.h \
 		   libi86/internal/features.h \
 		   libi86/internal/process.h
-  CLEAN_HEADERS	+= libi86/internal/wrap/stdio.h \
+  CLEAN_HEADERS	+= libi86/internal/wrap/malloc.h \
+		   libi86/internal/wrap/stdio.h \
 		   libi86/internal/wrap/stdlib.h \
 		   libi86/internal/wrap/string.h
   CLEAN_SPECS	+= r-msdos.d/libi86.spec
@@ -330,6 +336,8 @@ else
 		   graph/settextposition.o \
 		   graph/settextwindow.o \
 		   graph/setvideomode.o \
+		   malloc/ffree.o \
+		   malloc/fmalloc.o \
 		   process/libi86-comspec.o \
 		   process/spawnl.o \
 		   process/spawnle.o \
