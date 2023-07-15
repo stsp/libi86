@@ -33,8 +33,14 @@ AC_CHECK_TYPE([long long int],
 AC_CHECK_DECL([O_TEXT],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_O_TEXT],[1])],,
 	      [#include <fcntl.h>])
+AC_CHECK_DECL([_O_TEXT],
+	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE__O_TEXT],[1])],,
+	      [#include <fcntl.h>])
 AC_CHECK_DECL([O_BINARY],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_O_BINARY],[1])],,
+	      [#include <fcntl.h>])
+AC_CHECK_DECL([_O_BINARY],
+	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE__O_BINARY],[1])],,
 	      [#include <fcntl.h>])
 AC_CHECK_DECL([ENAMETOOLONG],
 	      [AC_DEFINE([_LIBI86_INTERNAL_HAVE_ENAMETOOLONG],[1])],,

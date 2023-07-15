@@ -4441,11 +4441,25 @@ then :
   printf "%s\n" "#define _LIBI86_INTERNAL_HAVE_O_TEXT 1" >>confdefs.h
 
 fi
+ac_fn_check_decl "$LINENO" "_O_TEXT" "ac_cv_have_decl__O_TEXT" "#include <fcntl.h>
+" "$ac_c_undeclared_builtin_options" "CFLAGS"
+if test "x$ac_cv_have_decl__O_TEXT" = xyes
+then :
+  printf "%s\n" "#define _LIBI86_INTERNAL_HAVE__O_TEXT 1" >>confdefs.h
+
+fi
 ac_fn_check_decl "$LINENO" "O_BINARY" "ac_cv_have_decl_O_BINARY" "#include <fcntl.h>
 " "$ac_c_undeclared_builtin_options" "CFLAGS"
 if test "x$ac_cv_have_decl_O_BINARY" = xyes
 then :
   printf "%s\n" "#define _LIBI86_INTERNAL_HAVE_O_BINARY 1" >>confdefs.h
+
+fi
+ac_fn_check_decl "$LINENO" "_O_BINARY" "ac_cv_have_decl__O_BINARY" "#include <fcntl.h>
+" "$ac_c_undeclared_builtin_options" "CFLAGS"
+if test "x$ac_cv_have_decl__O_BINARY" = xyes
+then :
+  printf "%s\n" "#define _LIBI86_INTERNAL_HAVE__O_BINARY 1" >>confdefs.h
 
 fi
 ac_fn_check_decl "$LINENO" "ENAMETOOLONG" "ac_cv_have_decl_ENAMETOOLONG" "#include <errno.h>

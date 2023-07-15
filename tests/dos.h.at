@@ -114,11 +114,13 @@ main (void)
   regs.h.dl = 'y';
   intdos (&regs, &regs);
   /*
-   * This is a bit of a kludge.  Assume that platforms that define O_TEXT in
-   * <fcntl.h> will convert LF to CRLF on default upon a write (...) to
-   * stdout, and platforms that do not define O_TEXT will not do this.
+   * This is a bit of a kludge.  Assume that platforms that define O_TEXT or
+   * _O_TEXT in <fcntl.h> will convert LF to CRLF on default upon a write
+   * (...) to stdout, and platforms that do not define O_TEXT or _O_TEXT will
+   * not do this.
    */
-# ifndef _LIBI86_INTERNAL_HAVE_O_TEXT
+# if ! defined _LIBI86_INTERNAL_HAVE_O_TEXT \
+     && ! defined _LIBI86_INTERNAL_HAVE__O_TEXT
   write (1, "o\r\n", 3);
 # else
   write (1, "o\n", 2);
@@ -180,7 +182,8 @@ main (void)
 # endif
       || sr.ss != __libi86_get_ss ())
     abort ();
-# ifndef _LIBI86_INTERNAL_HAVE_O_TEXT
+# if ! defined _LIBI86_INTERNAL_HAVE_O_TEXT \
+     && ! defined _LIBI86_INTERNAL_HAVE__O_TEXT
   write (1, "o\r\n", 3);
 # else
   write (1, "o\n", 2);
@@ -840,9 +843,12 @@ main (int argc, char **argv)
   puts ("4 OK");
 
   /* read access should be denied */
-#if defined _LIBI86_INTERNAL_HAVE__SETMODE \
-    && defined _LIBI86_INTERNAL_HAVE_O_BINARY
+#ifdef _LIBI86_INTERNAL_HAVE__SETMODE
+# if defined _LIBI86_INTERNAL_HAVE_O_BINARY
   _setmode (fd, O_BINARY);
+# elif defined _LIBI86_INTERNAL_HAVE__O_BINARY
+  _setmode (fd, _O_BINARY);
+# endif
 #endif
   if (read (fd, buf, sizeof buf) >= 0)
     abort ();
