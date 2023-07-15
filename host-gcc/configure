@@ -659,6 +659,7 @@ ac_cv_func_chdir
 ac_cv_func_rmdir
 ac_cv_func_getpid
 ac_cv_header_malloc_h
+ac_cv_header_io_h
 ac_cv_func_getcwd
 ac_cv_func_system
 ac_cv_have_decl_vsscanf
@@ -4517,6 +4518,14 @@ then :
 
 fi
 
+ac_fn_c_check_header_compile "$LINENO" "io.h" "ac_cv_header_io_h" "  #define _LIBI86_CONFIGURING_
+"
+if test "x$ac_cv_header_io_h" = xyes
+then :
+  printf "%s\n" "#define _LIBI86_INTERNAL_HAVE_IO_H 1" >>confdefs.h
+
+fi
+
 ac_fn_c_check_header_compile "$LINENO" "malloc.h" "ac_cv_header_malloc_h" "  #define _LIBI86_CONFIGURING_
 "
 if test "x$ac_cv_header_malloc_h" = xyes
@@ -5286,6 +5295,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
 fi
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $libi86_cv_type_mode_t" >&5
 printf "%s\n" "$libi86_cv_type_mode_t" >&6; }
+
 
 
 

@@ -1,4 +1,4 @@
-dnl Copyright (c) 2018--2022 TK Chia
+dnl Copyright (c) 2023 TK Chia
 dnl
 dnl Redistribution and use in source and binary forms, with or without
 dnl modification, are permitted provided that the following conditions are
@@ -25,38 +25,43 @@ dnl LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-m4_include([hacks.at])
+AT_BANNER([[<libi86/io.h> tests]])
 
-AT_INIT([libi86])
-AT_COPYRIGHT([Copyright (C) 2018--2022 TK Chia.
-Released under the 3-clause BSD license.])
-
-AT_COLOR_TESTS
-
-dnl Process options.
-m4_include([option.at])
-
-dnl Test that the test harness works.  Naturally, this should come first.
-m4_include([metacheck.at])
-
-dnl Then do the actual tests...
-m4_include([i86.h.1.at])
-m4_include([bios.h.at])
-m4_include([bios.h.bc.at])
-m4_include([conio.h.at])
-m4_include([conio.h.bc.at])
-m4_include([direct.h.at])
-m4_include([dos.h.at])
-m4_include([dos.h.bc.at])
-m4_include([dpmi.h.at])
-m4_include([graph.h.at])
-m4_include([i86.h.2.at])
-m4_include([i86.h.2-bc.at])
-m4_include([io.h.at])
-m4_include([kompress.h.at])
-m4_include([string.h.1.at])
-m4_include([malloc.h.at])
-m4_include([stdlib.h.1.at])
-m4_include([process.h.at])
-m4_include([stdlib.h.2.at])
-m4_include([string.h.2.at])
+AT_SETUP([[_binmode]])
+AT_LIBI86_CHECK_WITH_TMP_FILE(dnl
+[[#include <libi86/internal/acconfig.h>
+#include <libi86/io.h>
+void abort (void);
+int
+main (int argc, char **argv)
+{
+  int res = _binmode (0);
+#ifdef _LIBI86_INTERNAL_HAVE_O_TEXT
+  if (res == O_TEXT)
+    ;
+  else
+#endif
+#ifdef _LIBI86_INTERNAL_HAVE__O_TEXT
+  if (res == _O_TEXT)
+    ;
+  else
+#endif
+#ifdef _LIBI86_INTERNAL_HAVE_O_BINARY
+  if (res == O_BINARY)
+    ;
+  else
+#endif
+#ifdef _LIBI86_INTERNAL_HAVE__O_BINARY
+  if (res == _O_BINARY)
+    ;
+  else
+#endif
+#ifndef _LIBI86_INTERNAL_HAVE__SETMODE
+  if (res == 0)
+    ;
+  else
+#endif
+    abort ();
+  return 0;
+}]],[])
+AT_CLEANUP

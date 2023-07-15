@@ -402,6 +402,14 @@ When using ACK:
 |          X | = | = | = | ``_FP_EQ (``{bopt}``const volatile void {lowline}{lowline}far`` *{eopt}__ptr1__``,`` {bopt}``const volatile void {lowline}{lowline}far`` *{eopt}__ptr2__``);`` | Test whether two far pointers are exactly equal.  This is mainly useful for ACK, which lacks built-in far pointer support.
 |          X | = | = | = | ``_FP_EQ_NULL (``{bopt}``const volatile void {lowline}{lowline}far`` *{eopt}__ptr__``);`` | Test whether a far pointer is null.  This is mainly useful for ACK, which lacks built-in far pointer support.
 6+|
+|            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <io.h> ▞▞▞▞▖``**
+
+			* **``<io.h>`` also includes the underlying C library's ``<unistd.h>``.**
+
+|          X | = | = | = | ``_binmode (``__handle__``);`` a|
+			* Sets the file handle to do untranslated (binary) I/O — so that ``read`` and ``write`` calls with the __handle__ will not translate between LF and CRLF, nor specially handle bytes that look like end-of-file indicators.
+			* Upon an error, this function returns -1 and sets ``errno``.
+6+|
 |            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <process.h> ▞▞▞▞▖``**
 |     P01, W |(=)| : |(=)| ``getpid ();`` | (POSIX places this function in ``<unistd.h>``.)
 |          W |:= |   |:= | ``_getpid ();`` |

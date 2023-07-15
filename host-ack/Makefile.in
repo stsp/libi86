@@ -70,6 +70,7 @@ INSTALL_HEADERS	= bios.h \
 		  graph.h \
 		  i86.h \
 		  share.h \
+		  libi86/io.h \
 		  libi86/kompress.h \
 		  libi86/malloc.h \
 		  libi86/stdio.h \
@@ -93,6 +94,9 @@ DISTCLEAN_HEADERS = direct.h \
 		    libi86/version.h \
 		    libi86/internal/acconfig.h \
 		    libi86/internal/types.h
+ifeq "no" "@ac_cv_header_io_h@"
+  CLEAN_HEADERS	+= io.h
+endif
 ifeq "no" "@ac_cv_header_malloc_h@"
   CLEAN_HEADERS	+= malloc.h
 endif
@@ -275,6 +279,7 @@ OBJS		= bios/bios-disk.o \
 		  i86/nosound.o \
 		  i86/segread.o \
 		  i86/sound.o \
+		  io/binmode.o \
 		  kompress/libi86-lz4-full-len.o \
 		  kompress/lz4cpy.o \
 		  kompress/lz4len.o \
@@ -433,6 +438,7 @@ libi86/config.h: make-config.sh $(BSP)
 	  $(SHELL) $< $(BSP) >$@.tmp
 	mv $@.tmp $@
 
+io.h \
 malloc.h: make-wrap-h.sh
 	mkdir -p $(@D)
 	$(SHELL) $< $(@F:.h=) >$@.tmp

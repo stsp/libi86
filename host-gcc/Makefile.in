@@ -74,6 +74,7 @@ INSTALL_SPECS	= $(CLEAN_SPECS)
 INSTALL_HEADERS	= dos.h \
 		  err.h \
 		  i86.h \
+		  libi86/io.h \
 		  libi86/kompress.h \
 		  libi86/malloc.h \
 		  libi86/stdlib.h \
@@ -107,7 +108,8 @@ ifeq "" "$(ELKS_P)"
 		   libi86/internal/far-cxx.h \
 		   libi86/internal/features.h \
 		   libi86/internal/process.h
-  CLEAN_HEADERS	+= libi86/internal/wrap/malloc.h \
+  CLEAN_HEADERS	+= libi86/internal/wrap/io.h \
+		   libi86/internal/wrap/malloc.h \
 		   libi86/internal/wrap/stdio.h \
 		   libi86/internal/wrap/stdlib.h \
 		   libi86/internal/wrap/string.h
@@ -154,6 +156,7 @@ OBJS		=  conio/libi86-con-name.o \
 		   i86/libi86-sound-by-divisor.o \
 		   i86/nosound.o \
 		   i86/sound.o \
+		   io/binmode.o \
 		   kompress/libi86-lz4-full-len.o \
 		   kompress/lz4cpy.o \
 		   kompress/lz4len.o \
@@ -526,6 +529,11 @@ libi86/config.h: make-config.sh $(BSP)
 	mkdir -p $(@D)
 	NM='$(NM)' AWK='$(AWK)' PACKAGE_VERSION='$(PACKAGE_VERSION)' \
 	  $(SHELL) $< $(BSP) >$@.tmp
+	mv $@.tmp $@
+
+libi86/internal/wrap/io.h: make-wrap-h.sh
+	mkdir -p $(@D)
+	$(SHELL) $< $(@F:.h=) '@ac_cv_header_io_h@' >$@.tmp
 	mv $@.tmp $@
 
 libi86/internal/wrap/malloc.h: make-wrap-h.sh
