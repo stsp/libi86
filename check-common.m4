@@ -54,7 +54,9 @@ AC_CHECK_FUNC([_getcwd],[AC_DEFINE([_LIBI86_INTERNAL_HAVE__GETCWD],[1])])
 AC_CHECK_FUNC([flockfile],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_FLOCKFILE],[1])])
 AC_CHECK_FUNC([_dos_get_dbcs_lead_table],
   [AC_DEFINE([_LIBI86_INTERNAL_HAVE__DOS_GET_DBCS_LEAD_TABLE],[1])])
-AC_CHECK_HEADER([malloc.h],[AC_DEFINE([_LIBI86_INTERNAL_HAVE_MALLOC_H],[1])])
+AC_CHECK_HEADER([malloc.h],dnl
+  [AC_DEFINE([_LIBI86_INTERNAL_HAVE_MALLOC_H],[1])],,dnl
+  [#define _LIBI86_CONFIGURING_])
 AC_CHECK_HEADER([sys/syslimits.h],
 		[AC_DEFINE([_LIBI86_INTERNAL_HAVE_SYS_SYSLIMITS_H],[1])])
 if test yes = "$ac_cv_header_sys_syslimits_h"; then

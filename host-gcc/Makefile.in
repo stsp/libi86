@@ -94,10 +94,6 @@ DISTCLEAN_HEADERS \
 		  libi86/version.h \
 		  libi86/internal/acconfig.h \
 		  libi86/internal/types.h
-ifeq "no" "@ac_cv_header_malloc_h"
-  INSTALL_HEADERS \
-		+= malloc.h
-endif
 ifeq "" "$(ELKS_P)"
   INSTALL_HEADERS \
 		+= bios.h \
@@ -530,6 +526,11 @@ libi86/config.h: make-config.sh $(BSP)
 	mkdir -p $(@D)
 	NM='$(NM)' AWK='$(AWK)' PACKAGE_VERSION='$(PACKAGE_VERSION)' \
 	  $(SHELL) $< $(BSP) >$@.tmp
+	mv $@.tmp $@
+
+libi86/internal/wrap/malloc.h: make-wrap-h.sh
+	mkdir -p $(@D)
+	$(SHELL) $< $(@F:.h=) '@ac_cv_header_malloc_h@' >$@.tmp
 	mv $@.tmp $@
 
 libi86/internal/wrap/%.h: make-wrap-h.sh
