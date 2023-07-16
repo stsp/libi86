@@ -68,19 +68,23 @@ else
 endif
 ASFLAGS		=
 # Headers we depend on...
-HEADERS		= $(wildcard $(srcroot)/$(libi86_hostdir)/*.h \
-			     $(srcroot)/$(libi86_hostdir)/libi86/internal/*.h \
-			     $(objroot)/$(libi86_hostdir)/libi86/*.h \
-			     $(objroot)/$(libi86_hostdir)/libi86/internal/*.h \
-			     $(srcroot)/common/*.h \
-			     $(srcroot)/common/libi86/*.h \
-			     $(srcroot)/common/libi86/internal/*.h)
+HEADERS		= $(wildcard \
+		    $(srcroot)/$(libi86_hostdir)/*.h \
+		    $(srcroot)/$(libi86_hostdir)/libi86/internal/*.h \
+		    $(objroot)/$(libi86_hostdir)/libi86/*.h \
+		    $(objroot)/$(libi86_hostdir)/libi86/internal/*.h \
+		    $(objroot)/$(libi86_hostdir)/libi86/internal/wrap/*.h \
+		    $(srcroot)/common/*.h \
+		    $(srcroot)/common/libi86/*.h \
+		    $(srcroot)/common/libi86/internal/*.h)
 
 # Host specific makefile fragment comes in here.
 @host_makefile_frag@
 
 CPPFLAGS += $(INCLUDES) -I$(srcdir) -I. \
-	    -I$(objroot)/$(libi86_hostdir) -I$(srcroot)/$(libi86_hostdir) \
+	    -I$(objroot)/$(libi86_hostdir) \
+	    -I$(objroot)/$(libi86_hostdir)/libi86/internal/wrap \
+	    -I$(srcroot)/$(libi86_hostdir) \
 	    -I$(srcroot)/common
 
 .PHONY: default
