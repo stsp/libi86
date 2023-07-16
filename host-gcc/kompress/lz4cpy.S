@@ -53,7 +53,7 @@ lz4cpy:
 	mov	%dl,	%ch
 	mov	$12,	%cl
 	shrw	%cl,	%cx
-	call	__libi86_lz4_full_len
+	call	.full_len
 	rep movsb
 	cmpw	%bx,	%si
 	jnb	.done
@@ -62,7 +62,7 @@ lz4cpy:
 	movw	%di,	%dx
 	subw	%ax,	%dx
 	andw	$0x0f,	%cx
-	call	__libi86_lz4_full_len
+	call	.full_len
 	addw	$4,	%cx
 	pushw	%ds
 	pushw	%es
@@ -83,3 +83,15 @@ lz4cpy:
 	popw	%di
 	popw	%si
 	RET2_ (10)
+
+.full_len:
+	cmpb	$0x0f,	%cl
+	jnz	9f
+	movb	$0,	%ah
+1:
+	lodsb
+	addw	%ax,	%cx
+	cmp	$0xff,	%al
+	jz	1b
+9:
+	ret

@@ -157,7 +157,6 @@ OBJS		=  conio/libi86-con-name.o \
 		   i86/nosound.o \
 		   i86/sound.o \
 		   io/binmode.o \
-		   kompress/libi86-lz4-full-len.o \
 		   kompress/lz4cpy.o \
 		   kompress/lz4len.o \
 		   process/getpid.o \

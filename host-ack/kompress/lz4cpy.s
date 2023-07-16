@@ -47,7 +47,7 @@ __lz4cpy:
 	movb	ch, dl
 	movb	cl, 12
 	shr	cx, cl
-	call	.__libi86_lz4_full_len
+	call	.full_len
 	rep movsb
 	cmp	si, bx
 	jnb	.done
@@ -56,7 +56,7 @@ __lz4cpy:
 	mov	dx, di
 	sub	dx, ax
 	and	cx, 0x0f
-	call	.__libi86_lz4_full_len
+	call	.full_len
 	add	cx, 4
 	push	ds
 	push	es

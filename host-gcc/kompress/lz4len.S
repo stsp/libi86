@@ -50,24 +50,47 @@ _lz4len:
 	mov	%dl,	%ch
 	mov	$12,	%cl
 	shrw	%cl,	%cx
-	call	__libi86_lz4_full_len
+	call	.full_len_ckd
+	jc	.ouch
 	addw	%cx,	%si
 	addw	%cx,	%di
+	jc	.ouch
 	cmpw	%bx,	%si
 	jnb	.done
 	lodsw
 	movb	%dl,	%cl
 	andw	$0x0f,	%cx
-	call	__libi86_lz4_full_len
+	call	.full_len_ckd
+	jc	.ouch
 	addw	$4,	%cx
+	jc	.ouch
 	addw	%cx,	%di
+	jc	.ouch
 .chk:
 	cmpw	%bx,	%si
 	jb	.loopy
 .done:
 	xchgw	%ax,	%di
+	.byte	0x3d			/* cmpw ..., %ax */
+.ouch:
+	xorw	%ax,	%ax
 	pushw	%ss
 	popw	%ds
 	popw	%di
 	popw	%si
 	RET_ (6)
+
+.full_len_ckd:
+	cmpb	$0x0f,	%cl
+	jnz	8f
+	movb	$0,	%ah
+1:
+	lodsb
+	addw	%ax,	%cx
+	jc	9f
+	cmp	$0xff,	%al
+	jz	1b
+8:
+	clc
+9:
+	ret

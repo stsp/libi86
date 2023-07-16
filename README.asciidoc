@@ -433,7 +433,7 @@ When using ACK:
 |            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <libi86/kompress.h> ▞▞▞▞▖``**
 |         IC | = | = | = | *``lz4cpy (``*__dest__``,`` *__blk-src__``,`` __blk-size__``);`` .2+a| Unpacks an LZ4-compressed block.  Returns the address of the byte after the unpacked data.  It is best to use this function only on trusted input.
 |          X | = | = | = | *``_lz4cpy (``*__dest__``,`` *__blk-src__``,`` __blk-size__``);``
-|          X | = | = | = | ``_lz4len (``*__blk-src__``,`` __blk-size__``);`` | Parses an LZ4-compressed block and returns its uncompressed size, without actually unpacking it.  It is best to use this function only on trusted input.
+|          X | = | = | = | ``_lz4len (``*__blk-src__``,`` __blk-size__``);`` | Parses an LZ4-compressed block and returns its uncompressed size, without actually unpacking it.  Returns 0 if the uncompressed length cannot fit into a ``size_t``.  It is best to use this function only on trusted input.
 6+|
 |            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <libi86/malloc.h> ▞▞▞▞▖``**
 

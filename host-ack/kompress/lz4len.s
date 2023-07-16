@@ -46,24 +46,47 @@ __lz4len:
 	movb	ch, dl
 	movb	cl, 12
 	shr	cx, cl
-	call	.__libi86_lz4_full_len
+	call	.full_len_ckd
+	jc	.ouch
 	add	si, cx
 	add	di, cx
+	jc	.ouch
 	cmp	si, bx
 	jnb	.done
 	lodsw
 	movb	cl, dl
 	and	cx, 0x0f
-	call	.__libi86_lz4_full_len
+	call	.full_len_ckd
+	jc	.ouch
 	add	cx, 4
+	jc	.ouch
 	add	di, cx
+	jc	.ouch
 .chk:
 	cmp	si, bx
 	jb	.loopy
 .done:
 	xchg	di, ax
+	.data1	0x3d			/* cmp ax, ... */
+.ouch:
+	xor	ax, ax
 	push	ss
 	pop	ds
 	pop	di
 	pop	si
+	ret
+
+.full_len_ckd:
+	cmpb	cl, 0x0f
+	jnz	.8
+	movb	ah, 0
+.1:
+	lodsb
+	add	cx, ax
+	jc	.9
+	cmpb	al, 0xff
+	jz	.1
+.8:
+	clc
+.9:
 	ret
