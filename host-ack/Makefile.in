@@ -71,7 +71,6 @@ INSTALL_HEADERS	= bios.h \
 		  i86.h \
 		  share.h \
 		  libi86/io.h \
-		  libi86/kompress.h \
 		  libi86/malloc.h \
 		  libi86/stdio.h \
 		  libi86/stdlib.h \
@@ -86,6 +85,7 @@ INSTALL_HEADERS	= bios.h \
 		  libi86/internal/libc-defer.h \
 		  libi86/internal/portio.h \
 		  libi86/internal/process.h \
+		  nexgen/kompress.h \
 		  $(CLEAN_HEADERS) \
 		  $(DISTCLEAN_HEADERS)
 CLEAN_HEADERS	= libi86/config.h
@@ -343,7 +343,8 @@ all: $(INSTALL_LIBS) $(INSTALL_HEADERS)
 install: $(INSTALL_LIBS) $(INSTALL_HEADERS)
 	$(mkinstalldirs) $(DESTDIR)$(includedir) \
 			 $(DESTDIR)$(includedir)/libi86 \
-			 $(DESTDIR)$(includedir)/libi86/internal
+			 $(DESTDIR)$(includedir)/libi86/internal \
+			 $(DESTDIR)$(includedir)/nexgen
 	set -e; \
 	d=$(DESTDIR)$(libdir); \
 	for f in $(INSTALL_LIBS); do \

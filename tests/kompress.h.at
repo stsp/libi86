@@ -25,7 +25,7 @@ dnl LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 dnl NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AT_BANNER([[<libi86/kompress.h> tests]])
+AT_BANNER([[<nexgen/kompress.h> tests]])
 
 AT_SETUP([[_lz4cpy]])
 AT_LIBI86_CHECK(dnl
@@ -34,7 +34,7 @@ AT_LIBI86_CHECK(dnl
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <libi86/kompress.h>
+#include <nexgen/kompress.h>
 int
 main (void)
 {
@@ -73,7 +73,7 @@ AT_LIBI86_CHECK_FOR_SMALL_MODEL_OR_ABOVE_NONDOSX(dnl
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <libi86/kompress.h>
+#include <nexgen/kompress.h>
 int
 main (void)
 {
@@ -154,7 +154,7 @@ AT_LIBI86_CHECK(dnl
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <libi86/kompress.h>
+#include <nexgen/kompress.h>
 int
 main (void)
 {
@@ -206,7 +206,7 @@ AT_LIBI86_CHECK(dnl
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <libi86/kompress.h>
+#include <nexgen/kompress.h>
 int
 main (void)
 {

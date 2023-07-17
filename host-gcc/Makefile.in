@@ -75,7 +75,6 @@ INSTALL_HEADERS	= dos.h \
 		  err.h \
 		  i86.h \
 		  libi86/io.h \
-		  libi86/kompress.h \
 		  libi86/malloc.h \
 		  libi86/stdlib.h \
 		  libi86/string.h \
@@ -85,6 +84,7 @@ INSTALL_HEADERS	= dos.h \
 		  libi86/internal/inp-portio.h \
 		  libi86/internal/libc-defer.h \
 		  libi86/internal/portio.h \
+		  nexgen/kompress.h \
 		  $(CLEAN_HEADERS) \
 		  $(DISTCLEAN_HEADERS)
 CLEAN_HEADERS	= libi86/config.h
@@ -431,10 +431,11 @@ install: $(INSTALL_LIBS) $(INSTALL_SPECS) $(INSTALL_HEADERS)
 	    if [ -z "$(MULTISUBDIR)" ]; then \
 	      d=$(DESTDIR)$(includedir); \
 	      $(mkinstalldirs) "$$d" "$$d"/libi86 "$$d"/libi86/internal \
-			       "$$d"/libi86/internal/wrap; \
+			       "$$d"/libi86/internal/wrap "$$d"/nexgen; \
 	    else \
 	      d=$(DESTDIR)$(libdir)$(MULTISUBDIR)/include; \
-	      $(mkinstalldirs) "$$d" "$$d"/libi86 "$$d"/libi86/internal; \
+	      $(mkinstalldirs) "$$d" "$$d"/libi86 "$$d"/libi86/internal \
+			       "$$d"/nexgen; \
 	    fi; \
 	    for f in $(INSTALL_HEADERS); do \
 	      if [ -f "$$f" ]; then \
