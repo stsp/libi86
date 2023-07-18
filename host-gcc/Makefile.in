@@ -85,6 +85,7 @@ INSTALL_HEADERS	= dos.h \
 		  libi86/internal/libc-defer.h \
 		  libi86/internal/portio.h \
 		  nexgen/kompress.h \
+		  nexgen/mzendian.h \
 		  $(CLEAN_HEADERS) \
 		  $(DISTCLEAN_HEADERS)
 CLEAN_HEADERS	= libi86/config.h
