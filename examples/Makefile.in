@@ -50,7 +50,7 @@ AS = @AS@
 LD = @LD@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 
-PROGRAMS	= drivei86.exe joyi86.exe
+PROGRAMS	= drivei86.exe joyi86.exe lz4mi86.exe
 ifeq "yes" "$(ac_compiler_gnu)"
   PROGRAMS	+= dpmii86.exe
   CFLAGS	= -mcmodel=small -mregparmcall -Os -mnewlib-autofloat-stdio
