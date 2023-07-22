@@ -80,7 +80,7 @@ test1:gcc:
         n_tests="`su user -c './tests/ci-count-tests.sh'`"
         && first=1
         && last="`expr $n_tests / 3`"
-        && su user -c "./tests/ci-check.sh -j2 --x-test-common $first-$last"
+        && su user -c "./tests/ci-check.sh -j2 --x-test-underlying $first-$last"
   timeout: 3h
   artifacts:
     paths:
@@ -99,7 +99,8 @@ test2:gcc:
         n_tests="`su user -c './tests/ci-count-tests.sh'`"
         && first="`expr $n_tests / 3 + 1`"
         && last="`expr 2 \* $n_tests / 3`"
-        && su user -c "./tests/ci-check.sh -j2 --x-test-common $first-$last"
+        && su user -c
+        "./tests/ci-check.sh -j2 --x-test-underlying $first-$last"
   timeout: 3h
   artifacts:
     paths:
@@ -117,7 +118,7 @@ test3:gcc:
     - >
         n_tests="`su user -c './tests/ci-count-tests.sh'`"
         && first="`expr 2 \* $n_tests / 3 + 1`"
-        && su user -c "./tests/ci-check.sh -j2 --x-test-common $first-"
+        && su user -c "./tests/ci-check.sh -j2 --x-test-underlying $first-"
   timeout: 3h
   artifacts:
     paths:
