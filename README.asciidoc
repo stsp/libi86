@@ -10,7 +10,7 @@
 :bopt: [
 :eopt: ]
 
-https://gitlab.com/tkchia/libi86/-/commits/master[image:https://gitlab.com/tkchia/libi86/badges/master/pipeline.svg["GitLab pipeline status"]]
+https://ci.appveyor.com/project/tkchia/libi86/branch/master[image:https://ci.appveyor.com/api/projects/status/9kb2jmb6mm8vserv/branch/master["AppVeyor build status"]] • https://gitlab.com/tkchia/libi86/-/commits/master[image:https://gitlab.com/tkchia/libi86/badges/master/pipeline.svg["GitLab pipeline status"]]
 
 :fn-collet-22: footnote:collet-22[Yann Collet, et al.  LZ4 1.9.4 Manual, 2022.  LZ4 block format description.  https://github.com/lz4/lz4/blob/dev/doc/lz4_Frame_format.md.]
 
