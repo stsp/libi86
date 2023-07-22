@@ -77,7 +77,7 @@ __libi86_get_progname (void)
       *p = 0;
     }
 #else
-  const char *fullname = __argv[0];
+  char *fullname = __argv[0];
 #endif
 #ifdef __MSDOS__
   _splitpath (fullname, NULL, NULL, __libi86_progname_buf, NULL);
