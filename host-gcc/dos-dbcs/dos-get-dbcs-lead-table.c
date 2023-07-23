@@ -28,7 +28,6 @@
  */
 
 #define _LIBI86_COMPILING_
-#include <stdlib.h>
 #include <string.h>
 #include "dos.h"
 #include "libi86/stdlib.h"
