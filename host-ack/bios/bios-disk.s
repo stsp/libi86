@@ -47,7 +47,11 @@ __bios_disk:
 	orb	cl, 6(bx)		! diskinfo->sector
 	movb	dh, 2(bx)		! diskinfo->head
 	les	bx, 10(bx)		! diskinfo->buffer
+	stc
 	int	0x13
+	jc	.err1
+	movb	ah, 0
+.err1:
 	push	ds
 	pop	es
 	ret
@@ -56,7 +60,11 @@ __bios_disk:
 	xor	di, di			! to set es = di = 0 "to guard
 	mov	es, di			! against BIOS bugs"
 	push	bx
+	stc
 	int	0x13
+	jc	.err2
+	movb	ah, 0
+.err2:
 	pop	bx
 	mov	10(bx), di		! FP_OFF (diskinfo->buffer)
 	mov	12(bx), es		! FP_SEG (diskinfo->buffer)

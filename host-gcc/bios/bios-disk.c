@@ -33,10 +33,16 @@
 #include "i86.h"
 #include "bios.h"
 
+#define DO_BIOS_DISK	"stc; " \
+			"int $0x13; " \
+			"jc 0f; " \
+			"movb $0,%%ah; " \
+			"0:"
+
 unsigned short
 _bios_disk (unsigned service, struct diskinfo_t *diskinfo)
 {
-  unsigned short ax, di;
+  unsigned short ax, dx, di;
   __libi86_segment_t es;
   uint8_t ch, cl, dh, dl;
 
@@ -44,7 +50,7 @@ _bios_disk (unsigned service, struct diskinfo_t *diskinfo)
     {
     case _DISK_RESET:
     case _DISK_STATUS:
-      __asm volatile ("int $0x13"
+      __asm volatile (DO_BIOS_DISK
 		      : "=a" (ax)
 		      : "0" (service << 8), "Rdl" ((uint8_t) diskinfo->drive)
 		      : "cc", "memory");
@@ -57,7 +63,7 @@ _bios_disk (unsigned service, struct diskinfo_t *diskinfo)
 	   | ((uint8_t) (diskinfo->track >> 2) & 0xc0);
       dh = (uint8_t) diskinfo->head;
       dl = (uint8_t) diskinfo->drive;
-      __asm volatile ("int $0x13"
+      __asm volatile (DO_BIOS_DISK
 		      : "=a" (ax)
 		      : "0" (ax), "c" (ch), "Rcl" (cl), "Rdh" (dh), "Rdl" (dl)
 		      : "cc", "memory");
@@ -68,7 +74,7 @@ _bios_disk (unsigned service, struct diskinfo_t *diskinfo)
       dl = (uint8_t) diskinfo->drive;
       /* Ralf Brown's Interrupt List says to set %es = %di = 0 "to guard
 	 against BIOS bugs".  */
-      __asm volatile ("int $0x13"
+      __asm volatile (DO_BIOS_DISK
 		      : "=a" (ax), "=c" (ch), "=Rcl" (cl),
 			"=Rdh" (dh), "=Rdl" (dl), "=e" (es), "=D" (di)
 		      : "0" (ax), "4" (dl), "5" (__builtin_ia16_selector (0u)),
@@ -89,8 +95,15 @@ _bios_disk (unsigned service, struct diskinfo_t *diskinfo)
 	   | ((uint8_t) (diskinfo->track >> 2) & 0xc0);
       dh = (uint8_t) diskinfo->head;
       dl = (uint8_t) diskinfo->drive;
-      __asm volatile ("int $0x13"
-		      : "=a" (ax)
+      /*
+       * On int 0x13, ah = 2 (_DISK_READ), Ralf Brown's Interrupt List says,
+       * "Apparently some BIOSes or intercepting resident software have bugs
+       *  that may destroy DX on return or not properly set the Carry flag.
+       *  At least some Microsoft software frames calls to this function with
+       *  PUSH DX, STC, INT 13h, STI, POP DX."
+       */
+      __asm volatile (DO_BIOS_DISK
+		      : "=a" (ax), "=d" (dx)
 		      : "0" (ax), "c" (ch), "Rcl" (cl), "Rdh" (dh), "Rdl" (dl),
 			"e" (FP_SEG (diskinfo->buffer)),
 			"b" (FP_OFF (diskinfo->buffer))
