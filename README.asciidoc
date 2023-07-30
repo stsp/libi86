@@ -76,7 +76,7 @@ When using ACK:
 :fn-tkchia-22f: footnote:tkchia-22f[https://github.com/tkchia/libi86.]
 
   * link:doc/linux-build.asciidoc[Detailed instructions] for building the code are available.
-  * You can download the `libi86` source code from https://gitlab.com/tkchia/libi86[GitLab],{fn-tkchia-22d} https://codeberg.org/tkchia/libi86[Codeberg],{fn-tkchia-22e} or https://github.com/tkchia/libi86[GitHub].{fn-tkchia-22f}
+  * You can download the `libi86` source code from https://gitlab.com/tkchia/libi86[GitLab]{fn-tkchia-22d} or https://codeberg.org/tkchia/libi86[Codeberg].{fn-tkchia-22e}
 
 == License
 
