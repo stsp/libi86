@@ -35,7 +35,9 @@
 
 	TEXT_ (lz4cpy_lz4len.S.LIBI86)
 	.global	_lz4len
+	.weak	lz4len
 _lz4len:
+lz4len:
 	ENTER_BX_ (6)
 	pushw	%si
 	pushw	%di

@@ -44,6 +44,8 @@ extern __libi86_size_t _lz4len (__libi86_fpcv_t __blk_src,
 # ifndef __STRICT_ANSI__
 _LIBI86_REDIRECT_3 (__libi86_fpv_t, lz4cpy, __libi86_fpv_t, __libi86_fpcv_t,
 					    __libi86_size_t, _lz4cpy)
+_LIBI86_REDIRECT_2 (__libi86_size_t, lz4len, __libi86_fpcv_t, __libi86_size_t,
+					     _lz4len)
 # endif
 #endif
 
