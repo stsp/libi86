@@ -19,7 +19,7 @@ This is a code library which attempts to reimplement non-standard C library faci
   * a few standard facilities which are part of newer C language standards, where the underlying C library lacks them;
   * and extra routines for LZ4{fn-collet-22} data decompression.
 
-:fn-tkchia-22: footnote:tkchia-22[https://github.com/tkchia/build-ia16/.]
+:fn-tkchia-22: footnote:tkchia-22[https://gitlab.com/tkchia/build-ia16/.]
 :fn-given-21: footnote:given-21[https://github.com/davidgiven/ack.]
 
 For now, the library is meant to be used with the following compilers and targets:
@@ -73,7 +73,6 @@ When using ACK:
 
 :fn-tkchia-22d: footnote:tkchia-22d[https://gitlab.com/tkchia/libi86.]
 :fn-tkchia-22e: footnote:tkchia-22e[https://codeberg.org/tkchia/libi86.]
-:fn-tkchia-22f: footnote:tkchia-22f[https://github.com/tkchia/libi86.]
 
   * link:doc/linux-build.asciidoc[Detailed instructions] for building the code are available.
   * You can download the `libi86` source code from https://gitlab.com/tkchia/libi86[GitLab]{fn-tkchia-22d} or https://codeberg.org/tkchia/libi86[Codeberg].{fn-tkchia-22e}
@@ -131,6 +130,7 @@ When using ACK:
 
 === Functions
 
+:fn-tkchia-23: footnote:tkchia-23[https://codeberg.org/tkchia/lfanew/.]
 :im-dir-h: link:doc/implem-notes.asciidoc#user-content-dir-h[(❧)]
 :im-direct-h: link:doc/implem-notes.asciidoc#user-content-direct-h[(❧)]
 :im-dos-h: link:doc/implem-notes.asciidoc#user-content-dos-h[(❧)]
@@ -263,7 +263,7 @@ When using ACK:
 |          W | = | / | = | ``_dos_open (``*__path__``,`` __mode__``,`` *__handle__``);`` |
 |          W | = | / | = | ``_dos_read (``__handle__``,`` *__buf__``,`` __count__``,`` *__bytes__``);`` a|
 			* ``_dos_read`` __always__ directly invokes the relevant syscall (`int 0x21` function `0x3f`), without transforming the input bytes.
-			* Under ACK — but not `gcc-ia16` — the C library's ``read`` function may behave differently from ``_dos_read``: it may translate CRLFs to LFs, and handle end-of-file indicators (ASCII 26), if __handle__ is ``open`` 'd in "text mode".
+			* Under ACK — but not `gcc-ia16` — the C library's ``read`` function may behave differently from ``_dos_read``: it may translate CRLFs to LFs, and interpret end-of-file indicators (ASCII 26), if __handle__ is ``open`` 'd in "text mode".
 |          W | = | / | = | ``_dos_setblock (``__size__``,`` __seg__``,`` *__max-size__``);`` |
 |          W | = | / | = | ``_dos_setdate (``*__date__``);`` |
 |          W | = | / | = | ``_dos_setdrive (``__drive__``,`` *__total__``);`` |
@@ -407,7 +407,7 @@ When using ACK:
 			* **``<io.h>`` also includes the underlying C library's ``<unistd.h>``.**
 
 |          X | = | = | = | ``_binmode (``__handle__``);`` a|
-			* Sets the file handle to do untranslated (binary) I/O — so that ``read`` and ``write`` calls with the __handle__ will not translate between LF and CRLF, nor specially handle bytes that look like end-of-file indicators.
+			* Sets the POSIX-style file __handle__ to do untranslated (binary) I/O — so that ``read`` and ``write`` calls with the __handle__ will not translate between LF and CRLF, nor specially interpret bytes that look like end-of-file indicators.
 			* Upon an error, this function returns -1 and sets ``errno``.
 6+|
 |            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <process.h> ▞▞▞▞▖``**
@@ -494,6 +494,22 @@ When using ACK:
 |          X | = | = | = | *``_lz4cpy (``*__dest__``,`` *__blk-src__``,`` __blk-size__``);``
 |         IC | = | = | = | ``lz4len (``*__blk-src__``,`` __blk-size__``);`` .2+a| Parses an LZ4-compressed block and returns its uncompressed size, without actually unpacking it.  Returns 0 if the uncompressed length cannot fit into a ``size_t``.  It is best to use this function only on trusted input.
 |          X | = | = | = | ``_lz4len (``*__blk-src__``,`` __blk-size__``);``
+6+|
+|            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <nexgen/mzendian.h> ▞▞▞▞▖``**
+
+				* **Routines for accessing unaligned little endian binary data in a type-checked manner.  These are also implemented in the `lfanew` library (which is targeted at modern OSes).**
+				* **``<nexgen/mzendian.h>`` also includes ``<stdint.h>``.**
+
+|          X | = | = | = | ``hle16 (``__x__``);``{fn-tkchia-23} |
+|          X | = | = | = | ``hle32 (``__x__``);`` |
+|          X | = | = |   | ``hle64 (``__x__``);`` |
+|          X | = | = | = | ``leh16 (``__x__``);`` |
+|          X | = | = | = | ``leh32 (``__x__``);`` |
+|          X | = | = | = | ``leh32hi (``__x__``);`` |
+|          X | = | = | = | ``leh32lo (``__x__``);`` |
+|          X | = | = |   | ``leh64 (``__x__``);`` |
+|          X | = | = | = | ``leh64hi (``__x__``);`` |
+|          X | = | = | = | ``leh64lo (``__x__``);`` |
 |===
 
 === Variables
@@ -552,4 +568,9 @@ When using ACK:
 |          W | = | = | = | ``union REGPACK`` |
 |        W/B | = | = | = | ``union REGS`` | In ``_BORLANDC_SOURCE`` mode, gets an additional ``.x.flags`` field.
 |          W | = | = | = | ``struct SREGS`` |
+6+|
+|            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <nexgen/mzendian.h> ▞▞▞▞▖``**
+|          X | = | = | = | ``uint_le16_t`` .3+| Unaligned 16-, 32-, or 64-bit little endian binary numeral.  These types can be used directly inside a ``struct`` or ``union`` corresponding to a binary file structure, but should otherwise be treated as opaque.
+|          X | = | = | = | ``uint_le32_t``
+|          X | = | = |   | ``uint_le64_t``
 |===
