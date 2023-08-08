@@ -9,6 +9,7 @@
 :ecmt: {nbsp}*/
 :bopt: [
 :eopt: ]
+:Xnew: X▵
 
 https://ci.appveyor.com/project/tkchia/libi86/branch/master[image:https://ci.appveyor.com/api/projects/status/9kb2jmb6mm8vserv/branch/master["AppVeyor build status"]] • https://gitlab.com/tkchia/libi86/-/commits/master[image:https://gitlab.com/tkchia/libi86/badges/master/pipeline.svg["GitLab pipeline status"]]
 
@@ -20,6 +21,7 @@ This is a code library which attempts to reimplement non-standard C library faci
   * and extra routines for LZ4{fn-collet-22} data decompression.
 
 :fn-tkchia-22: footnote:tkchia-22[https://gitlab.com/tkchia/build-ia16/.]
+:fn-tkchia-23: footnote:tkchia-23[https://codeberg.org/tkchia/lfanew/.]
 :fn-given-21: footnote:given-21[https://github.com/davidgiven/ack.]
 
 For now, the library is meant to be used with the following compilers and targets:
@@ -27,12 +29,12 @@ For now, the library is meant to be used with the following compilers and target
   * either a GCC toolchain for 16-bit x86;{fn-tkchia-22}
   * or the Amsterdam Compiler Kit{fn-given-21} with the `msdos86` target platform.
 
-It may be ported to other compilers and targets in the future.
+A few of this library's functions are also implemented in https://codeberg.org/tkchia/lfanew[my `lfanew` library] which is targeted at more modern platforms.{fn-tkchia-23}
 
 :fn-ow: footnote:ow[https://github.com/open-watcom/open-watcom-v2/.]
 :fn-ow-22: footnote:ow-2022[Open Watcom Contributors, et al.  Open Watcom C Library Reference, 2022.  https://github.com/open-watcom/open-watcom-v2-wikidocs/blob/master/docs/clib.pdf.  Retrieved on 6 Jan 2022.]
 
-The current aim is to be compatible enough with the Open Watcom{fn-ow} runtime — as described in the __Open Watcom C Library Reference__{fn-ow-22} — to be useful for building existing MS-DOS code.
+The current aim of `libi86` is to be compatible enough with the Open Watcom{fn-ow} runtime — as described in the __Open Watcom C Library Reference__{fn-ow-22} — to be useful for building existing MS-DOS code.
 
 :fn-borland: footnote:borland[http://cc.embarcadero.com/Item/25636.]
 :fn-borland-91: footnote:borland-91[Borland International.  Borland C{plus}{plus} 2.0 Library Reference, 1991.  https://archive.org/details/bitsavers_borlandborn2.0LibraryReference1991_17218611.]
@@ -98,19 +100,20 @@ When using ACK:
 |===
 | Compat. | Meaning
 
-| C99 | Part of the C99 standard{fn-iso-iec-99}{fn-iso-iec-07} — enable with a macro `_ISOC99_SOURCE` if necessary.
-| P01 | Part of the POSIX.1-2001{fn-ieee-04} standard.
-|   W | Behaves like the corresponding function in Open Watcom.
-|  W+ | Behaves like the corresponding function in Open Watcom, but with some extended behaviours.
-|   B | From Borland Turbo C{plus}{plus} — enable with `_BORLANDC_SOURCE`.
-|  UB | Undocumented (?) functionality from Borland Turbo C{plus}{plus} — enable with `_BORLANDC_SOURCE`.
-| W/B | By default, behaves as in Open Watcom; if `_BORLANDC_SOURCE` is defined, behaves as in Borland C{plus}{plus}.
-| BSD | From the Berkeley Standard Distribution's C library (BSD `libc`) and its derivatives.{fn-freebsd-23}
-|  IC | From internal interfaces in Cosmopolitan `libc` by Justine Tunney.{fn-tunney-23}
-|  IW | From internal interfaces in Open Watcom's library code.
-|   X | `libi86`-specific extension; not in Open Watcom or Borland C{plus}{plus}.  Enabled even if the macros `_BORLANDC_SOURCE` and `_ISOC99_SOURCE` are not defined.
-|  XB | `libi86`-specific extension.  Behaves slightly differently if `_BORLANDC_SOURCE` is defined.
-| (❧) | Additional notes on the implementation.
+|    C99 | Part of the C99 standard{fn-iso-iec-99}{fn-iso-iec-07} — enable with a macro `_ISOC99_SOURCE` if necessary.
+|    P01 | Part of the POSIX.1-2001{fn-ieee-04} standard.
+|      W | Behaves like the corresponding function in Open Watcom.
+|     W+ | Behaves like the corresponding function in Open Watcom, but with some extended behaviours.
+|      B | From Borland Turbo C{plus}{plus} — enable with `_BORLANDC_SOURCE`.
+|     UB | Undocumented (?) functionality from Borland Turbo C{plus}{plus} — enable with `_BORLANDC_SOURCE`.
+|    W/B | By default, behaves as in Open Watcom; if `_BORLANDC_SOURCE` is defined, behaves as in Borland C{plus}{plus}.
+|    BSD | From the Berkeley Standard Distribution's C library (BSD `libc`) and its derivatives.{fn-freebsd-23}
+|     IC | From internal interfaces in Cosmopolitan `libc` by Justine Tunney.{fn-tunney-23}
+|     IW | From internal interfaces in Open Watcom's library code.
+|      X | `libi86`-specific extension; not in Open Watcom or Borland C{plus}{plus}.  Enabled even if the macros `_BORLANDC_SOURCE` and `_ISOC99_SOURCE` are not defined.
+| {Xnew} | `libi86`-specific extension.  Also implemented in `lfanew`.{fn-tkchia-23}
+|     XB | `libi86`-specific extension.  Behaves slightly differently if `_BORLANDC_SOURCE` is defined.
+|    (❧) | Additional notes on the implementation.
 |===
 
 [cols=">1,9"]
@@ -130,7 +133,6 @@ When using ACK:
 
 === Functions
 
-:fn-tkchia-23: footnote:tkchia-23[https://codeberg.org/tkchia/lfanew/.]
 :im-dir-h: link:doc/implem-notes.asciidoc#user-content-dir-h[(❧)]
 :im-direct-h: link:doc/implem-notes.asciidoc#user-content-direct-h[(❧)]
 :im-dos-h: link:doc/implem-notes.asciidoc#user-content-dos-h[(❧)]
@@ -406,7 +408,7 @@ When using ACK:
 
 			* **``<io.h>`` also includes the underlying C library's ``<unistd.h>``.**
 
-|          X | = | = | = | ``_binmode (``__handle__``);`` a|
+|     {Xnew} | = | = | = | ``_binmode (``__handle__``);`` a|
 			* Sets the POSIX-style file __handle__ to do untranslated (binary) I/O — so that ``read`` and ``write`` calls with the __handle__ will not translate between LF and CRLF, nor specially interpret bytes that look like end-of-file indicators.
 			* Upon an error, this function returns -1 and sets ``errno``.
 6+|
@@ -497,19 +499,19 @@ When using ACK:
 6+|
 |            | DOS GCC | ELKS GCC | DOS ACK 2+a| **``▗▚▚▚▚ <nexgen/mzendian.h> ▞▞▞▞▖``**
 
-				* **Routines for accessing unaligned little endian binary data in a type-checked manner.  These are also implemented in the `lfanew` library (which is targeted at modern OSes).**
+				* **Routines for accessing unaligned little endian binary data in a type-checked manner.**
 				* **``<nexgen/mzendian.h>`` also includes ``<stdint.h>``.**
 
-|          X | = | = | = | ``hle16 (``__x__``);``{fn-tkchia-23} |
-|          X | = | = | = | ``hle32 (``__x__``);`` |
-|          X | = | = |   | ``hle64 (``__x__``);`` |
-|          X | = | = | = | ``leh16 (``__x__``);`` |
-|          X | = | = | = | ``leh32 (``__x__``);`` |
-|          X | = | = | = | ``leh32hi (``__x__``);`` |
-|          X | = | = | = | ``leh32lo (``__x__``);`` |
-|          X | = | = |   | ``leh64 (``__x__``);`` |
-|          X | = | = | = | ``leh64hi (``__x__``);`` |
-|          X | = | = | = | ``leh64lo (``__x__``);`` |
+|     {Xnew} | = | = | = | ``hle16 (``__x__``);`` |
+|     {Xnew} | = | = | = | ``hle32 (``__x__``);`` |
+|     {Xnew} | = | = |   | ``hle64 (``__x__``);`` |
+|     {Xnew} | = | = | = | ``leh16 (``__x__``);`` |
+|     {Xnew} | = | = | = | ``leh32 (``__x__``);`` |
+|     {Xnew} | = | = | = | ``leh32hi (``__x__``);`` |
+|     {Xnew} | = | = | = | ``leh32lo (``__x__``);`` |
+|     {Xnew} | = | = |   | ``leh64 (``__x__``);`` |
+|     {Xnew} | = | = | = | ``leh64hi (``__x__``);`` |
+|     {Xnew} | = | = | = | ``leh64lo (``__x__``);`` |
 |===
 
 === Variables
@@ -570,7 +572,7 @@ When using ACK:
 |          W | = | = | = | ``struct SREGS`` |
 6+|
 |            | DOS GCC | ELKS GCC | DOS ACK 2+| **``▗▚▚▚▚ <nexgen/mzendian.h> ▞▞▞▞▖``**
-|          X | = | = | = | ``uint_le16_t`` .3+| Unaligned 16-, 32-, or 64-bit little endian binary numeral.  These types can be used directly inside a ``struct`` or ``union`` corresponding to a binary file structure, but should otherwise be treated as opaque.
-|          X | = | = | = | ``uint_le32_t``
-|          X | = | = |   | ``uint_le64_t``
+|     {Xnew} | = | = | = | ``uint_le16_t`` .3+| Unaligned 16-, 32-, or 64-bit little endian binary numeral.  These types can be used directly inside a ``struct`` or ``union`` corresponding to a binary file structure, but should otherwise be treated as opaque.
+|     {Xnew} | = | = | = | ``uint_le32_t``
+|     {Xnew} | = | = |   | ``uint_le64_t``
 |===
