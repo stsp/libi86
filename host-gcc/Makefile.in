@@ -526,6 +526,11 @@ i86/libi86-intr-call-%.o: i86/libi86-intr-call.S $(HEADERS)
 	$(CC) $(CPPFLAGS) -Dintr_no=$* $(CFLAGS) $(ASFLAGS) $(MULTILIB) -c \
 	  -o $@ $<
 
+# Cancel GNU make's built-in implicit rules.
+# See https://github.com/tkchia/build-ia16/issues/30 .
+%.o: %.c
+%.o: %.S
+
 libi86/config.h: make-config.sh $(BSP)
 	mkdir -p $(@D)
 	NM='$(NM)' AWK='$(AWK)' PACKAGE_VERSION='$(PACKAGE_VERSION)' \

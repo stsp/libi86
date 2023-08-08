@@ -433,6 +433,12 @@ process/spawnlpe.o: process/spawnlx.s $(HEADERS)
 	mkdir -p $(@D)
 	$(CC) $(CPPFLAGS) -U_BORLANDC_SOURCE $(CFLAGS) $(ASFLAGS) -c -o $@ $<
 
+# Cancel GNU make's built-in implicit rules.
+# See https://github.com/tkchia/build-ia16/issues/30 .
+%.o: %.c
+%.s: %.c
+%.o: %.s
+
 libi86/config.h: make-config.sh $(BSP)
 	mkdir -p $(@D)
 	NM='$(NM)' AWK='$(AWK)' PACKAGE_VERSION='$(PACKAGE_VERSION)' \
