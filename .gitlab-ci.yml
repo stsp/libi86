@@ -43,6 +43,13 @@ stages:
   - test
 build_and_install:gcc:
   stage: build_and_install
+  only:
+    refs:
+      - branches
+  except:
+    refs:
+      - master
+      - main
   script:
     - add-apt-repository -y ppa:tkchia/build-ia16
     - apt-get update -y
@@ -56,6 +63,13 @@ build_and_install:gcc:
       - ./install.tmp
 build_and_install:ack:
   stage: build_and_install
+  only:
+    refs:
+      - branches
+  except:
+    refs:
+      - master
+      - main
   variables:
     DEBIAN_FRONTEND: noninteractive
   script:
@@ -68,6 +82,13 @@ build_and_install:ack:
       - ./install.tmp
 test1:gcc:
   stage: test
+  only:
+    refs:
+      - branches
+  except:
+    refs:
+      - master
+      - main
   needs:
     - job: build_and_install:gcc
       artifacts: true
@@ -87,6 +108,13 @@ test1:gcc:
       - ./build.tmp
 test2:gcc:
   stage: test
+  only:
+    refs:
+      - branches
+  except:
+    refs:
+      - master
+      - main
   needs:
     - job: build_and_install:gcc
       artifacts: true
@@ -107,6 +135,13 @@ test2:gcc:
       - ./build.tmp
 test3:gcc:
   stage: test
+  only:
+    refs:
+      - branches
+  except:
+    refs:
+      - master
+      - main
   needs:
     - job: build_and_install:gcc
       artifacts: true
@@ -125,6 +160,13 @@ test3:gcc:
       - ./build.tmp
 test:ack:
   stage: test
+  only:
+    refs:
+      - branches
+  except:
+    refs:
+      - master
+      - main
   needs:
     - job: build_and_install:ack
       artifacts: true
