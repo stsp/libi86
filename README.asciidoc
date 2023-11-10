@@ -502,16 +502,16 @@ When using ACK:
 				* **Routines for accessing unaligned little endian binary data in a type-checked manner.**
 				* **``<nexgen/mzendian.h>`` also includes ``<stdint.h>``.**
 
-|     {Xnew} | = | = | = | ``hle16 (``__x__``);`` |
-|     {Xnew} | = | = | = | ``hle32 (``__x__``);`` |
-|     {Xnew} | = | = |   | ``hle64 (``__x__``);`` |
-|     {Xnew} | = | = | = | ``leh16 (``__x__``);`` |
-|     {Xnew} | = | = | = | ``leh32 (``__x__``);`` |
-|     {Xnew} | = | = | = | ``leh32hi (``__x__``);`` |
-|     {Xnew} | = | = | = | ``leh32lo (``__x__``);`` |
-|     {Xnew} | = | = |   | ``leh64 (``__x__``);`` |
-|     {Xnew} | = | = | = | ``leh64hi (``__x__``);`` |
-|     {Xnew} | = | = | = | ``leh64lo (``__x__``);`` |
+|     {Xnew} | = | = | = | ``_hle16 (``__x__``);`` |
+|     {Xnew} | = | = | = | ``_hle32 (``__x__``);`` |
+|     {Xnew} | = | = |   | ``_hle64 (``__x__``);`` |
+|     {Xnew} | = | = | = | ``_leh16 (``__x__``);`` |
+|     {Xnew} | = | = | = | ``_leh32 (``__x__``);`` |
+|     {Xnew} | = | = | = | ``_leh32hi (``__x__``);`` |
+|     {Xnew} | = | = | = | ``_leh32lo (``__x__``);`` |
+|     {Xnew} | = | = |   | ``_leh64 (``__x__``);`` |
+|     {Xnew} | = | = | = | ``_leh64hi (``__x__``);`` |
+|     {Xnew} | = | = | = | ``_leh64lo (``__x__``);`` |
 |===
 
 === Variables

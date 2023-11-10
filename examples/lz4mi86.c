@@ -283,7 +283,7 @@ main (int argc, char **argv)
     fatal ("cannot open input file in binary mode");
 
   input (&hdr, offsetof (struct lz4_frame_hdr, xlen));
-  if (leh32 (hdr.magic) != FH_MAG)
+  if (_leh32 (hdr.magic) != FH_MAG)
     fatal ("input is not LZ4");
   if ((hdr.flg & FLG_VER) != FLG_VER_CURR)
     fatal ("bad LZ4 version number");
@@ -300,14 +300,14 @@ main (int argc, char **argv)
 #endif
       input (&hdr.xlen, sizeof (hdr.xlen));
 #ifdef UINT64_MAX
-      xlen64 = leh64 (hdr.xlen);
+      xlen64 = _leh64 (hdr.xlen);
       if (xlen64 > SIZE_MAX)
 	fatal ("LZ4 input too large");
       xlen = (size_t) xlen64;
 #else
-      xlenlo = leh64lo (hdr.xlen);
+      xlenlo = _leh64lo (hdr.xlen);
       if (xlenlo > (uint32_t) SIZE_MAX
-	  || leh64hi (hdr.xlen) != 0)
+	  || _leh64hi (hdr.xlen) != 0)
 	fatal ("LZ4 input too large");
       xlen = (size_t) xlenlo;
 #endif
@@ -315,7 +315,7 @@ main (int argc, char **argv)
   input (&hdr.hc, sizeof (hdr.hc));
 
   input (&blk_sz_le, sizeof (blk_sz_le));
-  blk_sz32 = leh32 (blk_sz_le);
+  blk_sz32 = _leh32 (blk_sz_le);
   if ((blk_sz32 & BSZ_UNCOMPR) != 0)
     fatal ("LZ4 uncompressed block unsupported");
   if (! blk_sz32)
@@ -332,7 +332,7 @@ main (int argc, char **argv)
   if ((hdr.flg & FLG_BCKSUM) != 0)
     input (&blk_cksum_le, sizeof (blk_cksum_le));
   input (&blk2_sz_le, sizeof (blk2_sz_le));
-  if (leh32 (blk2_sz_le) != 0)
+  if (_leh32 (blk2_sz_le) != 0)
     fatal ("multiple LZ4 blocks unsupported");
   if (in_path)
     close (in_fd);
