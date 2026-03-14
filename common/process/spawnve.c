@@ -279,7 +279,7 @@ make_env_blk (__libi86_segment_t *p_envb, char **p_envb_c,
    * way, or if we are in DOS extender mode, then ask MS-DOS (or the DOS
    * extender) for memory.  Copy out the environment.
    */
-  env_sz = 1;
+  env_sz = 3;
   pp = envp;
   while ((p = *pp++) != NULL)
     env_sz += strlen (p) + 1;
@@ -304,6 +304,10 @@ make_env_blk (__libi86_segment_t *p_envb, char **p_envb_c,
       size_t sz = strlen (p) + 1;
       fp = _fmempcpy (fp, _CV_FP (p), sz);
     }
+  __libi86_pokefpb (fp, 0);
+  fp++;
+  __libi86_pokefpb (fp, 0);
+  fp++;
   __libi86_pokefpb (fp, 0);
 
   *p_envb = envb;
