@@ -465,6 +465,7 @@ m4_define([AT_LIBI86_CHECK_DOS_WITH_BAT_FILE],[dnl
 AT_DATA([[w00t.bat]],[$2])
 AT_DATA([[w00t]],[[nope nope nope
 ]])
+unix2dos w00t.bat
 AT_LIBI86_CHECK_DOS(dnl
 [[#define BAT_FILE "w00t.bat"
 #define BAT_FILE_MINUS_EXT "w00t"
