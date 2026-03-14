@@ -172,12 +172,13 @@ main (int argc, char **argv)
   puts ("yo");
   return 0;
 }]],dnl
-[[@echo %1
-@echo %2
-@echo %3
-@echo %4
-@echo "%5"
-@echo vincent = %VINCENT%
+[[@echo off
+echo %1
+echo %2
+echo %3
+echo %4
+echo "%5"
+echo vincent = %VINCENT%
 ]],dnl
 [[/foo
 victor
@@ -216,7 +217,8 @@ main (int argc, char **argv)
   puts ("yo");
   return 0;
 }]],dnl
-[[@echo vincent = %VINCENT%
+[[@echo off
+echo vincent = %VINCENT%
 ]],dnl
 [[vincent = van gogh
 yo
@@ -270,8 +272,10 @@ main (int argc, char **argv)
 mkdir two
 mkdir three
 mkdir nine
-echo @echo %%1 hello>two\four.bat
-echo @echo %%2 world>three\five.bat
+echo @echo off>two\four.bat
+echo echo %%1 hello>>two\four.bat
+echo @echo off>three\five.bat
+echo echo %%2 world>>three\five.bat
 echo vincent = %VINCENT%
 ]],dnl
 [[vincent = van gogh
@@ -354,8 +358,9 @@ main (int argc, char **argv)
   puts ("yo");
   return 0;
 }]],dnl
-[[@echo %1
-@echo vincent = %VINCENT%
+[[@echo off
+echo %1
+echo vincent = %VINCENT%
 ]],dnl
 [[hello
 vincent = van gogh
@@ -387,8 +392,9 @@ main (int argc, char **argv)
   puts ("yo");
   return 0;
 }]],dnl
-[[@echo "%1"
-@echo vincent = %VINCENT%
+[[@echo off
+echo "%1"
+echo vincent = %VINCENT%
 ]],dnl
 [[""
 vincent = van gogh
@@ -410,11 +416,12 @@ main (int argc, char **argv)
   puts ("yo");
   return 0;
 }]],dnl
-[[@echo %1
-@echo %2
-@echo %3
-@echo %4
-@echo "%5"
+[[@echo off
+echo %1
+echo %2
+echo %3
+echo %4
+echo "%5"
 ]],dnl
 [[/foo
 victor
